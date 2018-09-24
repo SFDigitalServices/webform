@@ -55,6 +55,8 @@ class FormController extends Controller{
         return response()->json($user);
     }
     public function createUser(){
+        DB::table('user')->insert([
+            [ 'email' => 'janedoe'] ]);
     }
     public function getUserForms(){
     }
