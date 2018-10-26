@@ -1,6 +1,6 @@
 # Web Form Builder 
 
-This is the source for the web form builder, cloned from https://github.com/krisanalfa/lumen-jwt as a starting point.
+This is the source for the web form builder, cloned from https://github.com/krisanalfa/lumen-jwt as a starting point. Decided to not implement jwt at this point.
 
 ## Setup
 
@@ -16,7 +16,7 @@ You need [Docker](https://github.com/docker/docker) and [docker-compose](https:/
         ```
         
 ### Initialize the database resources
-    You will need to 'ssh' into the apache-php container
+    You will need to ssh into the apache-php container
     
     ```
     docker exec -ti [container id] bash
