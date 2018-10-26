@@ -14,6 +14,30 @@ You need [Docker](https://github.com/docker/docker) and [docker-compose](https:/
         mkdir src && cd src
         git clone git@github.com:SFDigitalServices/webform.git
         ```
+        
+### Initialize the database resources
+    You will need to 'ssh' into the apache-php container
+    
+    ```
+    docker exec -ti [container id] bash
+    ```
+    and run the command in the document root folder, usually /var/www/html
+    ```
+    $ php artisan make:migration create_users_table
+    ```
+
+    A migration file will be generated under “database/migrations”. If there's already a migration file generated from check-ins, you may see a warning, in this case, proceed to the next command:
+    
+    ```
+    $ php artisan migrate
+     ```
+    This will execute the commands in the create_users_table migration file.
+
+    To populate the tables with data, take a look at the database\seeds\UserTableSeeder.php file. Execute the following command will insert data into the tables.
+    ```
+    $ php artisan db:seed
+     ```
+
 
 ## Deplopyment to Heroku
 

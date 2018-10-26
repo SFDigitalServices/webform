@@ -1,7 +1,19 @@
 <?php
 
-abstract class TestCase extends Laravel\Lumen\Testing\TestCase
+class TestCase extends Laravel\Lumen\Testing\TestCase
 {
+
+    /**
+     * @var Faker\Generator
+     */
+    protected $faker;
+
+
+    public function setUp()
+    {
+        $this->faker = Faker\Factory::create();
+        parent::setUp();
+    }
     /**
      * Creates the application.
      *

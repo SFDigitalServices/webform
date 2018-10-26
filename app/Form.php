@@ -1,16 +1,15 @@
 <?php
-
 namespace App;
-
 use Illuminate\Database\Eloquent\Model;
-
-class Users extends Model
+class Form extends Model
 {
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['email' ];
-
+    protected $fillable = [
+        'content',
+    ];
+    protected $table = 'forms';
 }

@@ -1,7 +1,7 @@
 <?php
 
 //load db
-require("db.inc");
+//require("db.inc");
 
 //check GET
 if (!isset($_GET['id'])) {

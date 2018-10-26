@@ -12,7 +12,6 @@
 			}
 		</style>
 
-
 <header class="hero-header text-center">
 	<h1 class="hero-title c-white t-shadow">Webform Builder</h1>
 
@@ -22,9 +21,9 @@
 			<br/><br/><br/>
 
 			<section class="row margin-bottom--2x">
-				<div class="medium-10 medium-centered columns">
+				<div-- class="medium-10 medium-centered columns">
 					
-				<form class="form-card margin-bottom--2x" action="/form/editor" method="POST">
+				<form class="form-card margin-bottom--2x" action="/user/login" method="POST">
 						<div class="row">
 							<div class="medium-12 columns padding-left padding-right padding-top padding-bottom">
 								<header class="margin-bottom">
@@ -33,7 +32,7 @@
 
 								<div class="form-email">
 									<label for="email" class="">Email Address</label>
-									<input name="username" type="email" placeholder="first.last@sfgov.org" class="" />
+									<input name="email" type="email" placeholder="first.last@sfgov.org" class="" />
 								</div>
 
 								<div class="form-password">
@@ -49,11 +48,11 @@
 
 					</form>
 
-					<div class="note text-center bg-smoke padding margin-top">
+					<!--div class="note text-center bg-smoke padding margin-top">
 						<p class="t-small no-margin">Forgot your email or password?
 							<a target="_blank" href="https://bifrost.sfgov.org/" class="button-link t-small">DT IAM Support</a>
 						</p>
-					</div>
+					</div-->
 				</div>
 			</section>
 

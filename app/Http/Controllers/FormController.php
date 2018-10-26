@@ -1,97 +1,56 @@
 <?php
- 
 namespace App\Http\Controllers;
- 
-use App\People;
-use App\Group;
-use App\File;
-use App\Http\Controllers\Controller;
+
+use App\Form;
+use Auth;
+use App\User_Form;
+
 use Illuminate\Http\Request;
-
-
-class FormController extends Controller{
-
-    public function getData($id){
-        $product  = People::find($id);
-        return response()->json($product); 
-    }
-
-    public function getOptions(){
-        $data = Group::all(["id", "name as value"]);
-        return response()->json($data);
-    }
-
-    public function saveData(Request $request){
-        $prod = People::find($request->input("id"));
-        $prod->fill($request->all());
-        $prod->save();
-
-        return response()->json(["status" => "ok"]);
-    }
-    public function doUpload(Request $request){
-        //in a real app you will move file to the persistent storage here
-        $upload = $request->file('upload');
-        $path = md5(time()).".".$upload->getClientOriginalExtension();
-        $upload->move("./storage", $path);
-
-        $store = new File;
-        $store->name = $upload->getClientOriginalName();
-        $store->path = $path;
-        $store->save();
-
-        return response()->json([
-            "status" => "server",
-            "value" =>  $store["id"]
-        ]);
-    }
-
-    public function getUserById($id){
-        $user = User::find($id);
-        return response()->json($user);
-    }
-
-    public function getUserByEmail($email){
-        $user = User::find($email);
-        return response()->json($user);
-    }
-    public function createUser(){
-        DB::table('user')->insert([
-            [ 'email' => 'janedoe'] ]);
-    }
-    public function getUserForms(){
-    }
-    public function getForm(){
-    }
-    public function createForm(){
-    }
-    public function updateForm(){
-    }
-    public function cloneForm(){
-    }
-    public function deleteForm(){
-    }
-    public function getFormUsers(){
-    }
-    public function listOtherAuthors(){
-    }
-    function jsonDecode($json, $assoc = false)
+class FormController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        $ret = json_decode($json, $assoc);
-        if ($error = json_last_error())
-        {
-            $errorReference = [
-                JSON_ERROR_DEPTH => 'The maximum stack depth has been exceeded.',
-                JSON_ERROR_STATE_MISMATCH => 'Invalid or malformed JSON.',
-                JSON_ERROR_CTRL_CHAR => 'Control character error, possibly incorrectly encoded.',
-                JSON_ERROR_SYNTAX => 'Syntax error.',
-                JSON_ERROR_UTF8 => 'Malformed UTF-8 characters, possibly incorrectly encoded.',
-                JSON_ERROR_RECURSION => 'One or more recursive references in the value to be encoded.',
-                JSON_ERROR_INF_OR_NAN => 'One or more NAN or INF values in the value to be encoded.',
-                JSON_ERROR_UNSUPPORTED_TYPE => 'A value of a type that cannot be encoded was given.',
-            ];
-            $errStr = isset($errorReference[$error]) ? $errorReference[$error] : "Unknown error ($error)";
-            throw new \Exception("JSON decode error ($error): $errStr");
+        $this->middleware('auth');
+    }
+
+    public function getIndex(Request $request){
+        return response()->json('all');
+    }
+    public function getEditor(Request $request){
+        $user_id = $request->input('user_id');
+        $user = Auth::user()->where('id', $user_id)->get();
+
+        $user_forms = User_Form::where('user_id', $user_id)->get();
+        $forms = array();
+        foreach($user_forms as $form){
+            array_push($forms, Form::where('id', $form['form_id'])->get()->first());
         }
-        return $ret;
+        return response()->json($forms);
+        //return view('editor', ['name' => $user->name, 'forms' => $user_forms]);
+    }
+    public function saveForm(Request $request){
+            return 'save';
+    }
+    public function createForm(Request $request) {
+        $form = Form::create($request->all());
+        return response()->json($form);        
+    }
+    public function embedJS(Request $request){
+        return 'hi';
+    }
+    public function update(Request $request, $id) {
+        $form = Form::find($id);
+        $updated = $form->update($request->all());
+        
+        return response()->json(['updated' => $updated]);        
+    }
+    public function delete($id) {
+        $count = Form::destroy($id);
+        return response()->json(['deleted' => $count == 1]);      
     }
 }

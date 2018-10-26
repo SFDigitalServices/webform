@@ -1,9 +1,6 @@
 <?php
-
 namespace App;
-
 use Illuminate\Database\Eloquent\Model;
-
 class User_Form extends Model
 {
     /**
@@ -11,6 +8,8 @@ class User_Form extends Model
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'form_id' ];
-
+    protected $fillable = [
+        'user_id', 'form_id',
+    ];
+    protected $table = 'user_form';
 }

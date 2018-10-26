@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTables extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +12,27 @@ class CreateTables extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('users');
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('email');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->string('api_token');
+            $table->timestamps();
         });
 
-        Schema::create('forms', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('content');
-        });
-
+        Schema::dropIfExists('user_form');
         Schema::create('user_form', function (Blueprint $table) {
             $table->integer('user_id');
             $table->integer('form_id');
+        });
+
+        Schema::dropIfExists('forms');
+        Schema::create('forms', function (Blueprint $table) {
+            $table->increments('id');
+            $table->longText('content');
+            
         });
     }
 
@@ -36,8 +43,6 @@ class CreateTables extends Migration
      */
     public function down()
     {
-        Schema::drop('forms');
         Schema::drop('users');
-        Schema::drop('user_form');
     }
 }
