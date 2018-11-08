@@ -1,10 +1,5 @@
 <?php
-
 //all db stuff into this file
-define("SERVERNAME", "localhost");
-define("USERNAME", "root");
-define("PASSWORD", "mba683");
-define("DBNAME", "webform");
 
 function openDB() {
 	 // Create connection

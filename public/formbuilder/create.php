@@ -2,7 +2,8 @@
 
 session_start();
 
-//load db
+//load dependencies
+require("env.inc");
 require("db.inc");
 
 if (!isset($_SESSION['id']) || !isset($_SESSION['email'])) {
@@ -214,8 +215,8 @@ if (isset($_GET['id'])) {
 	   margin: 0;
  }
     </style>
-    <link href="js/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="js/bootstrap-tagsinput.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap-tagsinput.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -229,7 +230,7 @@ if (isset($_GET['id'])) {
 
 	<div class="header">
 		<div style="display:block;max-width:1140px;text-align:right;margin:auto">
-			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="SF_Digital_Services-logo.png"/></div>
+			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="<?php print ASSETS; ?>images/SF_Digital_Services-logo.png"/></div>
 			SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 		</div>
 	</div>
@@ -1696,11 +1697,11 @@ if (isset($_GET['id'])) {
 	<!--
     <div id="site-navbar" style="position: absolute; top: -4px; right: -3px; border: 0; z-index: 2000;padding:0;margin:0;"><a href="http://github.com/aiopio/Bootstrap3-form-builder" title="在github关注我" style="background:none;"><img src="http://aral.github.io/fork-me-on-github-retina-ribbons/right-white@2x.png" style="padding:0;margin:0;border:0; -webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;width:100px"></a></div>
 	-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-tagsinput.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/jquery.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/bootstrap.min.js"></script>
+	<script src="<?php print ASSETS; ?>js/bootstrap-tagsinput.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-    <script src="js/fb.js"></script>
+    <script src="<?php print ASSETS; ?>js/fb.js"></script>
 	     <?php if (isset($_GET['id'])) { print "<script>formId = ".$_GET['id'].";loadForm();</script>"; } ?>
 
   </body>

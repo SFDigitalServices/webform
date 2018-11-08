@@ -1,7 +1,8 @@
 <?php
 
-//load db
-//require("db.inc");
+//load dependencies
+require("env.inc");
+require("db.inc");
 
 //check GET
 if (!isset($_GET['id'])) {
