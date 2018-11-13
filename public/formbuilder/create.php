@@ -1473,7 +1473,7 @@ if (isset($_GET['id'])) {
 						&nbsp;
 						<br/>
 						<h4>JSON Save Object</h4>
-						<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{"action":"","method":"POST"},"data":[]}</textarea>
+						<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}</textarea>
 					</div>
                   </div>
 				  <div class="tab-pane" id="SFDSWFB-7">
@@ -1599,7 +1599,7 @@ if (isset($_GET['id'])) {
 					  </div>
 					</form>" data-html="true"
 					>
-					<legend class="valtype" data-valtype="text">Form Name</legend>
+					<legend class="valtype" data-valtype="text">My Form</legend>
 				  </div>
 				</fieldset>
 			  </form>
