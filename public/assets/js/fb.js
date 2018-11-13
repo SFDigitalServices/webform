@@ -118,13 +118,7 @@ $(document).ready(function(){
 		//disallow if dragged in less than a second
 		if (dragExisting && Date.now() - clickNow < 1000) {
 			//populate id field, almost all fields have id
-			var componentId;
-			if ($temp.find(".component").attr("data-id") == undefined) {
-				componentId = Date.now()
-				$temp.find(".component").attr("data-id", componentId);
-			} else {
-				componentId = $temp.find(".component").attr("data-id");
-			}
+			var componentId = setComponentId($temp);
 			//put them in original place
 			if (existingPos < existingCount) {
 			  $($temp.html()).insertBefore($($target_component[existingPos+1]));
@@ -164,13 +158,7 @@ $(document).ready(function(){
             $temp.attr("style", null);
 
 			//populate id field, almost all fields have id
-			var componentId;
-			if ($temp.find(".component").attr("data-id") == undefined) {
-				componentId = Date.now()
-				$temp.find(".component").attr("data-id", componentId);
-			} else {
-				componentId = $temp.find(".component").attr("data-id");
-			}
+			var componentId = setComponentId($temp);
 
             // where to add
             if(tops.length > 0){
@@ -554,6 +542,32 @@ function genSource() {
 	$.get("generate.php?id="+formId, function(data) {
 		$("#SFDSWFB-source").val(data);
 	});
+}
+
+function setComponentId($temp) {
+	if ($temp.find(".component").attr("data-id") == undefined) {
+		var componentId = createId($temp.find(".component").attr("title"));
+		$temp.find(".component").attr("data-id", componentId);
+		return componentId;
+	} else {
+		return $temp.find(".component").attr("data-id");
+	}
+}
+
+function createId(title) {
+	var count = 1;
+	var newName = title.toLowerCase()
+	newName = newName.replace(/ /g,"_");
+	countName = newName;
+	while (doesIdExist(countName) == true) {
+		countName = newName+"_"+count;
+		count++;
+	}
+	return countName;
+}
+
+function doesIdExist(str) {
+	return $('#SFDSWFB-build').find("[data-id="+str+"]")[0] ? true : false;
 }
 
 function addAttr(str, componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax) { //todo cleanup form params
