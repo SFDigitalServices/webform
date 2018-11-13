@@ -100,8 +100,12 @@ if (isset($_GET['id'])) {
 		width: 50%;
 	  }
 
+      #SFDSWFB-snippet{
+        min-height: 250px;
+      }
+
       #SFDSWFB-source{
-        min-height: 500px;
+        min-height: 100px;
       }
 	  
 	  .form-horizontal .component {
@@ -1458,11 +1462,19 @@ if (isset($_GET['id'])) {
 					
                   </div>
                   <div class="tab-pane" id="SFDSWFB-6">
-                    <textarea id="SFDSWFB-source" class="col-md-12"></textarea>
-					&nbsp;
+					<h4>Embed Code</h4>
+					<p>Copy and paste the following code into your page.</p>
+					<textarea id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</textarea>&nbsp;
 					<br/>
-					<h4>JSON Save Object</h4>
-					<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{},"data":[]}</textarea>
+					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Enable Debug Mode</div>
+					<div id="SFDSWFB-debug" style="display:none">
+						<h4>Source Code</h4>
+						<textarea id="SFDSWFB-source" class="col-md-12"></textarea>
+						&nbsp;
+						<br/>
+						<h4>JSON Save Object</h4>
+						<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{},"data":[]}</textarea>
+					</div>
                   </div>
 				  <div class="tab-pane" id="SFDSWFB-7">
 					<h3>Settings</h3>

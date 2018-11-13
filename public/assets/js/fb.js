@@ -1,10 +1,18 @@
+//globals
+
 var emptyForm;
 var formId = 0;
+
 $(document).ready(function(){
+	
   emptyForm = $("#SFDSWFB-target").html();
-  $("form").delegate(".component", "mousedown", function(md){
+  
+  $("form").delegate(".component", "mousedown", function(md) {
+	  
+	//remove the popup
     $(".popover").remove();
 
+	//stage vars
     md.preventDefault();
     var tops = [];
     var mouseX = md.pageX;
@@ -20,19 +28,13 @@ $(document).ready(function(){
       main: 0,
       form: 120
     }
-    var type;
+    var type = $this.parent().parent().parent().parent().attr("id") === "SFDSWFB-components" ? "main" : "form";
     var saved = $("#SFDSWFB-save").val();
     saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-
 	if (saved.settings == undefined) saved.settings = new Object();
 	if (saved.data == undefined) saved.data = new Array();
 
-    if($this.parent().parent().parent().parent().attr("id") === "SFDSWFB-components"){
-      type = "main";
-    } else {
-      type = "form";
-    }
-
+	//drag and drop functionality
     var delayed = setTimeout(function(){
       if(type === "main"){
         $temp = $("<form class='form-horizontal col-md-6' id='SFDSWFB-temp'></form>").append($this.clone());
@@ -77,36 +79,39 @@ $(document).ready(function(){
         var mm_mouseX = mm.pageX;
         var mm_mouseY = mm.pageY;
 
-        $temp.css({"top"      : mm_mouseY - half_box_height + "px",
-          "left"      : mm_mouseX - half_box_width  + "px"});
-
-//        if ( mm_mouseX > tar_pos.left &&
-//          mm_mouseX < tar_pos.left + $target.width() + $temp.width()/2 &&
-//        if ( mm_mouseX > tar_pos.left + $target.width() + $temp.width() &&
-	if ( mm_mouseX > $("#SFDSWFB-build").offset().left && 
-          mm_mouseX < tar_pos.left + $target.width() + $target.width() + $temp.width() &&
-          mm_mouseY > tar_pos.top &&
-          mm_mouseY < tar_pos.top + $target.height() + $temp.height()/2
-          ){
+        $temp.css({
+			"top" : mm_mouseY - half_box_height + "px",
+			"left" : mm_mouseX - half_box_width  + "px"
+		});
+		
+		if (
+			mm_mouseX > $("#SFDSWFB-build").offset().left && 
+			mm_mouseX < tar_pos.left + $target.width() + $target.width() + $temp.width() &&
+			mm_mouseY > tar_pos.top &&
+			mm_mouseY < tar_pos.top + $target.height() + $temp.height()/2
+		) {
+			//effects if dragged item is within the form
             $("#SFDSWFB-target").css("background-color", "#fafdff");
             $target_component.css({"border-top" : "1px solid white", "border-bottom" : "none"});
             tops = $.grep($target_component, function(e){
               return ($(e).position().top -  mm_mouseY + half_box_height > 0 && $(e).attr("id") !== "SFDSWFB-legend");
             });
-            if (tops.length > 0){
+            if (tops.length > 0) {
               $(tops[0]).css("border-top", "1px solid #22aaff");
-            } else{
-              if($target_component.length > 0){
+            } else {
+              if ($target_component.length > 0) {
                 $($target_component[$target_component.length - 1]).css("border-bottom", "1px solid #22aaff");
               }
             }
-          } else{
+        } else {
+			//effects if dragged item is outside the form
             $("#SFDSWFB-target").css("background-color", "#fff");
             $target_component.css({"border-top" : "1px solid white", "border-bottom" : "none"});
             $target.css("background-color", "#fff");
-          }
+        }
       });
 
+	  //letting go of the dragged item
       $("body").delegate("#SFDSWFB-temp", "mouseup", function(mu){
         mu.preventDefault();
 
@@ -137,7 +142,6 @@ $(document).ready(function(){
 			$("body").undelegate("#SFDSWFB-temp","mouseup");
 			$("#SFDSWFB-target .component").popover({trigger: "manual"});
 			$temp.remove();
-			genSource();
 			return;
 		}
 		
@@ -151,14 +155,12 @@ $(document).ready(function(){
 		var oldHeight = $('#SFDSWFB-target').height();			
 
         // acting only if mouse is in right place
-        //if (mu_mouseX + half_box_width > tar_pos.left &&
-         // mu_mouseX - half_box_width < tar_pos.left + $target.width() &&
-		//        if (mu_mouseX + half_box_width > tar_pos.left + $target.width() + $temp.width() + half_box_width &&
-		if (mu_mouseX > $("#SFDSWFB-build").offset().left &&
-          mu_mouseX - half_box_width < tar_pos.left + $target.width() + $target.width() + half_box_width &&
-          mu_mouseY + half_box_height > tar_pos.top &&
-          mu_mouseY - half_box_height < tar_pos.top + $target.height()
-          ){
+		if (
+			mu_mouseX > $("#SFDSWFB-build").offset().left &&
+			mu_mouseX - half_box_width < tar_pos.left + $target.width() + $target.width() + half_box_width &&
+			mu_mouseY + half_box_height > tar_pos.top &&
+			mu_mouseY - half_box_height < tar_pos.top + $target.height()
+        ) {
             $temp.attr("style", null);
 
 			//populate id field, almost all fields have id
@@ -186,21 +188,21 @@ $(document).ready(function(){
 			$('#SFDSWFB-target .component:eq('+flashIndex+')').css('opacity', 0);
 			$('#SFDSWFB-target .component:eq('+flashIndex+')').animate({opacity: 1}, 500);
 
-          } else {		  
-            // no add
+        } else {		  
+            // do not add the component
             $("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
             tops = [];
-          }
+        }
 		  
-			//calculate new height, animation code only
-			$('#SFDSWFB-target').css('height', "auto");
-			var newHeight = $('#SFDSWFB-target').height();
-			$('#SFDSWFB-target').css('height', (oldHeight+12)+"px");
-			setTimeout(function() {
-				$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
-			}, 100);
+		//calculate new height, animation code only
+		$('#SFDSWFB-target').css('height', "auto");
+		var newHeight = $('#SFDSWFB-target').height();
+		$('#SFDSWFB-target').css('height', (oldHeight+12)+"px");
+		setTimeout(function() {
+			$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
+		}, 100);
 
-		  $("#SFDSWFB-save").val(JSON.stringify(saved));
+		$("#SFDSWFB-save").val(JSON.stringify(saved));
 
         //clean up & add popover
         $target.css("background-color", "#fff");
@@ -208,9 +210,8 @@ $(document).ready(function(){
         $("body").undelegate("#SFDSWFB-temp","mouseup");
         $("#SFDSWFB-target .component").popover({trigger: "manual"});
         $temp.remove();
-        genSource();
       });
-    }, delays[type]);
+    }, delays[type]); //end delayed
 
     $(document).mouseup(function () {
       clearInterval(delayed);
@@ -220,140 +221,11 @@ $(document).ready(function(){
       clearInterval(delayed);
       return false;
     });
-  });
-
-  var genSource = function(){
-    var $temptxt = $("<div>").html($("#SFDSWFB-build").html());
-
-        var saved = $("#SFDSWFB-save").val();
-        saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-
-        //iterate through data
-	for (d in saved['data']) {
-		for (key in saved['data'][d]) {
-			if (key != "label" && key != "placeholder" && key != "help" && key != "formtype") { //values we don't need to insert
-				var curIndex = parseInt(d)+1;
-				
-				var inputType = ''; //get input type
-				if ($($temptxt).find(".component:eq("+curIndex+") textarea")[0]) {
-					inputType = "textarea";
-				} else if ($($temptxt).find(".component:eq("+curIndex+") select")[0]) {
-					inputType = "select";
-				} else if ($($temptxt).find(".component:eq("+curIndex+") input")[0]) {
-					inputType = "input";
-				} else if ($($temptxt).find(".component:eq("+curIndex+") p")[0]) {
-				    inputType = "p";
-                                } else if ($($temptxt).find(".component:eq("+curIndex+") h1")[0]) {
-                                    inputType = "h1";
-				} else if ($($temptxt).find(".component:eq("+curIndex+") h2")[0]) {
-                                    inputType = "h2";
-				} else if ($($temptxt).find(".component:eq("+curIndex+") h3")[0]) {
-                                    inputType = "h3";
- 				} //todo find all other dom types
-				//alert(key + " " + inputType);
-
-				if (key == "required") { //required is a different type of attribute
-					if (saved['data'][d][key] == "true") {
-						$($temptxt).find(".component:eq("+curIndex+") "+inputType).prop("required", true);
-					} else {
-					    $($temptxt).find(".component:eq("+curIndex+") "+inputType).removeAttr("required");
-					}
-				} else if (key == "regex") { //regex is entered as pattern
-				    $($temptxt).find(".component:eq("+curIndex+") "+inputType).attr("pattern", saved['data'][d][key]);
-				} else if (key == "option" && inputType == "select") { //syntax is different
-				    //alert(saved['data'][d][key]);
-				    $($temptxt).find(".component:eq("+curIndex+") select").html('');
-				    var options = saved['data'][d][key].split("\n");
-				    $.each(options, function (i, item) {
-					     $($temptxt).find(".component:eq("+curIndex+") select").append($('<option>', {value : item, text : item}));
-				    });
-				} else if (key == "value" && inputType == "select") {
-				    $($temptxt).find(".component:eq("+curIndex+") select option[value='"+saved['data'][d][key]+"']").attr("selected", true);
-				} else { //everything else gets added to main inputType
-				    $($temptxt).find(".component:eq("+curIndex+") "+inputType).attr(key, saved['data'][d][key]);
-				}
-			}
-		}
-	}
-
-    //iterate through settings
-    for (s in saved['settings']) {
-	if (s == "action" || s == "method") {
-	    $($temptxt).find("form").attr(s, saved['settings'][s]);
-	}
-    }
-
-    //scrubbbbbbb
-    $($temptxt).find(".component").attr({"title": null,
-      "data-original-title":null,
-      "data-content": null,
-      "data-placeholder": null,
-      "data-help": null,
-      "data-formtype": null,
-      "data-value": null,
-      "data-name": null,
-//    "data-id": null,
-//	  "data-class": null,
-      "data-required": null,
-      "data-type": null,
-	  "data-regex": null,
-	  "data-minlength": null,
-	  "data-maxlength": null,
-	  "data-min": null,
-	  "data-max": null,
-      "rel": null,
-      "trigger":null,
-      "data-html":null,
-      "style": null});
-    $($temptxt).find(".valtype").attr("data-valtype", null).removeClass("valtype");
-    $($temptxt).find(".component").removeClass("component");
-    $($temptxt).find("form").attr({"id":  null, "style": null});
-    $($temptxt).find("input").attr({"radios": null, "checkboxes": null});
-    $($temptxt).find("p, h1, h2, h3, textarea").attr({"codearea": null, "textarea": null});
-
-	//hack to render page containers, also check to see if form is sectional or paginated
-	if($($temptxt).find("hr.pb")[0] != null) {
-		//add nav section and name first section if defined, otherwise use form name
-		var section1;
-		if ($("#SFDSWFB-section1").val() != "") {
-			section1 = $("#SFDSWFB-section1").val();
-		} else {
-			section1 = $("SFDSWFB-legend").text();
-		}
-		$($temptxt).prepend("<ul class='form-section-nav'><li class='active'>"+section1+"</li></ul>");
-		//wrap form
-		$($temptxt).find(".form-group").wrapAll("<div class='sections-container'/>");
-		//parse out separators
-		var pageLabels = [];
-		$.each($($temptxt).find("hr.pb"), function(i, v) {
-			pageLabels.push($(v).parent().siblings("label").html());
-			$(v).parents(".form-group").replaceWith('<hr>');
-		});
-		var pageSections = $($temptxt).find(".sections-container").html();
-		pageSections = pageSections.split("<hr>");
-		var newContent = "<div class='form-section-header active'>"+section1+"</div>";
-		for (i in pageSections) {
-			//var thisPageLabel = pageLabels[i] != undefined ? "<div class='form-section-header'>"+pageLabels[i]+"</div>" : '';
-			var thisPageLabel = '';
-			if (pageLabels[i] != undefined) {
-				thisPageLabel = "<div class='form-section-header'>"+pageLabels[i]+"</div>";
-				$($temptxt).find('.form-section-nav').append("<li>"+pageLabels[i]+"</li>");
-			}
-			var firstSection = i == 0 ? " active" : "";
-			var lastSection = i == pageSections.length - 1 ? "<button class='btn btn-lg form-section-next submit'>Submit</button>" : "<a class='btn btn-lg form-section-next' href='javascript:void(0)'>Next</a>";
-			newContent += "<div class='form-section"+firstSection+"'>"+pageSections[i]+"<div class='form-group'><a class='btn btn-lg form-section-prev' href='javascript:void(0)'>Previous</a>"+lastSection+"</div></div>"+thisPageLabel;
-		}
-		$($temptxt).find(".sections-container").html(newContent);
-	}
-	
-	//todo modify embeddable html with form settings
-	//$($temptxt).find("form").attr('action',$("#SFDSWFB-action").val());
-	//$($temptxt).find("form").attr('method',"post");
-    $("#SFDSWFB-source").val($temptxt.html().replace(/\n\ \ \ \ \ \ \ \ \ \ \ \ /g,"\n"));
-  }
+  }); //end drag
 
   //activate legend popover
   $("#SFDSWFB-target .component").popover({trigger: "manual"});
+  
   //popover on click event
   $("#SFDSWFB-target").delegate(".component", "click", function(e){
     e.preventDefault();
@@ -520,12 +392,13 @@ $(document).ready(function(){
 		}));
 	});
 
-
+	//click cancel on popover menu
     $(".popover").delegate(".btn-danger", "click", function(e){
       e.preventDefault();
       $active_component.popover("hide");
     });
 
+	//click save on popover menu
     $(".popover").delegate(".btn-info", "click", function(e){
       e.preventDefault();
 
@@ -651,21 +524,37 @@ $(document).ready(function(){
 	  //moved down, used to be in the loop for some reason?
 	  $active_component.popover("hide");
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
-	  setTimeout(function(){genSource()}, 150);
-    });
-  });
+   });
+   
+  });  //end popover on click event
+
+  //bind additional actions
   $("#SFDSWFB-navtab").delegate("#SFDSWFB-sourcetab", "click", function(e){
     genSource();
   });
   $("#SFDSWFB-7 input").change(function() {
 	updateSettings();
-	genSource();
   });
   $('#SFDSWFB-authors').tagsinput({
 	confirmKeys: [13, 44, 32]
   });
+  
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display','block');
-});
+  
+}); //end document ready
+
+function genSource() {
+	if (formId == 0) { //todo allow generate.php to parse json string objects
+		$("#SFDSWFB-source").val("Please save your form before generating HTML.");
+		return;
+	}
+	
+	$("#SFDSWFB-snippet").val(embedCode(formId));
+	
+	$.get("generate.php?id="+formId, function(data) {
+		$("#SFDSWFB-source").val(data);
+	});
+}
 
 function addAttr(str, componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax) { //todo cleanup form params
 	var obj = getEditables(str);
@@ -908,22 +797,34 @@ function loadNames(obj) {
 }
 var substringMatcher = function(strs) {
     return function findMatches(q, cb) {
-	var matches, substringRegex;
+		var matches, substringRegex;
 
-	// an array that will be populated with substring matches
-	matches = [];
+		// an array that will be populated with substring matches
+		matches = [];
 
-	// regex used to determine if a string contains the substring `q`
-	substrRegex = new RegExp(q, 'i');
+		// regex used to determine if a string contains the substring `q`
+		substrRegex = new RegExp(q, 'i');
 
-	// iterate through the pool of strings and for any string that
-	// contains the substring `q`, add it to the `matches` array
-	$.each(strs, function(i, str) {
-		if (substrRegex.test(str)) {
-		    matches.push(str);
-		}
-	    });
+		// iterate through the pool of strings and for any string that
+		// contains the substring `q`, add it to the `matches` array
+		$.each(strs, function(i, str) {
+			if (substrRegex.test(str)) {
+				matches.push(str);
+			}
+		});
 
-	cb(matches);
+		cb(matches);
     };
-};
+}
+function embedCode(id) {
+	
+	var url = new URL('embed.php', window.location.href);
+	
+	var str = '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'+
+	'<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'+
+	'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>'+
+	'<script src="'+url+'?id='+id+'"></script>'+
+	'<div id="SFDSWF-Container"></div>';
+	return str;
+	
+}
