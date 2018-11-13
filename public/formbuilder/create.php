@@ -1466,7 +1466,7 @@ if (isset($_GET['id'])) {
 					<p>Copy and paste the following code into your page.</p>
 					<textarea id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</textarea>&nbsp;
 					<br/>
-					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Enable Debug Mode</div>
+					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Show Debug Info</div>
 					<div id="SFDSWFB-debug" style="display:none">
 						<h4>Source Code</h4>
 						<textarea id="SFDSWFB-source" class="col-md-12"></textarea>
