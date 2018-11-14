@@ -509,6 +509,25 @@ $(document).ready(function(){
 			  }
 		  }
       });
+	  
+	  //save conditionals
+	  if ($(".popover .condition").length) {
+		  var conditions = {};
+		  conditions.showHide = false;
+		  conditions.allAny = false;
+		  conditions.condition = [];
+		  $(".popover .condition").each(function(i) {
+			  if (!conditions.showHide) conditions.showHide = $(this).find("select.showHide").val();
+			  if (!conditions.allAny && $(this).find("select.allAny").length) conditions.allAny = $(this).find("select.allAny").val();
+			  conditions.condition[i] = {};
+			  conditions.condition[i].id = $(this).find(".conditionalId").val();
+			  conditions.condition[i].op = $(this).find(".conditionalOperator").val();
+			  conditions.condition[i].val = $(this).find(".conditionalValue").val();
+		  });
+		  saved.data[$(".popover").prevAll(".form-group").length-1]["conditions"] = conditions;
+		  console.log(saved);
+	  }
+	  
 	  //moved down, used to be in the loop for some reason?
 	  $active_component.popover("hide");
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
@@ -700,7 +719,7 @@ function addConditional() {
 	});
 	//check if first conditional or not
 	if ($(".popover-content .conditionalLabel").length == 1) {
-		$(".popover-content .conditionalLabel").text($(".popover-title").text()+" if");
+		$(".popover-content .conditionalLabel").text($(".popover-content #id").val()+" if");
 		$(".popover-content .conditionalLabel").before($(".firstConditional").html());
 	} else if ($(".popover-content .conditionalLabel").length == 2) {
 		$(".popover-content .allIds:eq(0)").before($(".multipleConditionals").html());

@@ -1628,17 +1628,17 @@ if (isset($_GET['id'])) {
 		</select>
 	</div>
 	<div class="hidden clonable multipleConditionals">
-		<select>
+		<select class="allAny">
 			<option>All</option>
 			<option>Any</option>
 		</select>
 	</div>
 	<div class="hidden clonable conditional">
-		<div style="padding-top:1em">
+		<div style="padding-top:1em" class="condition">
 			<span class="conditionalLabel"></span>
-			<select class="allIds">
+			<select class="allIds conditionalId">
 			</select>
-			<select>
+			<select class="conditionalOperator">
 				<option>matches</option>
 				<option>contains</option>
 				<option>doesn't match</option>
@@ -1648,7 +1648,7 @@ if (isset($_GET['id'])) {
 				<option>contains anything</option>
 				<option>is blank</option>
 			</select>
-			<input type="text" class="form-control" />
+			<input type="text" class="form-control conditionalValue" />
 		</div>
 	</div>
 	<div class="hidden clonable calculationType">
