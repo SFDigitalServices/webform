@@ -6,11 +6,11 @@ use Auth;
 use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
-    private $salt;
-    public function __construct()
-    {
-        $this->salt="userloginregister";
+    public function createView(Request $request){
+        //$form_id = $request->input('form_id');
+        return view('create', ['user_id' => $request->input('user_id'), 'api_token' => $request->input('api_toekn')]);
     }
+
     public function login(Request $request){
       $hasher = app()->make('hash');
       $email = $request->input('email');
@@ -18,10 +18,8 @@ class UserController extends Controller
       $login = User::where('email', $email)->first();
 
       if ( ! $login) {
-            $res['success'] = false;
             $res['message'] = 'Your email or password incorrect!';
-            //return response($res);
-            //return view('login',['email' => $request->input('email')]);
+            return view('login',['email' => $request->input('email'), 'message' => $res['message']]);
       } else {
             if ($hasher->check($password, $login->password)) {
                 $api_token = sha1(time());
@@ -30,24 +28,21 @@ class UserController extends Controller
                     $res['success'] = true;
                     $res['api_token'] = $api_token;
                     $res['message'] = $login;
-                    //return view('dashboard',['username' => $email]);
-                    //return response()->json($res);
                 }
             } else {
-                $res['success'] = false;
                 $res['message'] = 'You email or password incorrect!';
-                //return view('register',['email' => $request->input('email')]);
-                //return response($res);
+                return view('login',['email' => $request->input('email'), 'message' => $res['message']]);
             }
       }
-      return response()->json($res);    
+      return view('editor',['user_id' => $login['id'], 'api_token' => $api_token, 'name' => $login['name']]);
+      //return redirect()->route('form.editor', ['user_id' => $login['id'], 'api_token' => $api_token, 'name' => $login['name']]);
     }
     public function logout(Request $request){
         //clears the user api_token
         User::where('api_token', $request->input('api_token'))->update(['api_token' => '']);
         return view('login','');
     }
-    public function register(Request $request){
+    /*public function register(Request $request){
       if ($request->has('username') && $request->has('password') && $request->has('email')) {
         $user = new User;
         $user->username=$request->input('username');
@@ -62,6 +57,6 @@ class UserController extends Controller
       } else {
         return view('login');
       }
-    }
+    }*/
    
 }

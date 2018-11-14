@@ -26,13 +26,16 @@ class CreateUsersTable extends Migration
         Schema::create('user_form', function (Blueprint $table) {
             $table->integer('user_id');
             $table->integer('form_id');
+            $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::dropIfExists('forms');
         Schema::create('forms', function (Blueprint $table) {
             $table->increments('id');
             $table->longText('content');
-            
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

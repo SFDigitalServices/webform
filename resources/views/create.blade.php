@@ -220,7 +220,36 @@ if (isset($_GET['id'])) {
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script>
+  $(document).ready(function(){
+      $(".content").show(1500);
 
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": "/form/getForm",
+			"method": "POST",
+			"headers": {
+				"authorization": "Bearer <?php echo $api_token;?>",
+				"content-type": "application/x-www-form-urlencoded",
+				"cache-control": "no-cache"
+			},
+			"data": {
+				"user_id": <?php echo $user_id;?>,
+                "api_token": <?php echo $api_token;?>,
+			}
+		}
+		$.ajax(settings).done(function (response) {
+			$.each(response, function(index, element) {
+				//console.log(element);
+            	addedElement = $('.forms').append('<div>').append($('<a>', {
+                	text: 'Form id = ' + element.id,
+					id: 'form-' + element.id,
+				}));
+				
+        	});
+		});
+        </script>
   </head>
 
   <body>

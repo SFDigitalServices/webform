@@ -15,15 +15,20 @@ $app->get('/', function () use ($app) {
     return view('login');
  });
 
-$app->post('/user/login', 'UserController@login');
+$app->post('/home', 'UserController@login');
+$app->get('/home', 'UserController@login');
+$app->get('/createView', 'UserController@createView');
 $app->post('/user/logout', 'UserController@logout');
 $app->post('/user/register', 'UserController@register');
 
 $app->group(['prefix' => 'form'], function($app) {
     //$app->get('embed', 'FormController@embedJS');
-    $app->post('editor', 'FormController@getEditor');
+    $app->get('getIndex', 'FormController@getIndex');
+    $app->post('getForms', 'FormController@getUserForms');
+    $app->post('getForm', 'FormController@getForm');
     $app->post('embed', 'FormController@embedJS');
-    $app->post('save', 'FormController@saveForm');
-    $app->post('create', 'FormController@createForm');
-    $app->post('clone', 'FormController@cloneForm');
+    $app->post('save', 'FormController@save');
+    $app->post('create', 'FormController@create');
+    $app->post('clone', 'FormController@clone');
+    $app->post('delete', 'FormController@delete');
 });

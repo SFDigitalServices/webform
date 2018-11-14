@@ -11,7 +11,6 @@
 				}
 			}
 		</style>
-
 <header class="hero-header text-center">
 	<h1 class="hero-title c-white t-shadow">Webform Builder</h1>
 
@@ -23,7 +22,7 @@
 			<section class="row margin-bottom--2x">
 				<div-- class="medium-10 medium-centered columns">
 					
-				<form class="form-card margin-bottom--2x" action="/user/login" method="POST">
+				<form class="form-card margin-bottom--2x" id="login-form" action="/home" method="POST">
 						<div class="row">
 							<div class="medium-12 columns padding-left padding-right padding-top padding-bottom">
 								<header class="margin-bottom">
