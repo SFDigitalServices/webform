@@ -218,6 +218,25 @@ if (isset($_GET['id'])) {
 .tt-suggestion p {
 	   margin: 0;
  }
+	.condition {
+		position:relative;
+	}
+	.fa-minus-circle.conditionIcon {
+		position:absolute;
+		right:-1.2em;
+		font-size:1.5em;
+		color:#eee;
+		cursor:pointer;
+	}
+	.fa-minus-circle.conditionIcon:hover {
+		color:#aaa;
+	}
+	.condition {
+		border-bottom:1px solid transparent;
+	}
+	.condition:hover {
+		border-bottom:1px solid #000;
+	}
     </style>
     <link href="<?php print ASSETS; ?>js/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="<?php print ASSETS; ?>js/bootstrap-tagsinput.css" rel="stylesheet">
@@ -1634,6 +1653,7 @@ if (isset($_GET['id'])) {
 	</div>
 	<div class="hidden clonable conditional">
 		<div class="condition">
+			<i class="fas fa-minus-circle conditionIcon" onclick="javascript:removeConditional(this)"></i>
 			<span class="conditionalLabel"></span>
 			<select class="allIds conditionalId">
 			</select>

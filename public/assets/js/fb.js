@@ -537,8 +537,9 @@ $(document).ready(function(){
 			  conditions.condition[i].op = $(this).find(".conditionalOperator").val();
 			  conditions.condition[i].val = $(this).find(".conditionalValue").val();
 		  });
-		  saved.data[$(".popover").prevAll(".form-group").length-1]["conditions"] = conditions;
-		  console.log(saved);
+		  var currentIndex = $(".popover").prevAll(".form-group").length-1;
+		  saved.data[currentIndex]["conditions"] = conditions;
+		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').attr("data-conditions", JSON.stringify(conditions));
 	  }
 	  
 	  //moved down, used to be in the loop for some reason?
@@ -741,6 +742,19 @@ function addConditional() {
 	}
 	if ($(".popover-content .conditionalLabel").length > 1) {
 		$(".popover-content .allIds:last").before('<hr class="and"/>');
+	}
+}
+function removeConditional(obj) {
+	if ($(obj).parent().find("select.showHide").length) {
+		if ($(".popover-content .conditionalLabel").length > 1) {
+			$(".popover .conditionalLabel:eq(1)").text(" "+$(obj).parent().find("span.conditionalLabel").text());
+			$(obj).parent().find("select.showHide").insertBefore('.popover .conditionalLabel:eq(1)');
+		}
+	}
+	$(obj).parent().remove();
+	if ($(".popover-content .conditionalLabel").length == 1) {
+		if ($('.popover .allAny').length) $('.popover .allAny').remove();
+		if ($('.popover hr.and').length) $('.popover hr.and').remove();
 	}
 }
 function getIds() {
