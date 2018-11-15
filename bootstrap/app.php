@@ -28,6 +28,7 @@ try {
     //
 }
 
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -46,6 +47,12 @@ $app = new Laravel\Lumen\Application(
 $app->withFacades();
 
 $app->withEloquent();
+
+/*
+    use database config
+*/
+$app->configure('database');
+
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings

@@ -17,7 +17,7 @@
 			},
 			"data": {
 				"user_id": <?php echo $user_id;?>,
-				"api_token": <?php echo $api_token;?>,
+				"api_token": "<?php echo $api_token;?>",
 			}
 		}
 		$.ajax(settings).done(function (response) {
