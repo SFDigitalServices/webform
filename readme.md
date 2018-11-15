@@ -8,13 +8,14 @@ This is the source for the web form builder, cloned from https://github.com/kris
 You need [Docker](https://github.com/docker/docker) and [docker-compose](https://github.com/docker/compose).
 
     1.) Follow the instruction on https://github.com/markoshust/docker-lumen to setup a docker-lumen project.
-
+       
     2.) Update docker-compose.yml to identify the mount point for the web server container's document root, this is under the "Volumn" config.
 	```
         mkdir src && cd src
         git clone git@github.com:SFDigitalServices/webform.git
         ```
-        
+    3.) Copy the Dockerfile from docker/ folder to the root folder of your docker-lumen project, this file installs additional apache-php extensions that are required.
+
 ### Initialize the database resources
     You will need to ssh into the apache-php container
     
