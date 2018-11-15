@@ -273,7 +273,20 @@ $(document).ready(function(){
 	if (e.currentTarget.attributes['data-max']) $(".popover #max").val(e.currentTarget.attributes['data-max'].value);
 	
 	//add conditional
-	$(".popover-content hr").before($(".conditionals").html());
+	$(".popover-content hr").before($('.accordion-conditionals').html());
+	$(".popover .accordion-section.conditionals .accordion").append($(".addConditionalContainer").html());
+	if (e.currentTarget.attributes['data-conditions']) {
+		var fieldConditions = JSON.parse(e.currentTarget.attributes['data-conditions'].value);
+		for (c in fieldConditions.condition) {
+			//alert(fieldConditions.condition[c].id);
+			addConditional();
+			$(".popover .conditionalId").eq(c).val(fieldConditions.condition[c].id);
+			$(".popover .conditionalOperator").eq(c).val(fieldConditions.condition[c].op);
+			$(".popover .conditionalValue").eq(c).val(fieldConditions.condition[c].val);
+		}
+		if (fieldConditions.showHide) $(".popover .showHide").val(fieldConditions.showHide);
+		if (fieldConditions.allAny) $(".popover .allAny").val(fieldConditions.allAny);
+	}
 
     var valtypes = $active_component.find(".valtype");
     $.each(valtypes, function(i,e){
@@ -664,6 +677,8 @@ function loadForm() {
 					});
 				        value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
+				} else if (key == "conditions") {
+					$(newSection).attr("data-conditions", JSON.stringify(saved.data[i][key]));
 				} else {
 					$(newSection).find("[data-valtype='"+key+"']").html(saved.data[i][key]);
 				}

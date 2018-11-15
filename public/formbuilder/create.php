@@ -1615,13 +1615,12 @@ if (isset($_GET['id'])) {
     </div><!-- /container -->
 	
 	
-	<div class="hidden clonable conditionals">
+	<div class="hidden clonable addConditionalContainer">
 		<div class="addConditional" style="padding-top:1em">
 			<a href="#" onclick="javascript:addConditional()">+Add A Condition</a>
 		</div>
 	</div>
 	<div class="hidden clonable firstConditional">
-		<hr/>
 		<select class="showHide">
 			<option>Show</option>
 			<option>Hide</option>
@@ -1634,7 +1633,7 @@ if (isset($_GET['id'])) {
 		</select>
 	</div>
 	<div class="hidden clonable conditional">
-		<div style="padding-top:1em" class="condition">
+		<div class="condition">
 			<span class="conditionalLabel"></span>
 			<select class="allIds conditionalId">
 			</select>
@@ -1702,6 +1701,13 @@ if (isset($_GET['id'])) {
 				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'>
 			  </div>
 			  <div class='clear'></div>
+			</div>
+		</div>
+	</div>
+	<div class="hidden clonable accordion-conditionals">
+		<div class='accordion-section conditionals'>
+			<div class='accordion-header'>Conditionals</div>
+			<div class='accordion' style='display:none'>
 			</div>
 		</div>
 	</div>
