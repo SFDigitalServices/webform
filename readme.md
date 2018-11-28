@@ -7,14 +7,22 @@ This is the source for the web form builder, cloned from https://github.com/kris
 ### If you want to use Docker for development
 You need [Docker](https://github.com/docker/docker) and [docker-compose](https://github.com/docker/compose).
 
-    1.) Follow the instruction on https://github.com/markoshust/docker-lumen to setup a docker-lumen project.
+1.) Follow the instruction on https://github.com/markoshust/docker-lumen to setup a docker-lumen project.
        
-    2.) Update docker-compose.yml to identify the mount point for the web server container's document root, this is under the "Volumn" config.
-	```
+2.) Update docker-compose.yml to identify the mount point for the web server container's document root, this is under the "Volumn" config.
+```
         mkdir src && cd src
         git clone git@github.com:SFDigitalServices/webform.git
-        ```
-    3.) Copy the Dockerfile from docker/ folder to the root folder of your docker-lumen project, this file installs additional apache-php extensions that are required.
+```
+3.) Copy the Dockerfile from docker/ folder to the root folder of your docker-lumen project, this file installs additional apache-php extensions that are required.
+    *** Docker on Windows alert: you may have to specify the Dockerfile in docker-compose.yml file.
+```
+        php:
+            build:
+                context: ./path/to/Dockerfile
+                dockerfile: Dockerfile
+```
+
 
 ### Initialize the database resources
     You will need to ssh into the apache-php container
@@ -34,11 +42,16 @@ You need [Docker](https://github.com/docker/docker) and [docker-compose](https:/
      ```
     This will execute the commands in the create_users_table migration file.
 
-    To populate the tables with data, take a look at the database\seeds\UserTableSeeder.php file. Execute the following command will insert data into the tables.
+    To populate the tables with data, take a look at the database\seeds\UserTableSeeder.php file. Execute the following command will insert data into all tables:
+
     ```
     $ php artisan db:seed
      ```
-
+    Optionally, you can specify a specific seeder class to run individually:
+    ```
+    $ php artisan db:seed --class=[ClassName] 
+     ```
+    
 
 ## Deplopyment to Heroku
 
