@@ -2,8 +2,9 @@
 
 session_start();
 
-//load db
-//require("db.inc");
+//load dependencies
+require("env.inc");
+require("db.inc");
 
 if (!isset($_SESSION['id']) || !isset($_SESSION['email'])) {
   print "Permission Denied. Please make sure you're logged in to view this page";

@@ -18,7 +18,7 @@ $sections = array();
 
 $content = json_decode($form['content'], true);
 
-print wrapJS(generateHTML($content),isSectional($content));
+print generateHTML($content);
 
 
 ?>

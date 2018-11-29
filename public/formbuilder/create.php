@@ -2,8 +2,11 @@
 
 session_start();
 
-//load db
-//require("db.inc");
+/*
+//load dependencies
+require("env.inc");
+require("db.inc");
+*/
 
 /*if (!isset($_SESSION['id']) || !isset($_SESSION['email'])) {
   print "Permission denied. Please make sure you are logged in.";
@@ -27,7 +30,7 @@ if (isset($_GET['id'])) {
     <meta name="description" content="" />
     <meta name="keywords" content="Modified Bootstrap 3 Form Builder" />
 
-    <link href="js/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
     <style>
       body {
@@ -99,8 +102,12 @@ if (isset($_GET['id'])) {
 		width: 50%;
 	  }
 
+      #SFDSWFB-snippet{
+        min-height: 250px;
+      }
+
       #SFDSWFB-source{
-        min-height: 500px;
+        min-height: 100px;
       }
 	  
 	  .form-horizontal .component {
@@ -213,9 +220,28 @@ if (isset($_GET['id'])) {
 .tt-suggestion p {
 	   margin: 0;
  }
+	.condition {
+		position:relative;
+	}
+	.fa-minus-circle.conditionIcon {
+		position:absolute;
+		right:-1.2em;
+		font-size:1.5em;
+		color:#eee;
+		cursor:pointer;
+	}
+	.fa-minus-circle.conditionIcon:hover {
+		color:#aaa;
+	}
+	.condition {
+		border-bottom:1px solid transparent;
+	}
+	.condition:hover {
+		border-bottom:1px solid #000;
+	}
     </style>
-    <link href="js/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="js/bootstrap-tagsinput.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap-tagsinput.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -229,7 +255,7 @@ if (isset($_GET['id'])) {
 
 	<div class="header">
 		<div style="display:block;max-width:1140px;text-align:right;margin:auto">
-			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="SF_Digital_Services-logo.png"/></div>
+			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="<?php print ASSETS; ?>images/SF_Digital_Services-logo.png"/></div>
 			SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 		</div>
 	</div>
@@ -1457,11 +1483,19 @@ if (isset($_GET['id'])) {
 					
                   </div>
                   <div class="tab-pane" id="SFDSWFB-6">
-                    <textarea id="SFDSWFB-source" class="col-md-12"></textarea>
-					&nbsp;
+					<h4>Embed Code</h4>
+					<p>Copy and paste the following code into your page.</p>
+					<textarea id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</textarea>&nbsp;
 					<br/>
-					<h4>JSON Save Object</h4>
-					<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{},"data":[]}</textarea>
+					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Show Debug Info</div>
+					<div id="SFDSWFB-debug" style="display:none">
+						<h4>Source Code</h4>
+						<textarea id="SFDSWFB-source" class="col-md-12"></textarea>
+						&nbsp;
+						<br/>
+						<h4>JSON Save Object</h4>
+						<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}</textarea>
+					</div>
                   </div>
 				  <div class="tab-pane" id="SFDSWFB-7">
 					<h3>Settings</h3>
@@ -1586,7 +1620,7 @@ if (isset($_GET['id'])) {
 					  </div>
 					</form>" data-html="true"
 					>
-					<legend class="valtype" data-valtype="text">Form Name</legend>
+					<legend class="valtype" data-valtype="text">My Form</legend>
 				  </div>
 				</fieldset>
 			  </form>
@@ -1602,30 +1636,30 @@ if (isset($_GET['id'])) {
     </div><!-- /container -->
 	
 	
-	<div class="hidden clonable conditionals">
+	<div class="hidden clonable addConditionalContainer">
 		<div class="addConditional" style="padding-top:1em">
 			<a href="#" onclick="javascript:addConditional()">+Add A Condition</a>
 		</div>
 	</div>
 	<div class="hidden clonable firstConditional">
-		<hr/>
 		<select class="showHide">
 			<option>Show</option>
 			<option>Hide</option>
 		</select>
 	</div>
 	<div class="hidden clonable multipleConditionals">
-		<select>
+		<select class="allAny">
 			<option>All</option>
 			<option>Any</option>
 		</select>
 	</div>
 	<div class="hidden clonable conditional">
-		<div style="padding-top:1em">
+		<div class="condition">
+			<i class="fas fa-minus-circle conditionIcon" onclick="javascript:removeConditional(this)"></i>
 			<span class="conditionalLabel"></span>
-			<select class="allIds">
+			<select class="allIds conditionalId">
 			</select>
-			<select>
+			<select class="conditionalOperator">
 				<option>matches</option>
 				<option>contains</option>
 				<option>doesn't match</option>
@@ -1635,7 +1669,7 @@ if (isset($_GET['id'])) {
 				<option>contains anything</option>
 				<option>is blank</option>
 			</select>
-			<input type="text" class="form-control" />
+			<input type="text" class="form-control conditionalValue" />
 		</div>
 	</div>
 	<div class="hidden clonable calculationType">
@@ -1692,15 +1726,22 @@ if (isset($_GET['id'])) {
 			</div>
 		</div>
 	</div>
+	<div class="hidden clonable accordion-conditionals">
+		<div class='accordion-section conditionals'>
+			<div class='accordion-header'>Conditionals</div>
+			<div class='accordion' style='display:none'>
+			</div>
+		</div>
+	</div>
 	
 	<!--
     <div id="site-navbar" style="position: absolute; top: -4px; right: -3px; border: 0; z-index: 2000;padding:0;margin:0;"><a href="http://github.com/aiopio/Bootstrap3-form-builder" title="在github关注我" style="background:none;"><img src="http://aral.github.io/fork-me-on-github-retina-ribbons/right-white@2x.png" style="padding:0;margin:0;border:0; -webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;width:100px"></a></div>
 	-->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-	<script src="js/bootstrap-tagsinput.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/jquery.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/bootstrap.min.js"></script>
+	<script src="<?php print ASSETS; ?>js/bootstrap-tagsinput.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
-    <script src="js/fb.js"></script>
+    <script src="<?php print ASSETS; ?>js/fb.js"></script>
 	     <?php if (isset($_GET['id'])) { print "<script>formId = ".$_GET['id'].";loadForm();</script>"; } ?>
 
   </body>
