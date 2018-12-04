@@ -2,6 +2,10 @@
 @section('content')
 
 		<script>
+		  //GLOBALS for now
+		  var user_id = '<?php echo $user_id;?>';
+		  var api_token = '<?php echo $api_token;?>';
+
 		  $(document).ready(function(){
 			  $(".content").show(1500);
 
@@ -11,13 +15,13 @@
 					"url": "/form/getForms",
 					"method": "POST",
 					"headers": {
-						"authorization": "Bearer <?php echo $api_token;?>",
+						"authorization": "Bearer "+api_token,
 						"content-type": "application/x-www-form-urlencoded",
 						"cache-control": "no-cache"
 					},
 					"data": {
-						"user_id": <?php echo $user_id;?>,
-						"api_token": "<?php echo $api_token;?>",
+						"user_id": user_id,
+						"api_token": api_token,
 					}
 				}
 				$.ajax(settings).done(function (response) {
@@ -44,13 +48,15 @@
 				});
 			}
 
-		}
+		
+</script>
+
+
 		<div class="header">
 			<div style="display:block;max-width:1140px;text-align:right;margin:auto">
 				<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"><img src="/assets/images/SF_Digital_Services-logo.png"/></div>
 				SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 			</div>
-
 		</div>
 
 		<div class="content" style="display:none">
