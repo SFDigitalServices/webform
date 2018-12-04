@@ -67,25 +67,25 @@ class FormController extends Controller
      * @return bool 
      */
     public function save(Request $request){
-		$form = [];
-		$form['content'] = $request->input('content');
+		$form_data = [];
+		$form_data['content'] = $request->input('content');
 
-        $form['content'] = str_replace('\"','\\\\\"', $form['content']);
-        $form['content'] = str_replace("'","&apos;", $form['content']);
-        $form['content'] = str_replace("<","&lt;",$form['content']);
-        $form['content'] = str_replace(">","&gt;",$form['content']);
-        $form['content'] = json_decode($form['content']);
+        $form_data['content'] = str_replace('\"','\\\\\"', $form_data['content']);
+        $form_data['content'] = str_replace("'","&apos;", $form_data['content']);
+        $form_data['content'] = str_replace("<","&lt;",$form_data['content']);
+        $form_data['content'] = str_replace(">","&gt;",$form_data['content']);
+        $form_data['content'] = json_decode($form_data['content']);
 
         $form_id = $request->input('id');
-
-        if(!$form_id)
+       
+        if($form_id == 0)
         {
-            create($request);
-            return;
+            return $this->create($request);
         }
         $form = Form::where('id', $form_id)->first();
+
         if($form){
-            $form->content = $request->input('content');
+            $form->content = $form_data['content'];//$request->input('content');
             return response()->json(['status' => 1, 'data' => $form->save()]);
         }
         return response()->json(['status' => 0, 'message' => 'Failed to save form']); 
