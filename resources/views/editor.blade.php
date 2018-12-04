@@ -21,8 +21,9 @@
 			}
 		}
 		$.ajax(settings).done(function (response) {
+			//console.log(response);
 			$.each(response, function(index, element) {
-				//console.log(element);
+				
             	addedElement = $('.forms').append('<div>').append($('<a>', {
                 	text: 'Form id = ' + element.id,
 					id: 'form-' + element.id,

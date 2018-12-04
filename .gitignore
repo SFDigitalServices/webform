@@ -1,6 +1,6 @@
-/vendor
 .DS_Store
 Homestead.json
 Homestead.yaml
 .env
 .env.testing
+database/seeds
