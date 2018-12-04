@@ -41,6 +41,7 @@ class FormController extends Controller
         $user = Auth::user()->where('id', $user_id)->get();
 
         $user_forms = User_Form::where('user_id', $user_id)->get();
+       
         $forms = array();
         foreach($user_forms as $form){
             array_push($forms, Form::where('id', $form['form_id'])->get()->first());
@@ -66,7 +67,23 @@ class FormController extends Controller
      * @return bool 
      */
     public function save(Request $request){
+        //$post = file_get_contents('php://input');
+        $post = $request->input('content');
+
+        parse_str($post, $form);
+        $form['content'] = str_replace('\"','\\\\\"', $form['content']);
+        $form['content'] = str_replace("'","&apos;", $form['content']);
+        $form['content'] = str_replace("<","&lt;",$form['content']);
+        $form['content'] = str_replace(">","&gt;",$form['content']);
+        $form['content'] = json_decode($form['content']);
+
         $form_id = $request->input('form_id');
+
+        if(!$form_id)
+        {
+            create($request);
+            return;
+        }
         $form = Form::where('id', $form_id)->first();
         if($form){
             $form->content = $request->input('content');
