@@ -83,7 +83,7 @@ class FormController extends Controller
             return $this->create($request);
         }
         $form = Form::where('id', $form_id)->first();
-        return $form_id;
+
         if($form){
             $form->content = $form_data['content'];//$request->input('content');
             return response()->json(['status' => 1, 'data' => $form->save()]);
