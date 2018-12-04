@@ -2,24 +2,30 @@
 
 session_start();
 
-//load db
+//load dependencies
+require("env.inc");
 require("db.inc");
 
 if (!isset($_SESSION['id']) || !isset($_SESSION['email'])) {
   
-    $ldaphost = env('LDAP_HOST');
+	$username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "-";
+	$username = $username ? $username : "-";
+	$password = isset($_REQUEST['password']) ? $_REQUEST['password'] : "-";
+	$password = $password ? $password : "-";
 
-    $ldap = ldap_connect($ldaphost) or die ("Could not connect to $ldaphost");
+	//conditional for local development, assumes all usernames and passwords exist and does not call ldap
+	if ($_SERVER['SERVER_NAME'] != "localhost") { 
+		
+		$ldaphost = "ad.sfgov.org";
 
-    $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "-";
-    $username = $username ? $username : "-";
-    $password = isset($_REQUEST['password']) ? $_REQUEST['password'] : "-";
-    $password = $password ? $password : "-";
+		$ldap = ldap_connect($ldaphost) or die ("Could not connect to $ldaphost");
 
-    if (!$bind = ldap_bind($ldap, $username, $password)) {
-        print "Incorrect username or password. Please also make sure you're logged into the city network (VPN).";
-      die;
-    }
+		if (!$bind = ldap_bind($ldap, $username, $password)) {
+			print "Incorrect username or password. Please also make sure you're logged into the city network (VPN).";
+			die;
+		}
+		
+	}
 
     //see if user exists
     $user = getUserByEmail($username);
@@ -27,7 +33,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['email'])) {
     //create a record if email does not exist in the system
     if (empty($user)) {
       $user = createUser($username);
-    }
+	}
 
     //create session
     $_SESSION['id'] = $user['id'];
@@ -56,7 +62,7 @@ $forms = getUserForms($user['id']);
     <meta name="description" content="" />
     <meta name="keywords" content="Modified Bootstrap 3 Form Builder" />
 
-    <link href="js/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap.min.css" rel="stylesheet">
     <style>
       body {
         //padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
@@ -80,13 +86,13 @@ $forms = getUserForms($user['id']);
 		clear:both;
 	  }
     </style>
-    <link href="js/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="<?php print ASSETS; ?>js/bootstrap-responsive.min.css" rel="stylesheet">
 
     <!--[if lt IE 9]>
     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <script src="js/jquery.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/jquery.min.js"></script>
 
     <script>
   $(document).ready(function(){
@@ -113,7 +119,7 @@ $(window).focus(
 
 	<div class="header">
 		<div style="display:block;max-width:1140px;text-align:right;margin:auto">
-			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="SF_Digital_Services-logo.png"/></div>
+			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="<?php print ASSETS; ?>images/SF_Digital_Services-logo.png"/></div>
 			SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 		</div>
 	</div>
@@ -139,8 +145,8 @@ $(window).focus(
 	     <div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div> 
         </div>  
 
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/fb.js"></script>
+    <script src="<?php print ASSETS; ?>js/jquery.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/bootstrap.min.js"></script>
+    <script src="<?php print ASSETS; ?>js/fb.js"></script>
   </body>
 </html>
