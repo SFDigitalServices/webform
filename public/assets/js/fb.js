@@ -828,6 +828,8 @@ function saveForm() {
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
 	form.id = formId;
+	// not getting the form ID here
+	alert(formId);
 	form.user_id = user_id;
 	form.api_token = api_token;
 			
@@ -844,7 +846,8 @@ function saveForm() {
 		"data": form
 	}
 	$.ajax(settings).done(function (response) {
-		savedForm = JSON.parse(data);
+		console.log(response);
+		savedForm = JSON.parse(response);
 		$('.clickMenu button:eq(0)').text('Form Saved!');
 		formId = savedForm['id']; //this seems wrong and probably should be set from the response
 		setTimeout(function(){
