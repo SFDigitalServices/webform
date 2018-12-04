@@ -67,17 +67,16 @@ class FormController extends Controller
      * @return bool 
      */
     public function save(Request $request){
-        //$post = file_get_contents('php://input');
-        $post = $request->input('content');
+		$form = [];
+		$form['content'] = $request->input('content');
 
-        parse_str($post, $form);
         $form['content'] = str_replace('\"','\\\\\"', $form['content']);
         $form['content'] = str_replace("'","&apos;", $form['content']);
         $form['content'] = str_replace("<","&lt;",$form['content']);
         $form['content'] = str_replace(">","&gt;",$form['content']);
         $form['content'] = json_decode($form['content']);
 
-        $form_id = $request->input('form_id');
+        $form_id = $request->input('id');
 
         if(!$form_id)
         {
