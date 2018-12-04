@@ -821,17 +821,32 @@ function confirmAction(action, url) {
 	}
 }
 function saveForm() {
-        $('.clickMenu button:eq(0)').text('Saving...');
-        $('.clickMenu button:eq(0)').addClass('disabled');
+	//requires GLOBALS to be set
+	$('.clickMenu button:eq(0)').text('Saving...');
+	$('.clickMenu button:eq(0)').addClass('disabled');
 	$('.saveSpinner').show();
-        var form = {};
+	var form = {};
 	form.content = $("#SFDSWFB-save").val();
 	form.id = formId;
-	$.post("save.php", form)
-	.done(function(data) {
+	form.user_id = user_id;
+	form.api_token = api_token;
+			
+	var settings = {
+		"async": true,
+		"crossDomain": true,
+		"url": "/form/save",
+		"method": "POST",
+		"headers": {
+			"authorization": "Bearer "+api_token,
+			"content-type": "application/x-www-form-urlencoded",
+			"cache-control": "no-cache"
+		},
+		"data": form
+	}
+	$.ajax(settings).done(function (response) {
 		savedForm = JSON.parse(data);
 		$('.clickMenu button:eq(0)').text('Form Saved!');
-		formId = savedForm['id'];
+		formId = savedForm['id']; //this seems wrong and probably should be set from the response
 		setTimeout(function(){
 			$('.clickMenu button:eq(0)').text('Save Changes');
 			$('.clickMenu button:eq(0)').removeClass('disabled');
