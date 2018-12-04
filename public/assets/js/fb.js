@@ -843,10 +843,10 @@ function saveForm() {
 		},
 		"data": form
 	}
-	$.ajax(settings).done(function (response) {
+	$.ajax(settings).done(function (data) {
 		savedForm = JSON.parse(data);
 		$('.clickMenu button:eq(0)').text('Form Saved!');
-		formId = savedForm['id']; //this seems wrong and probably should be set from the response
+		formId = savedForm['id'];
 		setTimeout(function(){
 			$('.clickMenu button:eq(0)').text('Save Changes');
 			$('.clickMenu button:eq(0)').removeClass('disabled');
