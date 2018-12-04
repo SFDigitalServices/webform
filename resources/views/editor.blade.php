@@ -47,6 +47,39 @@
 					$('.container').show('fast');
 				});
 			}
+
+		}
+		$.ajax(settings).done(function (response) {
+			//console.log(response);
+			$.each(response, function(index, element) {
+				
+            	addedElement = $('.forms').append('<div>').append($('<a>', {
+                	text: 'Form id = ' + element.id,
+					id: 'form-' + element.id,
+				}));
+				
+        	});
+		});
+
+      $("a").on("click",function(){
+	  		$(".content").hide("fast");
+		});
+    });
+
+    $(window).unload(function(){});
+
+    $(window).focus(
+		function() {
+		     $(".content").show(1500);      
+		   }
+	   );
+</script>
+
+<div class="header">
+		<div style="display:block;max-width:1140px;text-align:right;margin:auto">
+			<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"/><img src="/assets/images/SF_Digital_Services-logo.png"/></div>
+			SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
+
 		</script>
 
 		<div class="header">
@@ -54,6 +87,7 @@
 				<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"><img src="/assets/images/SF_Digital_Services-logo.png"/></div>
 				SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 			</div>
+
 		</div>
 
 		<div class="content" style="display:none">
