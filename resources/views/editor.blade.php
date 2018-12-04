@@ -2,6 +2,10 @@
 @section('content')
 
 		<script>
+		  //GLOBALS for now
+		  var user_id = '<?php echo $user_id;?>';
+		  var api_token = '<?php echo $api_token;?>';
+
 		  $(document).ready(function(){
 			  $(".content").show(1500);
 
@@ -11,13 +15,13 @@
 					"url": "/form/getForms",
 					"method": "POST",
 					"headers": {
-						"authorization": "Bearer <?php echo $api_token;?>",
+						"authorization": "Bearer "+api_token,
 						"content-type": "application/x-www-form-urlencoded",
 						"cache-control": "no-cache"
 					},
 					"data": {
-						"user_id": <?php echo $user_id;?>,
-						"api_token": "<?php echo $api_token;?>",
+						"user_id": user_id,
+						"api_token": api_token,
 					}
 				}
 				$.ajax(settings).done(function (response) {
