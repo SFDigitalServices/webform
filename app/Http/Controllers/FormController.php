@@ -43,8 +43,10 @@ class FormController extends Controller
         $user_forms = User_Form::where('user_id', $user_id)->get();
        
         $forms = array();
-        foreach($user_forms as $form){
-            array_push($forms, Form::where('id', $form['form_id'])->get()->first());
+        foreach($user_forms as $form_arr){
+			$form = Form::where('id', $form_arr['form_id'])->get()->first();
+			$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+            array_push($forms, $form);
         }
         return response()->json($forms);
         //return view('editor', ['name' => $user->name, 'forms' => $user_forms]);
@@ -57,6 +59,7 @@ class FormController extends Controller
     public function getForm(Request $request){
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
+		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
         
         return response()->json($form);
     }
@@ -67,6 +70,8 @@ class FormController extends Controller
      * @return bool 
      */
     public function save(Request $request){
+		//todo I think this is needed for html
+		/*
 		$form_data = [];
 		$form_data['content'] = $request->input('content');
 
@@ -75,19 +80,20 @@ class FormController extends Controller
         $form_data['content'] = str_replace("<","&lt;",$form_data['content']);
         $form_data['content'] = str_replace(">","&gt;",$form_data['content']);
         $form_data['content'] = json_decode($form_data['content']);
+		*/
 
         $form_id = $request->input('id');
        
         if($form_id == 0)
         {
             return $this->create($request);
-        }
-        $form = Form::where('id', $form_id)->first();
-
-        if($form){
-            $form->content = $form_data['content'];//$request->input('content');
-            return response()->json(['status' => 1, 'data' => $form->save()]);
-        }
+        } else {
+			$returnForm = Form::where('id', $form_id)->first();
+			//$returnForm['content'] = $form_data['content'];
+			$returnForm['content'] = $request->input('content');
+			$returnForm->save();
+			return response()->json($returnForm);
+		}
         return response()->json(['status' => 0, 'message' => 'Failed to save form']); 
     }
 
@@ -133,7 +139,10 @@ class FormController extends Controller
                 $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
                 if($user_form){
-                    return response()->json(['status' => 1, 'data' => $user_form]);  
+                    //return response()->json(['status' => 1, 'data' => $user_form]);  
+					$returnForm = Form::where('id', $form->id)->first();
+					$returnForm['content'] = json_decode($returnForm['content'], true);
+					return response()->json($returnForm);
                 }
             }
             return response()->json(['status' => 0, 'message' => 'Failed to create form']);  
@@ -156,11 +165,12 @@ class FormController extends Controller
      */
     public function delete(Request $request) {
         $user_id = $request->input('user_id');
-        $form_id = $request->input('form_id');
+        $form_id = $request->input('id');
 
-        // soft deletes
+        // soft delete?
+		// check permission
         $user_form_delete = User_Form::where([['user_id','=', $user_id], ['form_id', '=', $form_id]])->delete();
-        if( $user_form_delete ){
+        if( $user_form_delete ){ //todo check if no more users own that form, then delete
             $form_delete = Form::where([['id', $form_id]])->delete();
             if( $form_delete ){
                  return response()->json(['status' => 1, 'message' => 'Deleted form from user']); 

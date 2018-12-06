@@ -9,29 +9,7 @@
 		  $(document).ready(function(){
 			  $(".content").show(1500);
 
-				var settings = {
-					"async": true,
-					"crossDomain": true,
-					"url": "/form/getForms",
-					"method": "POST",
-					"headers": {
-						"authorization": "Bearer "+api_token,
-						"content-type": "application/x-www-form-urlencoded",
-						"cache-control": "no-cache"
-					},
-					"data": {
-						"user_id": user_id,
-						"api_token": api_token,
-					}
-				}
-				$.ajax(settings).done(function (response) {
-					$('.forms').html('');
-					$.each(response, function(index, element) {
-						//console.log(element);
-// todo response is incomplete		addedElement = $('.forms').append('<div>').append('<a href="create.php?id='+element.id+'" class="recent btn btn-default btn-md btn-block">'+element.settings.name+'</a>');
-						addedElement = $('.forms').append('<div>').append($('<a href="javascript:void(0)" onclick="loadContent('+element.id+')" class="recent btn btn-default btn-md btn-block">My Form: #'+element.id+'</a>'));
-					});
-				});
+			  callAPI("/form/getForms", {}, loadHome);
 			});
 
 			//$(window).unload(function(){});
@@ -39,10 +17,15 @@
 			function loadContent(id) {
 				$(".content").hide("fast", function(){ 
 					if (id == undefined) {
+						//todo reset form
 						//$('#SFDSWFB-source').html('{"settings":{},"data":[{"textarea":"What to expect","formtype":"m02"},{"codearea":"You will need about 2 hours to fill the Cannabis Business Permit Applicant (part 1). You can save and come back to this form using your Business Portal log in.<br/>\\n<br/>\\nf you are a non-Equity applicant, you will commit to paying the $2,000 application fee once you submit this form. Before submitting, make sure that your business meets one of the criteria listed under <a href=\"https://officeofcannabis.sfgov.org/#who-can-apply\">Who Can Apply</a>.<br/>\\n<br/>\\nTo find out what documents you’ll need, see the <a href=\"https://officeofcannabis.sfgov.org/requirements/checklist\">Cannabis Business Permit (part 1) checklist</a>.<br/>\\n<br/>\\nFor help with this application, email <a href=\"mailto:officeofcannabis@sfgov.org\">officeofcannabis@sfgov.org</a>","formtype":"m10"},{"label":"Can you apply?","formtype":"m16"},{"label":"What is your authorization to apply? (Check all that apply)","checkboxes":"I am an Equity Applicant\\nMy business is an Equity Incubator \\nI registered my business with the Office of Cannabis and have signed an affidavit \\n I have a temporary cannabis permit\\n I have a temporary cannabis permit\\nI ran a cannabis business that was previously shut down by federal authorities","formtype":"s06"},{"label":"About you","formtype":"m16"},{"codearea":"You need to be an owner, which means one of the following:<br/>\\n<br/>\\n<ul>\\n<li>you own more than 20% of the business</li>\\n<li>you are the CEO of the business</li>\\n<li>you are on the board of directors if the business is a nonprofit</li>\\n<li>you otherwise participate in the direction, control, or management of the business</li>\\n</ul>","formtype":"m10"},{"label":"First name","placeholder":"","help":"","formtype":"c02"},{"label":"Last name","placeholder":"","help":"","formtype":"c02"},{"label":"Job title","placeholder":"","help":"Owner, CEO or similar","formtype":"i02"},{"label":"Email","placeholder":"","help":"","formtype":"c04"},{"label":"Phone","placeholder":"","help":"","formtype":"c06"},{"label":"Business Account Number","formtype":"m16"},{"codearea":"Your Business Account Number (BAN) is the 7-digit number on your Business Registration Certificate. If you do not have a BAN, <a href=\"http://sftreasurer.org/registration\">register your business</a>.<br/>\\n<br/>\\nIf you can not find the location to be inspected and permitted, <a href=\"http://sftreasurer.org/account-update\">update your Business Account with the Treasurer and Tax Collector</a>.","formtype":"m10"},{"label":"Enter your Business Account Number (BAN):","placeholder":"","help":"","formtype":"i02"},{"label":"Location","formtype":"m16"},{"label":"Parcel (Block/Lot)","placeholder":"","help":"","formtype":"i02"},{"codearea":"<a href=\"http://officeofcannabis.sfgov.org/themes/custom/cannabis/images/OOC-Parcels-instructions.gif\">Look up your parcel (block/lot) number<a/> on the <a href=\"http://propertymap.sfplanning.org/\">Property Information Map</a>.","formtype":"m10"},{"label":"Select - Basic","option":"\\n                          Enter\\n                          Your\\n                          Options\\n                          Here!\\n                        ","formtype":"s02"},{"label":"","checkboxes":"I have a letter of determination or another non-binding approval from SF Planning Department","formtype":"s06"}]}');
 					} else {
 						//return content
-						alert('todo: load content id:'+id);
+						//console.log(allForms[id].content);
+						$('#SFDSWFB-load').html(JSON.stringify(allForms[id].content));
+						//console.log($('#SFDSWFB-load').html());
+						formId = id;
+						loadForm();
 					}
 					$('.container').show('fast');
 				});

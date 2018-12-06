@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+<link rel="stylesheet" href="/assets/css/toolkit.css">
 <style>
 	body {background:#222}
 </style>
@@ -51,5 +52,6 @@
 	</div>
 </header>
 
+<script type="text/javascript" language="Javascript" src="/assets/js/toolkit.js"></script>
 
 @endsection

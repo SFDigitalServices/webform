@@ -2,6 +2,7 @@
 
 var emptyForm;
 var formId = 0;
+var allForms; //load all the forms into global?
 
 $(document).ready(function(){
 	
@@ -803,22 +804,34 @@ function toggleClickMenu() {
 		$('.clickMenu ul').show('fast');
 	}
 }
-function confirmAction(action, url) {
+function confirmAction(action) {
 	//todo onunload logic
+	toggleClickMenu();
 	var msg;
 	if (action == "exit") {
 		msg = "Warning! You have unsaved changes, are you sure you want to exit?";
-	} else if (action == "clone") {
+	} else if (action == "clone") { //todo
 		msg = "Warning! You have unsaved changes, are you sure you want to clone this form?";
 		url += "&id="+formId;
 	} else if (action == "delete") {
 		msg = "Warning! Are you sure you want to delete this form?";		
-		url += "&id="+formId;
+		url = "/form/delete";
 	}
 	var go = confirm(msg);
 	if (go) {
-		document.location = url;
+		$('.container').hide('fast');
+		if (action == "exit") {
+			goHome();
+		} else if (action == "delete") {
+			callAPI(url, {"id" : formId}, goHome);
+		}
+		//document.location = url;
 	}
+}
+function goHome() {
+	callAPI("/form/getForms", {}, loadHome);
+	$('.forms').html('<i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i>');
+    $(".content").show(1500);
 }
 function saveForm() {
 	//requires GLOBALS to be set
@@ -844,9 +857,9 @@ function saveForm() {
 		"data": form
 	}
 	$.ajax(settings).done(function (data) {
-		savedForm = JSON.parse(data);
+		//savedForm = JSON.parse(data);
 		$('.clickMenu button:eq(0)').text('Form Saved!');
-		formId = savedForm['id'];
+		formId = data.id;
 		setTimeout(function(){
 			$('.clickMenu button:eq(0)').text('Save Changes');
 			$('.clickMenu button:eq(0)').removeClass('disabled');
@@ -904,4 +917,36 @@ function embedCode(id) {
 	'<div id="SFDSWF-Container"></div>';
 	return str;
 	
+}
+function callAPI(url, data, callback) {
+	var settings = {
+		"async": true,
+		"crossDomain": true,
+		"url": url,
+		"method": "POST",
+		"headers": {
+			"authorization": "Bearer "+api_token,
+			"content-type": "application/x-www-form-urlencoded",
+			"cache-control": "no-cache"
+		},
+		"data": {
+			"user_id": user_id,
+			"api_token": api_token,
+		}
+	}
+	for (i in data) {
+		settings.data[i] = data[i];
+	}
+	$.ajax(settings).done(function (response) {
+		callback(response);
+	});
+}
+function loadHome(response) {
+	$('.forms').html('');
+	allForms = {};
+	$.each(response, function(index, element) {
+		allForms[element.id] = element;
+		//console.log(element);
+		if (element.content != undefined) addedElement = $('.forms').append('<div>').append('<a href="javascript:void(0)" onclick="loadContent('+element.id+')" class="recent btn btn-default btn-md btn-block">'+element.content.settings.name+'</a>');
+	});
 }

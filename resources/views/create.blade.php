@@ -1595,7 +1595,7 @@ if (isset($_GET['id'])) {
 					<button class="btn btn-info" style="border-radius:0 5px 5px 0;margin-left:-3px" onclick="javascript:toggleClickMenu()"><i class="fas fa-caret-down"></i></button>
 					<ul>
 						<li onclick="javascript:confirmAction('clone','doAction.php?action=clone')">Clone</li>
-						<li onclick="javascript:confirmAction('delete','doAction.php?action=delete')">Delete</li>
+						<li onclick="javascript:confirmAction('delete')">Delete</li>
 						<li onclick="javascript:confirmAction('exit','editor.php')">Exit</li>
 					</ul>
 				</div>
