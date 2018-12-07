@@ -26,7 +26,8 @@ $app->group(['prefix' => 'form'], function($app) {
     $app->get('getIndex', 'FormController@getIndex');
     $app->post('getForms', 'FormController@getUserForms');
     $app->post('getForm', 'FormController@getForm');
-    $app->post('embed', 'FormController@embedJS');
+    $app->get('embed', 'FormController@embedJS');
+    $app->get('generate', 'FormController@generateHTML');
     $app->post('save', 'FormController@save');
     $app->post('create', 'FormController@create');
     $app->post('clone', 'FormController@clone');

@@ -14,26 +14,6 @@
 
 			//$(window).unload(function(){});
 
-			function loadContent(id) {
-				$(".content").hide("fast", function(){ 
-					if (id == undefined) {
-						if (history.state == undefined) history.pushState({formId : 0} , null, "/home");
-						formId = 0;
-						$('#SFDSWFB-load').html('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}');
-						loadForm();
-					} else {
-						//return content
-						//console.log(allForms[id].content);
-						$('#SFDSWFB-load').html(JSON.stringify(allForms[id].content));
-						//console.log($('#SFDSWFB-load').html());
-						formId = id;
-						if (history.state == undefined) history.pushState({formId : id}, null, "/home?id="+id);
-						loadForm();
-					}
-					$('.container').show('fast');
-				});
-			}
-
 			window.onpopstate = function (event) {
 				$('.container').hide('fast');
 				if (event.state) {
