@@ -573,7 +573,7 @@ function genSource() {
 	
 	$("#SFDSWFB-snippet").val(embedCode(formId));
 	
-	$.get("generate.php?id="+formId, function(data) {
+	$.get("/form/generate?id="+formId, function(data) {
 		$("#SFDSWFB-source").val(data);
 	});
 }
@@ -908,7 +908,7 @@ var substringMatcher = function(strs) {
 }
 function embedCode(id) {
 	
-	var url = new URL('embed.php', window.location.href);
+	var url = new URL('/form/embed', window.location.href);
 	
 	var str = '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'+
 	'<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'+
@@ -918,7 +918,7 @@ function embedCode(id) {
 	return str;
 	
 }
-function callAPI(url, data, callback) {
+function callAPI(url, dataObj, callback) {
 	var settings = {
 		"async": true,
 		"crossDomain": true,
@@ -934,8 +934,8 @@ function callAPI(url, data, callback) {
 			"api_token": api_token,
 		}
 	}
-	for (i in data) {
-		settings.data[i] = data[i];
+	for (i in dataObj) {
+		settings.data[i] = dataObj[i];
 	}
 	$.ajax(settings).done(function (response) {
 		callback(response);

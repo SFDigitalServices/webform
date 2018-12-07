@@ -161,15 +161,15 @@ class FormController extends Controller
 
 		$content = json_decode($form['content'], true);
 
-		return wrapJS(generateHTML($content),isSectional($content));
+		return $this->wrapJS($this->generateHTML($content),$this->isSectional($content));
    }
 
-	 /**
-     * Creates HTML for the form
+     /**
+     * Generates HTML from the form
      *
      * @return HTML
      */
-    public function generateHTML(Request $request){
+    public function generate(Request $request){
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
 		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
@@ -177,9 +177,9 @@ class FormController extends Controller
 
 		$content = json_decode($form['content'], true);
 
-		return generateHTML($content);
-    }
-
+		return $this->generateHTML($content);
+   }
+   
      /**
      * Deletes a form
      *
