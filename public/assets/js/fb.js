@@ -950,3 +950,20 @@ function loadHome(response) {
 		if (element.content != undefined) addedElement = $('.forms').append('<div>').append('<a href="javascript:void(0)" onclick="loadContent('+element.id+')" class="recent btn btn-default btn-md btn-block">'+element.content.settings.name+'</a>');
 	});
 }
+function loadContent(id) {
+	$(".content").hide("fast", function(){ 
+		if (id == undefined) {
+			if (history.state == undefined) history.pushState({formId : 0} , null, "/home");
+			formId = 0;
+			$('#SFDSWFB-load').html('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}');
+			loadForm();
+		} else {
+			//return content
+			$('#SFDSWFB-load').html(JSON.stringify(allForms[id].content));
+			formId = id;
+			if (history.state == undefined) history.pushState({formId : id}, null, "/home?id="+id);
+			loadForm();
+		}
+		$('.container').show('fast');
+	});
+}
