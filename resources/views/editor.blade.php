@@ -85,7 +85,7 @@
 								</div>
 							</div>
 							<hr/>
-							<button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+							<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -111,7 +111,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -137,7 +137,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -163,7 +163,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -189,7 +189,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -215,7 +215,7 @@
 							</div>
 						  </div>
                            <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -245,7 +245,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -271,7 +271,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -297,7 +297,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -323,7 +323,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -349,7 +349,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -375,7 +375,7 @@
 								</div>
 							</div>
 							<hr/>
-							<button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+							<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -405,7 +405,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -431,7 +431,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -460,7 +460,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -491,7 +491,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -523,7 +523,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -556,7 +556,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -586,7 +586,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -618,7 +618,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -650,7 +650,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -687,7 +687,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -721,7 +721,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -754,7 +754,7 @@
 						  </div>
                           <textarea class='form-control' style='min-height: 200px' id='inline-checkboxes'></textarea>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -789,7 +789,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -829,7 +829,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -910,7 +910,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -990,7 +990,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1069,7 +1069,7 @@
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1088,7 +1088,7 @@
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1107,7 +1107,7 @@
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1126,7 +1126,7 @@
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1147,7 +1147,7 @@
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1167,7 +1167,7 @@
                           <label class='control-label'>Default Value</label> <input class='form-control' type='text' name='value' id='value'>
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1188,7 +1188,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1211,7 +1211,7 @@
 							</div>
 						  </div>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -1242,7 +1242,7 @@
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true"
                       >
@@ -1260,7 +1260,7 @@
                         <div class='form-group col-md-12'>
                           <label class='control-label'>New Section Title</label> <input class='form-control' type='text' name='label' id='label'>
                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
                       </form>" data-html="true" 
                       >
@@ -1407,7 +1407,7 @@
 					  <div class='form-group col-md-12'>
 						<label class='control-label'>Title</label> <input class='form-control' type='text' name='title' id='text'>
 						<hr/>
-						<button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
+						<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
 					  </div>
 					</form>" data-html="true"
 					>
