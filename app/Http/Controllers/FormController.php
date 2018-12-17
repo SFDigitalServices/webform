@@ -131,8 +131,16 @@ class FormController extends Controller
     public function create(Request $request) {
         // validate form data
         if( $this->validateForm($request) ) {
-            $form = Form::create(['content' => $request->input('content')] );
-            
+			/*generate a hash based on id
+			$form = Form::create(['content' => $request->input('content')]);
+			$hash = sha1($form['id']."#lfk&$#3mXqVekHQjpaqW");
+			$content = json_decode($form['content']);
+			$content->settings->hash = $hash;
+			$form['content'] = json_encode($content);
+			$form->save();
+			*/
+			$form = Form::create(['content' => $request->input('content')]);
+			
             if( $form ){
                 // create entry in user_form
                 $user_id = $request->input('user_id');
@@ -161,7 +169,7 @@ class FormController extends Controller
 
 		$content = json_decode($form['content'], true);
 
-		return $this->wrapJS($this->generateHTML($content),$this->isSectional($content));
+		return $this->wrapJS($this->generateHTML($content),$this->isSectional($content), $content);
    }
 
      /**
@@ -225,7 +233,7 @@ class FormController extends Controller
 				  $inner .= '>';
 				  $options = explode("\n",$value);
 				  foreach ($options as $option) {
-				$inner .= '<option value="'.$option.'">'.$option.'</option>';
+					$inner .= '<option value="'.$option.'">'.$option.'</option>';
 				  }
 				} else if ($key == "checkboxes") {
 				  $skipAttr = explode("\n",$value);
@@ -249,16 +257,18 @@ class FormController extends Controller
 				  $attr .= 'class="btn-'.strtolower($value).'" ';
 				} else if ($key == "label") {
 				  //do nothing, already used above
+				} else if ($key == "calculations" || $key == "conditions") {
+				  //do nothing
 				} else {
 				  //key value attributes
 				  if (!$skipAttr) {
-				$attr .= $key.'="'.$value.'" ';
+					$attr .= $key.'="'.$value.'" ';
 				  } else {
-				if ($key != "id" && $key != "value") {
-				  $attr .= $key.'="'.$value.'" ';
-				} else if ($key == "value") {
-				  $defVal = $value;
-				}
+					if ($key != "id" && $key != "value") {
+					  $attr .= $key.'="'.$value.'" ';
+					} else if ($key == "value") {
+					  $defVal = $value;
+					}
 				  }
 				}
 			  }
@@ -310,11 +320,107 @@ class FormController extends Controller
 		
 	}
 
-	public function wrapJS($str, $sectional) {
+	public function wrapJS($str, $sectional, $content) {
 
 		$js = "jQuery( document ).ready(function() {"; //start ready
 		$js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
 		$js .= "jQuery('#SFDSWF-Container form').validator();";
+
+		//check content for extra features
+		$calculations = [];
+		$conditions = [];
+		if ($content) {
+			foreach ($content['data'] as $field) {
+				$fieldId = $field['id'];
+				foreach ($field as $key => $value) {
+					if ($key == "calculations") { //gather calculations
+						$calculations[$fieldId] = $value;
+					} else if ($key == "conditions") { //gather conditionals
+						$conditions[$fieldId] = $value;
+					}
+				}
+			}
+		}
+		
+		if (!empty($calculations)) { //add calculational behavior
+			$calculationIds = [];
+			$calculationOps = [];
+			foreach ($calculations as $id => $arr) {
+				$calculationIds[$id] = [];
+				$calculationOps[$id] = [];
+				foreach ($arr as $i => $val) {
+					if ($i % 2 == 0) { 
+						$calculationIds[$id][] = $val;
+					} else {
+						$val2 = "";
+						if ($val == "Plus") {
+							$val2 = "+";
+						} else if ($val == "Minus") {
+							$val2 = "-";
+						} else if ($val == "Multiplied by") {
+							$val2 = "*";
+						} else if ($val == "Divided by") {
+							$val2 = "/";
+						}
+						$calculationOps[$id][] = $val2;
+					}
+				}
+				$count = 0;
+				$js .= "jQuery('";
+				while ($count < count($calculationIds[$id])) {
+					if ($count == count($calculationIds[$id]) - 1) {
+						$js .= "#".$calculationIds[$id][$count]."')";
+					} else {
+						$js .= "#".$calculationIds[$id][$count].", ";
+					}
+					$count++;
+				}
+				$js .= ".on('keyup change',function(){";
+				$js .= 	"jQuery('#".$id."').val(";
+				$count = 0;
+				while ($count < count($calculationIds[$id])) {
+					$js .= "parseFloat(jQuery('#".$calculationIds[$id][$count]."').val())";
+					if (isset($calculationOps[$id][$count])) {
+						$js .= " ".$calculationOps[$id][$count]." ";
+					}
+					$count++;
+				}
+				$js .= 	")";
+				$js .= "})";
+				
+			}
+			
+		}
+		
+		if (!empty($conditions)) { //add conditional behavior
+			foreach($conditions as $id => $fld) {
+				//set default visibility
+				if ($fld['showHide'] == "Show") {
+					$js .= "jQuery('#".$id."').closest('.form-group').hide();";
+					$revert = "hide";
+				} else if ($fld['showHide'] == "Hide") {
+					$js .= "jQuery('#".$id."').closest('.form-group').show();";
+					$revert = "show";
+				}
+				$conditionIds = [];
+				$conditionSts = [];
+				//loop through each condition
+				foreach ($fld['condition'] as $index => $condition) {
+					$conditionIds[] = $condition['id'];
+					$conditionSts[] = "jQuery('#".$condition['id']."').val() ".$this->getOp($condition['op'])." '".$condition['val']."'";
+				}
+				if ($fld['allAny']) {
+					//group multiple conditions
+					$allConditionSts = implode(" ".$this->getOp($fld['allAny'])." ",$conditionSts);
+				} else {
+					//or just assign single statement
+					$allConditionSts = $conditionSts[0];
+				}
+				//set up listeners and populate conditional statements
+				$js .= "jQuery('#".implode(",#",$conditionIds)."').on('keyup change',function(){";
+				$js .= "if (".$allConditionSts.") {jQuery('#".$id."').closest('.form-group').".strtolower($fld['showHide'])."('medium')} else {jQuery('#".$id."').closest('.form-group').".$revert."('medium')}});";
+			}
+		}
 
 		if ($sectional) { //additional controls for sectional forms
 			$js .= "jQuery('#SFDSWF-Container .form-section-nav li').click(function(e){";
@@ -347,6 +453,36 @@ class FormController extends Controller
 
 		return $js;
 	}
+	
+	public function getOp($str) {
+		$output = "";
+		switch($str) {
+			case "Any":
+				$output = "||";
+				break;
+			case "All":
+				$output = "&&";
+				break;
+			case "matches":
+				$output = "==";
+				break;
+			case "doesn't match":
+				$output = "!=";
+				break;
+			case "is less than":
+				$output = "<";
+				break;
+			case "is more than":
+				$output = ">";
+				break;
+			//todo
+			//contains
+			//doesn't contain
+			//contains anything
+			//is blank
+		}
+		return $output;
+	}
 
 	public function printFormTypeStart($formtype) {
 	  switch ($formtype) {
@@ -359,6 +495,7 @@ class FormController extends Controller
 		*/
 		case "s08": //input radio do nothing
 		case "s06": //input checkbox do nothing
+		  $str = "";
 		  break;
 		case "i14":
 		  $str = "<textarea ";
@@ -457,4 +594,50 @@ class FormController extends Controller
         }
         return true;
     }
+	
+	public function writeCSV(Request $request) {
+        $form_id = $request->input('form_id');
+        $form = Form::where('id', $form_id)->first();
+		$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+		//print_r($form);
+		$column = 0;
+		$write = Array();
+		foreach ($form['content']['data'] as $field) {
+			if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m13" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
+			} else if ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
+				if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
+					$options = explode("\n",$field['option']);
+				} else if ($field['formtype'] == "s06") {
+					$options = explode("\n",$field['checkboxes']);
+				} else if ($field['formtype'] == "s08") {
+					$options = explode("\n",$field['radios']);
+				}
+				foreach ($options as $option) {
+					$write[$column] = $request->input($field['name']) == $option ? 1 : 0; //todo multiselect
+					$column++;
+				}
+			} else {
+				$write[$column] = $request->input($field['name']);
+				//$write[$column] = $field['name']; //todo write first column
+				$column++;
+			}
+		}
+
+		//print_r($write);
+		//die;
+
+		$hash = substr(sha1($form_id."#lfk&$#3mXqVekHQjpaqW"),0,8);
+		$fp = fopen('/var/www/html/public/csv/'.$form_id.'-'.$hash.'.csv', 'a');
+
+		//foreach ($write as $fields) {
+		  fputcsv($fp, $write);
+		//}
+
+		fclose($fp);
+		
+		return redirect($form['content']['settings']['confirmation']);
+		//print "Form Submitted!";
+		
+		//return;
+	}
 }

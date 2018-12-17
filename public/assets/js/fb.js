@@ -218,7 +218,6 @@ $(document).ready(function(){
   //popover on click event
   $("#SFDSWFB-target").delegate(".component", "click", function(e){
     e.preventDefault();
-    $(".popover").hide();
     var $active_component = $(this);
     $active_component.popover("show");
     //hack to fix popover y position
@@ -273,20 +272,44 @@ $(document).ready(function(){
 	if (e.currentTarget.attributes['data-min']) $(".popover #min").val(e.currentTarget.attributes['data-min'].value);
 	if (e.currentTarget.attributes['data-max']) $(".popover #max").val(e.currentTarget.attributes['data-max'].value);
 	
-	//add conditional
-	$(".popover-content hr").before($('.accordion-conditionals').html());
-	$(".popover .accordion-section.conditionals .accordion").append($(".addConditionalContainer").html());
-	if (e.currentTarget.attributes['data-conditions']) {
-		var fieldConditions = JSON.parse(e.currentTarget.attributes['data-conditions'].value);
-		for (c in fieldConditions.condition) {
-			//alert(fieldConditions.condition[c].id);
-			addConditional();
-			$(".popover .conditionalId").eq(c).val(fieldConditions.condition[c].id);
-			$(".popover .conditionalOperator").eq(c).val(fieldConditions.condition[c].op);
-			$(".popover .conditionalValue").eq(c).val(fieldConditions.condition[c].val);
+	//add calculation
+	if (e.currentTarget.dataset.formtype == "d06" || e.currentTarget.dataset.formtype == "d08") { //only show for numbers or prices
+		addCalculation(e.currentTarget.dataset.id);
+		if (e.currentTarget.attributes['data-calculations']) {
+			var fieldCalculations = JSON.parse(e.currentTarget.attributes['data-calculations'].value);
+			var calCount = 0;
+			for (l in fieldCalculations) {
+				if (l == 1) {
+					addCalculation(e.currentTarget.dataset.id);
+					$(".popover .calculationId").eq(0).val(fieldCalculations[0]);
+					$(".popover .calculationId").eq(1).val(fieldCalculations[2]);
+					$(".popover .calculationOperator").eq(0).val(fieldCalculations[1]);
+				} else if (Math.abs(l % 2) == 1) { //every odd number after 1
+					calCount++;
+					addCalculation(e.currentTarget.dataset.id);
+					$(".popover .calculationOperator").eq(calCount).val(fieldCalculations[l]);
+					$(".popover .calculationId").eq(calCount+1).val(fieldCalculations[parseInt(l)+1]);
+				}
+			}
 		}
-		if (fieldConditions.showHide) $(".popover .showHide").val(fieldConditions.showHide);
-		if (fieldConditions.allAny) $(".popover .allAny").val(fieldConditions.allAny);
+	}
+	
+	//add conditional
+	if (e.currentTarget.id != "SFDSWFB-legend" && e.currentTarget.dataset.formtype != "m11") { //hide for hidden inputs and form title
+		$(".popover-content hr").before($('.accordion-conditionals').html());
+		$(".popover .accordion-section.conditionals .accordion").append($(".addConditionalContainer").html());
+		if (e.currentTarget.attributes['data-conditions']) {
+			var fieldConditions = JSON.parse(e.currentTarget.attributes['data-conditions'].value);
+			for (c in fieldConditions.condition) {
+				//alert(fieldConditions.condition[c].id);
+				addConditional();
+				$(".popover .conditionalId").eq(c).val(fieldConditions.condition[c].id);
+				$(".popover .conditionalOperator").eq(c).val(fieldConditions.condition[c].op);
+				$(".popover .conditionalValue").eq(c).val(fieldConditions.condition[c].val);
+			}
+			if (fieldConditions.showHide) $(".popover .showHide").val(fieldConditions.showHide);
+			if (fieldConditions.allAny) $(".popover .allAny").val(fieldConditions.allAny);
+		}
 	}
 
     var valtypes = $active_component.find(".valtype");
@@ -447,7 +470,7 @@ $(document).ready(function(){
 			var options = $(e).val().split("\n");
 			$(value).html("");
 			$.each(options, function(i,e){
-			  $(value).append("\n      ");
+			  $(value).append("\n");
 			  $(value).append($("<option>").text(e));
 			});
 		  } else if (vartype==="checkboxes"){
@@ -523,6 +546,22 @@ $(document).ready(function(){
 			  }
 		  }
       });
+	  
+	  //save calculations
+	  if ($(".popover .calculation").length) {
+		  var calculations = [];
+		  calculations[0] = $(".popover .calculationId").eq(0).val();
+		  var sc = 0;
+		  $(".popover .calculation").each(function(n) {
+			  sc++;
+			  calculations[sc] = $(this).find(".calculationOperator").val();
+			  sc++;
+			  calculations[sc] = $(this).find(".calculationId").val();
+		  });
+		  var currentIndex = $(".popover").prevAll(".form-group").length-1;
+		  saved.data[currentIndex]["calculations"] = calculations;
+		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').attr("data-calculations", JSON.stringify(calculations));
+	  }
 	  
 	  //save conditionals
 	  if ($(".popover .condition").length) {
@@ -681,6 +720,8 @@ function loadForm() {
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "conditions") {
 					$(newSection).attr("data-conditions", JSON.stringify(saved.data[i][key]));
+				} else if (key == "calculations") {
+					$(newSection).attr("data-calculations", JSON.stringify(saved.data[i][key]));
 				} else {
 					$(newSection).find("[data-valtype='"+key+"']").html(saved.data[i][key]);
 				}
@@ -692,9 +733,9 @@ function loadForm() {
 	//iterate through settings
 	for (s in saved.settings) {
 	    if (s == "method") { //radio types
-		$("#SFDSWFB-7 input[name=method][value="+saved.settings[s]+"]").attr("checked", "checked");
+			$("#SFDSWFB-7 input[name=method][value="+saved.settings[s]+"]").attr("checked", "checked");
 	    } else {
-		$("#SFDSWFB-7 input[name="+s+"]").val(saved.settings[s]);
+			$("#SFDSWFB-7 input[name="+s+"]").val(saved.settings[s]);
 	    }
 	}
 
@@ -724,6 +765,31 @@ function checkId(cid,i) {
 		return false;
 	}
 }
+function addCalculation(str) {
+	//check if first conditional or not
+	if ($(".popover-content .addCalculation").length == 0) {
+		$('.popover-content .accordion-section.attributes .accordion').append($(".addCalculationContainer").html());
+	} else {
+		if ($(".popover-content .calculationLabel").length == 0) {
+			$('.popover-content .addCalculation').before($(".firstCalculation").html());
+		}
+		$('.popover-content .addCalculation').before($(".calculationContainer").html());
+		str = str == undefined ? $('.popover #id').val() : str;
+		var ids = getMathIds(str);
+		
+		$(".popover-content .allMathIds").each(function() {
+			if ($(this).val() == null) {
+				var thisSelect = $(this);
+				$.each(ids, function(i, item) {
+					thisSelect.append($('<option>', {
+						value: item,
+						text:	item
+					}));
+				});	
+			}
+		});
+	}
+}
 function addConditional() {
 	$(".popover-content .addConditional").before($(".conditional").html());
 	var ids = getIds();
@@ -745,6 +811,14 @@ function addConditional() {
 		$(".popover-content .allIds:last").before('<hr class="and"/>');
 	}
 }
+function removeCalculation(obj) {
+	if ($(obj).parent().parent().find(".calculation").length > 1) {
+	} else {
+		$('.popover-content .calculationLabel').remove();
+		$('.popover-content .calculationId').remove();
+	}
+	$(obj).parent().remove();
+}
 function removeConditional(obj) {
 	if ($(obj).parent().find("select.showHide").length) {
 		if ($(".popover-content .conditionalLabel").length > 1) {
@@ -757,6 +831,20 @@ function removeConditional(obj) {
 		if ($('.popover .allAny').length) $('.popover .allAny').remove();
 		if ($('.popover hr.and').length) $('.popover hr.and').remove();
 	}
+}
+function getMathIds(str) {
+	var ids = [];
+	var saved = $("#SFDSWFB-save").val();
+        saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	//saved = JSON.parse(saved);
+	for (i in saved.data) {
+		if (saved.data[i]["id"] != undefined) {
+			if (saved.data[i].formtype == "d06" || saved.data[i].formtype == "d08") ids.push(saved.data[i]["id"]);
+		}
+	}
+	var index = ids.indexOf(str);
+	if (index !== -1) ids.splice(index, 1);
+	return ids;
 }
 function getIds() {
 	var ids = [];
@@ -781,11 +869,20 @@ function updateSettings() {
 	$("#SFDSWFB-7 input").each(function(i) {
 		if ($(this).attr("name") != "" && $(this).val() != "") {
 		    if ($(this).attr("type") == "radio") {
-			if ($(this).is(":checked")) {
-			    newSettings[$(this).attr("name")] = $(this).val();
-			}
+				if ($(this).attr("name") == "backend") {
+					var csvUrl = new URL('/form/submit', window.location.href);
+					if ($(this).is(":checked") && $(this).val() == "db") {
+						if ($('#SFDSWFB-7 input[name=action]').val() == csvUrl) $('#SFDSWFB-7 input[name=action]').val('');
+					} else if ($(this).is(":checked") && $(this).val() == "csv") {
+						$('#SFDSWFB-7 input[name=action]').val(csvUrl);
+					}
+				} else {
+					if ($(this).is(":checked")) {
+						newSettings[$(this).attr("name")] = $(this).val();
+					}
+				}
 		    } else {
-			newSettings[$(this).attr("name")] = $(this).val();
+				newSettings[$(this).attr("name")] = $(this).val();
 		    }
 		}
 	});

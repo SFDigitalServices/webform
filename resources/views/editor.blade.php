@@ -1165,6 +1165,7 @@
                       <form class='form'>
                         <div class='form-group col-md-12'>
                           <label class='control-label'>Default Value</label> <input class='form-control' type='text' name='value' id='value'>
+						  <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
@@ -1173,7 +1174,7 @@
                       >
 
                       <!-- hidden input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>[Hidden Form Element]</label>
+                      <label class=" control-label valtype" data-valtype='label'>[Hidden Form Element]</label>
                       <div class="">
                         <input type="hidden" class="form-control valtype" data-valtype="hidden" >
                       </div>
@@ -1291,8 +1292,23 @@
 				  <div class="tab-pane" id="SFDSWFB-7">
 					<h3>Settings</h3>
 					<div class='form-group col-md-12'>
+                        <label class="radio">
+                          <input type="radio" value="db" name="backend" checked="checked">
+                          I have a database and submission endpoint
+                        </label>
+                        <label class="radio">
+                          <input type="radio" value="csv" name="backend">
+                          I want to create a Webform Buider CSV database
+                        </label>
+						<!--<input type="hidden" name="hash"/>-->
+					</div>
+					<div class='form-group col-md-12'>
 						<label class="control-label">Form Action</label>
 						<input class="col-md-12 form-control" type="text" name="action"/>
+					</div>
+					<div class='form-group col-md-12'>
+						<label class="control-label">Confirmation Page</label>
+						<input class="col-md-12 form-control" type="text" name="confirmation"/>
 					</div>
 	     <!--<div class='form-group col-md-12'>
 	     <label class="control-label">Success URL</label>
@@ -1429,7 +1445,7 @@
 	
 	<div class="hidden clonable addConditionalContainer">
 		<div class="addConditional" style="padding-top:1em">
-			<a href="#" onclick="javascript:addConditional()">+Add A Condition</a>
+			<a href="javascript:void(0)" onclick="javascript:addConditional()">+Add A Condition</a>
 		</div>
 	</div>
 	<div class="hidden clonable firstConditional">
@@ -1452,24 +1468,37 @@
 			</select>
 			<select class="conditionalOperator">
 				<option>matches</option>
-				<option>contains</option>
 				<option>doesn't match</option>
-				<option>doesn't contain</option>
 				<option>is less than</option>
 				<option>is more than</option>
+				<!--<option>contains</option>
+				<option>doesn't contain</option>
 				<option>contains anything</option>
-				<option>is blank</option>
+				<option>is blank</option>-->
 			</select>
 			<input type="text" class="form-control conditionalValue" />
 		</div>
 	</div>
-	<div class="hidden clonable calculationType">
-		<select>
-			<option>Plus</option>
-			<option>Minus</option>
-			<option>Multiplied by</option>
-			<option>Divided by</option>
-		</select>
+	<div class="hidden cloneable addCalculationContainer">
+		<div class="addCalculation" style="padding-top:1em">
+			<a href="javascript:void(0)" onclick="javascript:addCalculation()">+Add A Calculation</a>
+		</div>
+	</div>
+	<div class="hidden clonable firstCalculation">
+	    <label class="control-label calculationLabel">Calculation</label>
+		<select class="allMathIds calculationId"></select>
+	</div>
+	<div class="hidden clonable calculationContainer">
+		<div class="calculation">
+			<i class="fas fa-minus-circle conditionIcon" onclick="javascript:removeCalculation(this)"></i>
+			<select class="calculationOperator">
+				<option>Plus</option>
+				<option>Minus</option>
+				<option>Multiplied by</option>
+				<option>Divided by</option>
+			</select>
+			<select class="allMathIds calculationId"></select>
+		</div>
 	</div>
 	<div class="hidden clonable accordion-attributes">
 		<div class='accordion-section attributes'>

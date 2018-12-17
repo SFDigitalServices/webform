@@ -215,7 +215,7 @@
 .tt-suggestion p {
 	   margin: 0;
  }
-	.condition {
+	.condition, .calculation {
 		position:relative;
 	}
 	.fa-minus-circle.conditionIcon {
@@ -228,10 +228,10 @@
 	.fa-minus-circle.conditionIcon:hover {
 		color:#aaa;
 	}
-	.condition {
+	.condition, .calculation {
 		border-bottom:1px solid transparent;
 	}
-	.condition:hover {
+	.condition:hover, .calculation:hover {
 		border-bottom:1px solid #000;
 	}
 		  
