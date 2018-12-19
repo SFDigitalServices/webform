@@ -22,7 +22,8 @@ class FormController extends Controller
             'save',
             'clone',
             'getUserForms',
-            'getForm'
+            'getForm',
+			'getFilename'
             ]]);
     }
 
@@ -618,7 +619,7 @@ class FormController extends Controller
 				}
 			} else {
 				$write[$column] = $request->input($field['name']);
-				//$write[$column] = $field['name']; //todo write first column
+				//$write[$column] = $field['name']; //todo write first row
 				$column++;
 			}
 		}
@@ -626,8 +627,7 @@ class FormController extends Controller
 		//print_r($write);
 		//die;
 
-		$hash = substr(sha1($form_id."#lfk&$#3mXqVekHQjpaqW"),0,8);
-		$fp = fopen('/var/www/html/public/csv/'.$form_id.'-'.$hash.'.csv', 'a');
+		$fp = fopen('/var/www/html/public/csv/'.generateFilename($form_id), 'a');
 
 		//foreach ($write as $fields) {
 		  fputcsv($fp, $write);
@@ -639,5 +639,16 @@ class FormController extends Controller
 		//print "Form Submitted!";
 		
 		//return;
+	}
+	
+	public function getFilename(Request $request) {
+		$id = $request->input('id');
+		//todo make sure user has access to this form id
+		return $this->generateFilename($id);
+	}
+	
+	private function generateFilename($id) {
+		$hash = substr(sha1($id."#lfk&$#3mXqVekHQjpaqW"),0,8);
+		return $id.'-'.$hash.'.csv';
 	}
 }

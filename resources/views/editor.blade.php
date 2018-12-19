@@ -21,9 +21,9 @@
 						loadContent(event.state.formId);
 					} else {
 						loadContent();
-					} 
+					}
 				} else {
-					goHome();
+					goHome(true);
 				}
 			}		
 </script>
@@ -1302,11 +1302,14 @@
                         </label>
 						<!--<input type="hidden" name="hash"/>-->
 					</div>
+					<div class='form-group col-md-12 csvFile' style="display:none">
+						<a href="" target="_blank" class="btn btn-info">Open CSV File</a>
+					</div>
 					<div class='form-group col-md-12'>
 						<label class="control-label">Form Action</label>
 						<input class="col-md-12 form-control" type="text" name="action"/>
 					</div>
-					<div class='form-group col-md-12'>
+					<div class='form-group col-md-12 confirmPage' style="display:none">
 						<label class="control-label">Confirmation Page</label>
 						<input class="col-md-12 form-control" type="text" name="confirmation"/>
 					</div>

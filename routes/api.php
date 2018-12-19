@@ -33,4 +33,5 @@ $app->group(['prefix' => 'form'], function($app) {
     $app->post('clone', 'FormController@clone');
     $app->post('delete', 'FormController@delete');
     $app->post('submit', 'FormController@writeCSV');
+	$app->post('getFilename', 'FormController@getFilename');
 });

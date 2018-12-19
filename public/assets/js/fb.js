@@ -2,6 +2,7 @@
 
 var emptyForm;
 var formId = 0;
+var csvFile = '';
 var allForms; //load all the forms into global?
 
 $(document).ready(function(){
@@ -870,11 +871,17 @@ function updateSettings() {
 		if ($(this).attr("name") != "" && $(this).val() != "") {
 		    if ($(this).attr("type") == "radio") {
 				if ($(this).attr("name") == "backend") {
-					var csvUrl = new URL('/form/submit', window.location.href);
+					var submitUrl = new URL('/form/submit', window.location.href);
 					if ($(this).is(":checked") && $(this).val() == "db") {
-						if ($('#SFDSWFB-7 input[name=action]').val() == csvUrl) $('#SFDSWFB-7 input[name=action]').val('');
+						if ($('#SFDSWFB-7 input[name=action]').val() == submitUrl) $('#SFDSWFB-7 input[name=action]').val('');
+						$(".csvFile").hide('medium');
+						$(".confirmPage").hide('medium');
+						$('#SFDSWFB-7 input[name=action]').removeAttr('readonly');						
 					} else if ($(this).is(":checked") && $(this).val() == "csv") {
-						$('#SFDSWFB-7 input[name=action]').val(csvUrl);
+						$('#SFDSWFB-7 input[name=action]').val(submitUrl);
+						$(".confirmPage").show('medium');
+						$('#SFDSWFB-7 input[name=action]').attr('readonly', true);						
+						populateCSV();
 					}
 				} else {
 					if ($(this).is(":checked")) {
@@ -893,6 +900,18 @@ function updateSettings() {
 	console.log(saved);
 
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
+}
+function populateCSV() {
+	if (csvFile) { //global
+		showCSV(csvFile);
+	} else if (formId) {
+		callAPI('/form/getFilename', {id : formId}, showCSV);
+	}
+}
+function showCSV(response) {
+	csvFile = response;
+	$(".csvFile").show('medium');
+	$(".csvFile > a").attr('href', "/csv/"+response);
 }
 function toggleClickMenu() {
 	if ($('.clickMenu ul').is(":visible")) {
@@ -925,7 +944,11 @@ function confirmAction(action) {
 		//document.location = url;
 	}
 }
-function goHome() {
+function goHome(back) {
+	if (back != undefined) {
+		window.history.back();
+		return;
+	} 
 	callAPI("/form/getForms", {}, loadHome);
 	$('.forms').html('<i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i>');
     $(".content").show(1500);
@@ -1050,7 +1073,7 @@ function loadHome(response) {
 function loadContent(id) {
 	$(".content").hide("fast", function(){ 
 		if (id == undefined) {
-			if (history.state == undefined) history.pushState({formId : 0} , null, "/home");
+			if (history.state == undefined) history.pushState({formId : 0} , null, "/home?new");
 			formId = 0;
 			$('#SFDSWFB-load').html('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}');
 			loadForm();
@@ -1059,6 +1082,13 @@ function loadContent(id) {
 			$('#SFDSWFB-load').html(JSON.stringify(allForms[id].content));
 			formId = id;
 			if (history.state == undefined) history.pushState({formId : id}, null, "/home?id="+id);
+			var submitUrl = new URL('/form/submit', window.location.href);
+			if (allForms[id].content.settings.action == submitUrl) {
+				$("input[name=backend][value=csv]").attr('checked', true);
+				$(".confirmPage").show('medium');
+				$('#SFDSWFB-7 input[name=action]').attr('readonly', true);						
+				populateCSV();
+			}
 			loadForm();
 		}
 		$('.container').show('fast');
