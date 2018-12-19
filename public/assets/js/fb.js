@@ -911,7 +911,7 @@ function populateCSV() {
 function showCSV(response) {
 	csvFile = response;
 	$(".csvFile").show('medium');
-	$(".csvFile > a").attr('href', "/csv/"+response);
+	$(".csvFile > a").attr('href', "/csv/"+response+"?"+new Date().getTime());
 }
 function toggleClickMenu() {
 	if ($('.clickMenu ul').is(":visible")) {

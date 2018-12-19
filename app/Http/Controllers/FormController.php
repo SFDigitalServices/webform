@@ -90,6 +90,7 @@ class FormController extends Controller
         } else {
 			$returnForm = Form::where('id', $form_id)->first();
 			//$returnForm['content'] = $form_data['content'];
+			$this->processCSV($returnForm);
 			$returnForm['content'] = $request->input('content');
 			$returnForm->save();
 			return response()->json($returnForm);
@@ -132,6 +133,7 @@ class FormController extends Controller
     public function create(Request $request) {
         // validate form data
         if( $this->validateForm($request) ) {
+
 			/*generate a hash based on id
 			$form = Form::create(['content' => $request->input('content')]);
 			$hash = sha1($form['id']."#lfk&$#3mXqVekHQjpaqW");
@@ -140,9 +142,11 @@ class FormController extends Controller
 			$form['content'] = json_encode($content);
 			$form->save();
 			*/
+			
 			$form = Form::create(['content' => $request->input('content')]);
 			
             if( $form ){
+				$this->processCSV($form);
                 // create entry in user_form
                 $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
@@ -596,6 +600,48 @@ class FormController extends Controller
         return true;
     }
 	
+	public function processCSV($form) {
+		//read content and settings
+		$content = json_decode($form->content);
+		$path = '//'.$_SERVER['HTTP_HOST'].'/form/submit';
+		//if form action matches a csv transaction
+		if (substr($content->settings->action,0 - strlen($path)) == $path) {
+			$filename = $this->generateFilename($form->id);
+			//open csv file
+			$csv = $this->readCSV($filename);
+			//rewrite header row if one or zero rows exist
+			if (count($csv) < 2) {
+				$column = 0;
+				$write = Array();
+				foreach ($content->data as $field) {
+					if ($field->formtype == "m02" || $field->formtype == "m04" || $field->formtype == "m06" || $field->formtype == "m08" || $field->formtype == "m10" || $field->formtype == "m13" || $field->formtype == "m14" || $field->formtype == "m16") { //do nothing for non inputs
+					} else if ($field->formtype == "s02" || $field->formtype == "s04" || $field->formtype == "s06" || $field->formtype == "s08") { //multiple options
+						if ($field->formtype == "s02" || $field->formtype == "s04") {
+							$options = explode("\n",$field->option);
+						} else if ($field->formtype == "s06") {
+							$options = explode("\n",$field->checkboxes);
+						} else if ($field->formtype == "s08") {
+							$options = explode("\n",$field->radios);
+						}
+						foreach ($options as $option) {
+							$write[$column] = $option; //todo multiselect
+							$column++;
+						}
+					} else {
+						$write[$column] = $field->name;
+						$column++;
+					}
+				}
+				file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+			}
+		}
+	}
+
+	public function readCSV($filename) {
+		$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		return $csv;
+	}
+	
 	public function writeCSV(Request $request) {
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
@@ -627,7 +673,7 @@ class FormController extends Controller
 		//print_r($write);
 		//die;
 
-		$fp = fopen('/var/www/html/public/csv/'.generateFilename($form_id), 'a');
+		$fp = fopen('/var/www/html/public/csv/'.$this->generateFilename($form_id), 'a');
 
 		//foreach ($write as $fields) {
 		  fputcsv($fp, $write);
