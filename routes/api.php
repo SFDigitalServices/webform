@@ -19,7 +19,9 @@ $app->post('/home', 'UserController@login');
 $app->get('/home', 'UserController@login');
 $app->get('/createView', 'UserController@createView');
 $app->post('/user/logout', 'UserController@logout');
-$app->post('/user/register', 'UserController@register');
+$app->get('/user/register', 'UserController@register');
+$app->get('/user/delete', 'UserController@delete');
+$app->get('/user/debug', 'UserController@debug');
 
 $app->group(['prefix' => 'form'], function($app) {
     //$app->get('embed', 'FormController@embedJS');
