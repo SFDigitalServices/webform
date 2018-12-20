@@ -445,7 +445,7 @@
 
                     </div>
 
-
+<!-- hide for now
                     <div class="form-group component" data-formtype="i06" data-type="prep-text" data-required="true" rel="popover" title="Prepended Text Input" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -464,8 +464,10 @@
                         </div>
                       </form>" data-html="true" 
                       >
-
+-->
+					  
                       <!-- Prepended text-->
+<!--
                       <label class=" control-label valtype" data-valtype="label">Prepended text</label>
                       <div class="">
                         <div class="input-group">
@@ -495,8 +497,10 @@
                         </div>
                       </form>" data-html="true" 
                       >
-
+-->
+					  
                       <!-- Appended input-->
+<!--
                       <label class=" control-label valtype" data-valtype="label">Appended text</label>
                       <div class="">
                         <div class="input-group">
@@ -509,7 +513,7 @@
 
                     </div>
 
-                    <div class="form-group component" data-formtype="i10" rel="popover" data-required="true" title="Search Input" trigger="manual"
+                    <div class="form-group component" data-formtype="i10" rel="popover" data-required="true" title="Prepended Checkbox" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -527,8 +531,9 @@
                         </div>
                       </form>" data-html="true" 
                       >
-
+-->
                       <!-- Prepended checkbox -->
+<!--
                       <label class=" control-label valtype" data-valtype="label">Prepended checkbox</label>
                       <div class="">
                         <div class="input-group">
@@ -542,7 +547,7 @@
 
                     </div>
 
-                    <div class="form-group component" data-formtype="i12" rel="popover" data-required="true" title="Search Input" trigger="manual"
+                    <div class="form-group component" data-formtype="i12" rel="popover" data-required="true" title="Append Checkbox" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -560,8 +565,9 @@
                         </div>
                       </form>" data-html="true" 
                       >
-
+-->
                       <!-- Appended checkbox -->
+<!--					  
                       <label class=" control-label valtype" data-valtype="label">Append checkbox</label>
                       <div class="">
                         <div class="input-group">
@@ -573,8 +579,9 @@
                         <p class="help-block valtype" data-valtype="help">Supporting help text</p>
                       </div>
                     </div>
+-->					
 
-                    <div class="form-group component" data-formtype="i14" rel="popover" data-required="true" title="Search Input" trigger="manual"
+                    <div class="form-group component" data-formtype="i14" rel="popover" data-required="true" title="Textarea" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -604,7 +611,7 @@
 
                   <div class="tab-pane" id="SFDSWFB-4">
 
-                    <div class="form-group component" data-formtype="s02" rel="popover" data-required="true" data-choose="true" title="Search Input" trigger="manual"
+                    <div class="form-group component" data-formtype="s02" rel="popover" data-required="true" data-choose="true" title="Select Dropdown" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -636,7 +643,8 @@
 
                     </div>
 
-                    <div class="form-group component" data-formtype="s04" data-choose="true" rel="popover" title="Search Input" trigger="manual"
+					<!-- hide multi select for now
+                    <div class="form-group component" data-formtype="s04" data-choose="true" rel="popover" title="Multi Select" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -654,8 +662,10 @@
                         </div>
                       </form>" data-html="true"
                       >
+					  -->
 
                       <!-- Select Multiple -->
+					  <!--
                       <label class=" control-label valtype" data-valtype="label">Select - Multiple</label>
                       <div class="">
                         <select class="form-control input-md valtype" multiple="multiple" data-valtype="option">
@@ -666,6 +676,7 @@
                         </select>
                       </div>
                     </div>
+					-->
 
 				<!--
                   </div>
@@ -1224,7 +1235,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group component" data-formtype="m14" rel="popover" title="Search Input" trigger="manual"
+                    <div class="form-group component" data-formtype="m14" rel="popover" title="Button" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -1232,13 +1243,13 @@
                           <label class='control-label'>Button Text</label> <input class='form-control' type='text' name='label' id='button'>
                           <label class='control-label' id=''>Type: </label>
                           <select class='form-control input-md' id='color'>
-                            <option id='btn-default'>Default</option>
-                            <option id='btn-primary'>Primary</option>
-                            <option id='btn-info'>Info</option>
-                            <option id='btn-success'>Success</option>
-                            <option id='btn-warning'>Warning</option>
-                            <option id='btn-danger'>Danger</option>
-								<option id='btn-inverse'>Inverse</option>
+                            <option value='btn-default'>Default</option>
+                            <option value='btn-primary'>Primary</option>
+                            <option value='btn-info'>Info</option>
+                            <option value='btn-success'>Success</option>
+                            <option value='btn-warning'>Warning</option>
+                            <option value='btn-danger'>Danger</option>
+								<option value='btn-inverse'>Inverse</option>
                           </select>
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
                           <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>

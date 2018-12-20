@@ -253,13 +253,19 @@ class FormController extends Controller
 				} else if ($key == "regex") {
 				  if (!$skipAttr) $attr .= 'pattern="'.$value.'" ';
 				} else if ($key == "required") { //this tends to be last in the array
-				  $attr .= 'required '; //todo check if required needs to change for radio and checkboxes
+				  if ($value == "true") {
+					$attr .= 'required ';
+				  }
 				} else if ($key == "help") {
 				  $help = $value;
 				} else if ($key == "button") {
 				  $inner = '>'.$value;
 				} else if ($key == "color") {
-				  $attr .= 'class="btn-'.strtolower($value).'" ';
+				  if (strpos($attr, "class=") !== false) {
+					  $attr = str_replace('class="', 'class="'.$value.' ', $attr);
+				  } else {
+					  $attr .= 'class="'.$value.'" ';
+				  }
 				} else if ($key == "label") {
 				  //do nothing, already used above
 				} else if ($key == "calculations" || $key == "conditions") {
@@ -279,13 +285,13 @@ class FormController extends Controller
 			  }
 			  if (is_array($skipAttr)) {
 				foreach ($skipAttr as $val) {
-				  $manySelected = "";
-				  if (isset($defVal)) {
-				if ($val == $defVal) {
-				  $manySelected = "checked ";
-				}
-				  }
-				  $str .= '<label class="'.$manyType.'"><input type="'.$manyType.'" value="'.$val.'" '.$attr.$manySelected.'/>'.$val.'</label>';
+					$manySelected = "";
+					if (isset($defVal)) {
+						if ($val == $defVal) {
+							$manySelected = "checked ";
+						}
+					}
+					$str .= '<label class="'.$manyType.'"><input type="'.$manyType.'" value="'.$val.'" '.$attr.$manySelected.'/>'.$val.'</label>';
 				}
 			  } else {
 				$str .= $attr.$inner;

@@ -346,6 +346,7 @@ $(document).ready(function(){
         val = val.join("\n");
         $(".popover "+valID).text(val);
         //$(".popover #name").val($(e).find("input").attr("name"));
+		/* not using right now
       } else if(valID==="#inline-checkboxes"){
         val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
         val = val.join("\n")
@@ -355,6 +356,7 @@ $(document).ready(function(){
         val = val.join("\n")
           $(".popover "+valID).text(val);
         $(".popover #name").val($(e).find("input").attr("name"));
+		*/
 	  } else if (valID==="#textarea") {
 		val = $(e).text();
         $(".popover " + valID).val(val);
@@ -364,12 +366,13 @@ $(document).ready(function(){
       } else if(valID==="#button") {
         val = $(e).text();
         var type = $(e).find("button").attr("class").split(" ").filter(function(e){return e.match(/btn-.*/)});
-        $(".popover #color option").attr("selected", null);
+		
         if(type.length === 0){
-          $(".popover #color #default").attr("selected", "selected");
+          $(".popover #color").val("btn-default");
         } else {
-          $(".popover #color #"+type[0]).attr("selected", "selected");
+          $(".popover #color").val(type[0]);
         }
+		
         val = $(e).find(".btn").text();
         $(".popover #button").val(val);
       } else {
@@ -476,24 +479,25 @@ $(document).ready(function(){
 			});
 		  } else if (vartype==="checkboxes"){
 			var checkboxes = $(e).val().split("\n");
-			$(value).html("\n      <!-- Multiple Checkboxes -->");
+			$(value).html("\n<!-- Multiple Checkboxes -->");
 			$.each(checkboxes, function(i,e){
 			  if(e.length > 0){
-				$(value).append('\n      <label class="checkbox">\n        <input type="checkbox" value="'+e+'">\n        '+e+'\n      </label>');
+				$(value).append('\n<label class="checkbox">\n<input type="checkbox" value="'+e+'">\n'+e+'\n</label>');
 			  }
 			});
 			$(value).append("\n  ")
 		  } else if (vartype==="radios"){
 			var group_name = $(".popover #name").val();
 			var radios = $(e).val().split("\n");
-			$(value).html("\n      <!-- Multiple Radios -->");
+			$(value).html("\n<!-- Multiple Radios -->");
 			$.each(radios, function(i,e){
 			  if(e.length > 0){
-				$(value).append('\n      <label class="radio">\n        <input type="radio" value="'+e+'" name="'+group_name+'">\n        '+e+'\n      </label>');
+				$(value).append('\n<label class="radio">\n<input type="radio" value="'+e+'" name="'+group_name+'">\n'+e+'\n</label>');
 			  }
 			});
 			$(value).append("\n  ")
 			  $($(value).find("input")[0]).attr("checked", true)
+			  /* not using for now
 		  } else if (vartype==="inline-checkboxes"){
 			var checkboxes = $(e).val().split("\n");
 			$(value).html("\n      <!-- Inline Checkboxes -->");
@@ -514,8 +518,9 @@ $(document).ready(function(){
 			});
 			$(value).append("\n  ")
 			  $($(value).find("input")[0]).attr("checked", true)
+			  */
 		  } else if (vartype === "button"){
-			var type =  $(".popover #color option:selected").attr("id");
+			var type =  $(".popover #color option:selected").val();
 			$(value).find("button").text($(e).val()).attr("class", "btn "+type);
 		  } else if (vartype === "required") {
 			  if($(e).is(":checked")) {
@@ -696,28 +701,32 @@ function loadForm() {
                             $(newSection).attr('data-value',saved.data[i][key]);
 			} else if (key == "class") {
                             $(newSection).attr('data-class',saved.data[i][key]);
-                        } else if (key == "name") {
+			} else if (key == "name") {
                             $(newSection).attr('data-name',saved.data[i][key]);
 			} else if (key != "formtype") {
 				if (key == "checkboxes") {
 					var checkboxes = saved.data[i][key].split("\n");
-					var value = "\n      <!-- Multiple Checkboxes -->";
+					var value = "\n<!-- Multiple Checkboxes -->";
 					$.each(checkboxes, function(i,e){
 					  if(e.length > 0){
-						value += '\n      <label class="checkbox">\n        <input type="checkbox" value="'+e+'">\n        '+e+'\n      </label>';
+						value += '\n<label class="checkbox">\n<input type="checkbox" value="'+e+'">\n'+e+'\n</label>';
 					  }
 					});
 					value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "radios") {
 				    var radios = saved.data[i][key].split("\n");
-				    var value = "\n     <!--  Multiple Radios -->";
+				    var value = "\n<!--  Multiple Radios -->";
 				    $.each(radios, function(i,e) {
 					    if (e.length > 0) {
-						value += '\n      <label class="radio">\n          <input type="radio" value="'+e+'">\n       '+e+'\n      </label>';
+						value += '\n<label class="radio">\n<input type="radio" value="'+e+'">\n'+e+'\n</label>';
 					    }
 					});
 				        value += "\n  ";
+					$(newSection).find("[data-valtype='"+key+"']").html(value);
+				} else if (key == "button") {
+					var color = saved.data[i]['color'] != undefined ? saved.data[i]['color'] : '';
+					var value = '<button class="btn '+color+'">'+saved.data[i][key]+'</button>';
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "conditions") {
 					$(newSection).attr("data-conditions", JSON.stringify(saved.data[i][key]));
