@@ -330,9 +330,26 @@ class FormController extends Controller
 		return false;
 		
 	}
+	
+	public function getInputSelector($id, $arr, $checked) {
+		$output = "";
+		switch ($arr[$id]) {
+			case "s06":
+			case "s08":
+				if ($checked) {
+					$output = "input[name=".$id."]:checked";
+				} else {
+					$output = "input[name=".$id."]";
+				}
+				break;
+			default:
+				$output = "#".$id;
+		}
+		return $output;
+	}
 
 	public function wrapJS($str, $sectional, $content) {
-
+		
 		$js = "jQuery( document ).ready(function() {"; //start ready
 		$js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
 		$js .= "jQuery('#SFDSWF-Container form').validator();";
@@ -340,9 +357,11 @@ class FormController extends Controller
 		//check content for extra features
 		$calculations = [];
 		$conditions = [];
+		$formtypes = [];
 		if ($content) {
 			foreach ($content['data'] as $field) {
 				$fieldId = $field['id'];
+				$formtypes[$fieldId] = $field['formtype'];
 				foreach ($field as $key => $value) {
 					if ($key == "calculations") { //gather calculations
 						$calculations[$fieldId] = $value;
@@ -357,6 +376,7 @@ class FormController extends Controller
 			$calculationIds = [];
 			$calculationOps = [];
 			foreach ($calculations as $id => $arr) {
+				
 				$calculationIds[$id] = [];
 				$calculationOps[$id] = [];
 				foreach ($arr as $i => $val) {
@@ -379,25 +399,23 @@ class FormController extends Controller
 				$count = 0;
 				$js .= "jQuery('";
 				while ($count < count($calculationIds[$id])) {
-					if ($count == count($calculationIds[$id]) - 1) {
-						$js .= "#".$calculationIds[$id][$count]."')";
-					} else {
-						$js .= "#".$calculationIds[$id][$count].", ";
-					}
+					$js .= $this->getInputSelector($calculationIds[$id][$count], $formtypes, false).", ";
 					$count++;
 				}
-				$js .= ".on('keyup change',function(){";
-				$js .= 	"jQuery('#".$id."').val(";
+				$js = substr($js, 0, -2)."').on('keyup change',function(){";
+				
+				$js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
+				
 				$count = 0;
 				while ($count < count($calculationIds[$id])) {
-					$js .= "parseFloat(jQuery('#".$calculationIds[$id][$count]."').val())";
+					$js .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
 					if (isset($calculationOps[$id][$count])) {
 						$js .= " ".$calculationOps[$id][$count]." ";
 					}
 					$count++;
 				}
 				$js .= 	")";
-				$js .= "})";
+				$js .= "});";
 				
 			}
 			
@@ -406,19 +424,20 @@ class FormController extends Controller
 		if (!empty($conditions)) { //add conditional behavior
 			foreach($conditions as $id => $fld) {
 				//set default visibility
+				$js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group')";
 				if ($fld['showHide'] == "Show") {
-					$js .= "jQuery('#".$id."').closest('.form-group').hide();";
+					$js .= ".hide();";
 					$revert = "hide";
 				} else if ($fld['showHide'] == "Hide") {
-					$js .= "jQuery('#".$id."').closest('.form-group').show();";
+					$js .= ".show();";
 					$revert = "show";
 				}
 				$conditionIds = [];
 				$conditionSts = [];
 				//loop through each condition
 				foreach ($fld['condition'] as $index => $condition) {
-					$conditionIds[] = $condition['id'];
-					$conditionSts[] = "jQuery('#".$condition['id']."').val() ".$this->getOp($condition['op'])." '".$condition['val']."'";
+					if (!in_array($condition['id'], $conditionIds)) $conditionIds[] = $condition['id'];
+					$conditionSts[] = "jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val() ".$this->getOp($condition['op'])." '".$condition['val']."'";
 				}
 				if ($fld['allAny']) {
 					//group multiple conditions
@@ -428,8 +447,12 @@ class FormController extends Controller
 					$allConditionSts = $conditionSts[0];
 				}
 				//set up listeners and populate conditional statements
-				$js .= "jQuery('#".implode(",#",$conditionIds)."').on('keyup change',function(){";
-				$js .= "if (".$allConditionSts.") {jQuery('#".$id."').closest('.form-group').".strtolower($fld['showHide'])."('medium')} else {jQuery('#".$id."').closest('.form-group').".$revert."('medium')}});";
+				$js .= "jQuery('";
+				foreach ($conditionIds as $chId) {
+					$js .= $this->getInputSelector($chId, $formtypes, false).", ";
+				}
+				$js = substr($js, 0, -2)."').on('keyup change',function(){";
+				$js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."('medium')} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."('medium')}});";
 			}
 		}
 
