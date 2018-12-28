@@ -592,6 +592,7 @@ $(document).ready(function(){
 	  //moved down, used to be in the loop for some reason?
 	  $active_component.popover("hide");
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
+	  resizeHeight();
    });
    
   });  //end popover on click event
@@ -1122,4 +1123,15 @@ function loadContent(id) {
 		}
 		$('.container').show('fast');
 	});
+}
+function resizeHeight() {
+	//calculate height, animation code only
+	var oldHeight = $('#SFDSWFB-target').height();			
+	//calculate new height, animation code only
+	$('#SFDSWFB-target').css('height', "auto");
+	var newHeight = $('#SFDSWFB-target').height();
+	$('#SFDSWFB-target').css('height', (oldHeight+12)+"px");
+	setTimeout(function() {
+		$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
+	}, 100);
 }
