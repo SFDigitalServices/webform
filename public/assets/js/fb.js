@@ -803,12 +803,16 @@ function addCalculation(str) {
 function addConditional() {
 	$(".popover-content .addConditional").before($(".conditional").html());
 	var ids = getIds();
-	$(".popover-content .allIds").html('');
-	$.each(ids, function(i, item) {
-		$(".popover-content .allIds").append($('<option>', {
-			value: item,
-			text:	item
-		}));
+	$(".popover-content .allIds").each(function() {
+		if ($(this).val() == null) {
+			var thisSelect = $(this);
+			$.each(ids, function(i, item) {
+				thisSelect.append($('<option>', {
+					value: item,
+					text:	item
+				}));
+			});	
+		}
 	});
 	//check if first conditional or not
 	if ($(".popover-content .conditionalLabel").length == 1) {
