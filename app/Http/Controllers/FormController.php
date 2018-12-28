@@ -347,6 +347,17 @@ class FormController extends Controller
 		}
 		return $output;
 	}
+	
+	public function getConditionalStatement($value1, $op, $value2) {
+		if ($op == "contains") {
+			$output = "(".$value1.").search(/".$value2."/i) != -1";
+		} else if ($op == "doesn't contain") {
+			$output = "(".$value1.").search(/".$value2."/i) == -1";
+		} else {
+			$output = $value1." ".$op." '".$value2."'";
+		}
+		return $output;
+	}
 
 	public function wrapJS($str, $sectional, $content) {
 		
@@ -437,7 +448,7 @@ class FormController extends Controller
 				//loop through each condition
 				foreach ($fld['condition'] as $index => $condition) {
 					if (!in_array($condition['id'], $conditionIds)) $conditionIds[] = $condition['id'];
-					$conditionSts[] = "jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val() ".$this->getOp($condition['op'])." '".$condition['val']."'";
+					$conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->getOp($condition['op']), $condition['val']);
 				}
 				if ($fld['allAny']) {
 					//group multiple conditions
@@ -509,11 +520,18 @@ class FormController extends Controller
 			case "is more than":
 				$output = ">";
 				break;
-			//todo
-			//contains
-			//doesn't contain
-			//contains anything
-			//is blank
+			case "contains anything":
+				$output = "!=";
+				break;
+			case "is blank":
+				$output = "==";
+				break;
+			case "contains":
+				$output = "contains";
+				break;
+			case "doesn't contain":
+				$output = "doesn't contain";
+				break;
 		}
 		return $output;
 	}

@@ -1480,15 +1480,15 @@
 			<span class="conditionalLabel"></span>
 			<select class="allIds conditionalId">
 			</select>
-			<select class="conditionalOperator">
+			<select class="conditionalOperator" onchange="javascript:conditionalSelect(this)">
 				<option>matches</option>
 				<option>doesn't match</option>
 				<option>is less than</option>
 				<option>is more than</option>
-				<!--<option>contains</option>
+				<option>contains</option>
 				<option>doesn't contain</option>
 				<option>contains anything</option>
-				<option>is blank</option>-->
+				<option>is blank</option>
 			</select>
 			<input type="text" class="form-control conditionalValue" />
 		</div>

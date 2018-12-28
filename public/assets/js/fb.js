@@ -307,6 +307,7 @@ $(document).ready(function(){
 				$(".popover .conditionalId").eq(c).val(fieldConditions.condition[c].id);
 				$(".popover .conditionalOperator").eq(c).val(fieldConditions.condition[c].op);
 				$(".popover .conditionalValue").eq(c).val(fieldConditions.condition[c].val);
+				conditionalSelect($('.conditionalOperator').eq(c));
 			}
 			if (fieldConditions.showHide) $(".popover .showHide").val(fieldConditions.showHide);
 			if (fieldConditions.allAny) $(".popover .allAny").val(fieldConditions.allAny);
@@ -844,6 +845,15 @@ function removeConditional(obj) {
 	if ($(".popover-content .conditionalLabel").length == 1) {
 		if ($('.popover .allAny').length) $('.popover .allAny').remove();
 		if ($('.popover hr.and').length) $('.popover hr.and').remove();
+	}
+}
+function conditionalSelect(obj) {
+	var valueInput = $(obj).next('.conditionalValue');
+	if ($(obj).val() == "contains anything" || $(obj).val() == "is blank") {
+		valueInput.val('');
+		if (typeof valueInput.attr('readonly') == "undefined" || typeof valueInput.attr('readonly') == false) valueInput.attr('readonly', true);
+	} else {
+		valueInput.removeAttr('readonly');
 	}
 }
 function getMathIds(str) {
