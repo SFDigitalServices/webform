@@ -28,7 +28,7 @@ $(document).ready(function(){
     var $this = $(this);
     var delays = {
       main: 0,
-      form: 120
+      form: 300
     }
     var type = $this.parent().parent().parent().parent().attr("id") === "SFDSWFB-components" ? "main" : "form";
     var saved = $("#SFDSWFB-save").val();
