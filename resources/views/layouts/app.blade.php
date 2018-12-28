@@ -76,7 +76,9 @@
         border: 1px dotted #ccc;
         border-radius: 10px;
       }
-
+	  .popover {
+		  min-width:245px;
+	  }
       .popover-content form {
         margin: 0 auto;
         width: 213px;
