@@ -99,10 +99,10 @@ $(document).ready(function(){
               return ($(e).position().top -  mm_mouseY + half_box_height > 0 && $(e).attr("id") !== "SFDSWFB-legend");
             });
             if (tops.length > 0) {
-              $(tops[0]).css("border-top", "1px solid #22aaff");
+              $(tops[0]).css("border-top", "80px solid #ccddee");
             } else {
               if ($target_component.length > 0) {
-                $($target_component[$target_component.length - 1]).css("border-bottom", "1px solid #22aaff");
+                $($target_component[$target_component.length - 1]).css("border-bottom", "80px solid #ccddee");
               }
             }
         } else {
