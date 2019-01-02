@@ -86,17 +86,19 @@ $(document).ready(function(){
 			"left" : mm_mouseX - half_box_width  + "px"
 		});
 		
+		//added 100 to center drag
 		if (
 			mm_mouseX > $("#SFDSWFB-build").offset().left && 
 			mm_mouseX < tar_pos.left + $target.width() + $target.width() + $temp.width() &&
-			mm_mouseY > tar_pos.top &&
-			mm_mouseY < tar_pos.top + $target.height() + $temp.height()/2
+			mm_mouseY > tar_pos.top + 100 &&
+			mm_mouseY < tar_pos.top + $target.height() + $temp.height()/2 + 100
 		) {
 			//effects if dragged item is within the form
             $("#SFDSWFB-target").css("background-color", "#fafdff");
             $target_component.css({"border-top" : "1px solid white", "border-bottom" : "none"});
             tops = $.grep($target_component, function(e){
-              return ($(e).position().top -  mm_mouseY + half_box_height > 0 && $(e).attr("id") !== "SFDSWFB-legend");
+				//added 150 to center drag
+              return ($(e).position().top -  mm_mouseY + half_box_height + 150 > 0 && $(e).attr("id") !== "SFDSWFB-legend");
             });
             if (tops.length > 0) {
               $(tops[0]).css("border-top", "80px solid #ccddee");
@@ -151,11 +153,12 @@ $(document).ready(function(){
 		var oldHeight = $('#SFDSWFB-target').height();			
 
         // acting only if mouse is in right place
+		//added 150 and 100 to center drag
 		if (
 			mu_mouseX > $("#SFDSWFB-build").offset().left &&
 			mu_mouseX - half_box_width < tar_pos.left + $target.width() + $target.width() + half_box_width &&
-			mu_mouseY + half_box_height > tar_pos.top &&
-			mu_mouseY - half_box_height < tar_pos.top + $target.height()
+			mu_mouseY + half_box_height > tar_pos.top + 150 &&
+			mu_mouseY - half_box_height < tar_pos.top + $target.height() + 100
         ) {
             $temp.attr("style", null);
 
