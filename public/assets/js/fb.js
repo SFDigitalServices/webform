@@ -729,6 +729,16 @@ function loadForm() {
 					});
 				        value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
+				} else if (key == "option") {
+				    var options = saved.data[i][key].split("\n");
+				    var value = "\n<!-- Select Basic -->";
+				    $.each(options, function(i,e) {
+					    if (e.length > 0) {
+						value += '\n<option value="'+e+'">'+e+'</option>';
+					    }
+					});
+				        value += "\n  ";
+					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "button") {
 					var color = saved.data[i]['color'] != undefined ? saved.data[i]['color'] : '';
 					var value = '<button class="btn '+color+'">'+saved.data[i][key]+'</button>';
@@ -932,13 +942,13 @@ function populateCSV() {
 	if (csvFile) { //global
 		showCSV(csvFile);
 	} else if (formId) {
-		callAPI('/form/getFilename', {id : formId}, showCSV);
+		callAPI('/form/getFilename', {id : formId, 'path' : true}, showCSV);
 	}
 }
 function showCSV(response) {
 	csvFile = response;
 	$(".csvFile").show('medium');
-	$(".csvFile > a").attr('href', "/csv/"+response+"?"+new Date().getTime());
+	$(".csvFile > a").attr('href', response+"?"+new Date().getTime());
 }
 function toggleClickMenu() {
 	if ($('.clickMenu ul').is(":visible")) {

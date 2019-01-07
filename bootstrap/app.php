@@ -108,7 +108,8 @@ $app->routeMiddleware([
  $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\GuardServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
-
+ $app->register(Aws\Laravel\AwsServiceProvider::class);
+	
 // Dingo Adapter for Lumen
 //$app->register(Zeek\LumenDingoAdapter\Providers\LumenDingoAdapterServiceProvider::class);
 

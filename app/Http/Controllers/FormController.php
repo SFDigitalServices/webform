@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
+putenv('HOME=/var/www/html');
+use Aws\S3\S3Client;
+
 use App\Form;
 use Auth;
 use App\User_Form;
@@ -172,9 +175,9 @@ class FormController extends Controller
 		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
 		$sections = array();
 
-		$content = json_decode($form['content'], true);
+		$form['content'] = json_decode($form['content'], true);
 
-		return $this->wrapJS($this->generateHTML($content),$this->isSectional($content), $content);
+		return $this->wrapJS($this->generateHTML($form),$this->isSectional($form['content']), $form['content']);
    }
 
      /**
@@ -188,9 +191,9 @@ class FormController extends Controller
 		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
 		$sections = array();
 
-		$content = json_decode($form['content'], true);
+		$form['content'] = json_decode($form['content'], true);
 
-		return $this->generateHTML($content);
+		return $this->generateHTML($form);
    }
    
      /**
@@ -215,10 +218,15 @@ class FormController extends Controller
     }
 	
 	// EMBED FUNCTIONS
-	public function generateHTML($content) {
+	public function generateHTML($form) {
+		$content = $form['content'];
 
 		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 		$str = '';
+		
+		$csvPath = '//'.$_SERVER['HTTP_HOST'].'/form/submit';
+		//if this form is a csv transaction, add form_id
+		if (substr($content['settings']['action'],0 - strlen($csvPath)) == $csvPath) $str .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
 
 		foreach ($content['data'] as $field) {
 		  if ($field['formtype'] == "m16") { //special parsing for form sections
@@ -230,6 +238,7 @@ class FormController extends Controller
 			  $str .= '</label><div>';
 			  $str .= $this->printFormTypeStart($field['formtype']);
 			  $skipAttr = false;
+			  $isCheckbox = false;
 			  $attr = "";
 			  $inner = "";
 			  $help = "";
@@ -243,6 +252,7 @@ class FormController extends Controller
 				} else if ($key == "checkboxes") {
 				  $skipAttr = explode("\n",$value);
 				  $manyType ="checkbox";
+				  $isCheckbox = true;
 				} else if ($key == "radios") {
 				  $skipAttr = explode("\n",$value);
 				  $manyType = "radio";
@@ -272,6 +282,10 @@ class FormController extends Controller
 				  //do nothing
 				} else {
 				  //key value attributes
+				  if ($key == "name" && $isCheckbox) {
+					  $value = $value."[]";
+					  $isCheckbox = false;
+				  }
 				  if (!$skipAttr) {
 					$attr .= $key.'="'.$value.'" ';
 				  } else {
@@ -335,6 +349,12 @@ class FormController extends Controller
 		$output = "";
 		switch ($arr[$id]) {
 			case "s06":
+				if ($checked) {
+					$output = "input[name='".$id."[]']:checked";
+				} else {
+					$output = "input[name='".$id."[]']";
+				}
+				break;
 			case "s08":
 				if ($checked) {
 					$output = "input[name=".$id."]:checked";
@@ -679,21 +699,44 @@ class FormController extends Controller
 						$column++;
 					}
 				}
-				file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+				//file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+				$this->writeCSV($filename, implode(",",$write)."\n");
 			}
 		}
 	}
 
 	public function readCSV($filename) {
-		$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		//$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+		$csv = array();
+		$rows = str_getcsv($this->readS3($filename),"\n");
+		foreach ($rows as $row) {
+			$csv[] = str_getcsv($row);
+		}
 		return $csv;
 	}
 	
-	public function writeCSV(Request $request) {
+	public function writeCSV($filename, $body) {
+		//file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+		return $this->writeS3($filename, $body);
+	}
+	
+	public function appendCSV($filename, $arr) {
+		$csv = $this->readCSV($filename);
+		array_push($csv, $arr);
+		$output = "";
+		foreach ($csv as $row) {
+			$output .= implode(",", $row)."\n";
+		}
+		$this->writeCSV($filename, $output);
+	}
+	
+	public function submitCSV(Request $request) {
         $form_id = $request->input('form_id');
+		if (!$form_id) return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
         $form = Form::where('id', $form_id)->first();
 		$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
 		//print_r($form);
+		//todo backend validation
 		$column = 0;
 		$write = Array();
 		foreach ($form['content']['data'] as $field) {
@@ -707,7 +750,11 @@ class FormController extends Controller
 					$options = explode("\n",$field['radios']);
 				}
 				foreach ($options as $option) {
-					$write[$column] = $request->input($field['name']) == $option ? 1 : 0; //todo multiselect
+					if (is_array($request->input($field['name']))) {
+						$write[$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
+					} else {
+						$write[$column] = $request->input($field['name']) == $option ? 1 : 0;
+					}
 					$column++;
 				}
 			} else {
@@ -720,6 +767,7 @@ class FormController extends Controller
 		//print_r($write);
 		//die;
 
+		/*
 		$fp = fopen('/var/www/html/public/csv/'.$this->generateFilename($form_id), 'a');
 
 		//foreach ($write as $fields) {
@@ -727,21 +775,75 @@ class FormController extends Controller
 		//}
 
 		fclose($fp);
+		*/
+		
+		$this->appendCSV($this->generateFilename($form_id), $write);
 		
 		return redirect($form['content']['settings']['confirmation']);
 		//print "Form Submitted!";
 		
 		//return;
 	}
+
+	public function writeS3($filename, $body) {
+		//require('../vendor/autoload.php');
+		
+		$s3 = new S3Client([
+			'profile' => 'default',
+			'version' => 'latest',
+			'region' => env('BUCKETEER_AWS_REGION'),
+			'credentials' => [
+				'key' => env('BUCKETEER_AWS_ACCESS_KEY_ID'),
+				'secret' => env('BUCKETEER_AWS_SECRET_ACCESS_KEY')
+			]
+		]);	
+		
+		$result = $s3->putObject([
+			'Bucket' => env('BUCKETEER_BUCKET_NAME'),
+			'Key' => 'public/'.$filename,
+			'Body' => $body,
+		]);
+		
+		return $result;
+	}
+	
+	public function readS3($filename) {
+		
+		$s3 = new S3Client([
+			'profile' => 'default',
+			'version' => 'latest',
+			'region' => env('BUCKETEER_AWS_REGION'),
+			'credentials' => [
+				'key' => env('BUCKETEER_AWS_ACCESS_KEY_ID'),
+				'secret' => env('BUCKETEER_AWS_SECRET_ACCESS_KEY')
+			]
+		]);	
+		
+		if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), 'public/'.$filename)) {
+			$result = $s3->getObject([
+				'Bucket' => env('BUCKETEER_BUCKET_NAME'),
+				'Key' => 'public/'.$filename
+			]);
+			return $result['Body'];
+		} else {
+			return array();
+		}
+		
+	}
 	
 	public function getFilename(Request $request) {
 		$id = $request->input('id');
 		//todo make sure user has access to this form id
-		return $this->generateFilename($id);
+		$path = $request->input('path');
+		if ($path) {
+			return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$this->generateFilename($id);
+		} else {
+			return $this->generateFilename($id);
+		}
 	}
 	
 	private function generateFilename($id) {
-		$hash = substr(sha1($id."#lfk&$#3mXqVekHQjpaqW"),0,8);
+		$hash = substr(sha1($id.env('FILE_SALT')),0,8);
 		return $id.'-'.$hash.'.csv';
 	}
 }
