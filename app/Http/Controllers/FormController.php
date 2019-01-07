@@ -695,7 +695,7 @@ class FormController extends Controller
 							$column++;
 						}
 					} else {
-						$write[$column] = $field->name;
+						$write[$column] = isset($field->name) ? $field->name : '';
 						$column++;
 					}
 				}
@@ -708,9 +708,12 @@ class FormController extends Controller
 	public function readCSV($filename) {
 		//$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
 		$csv = array();
-		$rows = str_getcsv($this->readS3($filename),"\n");
-		foreach ($rows as $row) {
-			$csv[] = str_getcsv($row);
+		$read = $this->readS3($filename);
+		if ($read) {
+			$rows = str_getcsv($read,"\n");
+			foreach ($rows as $row) {
+				$csv[] = str_getcsv($row);
+			}
 		}
 		return $csv;
 	}
@@ -826,7 +829,7 @@ class FormController extends Controller
 			]);
 			return $result['Body'];
 		} else {
-			return array();
+			return false;
 		}
 		
 	}
