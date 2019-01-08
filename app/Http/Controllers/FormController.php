@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers;
 
-putenv('HOME=/var/www/html');
+//putenv('HOME=/var/www/html');
 use Aws\S3\S3Client;
+use Aws\Credentials\CredentialProvider;
 
 use App\Form;
 use Auth;
@@ -791,7 +792,7 @@ class FormController extends Controller
 	public function writeS3($filename, $body) {
 		//require('../vendor/autoload.php');
 		
-		$s3 = new S3Client([
+		/*$s3 = new S3Client([
 			'profile' => 'default',
 			'version' => 'latest',
 			'region' => env('BUCKETEER_AWS_REGION'),
@@ -799,7 +800,12 @@ class FormController extends Controller
 				'key' => env('BUCKETEER_AWS_ACCESS_KEY_ID'),
 				'secret' => env('BUCKETEER_AWS_SECRET_ACCESS_KEY')
 			]
-		]);	
+		]);*/
+		$s3 = new S3Client([
+			'region'      => env('BUCKETEER_AWS_REGION'),
+			'version'     => 'latest',
+			'credentials' => CredentialProvider::env()
+	]);	
 		
 		$result = $s3->putObject([
 			'Bucket' => env('BUCKETEER_BUCKET_NAME'),
@@ -812,7 +818,7 @@ class FormController extends Controller
 	
 	public function readS3($filename) {
 		
-		$s3 = new S3Client([
+		/*$s3 = new S3Client([
 			'profile' => 'default',
 			'version' => 'latest',
 			'region' => env('BUCKETEER_AWS_REGION'),
@@ -820,7 +826,12 @@ class FormController extends Controller
 				'key' => env('BUCKETEER_AWS_ACCESS_KEY_ID'),
 				'secret' => env('BUCKETEER_AWS_SECRET_ACCESS_KEY')
 			]
-		]);	
+		]);	*/
+		$s3 = new S3Client([
+			'region'      => env('BUCKETEER_AWS_REGION'),
+			'version'     => 'latest',
+			'credentials' => CredentialProvider::env()
+	]);
 		
 		if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), 'public/'.$filename)) {
 			$result = $s3->getObject([
