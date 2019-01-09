@@ -694,7 +694,7 @@ class FormController extends Controller
 							$options = explode("\n",$field->radios);
 						}
 						foreach ($options as $option) {
-							$write[$column] = $option; //todo multiselect
+							$write[$column] = isset($field->name) ? $field->name." ".$option : $option;
 							$column++;
 						}
 					} else {
