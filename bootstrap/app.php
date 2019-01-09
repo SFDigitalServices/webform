@@ -108,7 +108,12 @@ $app->routeMiddleware([
  $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\GuardServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+// AWS S3 integration(through bucketeer on Heroku)
  $app->register(Aws\Laravel\AwsServiceProvider::class);
+
+ // Sentry.io integration
+ $app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
 	
 // Dingo Adapter for Lumen
 //$app->register(Zeek\LumenDingoAdapter\Providers\LumenDingoAdapterServiceProvider::class);
