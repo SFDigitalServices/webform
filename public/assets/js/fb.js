@@ -877,7 +877,7 @@ function getMathIds(str) {
 	//saved = JSON.parse(saved);
 	for (i in saved.data) {
 		if (saved.data[i]["id"] != undefined) {
-			if (saved.data[i].formtype == "d06" || saved.data[i].formtype == "d08" || saved.data[i].formtype == "s02" || saved.data[i].formtype == "s06" || saved.data[i].formtype == "s08") ids.push(saved.data[i]["id"]);
+			if (saved.data[i].formtype == "d06" || saved.data[i].formtype == "d08" || saved.data[i].formtype == "s02" || saved.data[i].formtype == "s06" || saved.data[i].formtype == "s08" || saved.data[i].formtype == "m11") ids.push(saved.data[i]["id"]);
 		}
 	}
 	var index = ids.indexOf(str);

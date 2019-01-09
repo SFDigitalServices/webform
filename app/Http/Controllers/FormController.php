@@ -233,6 +233,8 @@ class FormController extends Controller
 		  if ($field['formtype'] == "m16") { //special parsing for form sections
 			  $sections[] = $field;
 			  $str .= '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
+		  } else if ($field['formtype'] == "m11") { //hidden fields
+			  $str .= '<input type="hidden" name="'.$field['name'].'" id="'.$field['id'].'" value="'.$field['value'].'"/>';
 		  } else {
 			  $str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
 			  $str .= isset($field['label']) ? $field['label'] : "";
