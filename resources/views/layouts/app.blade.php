@@ -238,12 +238,18 @@
 	}
 		  
 		</style>
+		<!-- Sentyr.io javascript integration -->
+		<script src="https://js.sentry-cdn.com/b53658ff4ec749719da39905217d41e0.min.js" crossorigin="anonymous">
+			Sentry.init({ dsn: 'https://b53658ff4ec749719da39905217d41e0@sentry.io/1366253' });
+		</script> 
+
 		<script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/jquery.validationEngine.min.js"></script>
 		<!--<script type="text/javascript" language="Javascript" src="/assets/js/toolkit.js"></script>-->
 		<script src="/assets/js/bootstrap.min.js"></script>
 		<script src="/assets/js/bootstrap-tagsinput.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+		<script src="/assets/js/login.js"></script>
 		<script src="/assets/js/fb.js"></script>
 	</head>
 	<body>
