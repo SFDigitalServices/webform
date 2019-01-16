@@ -351,9 +351,9 @@ class FormController extends Controller
 		switch ($arr[$id]) {
 			case "s06":
 				if ($checked) {
-					$output = "input[name='".$id."[]']:checked";
+					$output = 'input[name="'.$id.'[]"]:checked';
 				} else {
-					$output = "input[name='".$id."[]']";
+					$output = 'input[name="'.$id.'[]"]';
 				}
 				break;
 			case "s08":
