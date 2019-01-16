@@ -1115,7 +1115,7 @@ function loadContent(id) {
 			$('#SFDSWFB-load').html('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}');
 			$('#SFDSWFB-snippet').val('Save your form to get embed code');
 			$('#SFDSWFB-source').val('');
-			$('#SFDSWFB-7 input').val('');
+			$('#SFDSWFB-7 input:not([type=radio])').val('');
 			$("input[name=backend][value=db]").attr('checked', true);
 			$("input[name=method][value=POST]").attr('checked', true);
 			$("#SFDSWFB-names").val('0');
