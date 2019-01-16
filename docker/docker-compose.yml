@@ -7,11 +7,13 @@ services:
     volumes:
       - ~/.composer:/root/.composer:delegated
       - ./src:/var/www/html
+      - ./conf/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
+      - ./conf/ssl:/etc/apache2/ssl
     links:
       - db
-      - cache
     ports:
-      - 8081:80
+      - 8080:80
+      - 443:443
   db:
     image: mysql:5.6
     volumes:
@@ -19,10 +21,3 @@ services:
     restart: always
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: lumen
-      MYSQL_USER: lumen
-      MYSQL_PASSWORD: secret
-  cache:
-    image: memcached
