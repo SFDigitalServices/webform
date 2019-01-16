@@ -264,6 +264,8 @@ class FormController extends Controller
 				  $inner = '>'.$value;
 				} else if ($key == "codearea") {
 				  $inner = '>'.html_entity_decode($value);
+				} else if ($key == "type" && $value == "number") {
+				  $attr .= 'type="number" step="any" ';
 				} else if ($key == "regex") {
 				  if (!$skipAttr) $attr .= 'pattern="'.$value.'" ';
 				} else if ($key == "required") { //this tends to be last in the array
