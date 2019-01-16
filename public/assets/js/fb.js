@@ -119,8 +119,7 @@ $(document).ready(function(){
       $("body").delegate("#SFDSWFB-temp", "mouseup", function(mu){
         mu.preventDefault();
 
-		//disallow if dragged in less than a second
-		if (dragExisting && Date.now() - clickNow < 1000) {
+		function cancelDrag() {
 			//populate id field, almost all fields have id
 			var componentId = setComponentId($temp);
 			//put them in original place
@@ -140,6 +139,11 @@ $(document).ready(function(){
 			$("body").undelegate("#SFDSWFB-temp","mouseup");
 			$("#SFDSWFB-target .component").popover({trigger: "manual"});
 			$temp.remove();
+		}
+		
+		//disallow if dragged in less than a second
+		if (dragExisting && Date.now() - clickNow < 1000) {
+			cancelDrag();
 			return;
 		}
 		
@@ -181,10 +185,18 @@ $(document).ready(function(){
 			$('#SFDSWFB-target .component:eq('+flashIndex+')').css('opacity', 0);
 			$('#SFDSWFB-target .component:eq('+flashIndex+')').animate({opacity: 1}, 500);
 
-        } else {		  
-            // do not add the component
-            $("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
-            tops = [];
+        } else {
+			var componentId = setComponentId($temp);
+			
+			if (isReferenced(componentId)) { // check if section getting dragged out has dependencies
+				alert("This field cannot be removed while it is being referenced in a calculation or conditional.")
+				cancelDrag();
+				return;
+			} else {				
+				// do not add the component
+				$("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
+				tops = [];
+			}
         }
 		  
 		//calculate new height, animation code only
@@ -896,6 +908,25 @@ function getIds() {
 	}
 	return ids;
 }
+
+function isReferenced(myId) {
+	var arr = [];
+	var saved = JSON.parse($("#SFDSWFB-save").val());
+	for (i in saved.data) {
+		if (saved.data[i].conditions != undefined) {
+			for (c in saved.data[i].conditions.condition) {
+				arr.push(saved.data[i].conditions.condition[c].id);
+			}
+		}
+		if (saved.data[i].calculations != undefined) {
+			for (d in saved.data[i].calculations) {
+				if (d % 2 == 0) arr.push(saved.data[i].calculations[d]);
+			}
+		}
+	}
+	return arr.includes(myId);
+}
+
 function updateSettings() {
 	var saved = $("#SFDSWFB-save").val();
 	//saved = JSON.parse(saved);
