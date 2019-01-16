@@ -993,10 +993,10 @@ function confirmAction(action) {
 	toggleClickMenu();
 	var msg;
 	if (action == "exit") {
-		msg = "Warning! You have unsaved changes, are you sure you want to exit?";
-	} else if (action == "clone") { //todo
-		msg = "Warning! You have unsaved changes, are you sure you want to clone this form?";
-		url += "&id="+formId;
+		msg = "Warning! You will lose any unsaved changes, are you sure you want to exit?";
+	} else if (action == "clone") {
+		msg = "Warning! You will lose any unsaved changes, are you sure you want to clone this form?";
+		url = "/form/clone";
 	} else if (action == "delete") {
 		msg = "Warning! Are you sure you want to delete this form?";		
 		url = "/form/delete";
@@ -1006,7 +1006,7 @@ function confirmAction(action) {
 		$('.container').hide('fast');
 		if (action == "exit") {
 			goHome();
-		} else if (action == "delete") {
+		} else if (action == "delete" || action == "clone") {
 			callAPI(url, {"id" : formId}, goHome);
 		}
 		//document.location = url;
