@@ -95,7 +95,7 @@ class FormController extends Controller
 			$returnForm = Form::where('id', $form_id)->first();
 			//$returnForm['content'] = $form_data['content'];
 			$this->processCSV($returnForm);
-			$returnForm['content'] = $request->input('content');
+			$returnForm['content'] = $this->scrubString($request->input('content'));
 			$returnForm->save();
 			return response()->json($returnForm);
 		}
@@ -147,7 +147,7 @@ class FormController extends Controller
 			$form->save();
 			*/
 			
-			$form = Form::create(['content' => $request->input('content')]);
+			$form = Form::create(['content' => $this->scrubString($request->input('content'))]);
 			
             if( $form ){
 				$this->processCSV($form);
@@ -859,5 +859,12 @@ class FormController extends Controller
 	private function generateFilename($id) {
 		$hash = substr(sha1($id.env('FILE_SALT')),0,8);
 		return $id.'-'.$hash.'.csv';
+	}
+	
+	private function scrubString($str) {
+		$scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
+		$scrubbed = str_replace("'","&apos;", $scrubbed);
+		$scrubbed = str_replace('\"',"", $scrubbed);
+		return $scrubbed;
 	}
 }
