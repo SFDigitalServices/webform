@@ -108,18 +108,19 @@ class FormController extends Controller
      * @return json object
      */
     public function clone(Request $request){
-        $form_id = $request->input('form_id');
+        $user_id = $request->input('user_id');
+        $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
         
         if($form){
-            $content = json_decode($form['content']);
+            $content = json_decode($form['content'], true);
             //return $content->settings->name;
-            $content->settings->name = "Clone of ".$content->settings->name;
+			//$content = $form->content;
+            $content['settings']['name'] = "Clone of ".$content['settings']['name'];
             $cloned_form = Form::create(['content' => json_encode($content)] );
 
             if( $cloned_form ){
                 // create entry in user_form
-                $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $cloned_form->id]);
                 if($user_form){
                     return response()->json(['status' => 1, 'data' => $user_form]);  
@@ -263,6 +264,8 @@ class FormController extends Controller
 				  $inner = '>'.$value;
 				} else if ($key == "codearea") {
 				  $inner = '>'.html_entity_decode($value);
+				} else if ($key == "type" && $value == "number") {
+				  $attr .= 'type="number" step="any" ';
 				} else if ($key == "regex") {
 				  if (!$skipAttr) $attr .= 'pattern="'.$value.'" ';
 				} else if ($key == "required") { //this tends to be last in the array
