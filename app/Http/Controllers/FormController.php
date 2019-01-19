@@ -27,7 +27,8 @@ class FormController extends Controller
             'clone',
             'getUserForms',
             'getForm',
-			'getFilename'
+			'getFilename',
+			'purgeCSV'
             ]]);
     }
 
@@ -673,42 +674,64 @@ class FormController extends Controller
         return true;
     }
 	
+	public function rewriteCSV($content, $filename) {
+		$column = 0;
+		$write = Array();
+		foreach ($content->data as $field) {
+			if ($field->formtype == "m02" || $field->formtype == "m04" || $field->formtype == "m06" || $field->formtype == "m08" || $field->formtype == "m10" || $field->formtype == "m13" || $field->formtype == "m14" || $field->formtype == "m16") { //do nothing for non inputs
+			} else if ($field->formtype == "s02" || $field->formtype == "s04" || $field->formtype == "s06" || $field->formtype == "s08") { //multiple options
+				if ($field->formtype == "s02" || $field->formtype == "s04") {
+					$options = explode("\n",$field->option);
+				} else if ($field->formtype == "s06") {
+					$options = explode("\n",$field->checkboxes);
+				} else if ($field->formtype == "s08") {
+					$options = explode("\n",$field->radios);
+				}
+				foreach ($options as $option) {
+					$write[$column] = isset($field->name) ? $field->name." ".$option : $option;
+					$column++;
+				}
+			} else {
+				$write[$column] = isset($field->name) ? $field->name : '';
+				$column++;
+			}
+		}
+		//file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+		$this->writeCSV($filename, implode(",",$write)."\n");
+	}
+
+	public function purgeCSV(Request $request) {
+        $form_id = $request->input('id');
+        $form = Form::where('id', $form_id)->first();
+		$content = json_decode($form->content);
+		$filename = $this->generateFilename($form_id);
+		$this->rewriteCSV($content, $filename);
+		return response()->json(['status' => 1, 'message' => 'Purged CSV']); 
+ 	}
+	
 	public function processCSV($form) {
 		//read content and settings
 		$content = json_decode($form->content);
+		if ($this->isCSVDatabase($content->settings->action)) {
+			$filename = $this->generateFilename($form->id);
+			//rewrite header row if CSV is not published (only header row or less exists)
+			if (!$this->isCSVPublished($filename)) $this->rewriteCSV($content, $filename);
+		}
+	}
+	
+	public function isCSVDatabase($formAction) {
 		$path = '//'.$_SERVER['HTTP_HOST'].'/form/submit';
 		//if form action matches a csv transaction
-		if (substr($content->settings->action,0 - strlen($path)) == $path) {
-			$filename = $this->generateFilename($form->id);
-			//open csv file
-			$csv = $this->readCSV($filename);
-			//rewrite header row if one or zero rows exist
-			if (count($csv) < 2) {
-				$column = 0;
-				$write = Array();
-				foreach ($content->data as $field) {
-					if ($field->formtype == "m02" || $field->formtype == "m04" || $field->formtype == "m06" || $field->formtype == "m08" || $field->formtype == "m10" || $field->formtype == "m13" || $field->formtype == "m14" || $field->formtype == "m16") { //do nothing for non inputs
-					} else if ($field->formtype == "s02" || $field->formtype == "s04" || $field->formtype == "s06" || $field->formtype == "s08") { //multiple options
-						if ($field->formtype == "s02" || $field->formtype == "s04") {
-							$options = explode("\n",$field->option);
-						} else if ($field->formtype == "s06") {
-							$options = explode("\n",$field->checkboxes);
-						} else if ($field->formtype == "s08") {
-							$options = explode("\n",$field->radios);
-						}
-						foreach ($options as $option) {
-							$write[$column] = isset($field->name) ? $field->name." ".$option : $option;
-							$column++;
-						}
-					} else {
-						$write[$column] = isset($field->name) ? $field->name : '';
-						$column++;
-					}
-				}
-				//file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
-				$this->writeCSV($filename, implode(",",$write)."\n");
-			}
-		}
+		return substr($formAction,0 - strlen($path)) == $path ? true : false;
+	}
+	
+	public function CSVPublished(Request $request) {
+		return $this->isCSVPublished($this->getFilename($request)) ? 1 : 0;
+	}
+	
+	public function isCSVPublished($filename) {
+		$csv = $this->readCSV($filename);
+		return count($csv) > 1 ? true : false;
 	}
 
 	public function readCSV($filename) {
