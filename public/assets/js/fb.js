@@ -586,6 +586,7 @@ $(document).ready(function(){
 	  }
 	  
 	  //save conditionals
+	  var currentIndex = $(".popover").prevAll(".form-group").length-1;
 	  if ($(".popover .condition").length) {
 		  var conditions = {};
 		  conditions.showHide = false;
@@ -599,9 +600,11 @@ $(document).ready(function(){
 			  conditions.condition[i].op = $(this).find(".conditionalOperator").val();
 			  conditions.condition[i].val = $(this).find(".conditionalValue").val();
 		  });
-		  var currentIndex = $(".popover").prevAll(".form-group").length-1;
 		  saved.data[currentIndex]["conditions"] = conditions;
 		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').attr("data-conditions", JSON.stringify(conditions));
+	  } else {
+		  delete saved.data[currentIndex]["conditions"];
+		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
 	  }
 	  
 	  //moved down, used to be in the loop for some reason?
