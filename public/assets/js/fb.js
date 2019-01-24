@@ -979,7 +979,10 @@ function populateCSV() {
 function showCSV(response) {
 	csvFile = response;
 	$(".csvFile").show('medium');
-	$(".csvFile > a").attr('href', response+"?"+new Date().getTime());
+	$(".csvFile > a").on('click', function(){openCSV(response)});
+}
+function openCSV(url) {
+	window.open(url+"?sessid="+new Date().getTime(), "_blank");
 }
 function toggleClickMenu() {
 	if ($('.clickMenu ul').is(":visible")) {
