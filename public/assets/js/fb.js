@@ -215,6 +215,9 @@ $(document).ready(function(){
         $("body").undelegate("#SFDSWFB-temp","mouseup");
         $("#SFDSWFB-target .component").popover({trigger: "manual"});
         $temp.remove();
+		
+		//auto save
+		saveForm();
       });
     }, delays[type]); //end delayed
 
@@ -603,14 +606,18 @@ $(document).ready(function(){
 		  saved.data[currentIndex]["conditions"] = conditions;
 		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').attr("data-conditions", JSON.stringify(conditions));
 	  } else {
-		  delete saved.data[currentIndex]["conditions"];
-		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
+		  if (typeof saved.data[currentIndex] != "undefined") {
+			  delete saved.data[currentIndex]["conditions"];
+			  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
+		  }
 	  }
 	  
 	  //moved down, used to be in the loop for some reason?
 	  $active_component.popover("hide");
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
 	  resizeHeight();
+	  //auto save
+	  saveForm();
    });
    
   });  //end popover on click event
@@ -622,9 +629,11 @@ $(document).ready(function(){
   $("#SFDSWFB-7 input").change(function() {
 	updateSettings();
   });
+  /*
   $('#SFDSWFB-authors').tagsinput({
 	confirmKeys: [13, 44, 32]
   });
+  */
   
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display','block');
   
@@ -784,6 +793,8 @@ function loadForm() {
 	}
 
 	$('legend').text(saved.settings.name);
+
+	callAPI("/form/authors", {"id" : formId}, shareResponse);
 }
 function isUnique(cid,index) {
 	var saved = $("#SFDSWFB-save").val();
@@ -988,16 +999,8 @@ function showCSV(response) {
 	$(".csvFile").show('medium');
 	$(".csvFile > a").attr('href', response+"?"+new Date().getTime());
 }
-function toggleClickMenu() {
-	if ($('.clickMenu ul').is(":visible")) {
-		$('.clickMenu ul').hide('fast');
-	} else {
-		$('.clickMenu ul').show('fast');
-	}
-}
 function confirmAction(action) {
 	//todo onunload logic
-	toggleClickMenu();
 	var msg;
 	if (action == "exit") {
 		msg = "Warning! You will lose any unsaved changes, are you sure you want to exit?";
@@ -1019,6 +1022,22 @@ function confirmAction(action) {
 		//document.location = url;
 	}
 }
+function share() {
+	$('#SFDSWFB-authors').slideUp();
+	callAPI("/form/share", {"id" : formId, "email" : $('#SFDSWFB-authors input').val()}, shareResponse);
+}
+function shareResponse(response) {
+	if (response.status && typeof response.data != "undefined") {
+		$('#SFDSWFB-existingAuthors').html(response.data);
+		if (response.data.includes(",")) initESS();
+	} else if (!response.status) {
+		if (typeof response.message != "undefined") {
+			alert(response.message);
+		}
+	} else {
+		alert("Error sharing form. Please enter a valid email and try again or contact SFDS.");
+	}
+}
 function goHome(back) {
 	if (back != undefined) {
 		window.history.back();
@@ -1030,8 +1049,7 @@ function goHome(back) {
 }
 function saveForm() {
 	//requires GLOBALS to be set
-	$('.clickMenu button:eq(0)').text('Saving...');
-	$('.clickMenu button:eq(0)').addClass('disabled');
+	$('.saveStatus').text('Saving...');
 	$('.saveSpinner').show();
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
@@ -1053,17 +1071,14 @@ function saveForm() {
 	}
 	$.ajax(settings).done(function (data) {
 		//savedForm = JSON.parse(data);
-		$('.clickMenu button:eq(0)').text('Form Saved!');
+		$('.saveStatus').text('Form Saved!');
 		formId = data.id;
 		setTimeout(function(){
-			$('.clickMenu button:eq(0)').text('Save Changes');
-			$('.clickMenu button:eq(0)').removeClass('disabled');
+			$('.saveStatus').text('');
 			$('.saveSpinner').hide();
-	    }, 3000);
+	    }, 2000);
 	})
 	.fail(function() {
-		$('.clickMenu button:eq(0)').text('Save Changes');
-		$('.clickMenu button:eq(0)').removeClass('disabled');
 		$('.saveSpinner').hide();
 		alert("Error saving form. Please try again or contact SFDS.")
 	});	
@@ -1185,4 +1200,29 @@ function resizeHeight() {
 	setTimeout(function() {
 		$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
 	}, 100);
+}
+var eventSource = false;
+function initESS() {
+	if (!eventSource) {
+		eventSource = new EventSource("/form/push?form_id="+formId);
+		var listener = function (event) {
+			var type = event.type;
+			//alert(type + ": " + (type === "message" ? event.data : es.url));
+			if (event.type === "message") {
+				var newContent = JSON.parse(event.data);
+				//console.log(newContent);
+				$('.saveStatus').text('Shared Updating...');
+				$('.saveSpinner').show();
+				$("#SFDSWFB-load").val(newContent.content);
+				loadForm();
+				setTimeout(function(){
+					$('.saveStatus').text('');
+					$('.saveSpinner').hide();
+				}, 2000);
+			}
+		};
+		eventSource.addEventListener("open", listener);
+		eventSource.addEventListener("message", listener);
+		eventSource.addEventListener("error", listener);
+	}
 }
