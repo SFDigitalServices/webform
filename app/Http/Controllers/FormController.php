@@ -227,7 +227,7 @@ class FormController extends Controller
 		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 		$str = '';
 		
-		$csvPath = '//'.$_SERVER['HTTP_HOST'].'/form/submit';
+		$csvPath = '//'.$host = request()->getHttpHost().'/form/submit';
 		//if this form is a csv transaction, add form_id
 		if (substr($content['settings']['action'],0 - strlen($csvPath)) == $csvPath) $str .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
 
@@ -678,8 +678,9 @@ class FormController extends Controller
 		$column = 0;
 		$write = Array();
 		foreach ($content->data as $field) {
-			if ($field->formtype == "m02" || $field->formtype == "m04" || $field->formtype == "m06" || $field->formtype == "m08" || $field->formtype == "m10" || $field->formtype == "m13" || $field->formtype == "m14" || $field->formtype == "m16") { //do nothing for non inputs
-			} else if ($field->formtype == "s02" || $field->formtype == "s04" || $field->formtype == "s06" || $field->formtype == "s08") { //multiple options
+			$nonInputs = array("m02", "m04", "m06", "m08", "m10", "m13", "m14", "m16");
+			$multipleInputs = array("s02", "s04", "s06", "s08");
+			if (in_array($field->formtype, $multipleInputs)) {
 				if ($field->formtype == "s02" || $field->formtype == "s04") {
 					$options = explode("\n",$field->option);
 				} else if ($field->formtype == "s06") {
@@ -691,7 +692,7 @@ class FormController extends Controller
 					$write[$column] = isset($field->name) ? $field->name." ".$option : $option;
 					$column++;
 				}
-			} else {
+			} else if (!in_array($field->formtype, $nonInputs)) { // catch all for everything except multiple and non-inputs
 				$write[$column] = isset($field->name) ? $field->name : '';
 				$column++;
 			}
@@ -720,7 +721,7 @@ class FormController extends Controller
 	}
 	
 	public function isCSVDatabase($formAction) {
-		$path = '//'.$_SERVER['HTTP_HOST'].'/form/submit';
+		$path = '//'.$host = request()->getHttpHost().'/form/submit';
 		//if form action matches a csv transaction
 		return substr($formAction,0 - strlen($path)) == $path ? true : false;
 	}
