@@ -436,6 +436,9 @@ $(document).ready(function(){
 			text:	item
 		}));
 	});
+	
+	//init tooltips
+	$(".popover [data-toggle='tooltip']").tooltip();
 
 	//click cancel on popover menu
     $(".popover").delegate(".btn-danger", "click", function(e){
@@ -625,6 +628,8 @@ $(document).ready(function(){
   $('#SFDSWFB-authors').tagsinput({
 	confirmKeys: [13, 44, 32]
   });
+
+  $('[data-toggle="tooltip"]').tooltip();
   
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display','block');
   
