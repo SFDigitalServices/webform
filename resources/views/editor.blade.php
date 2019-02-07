@@ -1567,5 +1567,82 @@
 			</div>
 		</div>
 	</div>
-		
+
+	<div class="modal" id="dialog" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title"></h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p></p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+	<div class="modal" id="welcome" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Welcome to Webform Builder!</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p>Let us help you get started creating your new form.</p>
+			<p>Would you like to view the introduction tutorial?</p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#tutorial').modal()">Yes Please</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">No Thanks</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<div class="modal" id="tutorial" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">How to get the most out of Webform Builder</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p>Start by dragging components (name, email, phone, etc.) from the left side into the form box on the right.</p>
+			<ul>
+				<li>Click on the tabs (Contact, Data, etc.) to change the list of components.</li>
+				<li>Click the Rendered tab to get code to embed your form on your website.</li>
+				<li>Click the Settings tab to setup your database or share your form with others.</li>
+			</ul>
+			<br/>
+			<p>Modify your components by clicking them after dragging them into the form box.</p>
+			<ul>
+				<li>Be sure to rename your form by clicking "My Form" and typing in a new title.</li>
+				<li>Click each dragged component in the right to change the labeling, html attributes and more.</li>
+			</ul>
+			<br/>
+			<p>Perform advanced features like validation, conditionals, and calculations.</p>
+			<ul>
+				<li>Set form validation by clicking your component and mousing over "Validation".</li>
+				<li>Conditionals can show or hide components based on respondents' previous answers.</li>
+				<li>Totals can be tallied by choosing a "Numbers" component and adding a calculation.</li>
+			</ul>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Got It</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
 @endsection

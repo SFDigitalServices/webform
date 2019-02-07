@@ -236,6 +236,13 @@
 	.condition:hover, .calculation:hover {
 		border-bottom:1px solid #000;
 	}
+
+	h5 {font-weight:bold}
+	.modal .close {
+		position:absolute;
+		top:15px;
+		right:15px;
+	}
 		  
 		</style>
 		<!-- Sentyr.io javascript integration -->
