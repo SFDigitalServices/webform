@@ -794,7 +794,21 @@ function loadForm() {
 
 	$('legend').text(saved.settings.name);
 
+  // check if csv and published
+	var submitUrl = new URL('/form/submit', window.location.href);
+	if ((saved.settings.action).includes(submitUrl)) {
+		callAPI('/form/csv-published', {id : formId}, protectPublished)
+	}
+
+  // do additional call to get authors
 	callAPI("/form/authors", {"id" : formId}, shareResponse);
+}
+function protectPublished(response) {
+	if (response == 1) {
+		$('.clickMenu').hide();
+		$('#SFDSWFB-target').css("padding", "20px");
+		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="'+csvFile+'" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
+	}
 }
 function isUnique(cid,index) {
 	var saved = $("#SFDSWFB-save").val();
@@ -997,7 +1011,10 @@ function populateCSV() {
 function showCSV(response) {
 	csvFile = response;
 	$(".csvFile").show('medium');
-	$(".csvFile > a").attr('href', response+"?"+new Date().getTime());
+	$(".csvFile > a").on('click', function(){openCSV(response)});
+}
+function openCSV(url) {
+	window.open(url+"?sessid="+new Date().getTime(), "_blank");
 }
 function confirmAction(action) {
 	//todo onunload logic
@@ -1010,13 +1027,16 @@ function confirmAction(action) {
 	} else if (action == "delete") {
 		msg = "Warning! Are you sure you want to delete this form?";		
 		url = "/form/delete";
+	} else if (action == "purge") {
+		msg = "Warning! Purging will erase all of your form submission data permanently! To make a new revision, clone your form. Only purge if you're sure it's test/junk data. Are you sure you want to purge?";
+		url = "/form/purge-csv";
 	}
 	var go = confirm(msg);
 	if (go) {
 		$('.container').hide('fast');
 		if (action == "exit") {
 			goHome();
-		} else if (action == "delete" || action == "clone") {
+		} else if (action == "delete" || action == "clone" || action == "purge") {
 			callAPI(url, {"id" : formId}, goHome);
 		}
 		//document.location = url;

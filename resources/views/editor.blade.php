@@ -1314,7 +1314,7 @@
 						<!--<input type="hidden" name="hash"/>-->
 					</div>
 					<div class='form-group col-md-12 csvFile' style="display:none">
-						<a href="" target="_blank" class="btn btn-info">Open CSV File</a>
+						<a href="javascript:void(0)" class="btn btn-info">Open CSV File</a>
 					</div>
 					<div class='form-group col-md-12'>
 						<label class="control-label">Form Action</label>
