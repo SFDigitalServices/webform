@@ -226,9 +226,7 @@ class FormController extends Controller
 
 		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 		$str = '';
-		
-		//$csvPath = '//'.$host = request()->getHttpHost().'/form/submit';
-		var_dump($base_url);
+	
 		$csvPath = '//'.$base_url.'/form/submit';
 
 		//if this form is a csv transaction, add form_id
@@ -724,7 +722,6 @@ class FormController extends Controller
 	}
 	
 	public function isCSVDatabase($formAction, $base_url = '') {
-		//$path = '//'.$host = request()->getHttpHost().'/form/submit';
 		$path = '//'. $base_url.'/form/submit';
 		//if form action matches a csv transaction
 		return substr($formAction,0 - strlen($path)) == $path ? true : false;
