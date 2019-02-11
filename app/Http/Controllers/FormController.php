@@ -95,7 +95,7 @@ class FormController extends Controller
         } else {
 			$returnForm = Form::where('id', $form_id)->first();
 			//$returnForm['content'] = $form_data['content'];
-			$this->processCSV($returnForm);
+			$this->processCSV($returnForm, $request->getHttpHost());
 			$returnForm['content'] = $this->scrubString($request->input('content'));
 			$returnForm->save();
 			return response()->json($returnForm);
@@ -152,7 +152,7 @@ class FormController extends Controller
 			$form = Form::create(['content' => $this->scrubString($request->input('content'))]);
 			
             if( $form ){
-				$this->processCSV($form);
+				$this->processCSV($form, $request->getHttpHost());
                 // create entry in user_form
                 $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
@@ -196,7 +196,7 @@ class FormController extends Controller
 
 		$form['content'] = json_decode($form['content'], true);
 
-		return $this->generateHTML($form);
+		return $this->generateHTML($form, $request->getHttpHost());
    }
    
      /**
@@ -221,13 +221,16 @@ class FormController extends Controller
     }
 	
 	// EMBED FUNCTIONS
-	public function generateHTML($form) {
+	public function generateHTML($form, $base_url = '') {
 		$content = $form['content'];
 
 		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 		$str = '';
 		
-		$csvPath = '//'.$host = request()->getHttpHost().'/form/submit';
+		//$csvPath = '//'.$host = request()->getHttpHost().'/form/submit';
+		var_dump($base_url);
+		$csvPath = '//'.$base_url.'/form/submit';
+
 		//if this form is a csv transaction, add form_id
 		if (substr($content['settings']['action'],0 - strlen($csvPath)) == $csvPath) $str .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
 
@@ -702,26 +705,27 @@ class FormController extends Controller
 	}
 
 	public function purgeCSV(Request $request) {
-        $form_id = $request->input('id');
-        $form = Form::where('id', $form_id)->first();
-		$content = json_decode($form->content);
-		$filename = $this->generateFilename($form_id);
-		$this->rewriteCSV($content, $filename);
-		return response()->json(['status' => 1, 'message' => 'Purged CSV']); 
+      $form_id = $request->input('id');
+      $form = Form::where('id', $form_id)->first();
+			$content = json_decode($form->content);
+			$filename = $this->generateFilename($form_id);
+			$this->rewriteCSV($content, $filename);
+			return response()->json(['status' => 1, 'message' => 'Purged CSV']); 
  	}
 	
-	public function processCSV($form) {
+	public function processCSV($form, $base_url = '') {
 		//read content and settings
 		$content = json_decode($form->content);
-		if ($this->isCSVDatabase($content->settings->action)) {
+		if ($this->isCSVDatabase($content->settings->action, $base_url)) {
 			$filename = $this->generateFilename($form->id);
 			//rewrite header row if CSV is not published (only header row or less exists)
 			if (!$this->isCSVPublished($filename)) $this->rewriteCSV($content, $filename);
 		}
 	}
 	
-	public function isCSVDatabase($formAction) {
-		$path = '//'.$host = request()->getHttpHost().'/form/submit';
+	public function isCSVDatabase($formAction, $base_url = '') {
+		//$path = '//'.$host = request()->getHttpHost().'/form/submit';
+		$path = '//'. $base_url.'/form/submit';
 		//if form action matches a csv transaction
 		return substr($formAction,0 - strlen($path)) == $path ? true : false;
 	}
