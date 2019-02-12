@@ -1,0 +1,66 @@
+{
+  "addons": [
+    "bucketeer",
+    "cleardb",
+    "cleardb"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-php"
+    }
+  ],
+  "description": "",
+  "env": {
+    "APP_KEY": {
+      "required": true
+    },
+    "APP_URL": {
+      "required": true
+    },
+    "AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "AWS_REGION": {
+      "required": true
+    },
+    "AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
+    "BUCKET_NAME": {
+      "required": true
+    },
+    "BUCKETEER_AWS_ACCESS_KEY_ID": {
+      "required": true
+    },
+    "BUCKETEER_AWS_REGION": {
+      "required": true
+    },
+    "BUCKETEER_AWS_SECRET_ACCESS_KEY": {
+      "required": true
+    },
+    "BUCKETEER_BUCKET_NAME": {
+      "required": true
+    },
+    "CACHE_DRIVER": {
+      "required": true
+    },
+    "CLEARDB_DATABASE_URL": {
+      "required": true
+    },
+    "FILE_SALT": {
+      "required": true
+    },
+    "SENTRY_DSN": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "webform",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
