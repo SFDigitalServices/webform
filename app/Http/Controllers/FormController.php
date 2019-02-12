@@ -180,7 +180,7 @@ class FormController extends Controller
 
 		$form['content'] = json_decode($form['content'], true);
 
-		return $this->wrapJS($this->generateHTML($form),$this->isSectional($form['content']), $form['content']);
+		return $this->wrapJS($this->generateHTML($form, $request->getHttpHost()),$this->isSectional($form['content']), $form['content']);
    }
 
      /**
