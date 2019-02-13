@@ -189,7 +189,7 @@ $(document).ready(function(){
 			var componentId = setComponentId($temp);
 			
 			if (isReferenced(componentId)) { // check if section getting dragged out has dependencies
-				alert("This field cannot be removed while it is being referenced in a calculation or conditional.")
+				loadDialogModal("Oops!", "This field cannot be removed while it is being referenced in a calculation or conditional. Remove those dependencies first before attempting to remove this field.");
 				cancelDrag();
 				return;
 			} else {				
@@ -436,6 +436,9 @@ $(document).ready(function(){
 			text:	item
 		}));
 	});
+	
+	//init tooltips
+	$(".popover [data-toggle='tooltip']").tooltip();
 
 	//click cancel on popover menu
     $(".popover").delegate(".btn-danger", "click", function(e){
@@ -451,7 +454,7 @@ $(document).ready(function(){
 	  if ($('#id')[0] != undefined) {
 		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) {
 			var errorMsg = setTimeout(function() {
-				alert('ID is not unique, please use a different ID');
+				loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
 			},100);
 			return;
 		}
@@ -625,6 +628,8 @@ $(document).ready(function(){
   $('#SFDSWFB-authors').tagsinput({
 	confirmKeys: [13, 44, 32]
   });
+
+  $('[data-toggle="tooltip"]').tooltip();
   
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display','block');
   
@@ -1084,7 +1089,7 @@ function saveForm() {
 		$('.clickMenu button:eq(0)').text('Save Changes');
 		$('.clickMenu button:eq(0)').removeClass('disabled');
 		$('.saveSpinner').hide();
-		alert("Error saving form. Please try again or contact SFDS.")
+		loadDialogModal("Oops!", "Error saving form. Please try again or contact SFDS.");
 	});	
 }
 var autofillNames = null;
@@ -1177,6 +1182,7 @@ function loadContent(id) {
 			$("input[name=method][value=POST]").attr('checked', true);
 			$("#SFDSWFB-names").val('0');
 			loadForm();
+			$('#welcome').modal();
 		} else {
 			//return content
 			$('#SFDSWFB-load').html(JSON.stringify(allForms[id].content));
@@ -1204,4 +1210,9 @@ function resizeHeight() {
 	setTimeout(function() {
 		$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
 	}, 100);
+}
+function loadDialogModal(title, body) {
+	$('#dialog .modal-title').text(title);
+	$('#dialog .modal-body p').text(body);
+	$('#dialog').modal();
 }

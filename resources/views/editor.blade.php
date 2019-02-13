@@ -79,9 +79,9 @@
 							<div class='accordion-section general'>
 								<div class='accordion-header'>General</div>
 								<div class='accordion'>
-									<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-									<label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-									<label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
+									<label class='control-label'>Label Text</label> <input class='form-control' type='text' data-toggle='tooltip' title='This text will appear before the input field' name='label' id='label'>
+									<label class='control-label'>Placeholder</label> <input type='text' data-toggle='tooltip' title='This text will appear inside the input before a user types into it, we recommend leaving this blank' name='placeholder' id='placeholder' class='form-control'>
+									<label class='control-label'>Help Text</label> <input type='text' data-toggle='tooltip' title='This is helper text that will appear after the input field' name='help' id='help' class='form-control'>
 								</div>
 							</div>
 							<hr/>
@@ -1518,10 +1518,10 @@
 		<div class='accordion-section attributes'>
 			<div class='accordion-header'>Attributes</div>
 			<div class='accordion' style='display:none'>
-			  <label class='control-label'>Default Value</label> <input class='form-control' type='text' name='value' id='value'>
-			  <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
-			  <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-			  <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
+			  <label class='control-label'>Default Value</label> <input data-toggle='tooltip' title='Use this to prefill this field with a value, otherwise this should be left blank' class='form-control' type='text' name='value' id='value'>
+			  <label class='control-label'>Name Attribute</label> <input data-toggle='tooltip' title='You must set a unique machine name for this field' class='form-control' type='text' name='name' id='name'>
+			  <label class='control-label'>Unique ID</label> <input data-toggle='tooltip' title='Use this to set the unique id of this field, it is good practice to use the same value as the name' class='form-control' type='text' name='id' id='id'>
+			  <label class='control-label'>Class Attribute</label> <input data-toggle='tooltip' title='Use this to set the css identifier, it is not required unless needed for styling' class='form-control' type='text' name='class' id='class'>
 			</div>
 		</div>
 	</div>
@@ -1529,31 +1529,31 @@
 		<div class='accordion-section validation'>
 			<div class='accordion-header'>Validation</div>
 			<div class='accordion' style='display:none'>
-			  <div class="validate-required">
+			  <div class="validate-required" data-toggle="tooltip" title="Check this to indicate the user must fill out this field">
 				<label class='control-label' for="required">Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'><br/>
 			  </div>
-			  <div class="validate-type">
+			  <div class="validate-type" data-toggle="tooltip" title="This is to make sure the user response fits the field type">
 				<label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select>
 			  </div>
-			  <div class='validate-regex' style='display:none'>
+			  <div class='validate-regex' style='display:none' data-toggle="tooltip" title="For advanced users only">
 				<label class='control-label'>Regular Expression</label> <input class='form-control' type='text' name='regex' id='regex'>
 			  </div>
 			  <div class='validate-minmax' style='display:none'>
-				  <div class='floatleft'>
+				  <div class='floatleft' data-toggle="tooltip" title="The lowest acceptable numerical value, leave blank if there is none">
 					<label class='control-label'>Min Value</label> <input class='form-control' type='text' name='min' id='min'>
 				  </div>
-				  <div class='floatright'>
+				  <div class='floatright' data-toggle="tooltip" title="The highest acceptable numerical value, leave blank if there is none">
 					<label class='control-label'>Max Value</label> <input class='form-control' type='text' name='max' id='max'>
 				  </div>
 				  <div class='clear'></div>
 			  </div>
-			  <div class="validate-match" style="display:none">
+			  <div class="validate-match" style="display:none" data-toggle="tooltip" title="Use this to only accept a user response if the value matches a different field that you specify">
 				<label class='control-label' style='display:none'>Match Another</label> <select class='form-control' name='match' id='match'><option value=''></option></select>
 			  </div>
-			  <div class='floatleft'>
+			  <div class='floatleft' data-toggle="tooltip" title="The minimum amount of characters allowed, leave blank if there is none">
 				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'>
 			  </div>
-			  <div class='floatright'>
+			  <div class='floatright' data-toggle="tooltip" title="The maximum amount of charcaters allowed, leave blank if there is none">
 				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'>
 			  </div>
 			  <div class='clear'></div>
@@ -1567,5 +1567,82 @@
 			</div>
 		</div>
 	</div>
-		
+
+	<div class="modal" id="dialog" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title"></h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p></p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+	<div class="modal" id="welcome" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">Welcome to Webform Builder!</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p>Let us help you get started creating your new form.</p>
+			<p>Would you like to view the introduction tutorial?</p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#tutorial').modal()">Yes Please</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">No Thanks</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<div class="modal" id="tutorial" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title">How to get the most out of Webform Builder</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p>Start by dragging components (name, email, phone, etc.) from the left side into the form box on the right.</p>
+			<ul>
+				<li>Click on the tabs (Contact, Data, etc.) to change the list of components.</li>
+				<li>Click the Rendered tab to get code to embed your form on your website.</li>
+				<li>Click the Settings tab to setup your database or share your form with others.</li>
+			</ul>
+			<br/>
+			<p>Modify your components by clicking them after dragging them into the form box.</p>
+			<ul>
+				<li>Be sure to rename your form by clicking "My Form" and typing in a new title.</li>
+				<li>Click each dragged component in the right to change the labeling, html attributes and more.</li>
+			</ul>
+			<br/>
+			<p>Perform advanced features like validation, conditionals, and calculations.</p>
+			<ul>
+				<li>Set form validation by clicking your component and mousing over "Validation".</li>
+				<li>Conditionals can show or hide components based on respondents' previous answers.</li>
+				<li>Totals can be tallied by choosing a "Numbers" component and adding a calculation.</li>
+			</ul>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Got It</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
 @endsection
