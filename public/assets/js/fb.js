@@ -1253,8 +1253,9 @@ function initESS() {
 		eventSource.addEventListener("message", listener);
 		eventSource.addEventListener("error", listener);
 	}
+}
 
-  function loadDialogModal(title, body) {
+function loadDialogModal(title, body) {
 	$('#dialog .modal-title').text(title);
 	$('#dialog .modal-body p').text(body);
 	$('#dialog').modal();
