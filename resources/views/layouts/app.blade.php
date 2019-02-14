@@ -148,22 +148,11 @@
 		text-align:left;
 		margin-top:20px;
 		position:relative;
-	  }
-	  .clickMenu ul {
-		display:none;
-		position:absolute;
-		top:2.5em;
-		right:0;
-		padding:1em 0;
-		background:#fff;
-		border:1px solid #ddd;
-		list-style-type:none;
-		box-shadow:0 0 5px #ddd;
-		border-radius:3px;
+		color:#aaa;
 	  }
 	  .clickMenu li {
-		display:block;
-		padding:.5em 2em;
+		display:inline-block;
+		padding:.5em 1em;
 		color:#428bca;
 		cursor:pointer;
 	  }
@@ -257,6 +246,7 @@
 		<script src="/assets/js/popper.min.js"></script>
 		<script src="/assets/js/bootstrap-tagsinput.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/event-source-polyfill/0.0.9/eventsource.min.js"></script>
 		<script src="/assets/js/login.js"></script>
 		<script src="/assets/js/fb.js"></script>
 	</head>

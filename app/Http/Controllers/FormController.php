@@ -9,6 +9,7 @@ use App\Form;
 use Auth;
 use App\User_Form;
 use Validator;
+use App\Helpers\Helper;
 
 use Illuminate\Http\Request;
 class FormController extends Controller
@@ -28,6 +29,8 @@ class FormController extends Controller
             'getUserForms',
             'getForm',
 			'getFilename',
+			'share',
+			'authors',
 			'purgeCSV'
             ]]);
     }
@@ -64,9 +67,8 @@ class FormController extends Controller
     public function getForm(Request $request){
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
-		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
         
-        return response()->json($form);
+        return $form ? response()->json($form) : false;
     }
 
      /**
@@ -131,6 +133,56 @@ class FormController extends Controller
         }
         return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']); 
     }
+	
+     /**
+     * Share an existing form with another user.
+     *
+     * @return json object
+     */
+    public function share(Request $request){
+
+		$this->validate($request, [
+			'id' => 'required',
+			'email' => 'required|email'
+		]);
+	
+		$email = $request->input('email');
+        $form_id = $request->input('id');
+        $form = Form::where('id', $form_id)->first();
+		
+        if(!$form){
+			return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']); 
+		} else {
+			$user = Helper::getUserByEmail($email);
+			if (!$user) {
+				return response()->json(['status' => 0, 'message' => $email.' does not have an account.']); 
+			} else {
+				$user_already_has_access = User_Form::where([['user_id','=', $user->id], ['form_id', '=', $form_id]])->first();
+				if ($user_already_has_access) {
+					return response()->json(['status' => 0, 'message' => 'Form has already been shared with '.$user->name.'.']); 
+				} else {
+					$user_form = User_Form::create(['user_id' => $user->id, 'form_id' => $form_id]);
+					if ($user_form) {
+						$authors = Helper::formatAuthors(Helper::getFormUsers($form_id));
+						return response()->json(['status' => 1, 'message' => 'Form shared with '.$user->name.'.', 'data' => $authors]);  
+					} else {
+						return response()->json(['status' => 0, 'message' => 'Failed to share form']); 
+					}
+				}
+			}
+        }
+    }
+	
+     /**
+     * Provides a list of users attached to a form.
+     *
+     * @return a comma separated string of emails
+     */
+	public function authors(Request $request) {
+        $form_id = $request->input('id');
+		return response()->json(['status' => 1, 'data' => Helper::formatAuthors(Helper::getFormUsers($form_id))]);  
+	}
+		
      /**
      * Creates a new form for the current logged in user.
      *
@@ -211,11 +263,14 @@ class FormController extends Controller
         // soft delete?
 		// check permission
         $user_form_delete = User_Form::where([['user_id','=', $user_id], ['form_id', '=', $form_id]])->delete();
-        if( $user_form_delete ){ //todo check if no more users own that form, then delete
-            $form_delete = Form::where([['id', $form_id]])->delete();
-            if( $form_delete ){
-                 return response()->json(['status' => 1, 'message' => 'Deleted form from user']); 
-            }
+        if( $user_form_delete ){ //check if no more users own that form, then delete
+			$remaining_form_users = User_Form::where('form_id', $form_id)->first();
+			if (!$remaining_form_users) {
+				$form_delete = Form::where([['id', $form_id]])->delete();
+				if( $form_delete ){
+					 return response()->json(['status' => 1, 'message' => 'Deleted form from user']); 
+				}
+			}
         }
        return response()->json(['status' => 0, 'message' => 'Failed to delete form']);      
     }
@@ -896,5 +951,53 @@ class FormController extends Controller
 		$scrubbed = str_replace("'","&apos;", $scrubbed);
 		$scrubbed = str_replace('\"',"", $scrubbed);
 		return $scrubbed;
+	}
+	
+	function notifyUser(Request $request) {
+		$form_id = $request->input('form_id');		
+		$started = false;
+		$num = 0;
+		
+		header("Content-Type: text/event-stream");
+		header("Cache-Control: no-store");
+		header("Access-Control-Allow-Origin: *");
+
+		while (1) {
+			// 1 is always true, so repeat the while loop forever (aka event-loop)
+			$num++;
+
+			//todo make sure user has access to this form id
+			$form = $this->getForm($request);
+			if (!$form) {
+				echo "Error, form does not exist.";
+				return;
+			}
+ 			
+			if (!$started) {
+				$last_updated = $form->original['updated_at'];
+				$started = true;
+			} else {
+				if ($form->original['updated_at'] > $last_updated) {
+					$formData = json_encode($form->original);
+					echo "data: {$formData}\n\n";
+					$last_updated = $form->original['updated_at'];
+				}
+			}
+			
+			// flush the output buffer and send echoed messages to the browser
+
+			while (ob_get_level() > 0) {
+				ob_end_flush();
+			}
+			flush();
+
+			// break the loop if the client aborted the connection (closed the page)
+		  
+			if ( connection_aborted() ) break;
+
+			// sleep for 10 second before running the loop again
+		  
+			sleep(10);
+		}
 	}
 }

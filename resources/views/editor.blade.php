@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-		<script>
+<script>
 		  //GLOBALS for now
 		  var user_id = '<?php echo $user_id;?>';
 		  var api_token = '<?php echo $api_token;?>';
@@ -1340,9 +1340,14 @@
                         </label>
 					</div>
 					<div class='form-group col-md-12'>
-						<label class="control-label">Co-Authors (by email address)</label><br/>
-						<input class="col-md-12 form-control" id="SFDSWFB-authors" type="text"/>
+						<label class="control-label">Co-Authors</label><br/>
+						<span id="SFDSWFB-existingAuthors"></span> <a href="javascript:void(0)" onclick="$('#SFDSWFB-authors').slideDown()">+Add Author</a>
+						<div id="SFDSWFB-authors" style="display:none">
+							<label class="control-label">Co-Author's Email</label><br/>
+							<input class="form-control" style="width:50%;display:inline-block" type="text"/> <a href="javascript:void(0)" onclick="share()" class="btn btn-info">Add</a>
+						</div>
 					</div>
+					
 					<div class='form-group col-md-12'>
 						<label class="control-label">First Section Label</label>
 						<input class="col-md-12 form-control" id="SFDSWFB-section1" name="section1" type="text"/>
@@ -1416,13 +1421,13 @@
 		  <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
 			<div>
 				<h2 style="display:block;float:left;width:auto;margin-bottom:0">Customize Form</h2>
-				<div class="clickMenu"><i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;color:#aaa"></i>
-					<button class="btn btn-info" style="border-radius:5px 0 0 5px;width:130px" onclick="javascript:saveForm()">Save Changes</button>
-					<button class="btn btn-info" style="border-radius:0 5px 5px 0;margin-left:-3px" onclick="javascript:toggleClickMenu()"><i class="fas fa-caret-down"></i></button>
+				<div class="clickMenu">
 					<ul>
-						<li onclick="javascript:confirmAction('clone','doAction.php?action=clone')">Clone</li>
-						<li onclick="javascript:confirmAction('delete','doAction.php?action=delete')">Delete</li>
-						<li onclick="javascript:confirmAction('exit','editor.php')">Exit</li>
+						<span class="saveStatus"></span> 
+						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;color:#aaa"></i>
+						<li onclick="javascript:confirmAction('clone','doAction.php?action=clone')" title="Clone"><i class="fas fa-clone"></i></li>
+						<li onclick="javascript:confirmAction('delete','doAction.php?action=delete')" title="Delete"><i class="fas fa-trash"></i></li>
+						<li onclick="javascript:confirmAction('exit','editor.php')" title="Exit"><i class="fas fa-sign-out-alt"></i></li>
 					</ul>
 				</div>
 				<div class="clear"></div>

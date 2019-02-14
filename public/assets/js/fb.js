@@ -215,6 +215,9 @@ $(document).ready(function(){
         $("body").undelegate("#SFDSWFB-temp","mouseup");
         $("#SFDSWFB-target .component").popover({trigger: "manual"});
         $temp.remove();
+		
+		//auto save
+		saveForm();
       });
     }, delays[type]); //end delayed
 
@@ -606,14 +609,18 @@ $(document).ready(function(){
 		  saved.data[currentIndex]["conditions"] = conditions;
 		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').attr("data-conditions", JSON.stringify(conditions));
 	  } else {
-		  delete saved.data[currentIndex]["conditions"];
-		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
+		  if (typeof saved.data[currentIndex] != "undefined") {
+			  delete saved.data[currentIndex]["conditions"];
+			  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
+		  }
 	  }
 	  
 	  //moved down, used to be in the loop for some reason?
 	  $active_component.popover("hide");
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
 	  resizeHeight();
+	  //auto save
+	  saveForm();
    });
    
   });  //end popover on click event
@@ -625,9 +632,12 @@ $(document).ready(function(){
   $("#SFDSWFB-7 input").change(function() {
 	updateSettings();
   });
+  
+  /*
   $('#SFDSWFB-authors').tagsinput({
 	confirmKeys: [13, 44, 32]
   });
+  */
 
   $('[data-toggle="tooltip"]').tooltip();
   
@@ -790,11 +800,14 @@ function loadForm() {
 
 	$('legend').text(saved.settings.name);
 
-	// check if csv and published
+  // check if csv and published
 	var submitUrl = new URL('/form/submit', window.location.href);
 	if ((saved.settings.action).includes(submitUrl)) {
 		callAPI('/form/csv-published', {id : formId}, protectPublished)
 	}
+
+  // do additional call to get authors
+	callAPI("/form/authors", {"id" : formId}, shareResponse);
 }
 function protectPublished(response) {
 	if (response == 1) {
@@ -1009,16 +1022,8 @@ function showCSV(response) {
 function openCSV(url) {
 	window.open(url+"?sessid="+new Date().getTime(), "_blank");
 }
-function toggleClickMenu() {
-	if ($('.clickMenu ul').is(":visible")) {
-		$('.clickMenu ul').hide('fast');
-	} else {
-		$('.clickMenu ul').show('fast');
-	}
-}
 function confirmAction(action) {
 	//todo onunload logic
-	toggleClickMenu();
 	var msg;
 	if (action == "exit") {
 		msg = "Warning! You will lose any unsaved changes, are you sure you want to exit?";
@@ -1043,6 +1048,22 @@ function confirmAction(action) {
 		//document.location = url;
 	}
 }
+function share() {
+	$('#SFDSWFB-authors').slideUp();
+	callAPI("/form/share", {"id" : formId, "email" : $('#SFDSWFB-authors input').val()}, shareResponse);
+}
+function shareResponse(response) {
+	if (response.status && typeof response.data != "undefined") {
+		$('#SFDSWFB-existingAuthors').html(response.data);
+		if (response.data.includes(",")) initESS();
+	} else if (!response.status) {
+		if (typeof response.message != "undefined") {
+			alert(response.message);
+		}
+	} else {
+		alert("Error sharing form. Please enter a valid email and try again or contact SFDS.");
+	}
+}
 function goHome(back) {
 	if (back != undefined) {
 		window.history.back();
@@ -1054,8 +1075,7 @@ function goHome(back) {
 }
 function saveForm() {
 	//requires GLOBALS to be set
-	$('.clickMenu button:eq(0)').text('Saving...');
-	$('.clickMenu button:eq(0)').addClass('disabled');
+	$('.saveStatus').text('Saving...');
 	$('.saveSpinner').show();
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
@@ -1077,17 +1097,14 @@ function saveForm() {
 	}
 	$.ajax(settings).done(function (data) {
 		//savedForm = JSON.parse(data);
-		$('.clickMenu button:eq(0)').text('Form Saved!');
+		$('.saveStatus').text('Form Saved!');
 		formId = data.id;
 		setTimeout(function(){
-			$('.clickMenu button:eq(0)').text('Save Changes');
-			$('.clickMenu button:eq(0)').removeClass('disabled');
+			$('.saveStatus').text('');
 			$('.saveSpinner').hide();
-	    }, 3000);
+	    }, 2000);
 	})
 	.fail(function() {
-		$('.clickMenu button:eq(0)').text('Save Changes');
-		$('.clickMenu button:eq(0)').removeClass('disabled');
 		$('.saveSpinner').hide();
 		loadDialogModal("Oops!", "Error saving form. Please try again or contact SFDS.");
 	});	
@@ -1211,7 +1228,33 @@ function resizeHeight() {
 		$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
 	}, 100);
 }
-function loadDialogModal(title, body) {
+
+var eventSource = false;
+function initESS() {
+	if (!eventSource) {
+		eventSource = new EventSource("/form/push?form_id="+formId);
+		var listener = function (event) {
+			var type = event.type;
+			//alert(type + ": " + (type === "message" ? event.data : es.url));
+			if (event.type === "message") {
+				var newContent = JSON.parse(event.data);
+				//console.log(newContent);
+				$('.saveStatus').text('Shared Updating...');
+				$('.saveSpinner').show();
+				$("#SFDSWFB-load").val(newContent.content);
+				loadForm();
+				setTimeout(function(){
+					$('.saveStatus').text('');
+					$('.saveSpinner').hide();
+				}, 2000);
+			}
+		};
+		eventSource.addEventListener("open", listener);
+		eventSource.addEventListener("message", listener);
+		eventSource.addEventListener("error", listener);
+	}
+
+  function loadDialogModal(title, body) {
 	$('#dialog .modal-title').text(title);
 	$('#dialog .modal-body p').text(body);
 	$('#dialog').modal();
