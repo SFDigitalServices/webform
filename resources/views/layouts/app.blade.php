@@ -225,6 +225,13 @@
 	.condition:hover, .calculation:hover {
 		border-bottom:1px solid #000;
 	}
+
+	h5 {font-weight:bold}
+	.modal .close {
+		position:absolute;
+		top:15px;
+		right:15px;
+	}
 		  
 		</style>
 		<!-- Sentyr.io javascript integration -->
@@ -236,6 +243,7 @@
 		<script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/jquery.validationEngine.min.js"></script>
 		<!--<script type="text/javascript" language="Javascript" src="/assets/js/toolkit.js"></script>-->
 		<script src="/assets/js/bootstrap.min.js"></script>
+		<script src="/assets/js/popper.min.js"></script>
 		<script src="/assets/js/bootstrap-tagsinput.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/event-source-polyfill/0.0.9/eventsource.min.js"></script>
