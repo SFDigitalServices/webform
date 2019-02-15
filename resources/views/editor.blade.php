@@ -31,7 +31,7 @@
 
 		<div class="header">
 			<div style="display:block;max-width:1140px;text-align:right;margin:auto">
-				<div style="background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"><img src="/assets/images/SF_Digital_Services-logo.png"/></div>
+				<a href="/home" style="display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"><img src="/assets/images/SF_Digital_Services-logo.png"/></a>
 				SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 			</div>
 		</div>
@@ -1425,9 +1425,9 @@
 					<ul>
 						<span class="saveStatus"></span> 
 						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;color:#aaa"></i>
-						<li onclick="javascript:confirmAction('clone','doAction.php?action=clone')" title="Clone"><i class="fas fa-clone"></i></li>
-						<li onclick="javascript:confirmAction('delete','doAction.php?action=delete')" title="Delete"><i class="fas fa-trash"></i></li>
-						<li onclick="javascript:confirmAction('exit','editor.php')" title="Exit"><i class="fas fa-sign-out-alt"></i></li>
+						<li onclick="javascript:confirmAction('clone','doAction.php?action=clone')" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
+						<li onclick="javascript:confirmAction('delete','doAction.php?action=delete')" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
+						<li onclick="javascript:confirmAction('exit','editor.php')" data-toggle="tooltip" title="Exit"><i class="fas fa-sign-out-alt"></i></li>
 					</ul>
 				</div>
 				<div class="clear"></div>
@@ -1573,7 +1573,7 @@
 		</div>
 	</div>
 
-	<div class="modal" id="dialog" tabindex="-1" role="dialog">
+	<div class="modal" id="modal-dialog" tabindex="-1" role="dialog">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
 		  <div class="modal-header">
@@ -1587,6 +1587,26 @@
 		  </div>
 		  <div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
+		  </div>
+		</div>
+	  </div>
+	</div>
+
+	<div class="modal" id="modal-confirm" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title"></h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<p></p>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-primary" data-dismiss="modal">Do It</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 		  </div>
 		</div>
 	  </div>

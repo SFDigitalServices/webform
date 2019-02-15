@@ -146,9 +146,16 @@
 		float:right;
 		width:auto;
 		text-align:left;
-		margin-top:20px;
+		margin-top:1.5em;
 		position:relative;
 		color:#aaa;
+	  }
+	  .clickMenu > ul {
+		  margin-top: 10px;
+	  }
+	  h2 {
+		  margin-top:1em;
+		  margin-bottom:32px;
 	  }
 	  .clickMenu li {
 		display:inline-block;
