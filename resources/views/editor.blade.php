@@ -30,8 +30,8 @@
 
 
 		<div class="header">
-			<div style="display:block;max-width:1140px;text-align:right;margin:auto">
-				<a href="/home" style="display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888"><img src="/assets/images/SF_Digital_Services-logo.png"/></a>
+			<div>
+				<a href="/home"><img src="/assets/images/SF_Digital_Services-logo.png"/></a>
 				SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
 			</div>
 		</div>
@@ -39,13 +39,13 @@
 		<div class="content" style="display:none">
             <div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
 			<div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
-				<h1 style="margin-top:15vh">Welcome back <?php print $name; ?>!</h1>
-				<div style="text-align:center;padding:4em;margin:2em;border:1px solid #ddd;border-radius:5px">
+				<h1 class="welcomeBack">Welcome back <?php print $name; ?>!</h1>
+				<div class="welcomeBox">
 					<div>
 						<a href="javascript:void(0)" onclick="loadContent()" class="btn btn-info btn-lg btn-block">Create a New Form</a>
 					</div>
-                    <div class="text-muted" style="padding:2em 0">or load an existing form</div>
-					<div class="forms"><i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i></div>
+                    <div class="text-muted">or load an existing form</div>
+					<div class="forms"><i class="fas fa-circle-notch fa-spin"></i></div>
                 </div>
             </div>
 			<div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div> 
@@ -1454,7 +1454,7 @@
 		  </div>
 		</div>
 
-			
+																																																	
       </div> <!-- row -->
       <div class="row clearfix">
         <div class="col-md-12"></div>
@@ -1463,7 +1463,7 @@
 	
 	
 	<div class="hidden clonable addConditionalContainer">
-		<div class="addConditional" style="padding-top:1em">
+		<div class="addConditional" style="">
 			<a href="javascript:void(0)" onclick="javascript:addConditional()">+Add A Condition</a>
 		</div>
 	</div>
@@ -1499,7 +1499,7 @@
 		</div>
 	</div>
 	<div class="hidden cloneable addCalculationContainer">
-		<div class="addCalculation" style="padding-top:1em">
+		<div class="addCalculation">
 			<a href="javascript:void(0)" onclick="javascript:addCalculation()">+Add A Calculation</a>
 		</div>
 	</div>
