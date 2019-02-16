@@ -632,14 +632,10 @@
 
                       <!-- Select Basic -->
                       <label class=" control-label valtype" data-valtype="label">Select - Basic</label>
-                      <div class="">
-                        <select class="form-control input-md valtype" data-valtype="option">
-                          <option>Enter</option>
-                          <option>Your</option>
-                          <option>Options</option>
-                          <option>Here!</option>
-                        </select>
-                      </div>
+                      <div class=""><select class="form-control input-md valtype" data-valtype="option"><option>Enter</option>
+<option>Your</option>
+<option>Options</option>
+<option>Here!</option></select></div>
 
                     </div>
 
@@ -703,18 +699,8 @@
                       </form>" data-html="true"
                       >
                       <label class=" control-label valtype" data-valtype="label">Checkboxes</label>
-                      <div class=" valtype" data-valtype="checkboxes">
-
-                        <!-- Multiple Checkboxes -->
-                        <label class="checkbox">
-                          <input type="checkbox" value="Option one"/>
-                          Option one
-                        </label>
-                        <label class="checkbox">
-                          <input type="checkbox" value="Option two"/>
-                          Option two
-                        </label>
-                      </div>
+                      <div class=" valtype" data-valtype="checkboxes"><!-- Multiple Checkboxes --><label class="checkbox"><input type="checkbox" value="Option one"/>Option one</label>
+<label class="checkbox"><input type="checkbox" value="Option two"/>Option two</label></div>
 
                     </div>
 
@@ -737,18 +723,8 @@
                       </form>" data-html="true"
                       >
                       <label class=" control-label valtype" data-valtype="label">Radio buttons</label>
-                      <div class=" valtype" data-valtype="radios">
-
-                        <!-- Multiple Radios -->
-                        <label class="radio">
-                          <input type="radio" value="Option one" name="group" checked="checked">
-                          Option one
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="Option two" name="group">
-                          Option two
-                        </label>
-                      </div>
+                      <div class=" valtype" data-valtype="radios"><!-- Multiple Radios --><label class="radio"><input type="radio" value="Option one" name="group" checked="checked">Option one</label>
+<label class="radio"><input type="radio" value="Option two" name="group">Option two</label></div>
 
                     </div>
 

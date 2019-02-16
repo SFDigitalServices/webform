@@ -755,13 +755,12 @@ function loadForm() {
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "radios") {
 				    var radios = saved.data[i][key].split("\n");
-				    var value = "\n<!--  Multiple Radios -->";
+				    var value = "<!--  Multiple Radios -->";
 				    $.each(radios, function(i,e) {
 					    if (e.length > 0) {
-						value += '\n<label class="radio">\n<input type="radio" value="'+e+'">\n'+e+'\n</label>';
+						value += '<label class="radio"><input type="radio" value="'+e+'">'+e+'</label>';
 					    }
 					});
-				        value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "option") {
 				    var options = saved.data[i][key].split("\n");
