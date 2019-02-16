@@ -221,6 +221,9 @@
 		right:15px;
 	}
 
+#SFDSWFB-target .form-group {position:relative}
+#SFDSWFB-target .form-group.component .fa-times-circle {display;block;position:absolute;top:0;right:0;font-size:1.5em;color:#ccc;cursor:pointer;z-index:99}
+
 /* specific to editor page (pulling out inline styles) */
 .header > div {display:block;max-width:1140px;text-align:right;margin:auto}
 .header > div > a {display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888}
