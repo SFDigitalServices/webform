@@ -776,7 +776,7 @@ function loadForm() {
 				} else if (key == "button") {
 					var color = saved.data[i]['color'] != undefined ? saved.data[i]['color'] : '';
 					var value = '<button class="btn '+color+'">'+saved.data[i][key]+'</button>';
-					$(newSection).find("[data-valtype='"+key+"']").html(value);
+					$(newSection).find("[data-valtype='"+key+"']").html(value.replace(/^\s+|\s+$/gm,''));
 				} else if (key == "conditions") {
 					$(newSection).attr("data-conditions", JSON.stringify(saved.data[i][key]));
 				} else if (key == "calculations") {

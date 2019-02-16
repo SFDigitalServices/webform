@@ -1258,11 +1258,11 @@
                         </div>
                       </form>" data-html="true"
                       >
-                      <label class="col-md-12 control-label valtype" data-valtype="label">Button</label>
+                      <label class="col-md-12 control-label valtype" data-valtype="label">Submit Button</label>
 
                       <!-- Button -->
-                      <div class="valtype"  data-valtype="button">
-                        <button class='btn btn-success'>Button</button>
+                      <div class="valtype" data-valtype="button">
+                        <button class='btn btn-success'>Submit</button>
                       </div>
                     </div>
 					
