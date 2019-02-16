@@ -38,7 +38,7 @@ $app->group(['prefix' => 'form'], function($app) {
     $app->post('submit', 'FormController@submitCSV');
 	$app->post('getFilename', 'FormController@getFilename');
     $app->get('push', 'FormController@notifyUser');
-    $app->post('authors', 'FormController@authors');
+    $app->post('authors', 'FormController@getAuthors');
 	$app->post('csv-published', 'FormController@CSVPublished');
 	$app->post('purge-csv', 'FormController@purgeCSV');
 });

@@ -2,6 +2,6 @@
 
 return array(
 	'aliases' => [
-		'Helper' => App\Helpers\Helper::class
+		'UserHelper' => App\Helpers\UserHelper::class
 	]
 );	

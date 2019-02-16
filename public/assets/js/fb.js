@@ -813,7 +813,7 @@ function protectPublished(response) {
 	if (response == 1) {
 		$('.clickMenu').hide();
 		$('#SFDSWFB-target').css("padding", "20px");
-		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="'+csvFile+'" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
+		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="javascript:void(0)" onclick="openCSV('+csvFile+')" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
 	}
 }
 function isUnique(cid,index) {
@@ -1026,27 +1026,26 @@ function confirmAction(action) {
 	//todo onunload logic
 	var msg;
 	if (action == "exit") {
-		msg = "Warning! You will lose any unsaved changes, are you sure you want to exit?";
+		//msg = "You will lose any unsaved changes, are you sure you want to exit?";
+		return goHome();
 	} else if (action == "clone") {
-		msg = "Warning! You will lose any unsaved changes, are you sure you want to clone this form?";
+		//msg = "You will lose any unsaved changes, are you sure you want to clone this form?";
 		url = "/form/clone";
+		return callAPI(url, {"id" : formId}, goHome);
 	} else if (action == "delete") {
-		msg = "Warning! Are you sure you want to delete this form?";		
+		msg = "Are you sure you want to delete this form?";		
 		url = "/form/delete";
 	} else if (action == "purge") {
-		msg = "Warning! Purging will erase all of your form submission data permanently! To make a new revision, clone your form. Only purge if you're sure it's test/junk data. Are you sure you want to purge?";
+		msg = "Purging will erase all of your form submission data permanently! To make a new revision, clone your form. Only purge if you're sure it's test/junk data. Are you sure you want to purge?";
 		url = "/form/purge-csv";
 	}
-	var go = confirm(msg);
-	if (go) {
-		$('.container').hide('fast');
-		if (action == "exit") {
-			goHome();
-		} else if (action == "delete" || action == "clone" || action == "purge") {
-			callAPI(url, {"id" : formId}, goHome);
-		}
-		//document.location = url;
+	
+	var callback;
+	if (action == "delete" || action == "purge") {
+		callback = function(){callAPI(url, {"id" : formId}, goHome)};
 	}
+	
+	loadConfirmModal("Warning!", msg, callback);
 }
 function share() {
 	$('#SFDSWFB-authors').slideUp();
@@ -1058,10 +1057,10 @@ function shareResponse(response) {
 		if (response.data.includes(",")) initESS();
 	} else if (!response.status) {
 		if (typeof response.message != "undefined") {
-			alert(response.message);
+			loadDialogModal("Attention",response.message);
 		}
 	} else {
-		alert("Error sharing form. Please enter a valid email and try again or contact SFDS.");
+		loadDialogModal("Error Sharing Form", "Please enter a valid email and try again or contact SFDS.");
 	}
 }
 function goHome(back) {
@@ -1069,6 +1068,7 @@ function goHome(back) {
 		window.history.back();
 		return;
 	} 
+	$('.container').hide('fast');
 	callAPI("/form/getForms", {}, loadHome);
 	$('.forms').html('<i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i>');
     $(".content").show(1500);
@@ -1256,7 +1256,14 @@ function initESS() {
 }
 
 function loadDialogModal(title, body) {
-	$('#dialog .modal-title').text(title);
-	$('#dialog .modal-body p').text(body);
-	$('#dialog').modal();
+	$('#modal-dialog .modal-title').text(title);
+	$('#modal-dialog .modal-body p').text(body);
+	$('#modal-dialog').modal();
+}
+
+function loadConfirmModal(title, body, callback) {
+	$('#modal-confirm .modal-title').text(title);
+	$('#modal-confirm .modal-body p').text(body);
+	$('#modal-confirm .btn-primary').on('click', callback);
+	$('#modal-confirm').modal();
 }
