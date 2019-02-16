@@ -5,7 +5,7 @@ use App\Form;
 use App\User_Form;
 use App\User;
 
-class Helper
+class UserHelper
 {
 
      /**

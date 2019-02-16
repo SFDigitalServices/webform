@@ -9,7 +9,7 @@ use App\Form;
 use Auth;
 use App\User_Form;
 use Validator;
-use App\Helpers\Helper;
+use App\Helpers\UserHelper;
 
 use Illuminate\Http\Request;
 class FormController extends Controller
@@ -30,7 +30,7 @@ class FormController extends Controller
             'getForm',
 			'getFilename',
 			'share',
-			'authors',
+			'getAuthors',
 			'purgeCSV'
             ]]);
     }
@@ -153,7 +153,7 @@ class FormController extends Controller
         if(!$form){
 			return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']); 
 		} else {
-			$user = Helper::getUserByEmail($email);
+			$user = UserHelper::getUserByEmail($email);
 			if (!$user) {
 				return response()->json(['status' => 0, 'message' => $email.' does not have an account.']); 
 			} else {
@@ -163,7 +163,7 @@ class FormController extends Controller
 				} else {
 					$user_form = User_Form::create(['user_id' => $user->id, 'form_id' => $form_id]);
 					if ($user_form) {
-						$authors = Helper::formatAuthors(Helper::getFormUsers($form_id));
+						$authors = UserHelper::formatAuthors(UserHelper::getFormUsers($form_id));
 						return response()->json(['status' => 1, 'message' => 'Form shared with '.$user->name.'.', 'data' => $authors]);  
 					} else {
 						return response()->json(['status' => 0, 'message' => 'Failed to share form']); 
@@ -178,9 +178,9 @@ class FormController extends Controller
      *
      * @return a comma separated string of emails
      */
-	public function authors(Request $request) {
+	public function getAuthors(Request $request) {
         $form_id = $request->input('id');
-		return response()->json(['status' => 1, 'data' => Helper::formatAuthors(Helper::getFormUsers($form_id))]);  
+		return response()->json(['status' => 1, 'data' => UserHelper::formatAuthors(UserHelper::getFormUsers($form_id))]);  
 	}
 		
      /**
