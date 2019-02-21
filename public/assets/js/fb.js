@@ -755,13 +755,12 @@ function loadForm() {
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "radios") {
 				    var radios = saved.data[i][key].split("\n");
-				    var value = "\n<!--  Multiple Radios -->";
+				    var value = "<!--  Multiple Radios -->";
 				    $.each(radios, function(i,e) {
 					    if (e.length > 0) {
-						value += '\n<label class="radio">\n<input type="radio" value="'+e+'">\n'+e+'\n</label>';
+						value += '<label class="radio"><input type="radio" value="'+e+'">'+e+'</label>';
 					    }
 					});
-				        value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "option") {
 				    var options = saved.data[i][key].split("\n");
@@ -776,7 +775,7 @@ function loadForm() {
 				} else if (key == "button") {
 					var color = saved.data[i]['color'] != undefined ? saved.data[i]['color'] : '';
 					var value = '<button class="btn '+color+'">'+saved.data[i][key]+'</button>';
-					$(newSection).find("[data-valtype='"+key+"']").html(value);
+					$(newSection).find("[data-valtype='"+key+"']").html(value.replace(/^\s+|\s+$/gm,''));
 				} else if (key == "conditions") {
 					$(newSection).attr("data-conditions", JSON.stringify(saved.data[i][key]));
 				} else if (key == "calculations") {
