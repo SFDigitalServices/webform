@@ -241,7 +241,11 @@ $(document).ready(function(){
     $active_component.popover("show");
     //hack to fix popover y position
     var posOffset = $('.popover').offset();
-    $('.popover').offset({top:posOffset.top-50});
+	if ($(window).width() < 1620) {
+		$('.popover').offset({top:posOffset.top-50, left:posOffset.left-250});
+	} else {
+		$('.popover').offset({top:posOffset.top-50});
+	}
 	
 	//copy over attributes section
 	$(".popover .accordion-section.general").after($('.accordion-attributes').html());
