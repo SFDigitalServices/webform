@@ -645,6 +645,16 @@ $(document).ready(function(){
   
 }); //end document ready
 
+function quickDelete(obj) {
+	existingPos = $(obj.parentNode).prevAll(".form-group").length;
+	$('#SFDSWFB-target .form-group').eq(existingPos).remove();
+	var saved = $("#SFDSWFB-save").val();
+	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	saved.data.splice(existingPos, 1);
+	$("#SFDSWFB-save").val(JSON.stringify(saved));
+	saveForm();
+}
+
 function genSource() {
 	if (formId == 0) { //todo allow generate.php to parse json string objects
 		$("#SFDSWFB-source").val("Please save your form before generating HTML.");
@@ -799,6 +809,10 @@ function loadForm() {
 
 	$('legend').text(saved.settings.name);
 
+  // bind quick delete
+  $('#SFDSWFB-target .form-group.component').on('mouseover',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+  $('#SFDSWFB-target .form-group.component').on('mouseout',function(){$(this).find('.fa-times-circle').remove()});
+	
   // check if csv and published
 	var submitUrl = new URL('/form/submit', window.location.href);
 	if ((saved.settings.action).includes(submitUrl)) {
