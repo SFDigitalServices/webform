@@ -1,0 +1,37 @@
+version: 2 # use CircleCI 2.0
+
+jobs: # a collection of steps
+  build: # runs not using Workflows must have a `build` job as entry point
+    docker: # run the steps with Docker 
+      - image: markoshust/lumen-php-apache:7.2-0 # ...with this image as the primary container; this is where all `steps` will run
+        environment:
+          CACHE_DRIVER: file
+          #CLEARDB_DATABASE_URL: mysql://b2fa44e0ba6107:7083c97e@us-cdbr-iron-east-03.cleardb.net/heroku_5a23e21222f4b1f
+    working_directory: ~/project # directory where steps will run
+    steps: # a set of executable commands
+      - checkout # special step to check out source code to working directory
+      - run: a2enmod rewrite 
+      - run: docker-php-ext-install mysqli
+      - run: docker-php-ext-install pdo_mysql
+      #- run: 
+      #    name: "Setup custom environment variables"
+      #    command: echo 'CLEARDB_DATABASE_URL=mysql://be39bf22d1450d:a28a9e35@us-cdbr-iron-east-03.cleardb.net/heroku_465809b09e0a5ba'
+      - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
+          keys:
+            - composer-v1-{{ checksum "composer.lock" }}
+            # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
+            - composer-v1-
+      - run: composer install -n --prefer-dist
+      - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
+          key: composer-v1-{{ checksum "composer.lock" }}
+          paths:
+            - vendor
+      - run: touch storage/testing.sqlite 
+      - run: php artisan migrate --env=testing --database=sqlite_testing --force
+      # - run: php artisan make:migration create_users_table
+      #- run: php artisan migrate
+      #- run: php artisan db:seed
+      - run: ./vendor/bin/codecept run
+      #- run: ./vendor/bin/codecept build
+      #- run: ./vendor/bin/codecept run
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples    
