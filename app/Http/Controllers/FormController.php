@@ -10,6 +10,7 @@ use Auth;
 use App\User_Form;
 use Validator;
 use App\Helpers\UserHelper;
+use App\Helpers\ListHelper;
 
 use Illuminate\Http\Request;
 class FormController extends Controller
@@ -372,6 +373,11 @@ class FormController extends Controller
 				}
 			  } else {
 				$str .= $attr.$inner;
+				// do special processing for state dropdowns
+				if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16")  {
+					$str .= '>';
+					$str .= ListHelper::getStates($field['formtype']);
+				}
 				$str .= $this->printFormTypeEnd($field['formtype']);
 			  }
 			  $str .= '<p class="help-block">'.$help.'</p>';
@@ -713,7 +719,7 @@ class FormController extends Controller
 	  }
 	  return ($str);
 	}
-
+	
      /**
      * validates form data
      *
