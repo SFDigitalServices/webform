@@ -6,9 +6,14 @@
 
 class_name: FunctionalTester
 modules:
+    config:
+        - Laravel5:
+            environment_file: .env.testing
     enabled:
         - Lumen:
-            url: https://webform.test
+            url: https://webform.test 
+            environment_file: .env-testing
+            cleanup: true
         - Filesystem
         - Asserts
         - Helper\Functional

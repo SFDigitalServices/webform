@@ -13,6 +13,7 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
     {
         $this->faker = Faker\Factory::create();
         parent::setUp();
+        Artisan::call('migrate');
         //$this->artisan('db:seed');
     }
     /**
@@ -22,6 +23,20 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
      */
     public function createApplication()
     {
+        /*putenv('DB_CONNECTION=sqlite_testing');
+
+        $app = require __DIR__ . '/../../bootstrap/app.php';
+
+        $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
+
+        return $app;
+        */
         return require __DIR__.'/../bootstrap/app.php';
+    }
+
+    public function tearDown()
+    {
+        Artisan::call('migrate:reset');
+        parent::tearDown();
     }
 }
