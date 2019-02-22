@@ -25,8 +25,8 @@ $app->get('/user/debug', 'UserController@debug');
 
 $app->group(['prefix' => 'form'], function($app) {
     //$app->get('embed', 'FormController@embedJS');
-    $app->get('getIndex', 'FormController@getIndex');
-    $app->post('getForms', 'FormController@getUserForms');
+    $app->get('getIndex', ['as' => 'getIndex', 'uses' => 'FormController@getIndex']);
+    $app->post('getForms', ['as' => 'getForms', 'uses' => 'FormController@getUserForms']);
     $app->post('getForm', 'FormController@getForm');
     $app->get('embed', 'FormController@embedJS');
     $app->get('generate', 'FormController@generate');
@@ -34,11 +34,8 @@ $app->group(['prefix' => 'form'], function($app) {
     $app->post('create', 'FormController@create');
     $app->post('clone', 'FormController@clone');
     $app->post('delete', 'FormController@delete');
-    $app->post('share', 'FormController@share');
     $app->post('submit', 'FormController@submitCSV');
 	$app->post('getFilename', 'FormController@getFilename');
-    $app->get('push', 'FormController@notifyUser');
-    $app->post('authors', 'FormController@getAuthors');
 	$app->post('csv-published', 'FormController@CSVPublished');
 	$app->post('purge-csv', 'FormController@purgeCSV');
 });

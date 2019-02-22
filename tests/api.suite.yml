@@ -1,0 +1,7 @@
+actor: ApiTester
+modules:
+    enabled:
+        - REST:
+            depends: Lumen
+            part: json
+        - \Helper\Api
