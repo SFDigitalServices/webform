@@ -22,6 +22,8 @@ class User extends Model implements
     protected $fillable = [
         'name',
         'email',
+        'password',
+        'api_token',
     ];
 
     /**

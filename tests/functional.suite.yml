@@ -7,8 +7,10 @@
 class_name: FunctionalTester
 modules:
     enabled:
-        - Lumen:
-            url: https://webform.test
         - Filesystem
         - Asserts
         - Helper\Functional
+        - Lumen:
+            url: https://webform.test 
+            cleanup: true
+        

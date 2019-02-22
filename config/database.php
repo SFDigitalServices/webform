@@ -67,7 +67,8 @@ if( isset($url['host'] )){
             ],
             'sqlite_testing' => [
                 'driver'   => 'sqlite',
-                'database' => ':memory:',
+                //'database' => ':memory:',
+                'database'  => storage_path() . '/testing.sqlite',
                 'prefix'   => '',
             ],
             /*'mysql' => [
@@ -173,7 +174,8 @@ else
             ],
             'sqlite_testing' => [
                 'driver'   => 'sqlite',
-                'database' => ':memory:',
+                //'database' => ':memory:',
+                'database'  => storage_path() . '/testing.sqlite',
                 'prefix'   => '',
             ],
         ],
