@@ -6,6 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Sentry\\SentryLaravel\\' => array($vendorDir . '/sentry/sentry-laravel/src'),
+    'Raven_' => array($vendorDir . '/sentry/sentry/lib'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
+    'Behat\\Gherkin' => array($vendorDir . '/behat/gherkin/src'),
 );

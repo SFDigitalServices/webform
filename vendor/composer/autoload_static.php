@@ -4,25 +4,25 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
+class ComposerStaticInita7457b933f15f24eb76f0c861ece6183
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '023d27dca8066ef29e6739335ea73bad' => __DIR__ . '/..' . '/symfony/polyfill-php70/bootstrap.php',
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
-        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
-        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         'bee9632da3ca00a99623b9c35d0c4f8b' => __DIR__ . '/..' . '/laravel/lumen-framework/src/helpers.php',
     );
@@ -55,8 +55,11 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
             'Symfony\\Component\\EventDispatcher\\' => 34,
+            'Symfony\\Component\\DomCrawler\\' => 29,
             'Symfony\\Component\\Debug\\' => 24,
+            'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
+            'Symfony\\Component\\BrowserKit\\' => 29,
         ),
         'P' => 
         array (
@@ -115,6 +118,7 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
             'Flipbox\\LumenGenerator\\' => 23,
             'FastRoute\\' => 10,
             'Faker\\' => 6,
+            'Facebook\\WebDriver\\' => 19,
         ),
         'D' => 
         array (
@@ -126,6 +130,9 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'C' => 
         array (
             'Cron\\' => 5,
+            'Codeception\\PHPUnit\\' => 20,
+            'Codeception\\Extension\\' => 22,
+            'Codeception\\' => 12,
             'ClassPreloader\\' => 15,
         ),
         'A' => 
@@ -140,8 +147,8 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'XdgBaseDir\\' => 
         array (
@@ -203,13 +210,25 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         array (
             0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
         ),
+        'Symfony\\Component\\DomCrawler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/dom-crawler',
+        ),
         'Symfony\\Component\\Debug\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/debug',
         ),
+        'Symfony\\Component\\CssSelector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/css-selector',
+        ),
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Symfony\\Component\\BrowserKit\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/browser-kit',
         ),
         'Psy\\' => 
         array (
@@ -359,6 +378,10 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
+        'Facebook\\WebDriver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/facebook/webdriver/lib',
+        ),
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
@@ -378,6 +401,19 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron',
+        ),
+        'Codeception\\PHPUnit\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/codeception/phpunit-wrapper/src',
+        ),
+        'Codeception\\Extension\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/codeception/codeception/ext',
+        ),
+        'Codeception\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/codeception/stub/src',
+            1 => __DIR__ . '/..' . '/codeception/codeception/src/Codeception',
         ),
         'ClassPreloader\\' => 
         array (
@@ -402,6 +438,20 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
     );
 
     public static $prefixesPsr0 = array (
+        'S' => 
+        array (
+            'Sentry\\SentryLaravel\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/sentry/sentry-laravel/src',
+            ),
+        ),
+        'R' => 
+        array (
+            'Raven_' => 
+            array (
+                0 => __DIR__ . '/..' . '/sentry/sentry/lib',
+            ),
+        ),
         'P' => 
         array (
             'Prophecy\\' => 
@@ -416,11 +466,20 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
                 0 => __DIR__ . '/..' . '/mockery/mockery/library',
             ),
         ),
+        'B' => 
+        array (
+            'Behat\\Gherkin' => 
+            array (
+                0 => __DIR__ . '/..' . '/behat/gherkin/src',
+            ),
+        ),
     );
 
     public static $classMap = array (
+        'ApiTester' => __DIR__ . '/../..' . '/tests/_support/ApiTester.php',
         'ArithmeticError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
         'AssertionError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
+        'AuthCest' => __DIR__ . '/../..' . '/tests/functional/AuthCest.php',
         'AuthTest' => __DIR__ . '/../..' . '/tests/AuthTest.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2018_10_26_215727_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
@@ -429,6 +488,10 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
+        'FormTest' => __DIR__ . '/../..' . '/tests/unit/FormTest.php',
+        'FormsTest' => __DIR__ . '/../..' . '/tests/FormsTest.php',
+        'FunctionalTester' => __DIR__ . '/../..' . '/tests/_support/FunctionalTester.php',
+        'GetFormCest' => __DIR__ . '/../..' . '/tests/api/GetFormCest.php',
         'Hamcrest\\Arrays\\IsArray' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArray.php',
         'Hamcrest\\Arrays\\IsArrayContaining' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContaining.php',
         'Hamcrest\\Arrays\\IsArrayContainingInAnyOrder' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Arrays/IsArrayContainingInAnyOrder.php',
@@ -497,6 +560,10 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'Hamcrest\\Type\\IsString' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Type/IsString.php',
         'Hamcrest\\Util' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
         'Hamcrest\\Xml\\HasXPath' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
+        'Helper\\Api' => __DIR__ . '/../..' . '/tests/_support/Helper/Api.php',
+        'Helper\\Functional' => __DIR__ . '/../..' . '/tests/_support/Helper/Functional.php',
+        'Helper\\Unit' => __DIR__ . '/../..' . '/tests/_support/Helper/Unit.php',
+        'InternalDomainsCest' => __DIR__ . '/../..' . '/tests/functional/InternalDomainsCest.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
         'PHPUnit\\Framework\\AssertionFailedError' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/AssertionFailedError.php',
         'PHPUnit\\Framework\\BaseTestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
@@ -880,6 +947,8 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'ParseError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/ParseError.php',
+        'RecordCest' => __DIR__ . '/../..' . '/tests/functional/RecordCest.php',
+        'RoutesCest' => __DIR__ . '/../..' . '/tests/functional/RoutesCest.php',
         'SebastianBergmann\\CodeCoverage\\CodeCoverage' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/CodeCoverage.php',
         'SebastianBergmann\\CodeCoverage\\CoveredCodeNotExecutedException' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Exception/CoveredCodeNotExecutedException.php',
         'SebastianBergmann\\CodeCoverage\\Driver\\Driver' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Driver/Driver.php',
@@ -963,17 +1032,23 @@ class ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a
         'TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
         'TypeError' => __DIR__ . '/..' . '/symfony/polyfill-php70/Resources/stubs/TypeError.php',
+        'UnitTester' => __DIR__ . '/../..' . '/tests/_support/UnitTester.php',
         'UserTableSeeder' => __DIR__ . '/../..' . '/database/seeds/UserTableSeeder.php',
+        'UserTest' => __DIR__ . '/../..' . '/tests/unit/UserTest.php',
+        'User_FormTest' => __DIR__ . '/../..' . '/tests/unit/User_FormTest.php',
+        '_generated\\ApiTesterActions' => __DIR__ . '/../..' . '/tests/_support/_generated/ApiTesterActions.php',
+        '_generated\\FunctionalTesterActions' => __DIR__ . '/../..' . '/tests/_support/_generated/FunctionalTesterActions.php',
+        '_generated\\UnitTesterActions' => __DIR__ . '/../..' . '/tests/_support/_generated/UnitTesterActions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a::$prefixDirsPsr4;
-            $loader->fallbackDirsPsr4 = ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a::$fallbackDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit959f8a4408e71a2daa6934d8270ec09a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInita7457b933f15f24eb76f0c861ece6183::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInita7457b933f15f24eb76f0c861ece6183::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInita7457b933f15f24eb76f0c861ece6183::$fallbackDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInita7457b933f15f24eb76f0c861ece6183::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInita7457b933f15f24eb76f0c861ece6183::$classMap;
 
         }, null, ClassLoader::class);
     }

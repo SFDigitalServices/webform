@@ -2,7 +2,6 @@
 Homestead.json
 Homestead.yaml
 .env
-.env.testing
 database/seeds
 public/formbuilder/env.inc
 vendor/
