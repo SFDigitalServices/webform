@@ -13,6 +13,7 @@ class TestCase extends Laravel\Lumen\Testing\TestCase
     {
         $this->faker = Faker\Factory::create();
         parent::setUp();
+        //$this->artisan('db:seed');
     }
     /**
      * Creates the application.
