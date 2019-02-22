@@ -15,7 +15,8 @@ class GetFormCest
      {
        // send credential data
         $I->sendPOST('/home', $this->userAttributes);
-
+        $response = $I->grabResponse();
+        
         // login success
         $I->seeResponseCodeIs(200);
 
