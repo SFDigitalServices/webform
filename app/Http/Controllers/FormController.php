@@ -297,7 +297,7 @@ class FormController extends Controller
 		  } else {
 			  $str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
 			  $str .= isset($field['label']) ? $field['label'] : "";
-			  $str .= '</label><div>';
+			  $str .= ' <span class="optional">(optional)</span></label><div>';
 			  $str .= $this->printFormTypeStart($field['formtype']);
 			  $skipAttr = false;
 			  $isCheckbox = false;
@@ -329,6 +329,8 @@ class FormController extends Controller
 				} else if ($key == "required") { //this tends to be last in the array
 				  if ($value == "true") {
 					$attr .= 'required ';
+					$pos = strrpos($str, ' <span class="optional">(optional)</span>');
+					$str = substr_replace($str, '', $pos, 41);
 				  }
 				} else if ($key == "help") {
 				  $help = $value;
