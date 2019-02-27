@@ -7,6 +7,7 @@ use Aws\Credentials\CredentialProvider;
 
 use App\Form;
 use Auth;
+use App\User;
 use App\User_Form;
 use Validator;
 use App\Helpers\UserHelper;
@@ -29,16 +30,30 @@ class FormController extends Controller
             'clone',
             'getUserForms',
             'getForm',
-			'getFilename',
-			'share',
-			'getAuthors',
-			'purgeCSV'
+						'getFilename',
+						'share',
+						'getAuthors',
+						'purgeCSV'
             ]]);
     }
 
-    public function getIndex(Request $request){
-        return response()->json('all');
-    }
+		/**
+		 *  Provide API to obtain user api token.
+		 *  This is expected to change when SSO is available.
+		 */
+		public function getApiToken(Request $request){
+			$hasher = app()->make('hash');
+      $email = $request->input('email');
+      $password = $request->input('password');
+			$login = User::where('email', $email)->first();
+			
+			if ($hasher->check($password, $login->password)){
+				$api_token = sha1(time());
+				$create_token = User::where('id', $login->id)->update(['api_token' => $api_token]);
+				return $create_token == false ? response()->json(['status' => 0, 'message' => 'Failed to save form']) : response()->json(['api_token' => $api_token]);
+			}
+			return response()->json(['status' => 0, 'message' => 'Failed to save form']);
+		}
 
      /**
      * Gets all the forms for the current logged in user.
@@ -53,8 +68,8 @@ class FormController extends Controller
        
         $forms = array();
         foreach($user_forms as $form_arr){
-			$form = Form::where('id', $form_arr['form_id'])->get()->first();
-			$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+						$form = Form::where('id', $form_arr['form_id'])->get()->first();
+						$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
             array_push($forms, $form);
         }
         return response()->json($forms);
@@ -69,7 +84,7 @@ class FormController extends Controller
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
         
-        return $form ? response()->json($form) : false;
+        return $form ? response()->json($form) : response()->json(['status' => 'failed']);
     }
 
      /**

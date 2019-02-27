@@ -163,10 +163,22 @@ else
 {
     return [
         'fetch' => PDO::FETCH_CLASS,
-        'default' => env('DB_DEFAULT', 'sqlite_testing'),
+        'default' => env('DB_DEFAULT', 'mysql'),
         'migrations' => 'migrations',
         'connections' => [
-           
+           'mysql' => [
+                'driver'    => 'mysql',
+                'host'      => env('DB_HOST', ''),
+                'port'      => env('DB_PORT', 3306),
+                'database'  => env('DB_DATABASE', ''),
+                'username'  => env('DB_USERNAME', ''),
+                'password'  => env('DB_PASSWORD', ''),
+                'charset'   => env('DB_CHARSET', 'utf8'),
+                'collation' => env('DB_COLLATION', 'utf8_unicode_ci'),
+                'prefix'    => env('DB_PREFIX', ''),
+                'timezone'  => env('DB_TIMEZONE', '+00:00'),
+                'strict'    => env('DB_STRICT_MODE', false),
+            ],
             'sqlite' => [
                 'driver'   => 'sqlite',
                 'database' => storage_path().'/database.sqlite',
