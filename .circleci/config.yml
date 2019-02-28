@@ -5,17 +5,32 @@ jobs: # a collection of steps
     docker: # run the steps with Docker 
       - image: markoshust/lumen-php-apache:7.2-0 # ...with this image as the primary container; this is where all `steps` will run
         environment:
+          APP_ENV: testing
+          APP_DEBUG: true
+          APP_KEY: kjcndjjksddwdwdw
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: webform
+          DB_USERNAME: root
+          DB_PASSWORD: 1234
           CACHE_DRIVER: file
-          #CLEARDB_DATABASE_URL: mysql://b2fa44e0ba6107:7083c97e@us-cdbr-iron-east-03.cleardb.net/heroku_5a23e21222f4b1f
+          QUEUE_DRIVER: sync
+      - image: circleci/mysql:5.6-ram
+        environment:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: '1234'
+          MYSQL_DATABASE: webform
     working_directory: ~/project # directory where steps will run
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
       - run: a2enmod rewrite 
-      - run: docker-php-ext-install mysqli
-      - run: docker-php-ext-install pdo_mysql
-      #- run: 
-      #    name: "Setup custom environment variables"
-      #    command: echo 'CLEARDB_DATABASE_URL=mysql://be39bf22d1450d:a28a9e35@us-cdbr-iron-east-03.cleardb.net/heroku_465809b09e0a5ba'
+      - run: docker-php-ext-install mysqli pdo_mysql
+      #- run: apt-get -y install mysql-client --allow-unauthenticated
+      #- run: mysql -h 127.0.0.1 -u root --protocol=tcp
+      - run:
+          name: Install Project Dependencies
+          command: composer install
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
             - composer-v1-{{ checksum "composer.lock" }}
@@ -26,11 +41,11 @@ jobs: # a collection of steps
           key: composer-v1-{{ checksum "composer.lock" }}
           paths:
             - vendor
-      - run: touch storage/testing.sqlite 
-      - run: php artisan migrate --env=testing --database=sqlite_testing --force
-      # - run: php artisan make:migration create_users_table
-      #- run: php artisan migrate
-      #- run: php artisan db:seed
+      #- run: touch storage/testing.sqlite 
+      #- run: php artisan migrate --env=testing --database=sqlite_testing --force
+      - run: php artisan migrate:refresh --force
+      - run: php artisan db:seed
+      
       - run: ./vendor/bin/codecept run
       #- run: ./vendor/bin/codecept build
       #- run: ./vendor/bin/codecept run

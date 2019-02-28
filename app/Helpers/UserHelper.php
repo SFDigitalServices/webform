@@ -58,5 +58,22 @@ class UserHelper
      */
 	public static function formatAuthors($arr) {
 		return implode(", ", $arr);
-	}
+    }
+    
+    	/**
+		 *  Provide API to obtain user api token.
+		 *  This is expected to change when SSO is available.
+		 */
+		public static function getApiToken($email, $password){
+			$hasher = app()->make('hash');
+			$login = User::where('email', $email)->first();
+			
+			if ($login && $hasher->check($password, $login->password)){
+				$api_token = sha1(time());
+				$create_token = User::where('id', $login->id)->update(['api_token' => $api_token]);
+				return $create_token == false ? response()->json(['status' => 0, 'message' => 'Failed to get token']) : response()->json(['api_token' => $api_token]);
+			}
+			return response()->json(['status' => 0, 'message' => 'Failed to get token']);
+		}
+
 }

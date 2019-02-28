@@ -9,10 +9,10 @@ settings:
     colors: true
     memory_limit: 1024M
 modules:
-        Db:
-            dsn: ''
-            user: ''
-            password: ''
-            dump: tests/_data/dump.sql
-params:
-    - .env.testing
+    enabled:
+        - Db:
+            dsn: 'mysql:host=127.0.0.1;dbname=webform'
+            user: 'root'
+            password: '1234'
+            
+               
