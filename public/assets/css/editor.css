@@ -235,3 +235,5 @@
 .addConditional {padding-top:1em}
 .addCalculation {padding-top:1em}
 legend {padding: 2px 0}
+#SFDSWFB-target .form-group > label:after {padding-left:1em;font-size:.8em;content:"(optional)"}
+#SFDSWFB-target .form-group[data-required=true] > label:after {content:""}
