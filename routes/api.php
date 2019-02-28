@@ -31,12 +31,15 @@ $app->group(['prefix' => 'form'], function($app) {
     $app->post('getForm', ['as' => 'getForm', 'uses' => 'FormController@getForm']);
     $app->get('embed', ['as' => 'embed', 'uses' => 'FormController@embedJS']);
     $app->get('generate', ['as' => 'generate', 'uses' => 'FormController@generate']);
+    $app->get('push', ['as' => 'push', 'uses' => 'FormController@notifyUser']);
     $app->post('save', ['as' => 'save', 'uses' => 'FormController@save']);
     $app->post('create',['as' => 'create', 'uses' =>'FormController@create']);
     $app->post('clone', ['as' => 'clone', 'uses' => 'FormController@clone']);
     $app->post('delete',['as' => 'delete', 'uses' => 'FormController@delete']);
+	$app->post('share', ['as' => 'share', 'uses' => 'FormController@share']);
     $app->post('submit',['as' => 'submit', 'uses' => 'FormController@submitCSV']);
 	$app->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
+    $app->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
 	$app->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
 	$app->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
 });
