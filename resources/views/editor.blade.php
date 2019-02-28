@@ -1215,7 +1215,6 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-                          <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
                           <label class='control-label'>Button Text</label> <input class='form-control' type='text' name='label' id='button'>
                           <label class='control-label' id=''>Type: </label>
                           <select class='form-control input-md' id='color'>
@@ -1234,12 +1233,13 @@
                         </div>
                       </form>" data-html="true"
                       >
-                      <label class="col-md-12 control-label valtype" data-valtype="label">Submit Button</label>
 
                       <!-- Button -->
-                      <div class="valtype" data-valtype="button">
-                        <button class='btn btn-success'>Submit</button>
-                      </div>
+					  <div class="">
+						  <div class="valtype" data-valtype="button">
+							<button class='btn btn-success'>Submit</button>
+						  </div>
+					  </div>
                     </div>
 					
                     <div class="form-group component" data-formtype="m16" data-type="text" rel="popover" title="Page Separator" trigger="manual"
