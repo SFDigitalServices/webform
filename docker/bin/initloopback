@@ -1,0 +1,4 @@
+#!/bin/bash
+sudo ifconfig lo0 alias 10.254.254.254 255.255.255.0
+
+sudo sh -c 'echo "10.254.254.254 webform.test" >> /etc/hosts' 
