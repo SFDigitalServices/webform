@@ -723,10 +723,12 @@ function getEditables(str) {
 		if (key == "placeholder") {
 			value = $(inputs[i]).attr('placeholder');
 		} else if (key == "radios") {
-			var optionsArray = value.split('\n\n\n\n');
-			optionsArray[optionsArray.length-1] = optionsArray[optionsArray.length-1].substr(0,optionsArray[optionsArray.length-1].length-4);
-			optionsArray.shift();
-			value = optionsArray.join("\n");
+			if (value.includes('\n\n\n\n')) {
+				var optionsArray = value.split('\n\n\n\n');
+				optionsArray[optionsArray.length-1] = optionsArray[optionsArray.length-1].substr(0,optionsArray[optionsArray.length-1].length-4);
+				optionsArray.shift();
+				value = optionsArray.join("\n");
+			}
 		}
 		obj[key] = value;
 	});
