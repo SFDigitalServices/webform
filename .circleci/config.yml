@@ -3,7 +3,7 @@ version: 2 # use CircleCI 2.0
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker 
-      - image: markoshust/lumen-php-apache:7.2-0 # ...with this image as the primary container; this is where all `steps` will run
+      - image: circleci/php:7.2-apache-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment:
           APP_ENV: testing
           APP_DEBUG: true
@@ -24,8 +24,8 @@ jobs: # a collection of steps
     working_directory: ~/project # directory where steps will run
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
-      - run: a2enmod rewrite 
-      - run: docker-php-ext-install mysqli pdo_mysql
+      - run: sudo a2enmod rewrite 
+      - run: sudo docker-php-ext-install mysqli pdo_mysql
       - run:
           name: Install Project Dependencies
           command: composer install -n --prefer-dist
