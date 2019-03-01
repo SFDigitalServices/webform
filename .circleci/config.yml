@@ -29,6 +29,9 @@ jobs: # a collection of steps
       - run:
           name: Install Project Dependencies
           command: composer install -n --prefer-dist
+      - run:
+          name: Give global permission for vendors folder
+          command: sudo chown -R circleci.circleci vendor/
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
             - composer-v1-{{ checksum "composer.lock" }}
