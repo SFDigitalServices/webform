@@ -5,53 +5,41 @@ This is the source for the web form builder, cloned from https://github.com/kris
 ## Setup
 
 ### If you want to use Docker for development
-You need [Docker](https://github.com/docker/docker) and [docker-compose](https://github.com/docker/compose).
+### Prerequisites
+You need [Docker](https://www.docker.com/get-started), [docker-compose](https://docs.docker.com/compose/), [Composer] (https://getcomposer.org/doc/00-intro.md).
 
-1.) Follow the instruction on https://github.com/markoshust/docker-lumen to setup a docker-lumen project.
-       
-2.) Update docker-compose.yml to identify the mount point for the web server container's document root, this is under the "Volumn" config.
+1. Setup a new project sekeleton from this repository
 ```
-        mkdir src && cd src
-        git clone git@github.com:SFDigitalServices/webform.git
+        git clone git@github.com:SFDigitalServices/webform.git webform 
+        cd webform
+        cp .env.example .env
+        composer install
 ```
-3.) Copy the Dockerfile from docker/ folder to the root folder of your docker-lumen project, this file installs additional apache-php extensions that are required.
-    *** Docker on Windows alert: you may have to specify the Dockerfile in docker-compose.yml file.
+
+2. Setup your ip loopback for proper IP resolution with Docker: ./bin/initloopback
 ```
-        php:
+        cd docker
+        ./bin/initloopback
+
+```
+
+3. Add an entry to `/etc/hosts` with your custom domain: `10.254.254.254 webform.test` (assuming the domain  you want to setup is `webform.test`). Be sure to use a `.test` tld, as `.localhost` and `.dev` will present issues with domain resolution.
+```
+        sudo sh -c 'echo "10.254.254.254 webform.test" >> /etc/hosts' 
+```
+
+4. Start your Docker containers with: 
+```
+        docker-compose up -d 
+```
+*** Docker on Windows alert: you may have to specify the Dockerfile in docker-compose.yml file.
+```
+        apache_php:
             build:
                 context: ./path/to/Dockerfile
                 dockerfile: Dockerfile
 ```
-
-
-### Initialize the database resources
-    You will need to ssh into the apache-php container
-    
-    ```
-    docker exec -ti [container id] bash
-    ```
-    and run the command in the document root folder, usually /var/www/html
-    ```
-    $ php artisan make:migration create_users_table
-    ```
-
-    A migration file will be generated under “database/migrations”. If there's already a migration file generated from check-ins, you may see a warning, in this case, proceed to the next command:
-    
-    ```
-    $ php artisan migrate
-     ```
-    This will execute the commands in the create_users_table migration file.
-
-    To populate the tables with data, take a look at the database\seeds\UserTableSeeder.php file. Execute the following command will insert data into all tables:
-
-    ```
-    $ php artisan db:seed
-     ```
-    Optionally, you can specify a specific seeder class to run individually:
-    ```
-    $ php artisan db:seed --class=[ClassName] 
-     ```
-    
+5. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
 ## Deplopyment to Heroku
 

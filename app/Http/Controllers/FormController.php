@@ -7,6 +7,7 @@ use Aws\Credentials\CredentialProvider;
 
 use App\Form;
 use Auth;
+use App\User;
 use App\User_Form;
 use Validator;
 use App\Helpers\UserHelper;
@@ -35,6 +36,7 @@ class FormController extends Controller
 						'purgeCSV'
             ]]);
     }
+
 		/**
 		 *  Provide API to obtain user api token.
 		 *  This is expected to change when SSO is available.

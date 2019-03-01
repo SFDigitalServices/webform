@@ -6,7 +6,7 @@ services:
     build: .
     volumes:
       - ~/.composer:/root/.composer:delegated
-      - ./src:/var/www/html
+      - ../:/var/www/html
       - ./conf/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
       - ./conf/ssl:/etc/apache2/ssl
     links:
