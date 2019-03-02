@@ -6,7 +6,7 @@ This is the source for the web form builder, cloned from https://github.com/kris
 
 ### If you want to use Docker for development
 ### Prerequisites
-You need [Docker](https://www.docker.com/get-started), [docker-compose](https://docs.docker.com/compose/), [Composer] (https://getcomposer.org/doc/00-intro.md).
+You need [Docker](https://www.docker.com/get-started), [docker-compose](https://docs.docker.com/compose/), [Composer](https://getcomposer.org/doc/00-intro.md).
 
 1. Setup a new project sekeleton from this repository
 ```
