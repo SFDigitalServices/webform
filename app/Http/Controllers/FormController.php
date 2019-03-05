@@ -324,7 +324,11 @@ class FormController extends Controller
 				  $skipAttr = explode("\n",$value);
 				  $manyType = "radio";
 				} else if ($key == "textarea") {
-				  $inner = '>'.$value;
+				  if ($field['formtype'] == "m08" || $field['formtype'] == "m10") { //paragraph tags need to convert line breaks to page breaks
+					$inner = '>'.str_replace("\n", "<br/>", $value);
+				  } else {
+					$inner = '>'.$value;
+				  }
 				} else if ($key == "codearea") {
 				  $inner = '>'.html_entity_decode($value);
 				} else if ($key == "type" && $value == "number") {
