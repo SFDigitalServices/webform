@@ -611,6 +611,7 @@
 
                   <div class="tab-pane" id="SFDSWFB-4">
 
+					<!-- must preserve whitespace formatting between options! -->
                     <div class="form-group component" data-formtype="s02" rel="popover" data-required="true" data-choose="true" title="Select Dropdown" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -704,6 +705,7 @@
 
                     </div>
 
+					<!-- must preserve whitespace formatting between options! -->
                     <div class="form-group component" data-formtype="s08" rel="popover" data-required="true" data-choose="true" title="Multiple Radios" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -722,11 +724,12 @@
                         </div>
                       </form>" data-html="true"
                       >
-                      <label class=" control-label valtype" data-valtype="label">Radio buttons</label>
-                      <div class=" valtype" data-valtype="radios"><!-- Multiple Radios --><label class="radio"><input type="radio" value="Option one" name="group" checked="checked">Option one</label>
+
+					<label class=" control-label valtype" data-valtype="label">Radio buttons</label>
+					<div class=" valtype" data-valtype="radios"><!-- Multiple Radios --><label class="radio"><input type="radio" value="Option one" name="group" checked="checked">Option one</label>
 <label class="radio"><input type="radio" value="Option two" name="group">Option two</label></div>
 
-                    </div>
+					</div>
 
 					<!-- hiding these because they seem redundant
                     <div class="form-group component" data-formtype="s10" rel="popover" title="Inline Checkboxes" trigger="manual"
