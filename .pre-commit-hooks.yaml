@@ -1,9 +1,0 @@
-# This file tells https://pre-commit.com/ which hooks are provided by this repo
-# for use by other git repos. This is also for your local repo, your hooks
-# should be in the folder pre_commit_hooks.
--   id: validate_manifest
-    name: Validate Pre-Commit Manifest
-    description: This validator validates a pre-commit hooks manifest file
-    entry: pre-commit-validate-manifest
-    language: python
-    files: ^(\.pre-commit-hooks\.yaml|hooks\.yaml)$
