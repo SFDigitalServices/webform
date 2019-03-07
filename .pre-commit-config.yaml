@@ -1,0 +1,13 @@
+exclude: '^$'
+fail_fast: false
+repos:
+  - repo: git@github.com:SFDigitalServices/webform.git
+    rev: 940643b
+    hooks:
+      - id: forbid-binary
+      - id: forbid-space-in-indent
+      - id: git-check  # Configure in .gitattributes
+      - id: git-dirty  # Configure in .gitignore
+      - id: markdownlint # Configure in .mdlrc
+      - id: shellcheck
+      - id: shfmt
