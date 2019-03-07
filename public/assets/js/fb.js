@@ -500,28 +500,28 @@ $(document).ready(function(){
 			var options = $(e).val().split("\n");
 			$(value).html("");
 			$.each(options, function(i,e){
-			  $(value).append("\n");
-			  $(value).append($("<option>").text(e));
+			  br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+			  $(value).append("<option>"+e+"</option>"+br);
 			});
 		  } else if (vartype==="checkboxes"){
 			var checkboxes = $(e).val().split("\n");
-			$(value).html("\n<!-- Multiple Checkboxes -->");
+			$(value).html("<!-- Multiple Checkboxes -->");
 			$.each(checkboxes, function(i,e){
 			  if(e.length > 0){
-				$(value).append('\n<label class="checkbox">\n<input type="checkbox" value="'+e+'">\n'+e+'\n</label>');
+				br = i < checkboxes.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+				$(value).append('<label class="checkbox"><input type="checkbox" value="'+e+'">'+e+'</label>'+br);
 			  }
 			});
-			$(value).append("\n  ")
 		  } else if (vartype==="radios"){
 			var group_name = $(".popover #name").val();
 			var radios = $(e).val().split("\n");
-			$(value).html("\n<!-- Multiple Radios -->");
+			$(value).html("<!-- Multiple Radios -->");
 			$.each(radios, function(i,e){
 			  if(e.length > 0){
-				$(value).append('\n<label class="radio">\n<input type="radio" value="'+e+'" name="'+group_name+'">\n'+e+'\n</label>');
+				br = i < radios.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+				$(value).append('<label class="radio"><input type="radio" value="'+e+'" name="'+group_name+'">'+e+'</label>'+br);
 			  }
 			});
-			$(value).append("\n  ")
 			  $($(value).find("input")[0]).attr("checked", true)
 			  /* not using for now
 		  } else if (vartype==="inline-checkboxes"){
@@ -722,11 +722,6 @@ function getEditables(str) {
 		var value = $(inputs[i]).text();
 		if (key == "placeholder") {
 			value = $(inputs[i]).attr('placeholder');
-		} else if (key == "radios") {
-			var optionsArray = value.split('\n\n\n\n');
-			optionsArray[optionsArray.length-1] = optionsArray[optionsArray.length-1].substr(0,optionsArray[optionsArray.length-1].length-4);
-			optionsArray.shift();
-			value = optionsArray.join("\n");
 		}
 		obj[key] = value;
 	});
