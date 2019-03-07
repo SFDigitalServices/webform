@@ -25,6 +25,9 @@ jobs: # a collection of steps
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
       - run:
+          name: Install precommit
+          command: curl https://pre-commit.com/install-local.py | python -
+      - run:
           name: Run precommit
           command: git diff-tree --no-commit-id --name-only -r $REVISION | xargs pre-commit run --files
       - run: a2enmod rewrite 
