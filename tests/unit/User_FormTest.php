@@ -19,9 +19,9 @@ class User_FormTest extends \Codeception\Test\Unit
     /**
     *  Testing App\Http\Controllers\FormController printFormTypeStart
     **/
-    public function testPrintFormTypeStart()
-    {
-        $response = $this->formTester->printFormTypeStart('i14');
-        $this->assertEquals($response, '<textarea ');
-    }
-}
+                    public function testPrintFormTypeStart()
+                    {
+                        $response = $this->formTester->printFormTypeStart('i14');
+                        $this->assertEquals($response, '<textarea ');
+                    }
+                }
