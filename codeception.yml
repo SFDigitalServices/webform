@@ -11,7 +11,16 @@ settings:
 modules:
     enabled:
         - Db:
-            dsn: 'mysql:host=127.0.0.1;dbname=webform'
+            dsn: 'mysql:host=docker_db_1;dbname=webform'
             user: 'root'
             password: '1234'
+    config:
+        coverage:
+            enabled: true
+            low_limit: 30
+            high_limit: 60
+            include:
+                - app/*
+            exclude:
+                - app/cache/*
                
