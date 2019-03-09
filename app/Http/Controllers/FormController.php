@@ -283,6 +283,7 @@ class FormController extends Controller
 	
 	// EMBED FUNCTIONS
 	public function generateHTML($form, $base_url = '') {
+		$nonOptionalFields = array("m02", "m04", "m06", "m08", "m10", "m11", "m14", "m16");
 		$content = $form['content'];
 
 		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
@@ -298,11 +299,18 @@ class FormController extends Controller
 			  $sections[] = $field;
 			  $str .= '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
 		  } else if ($field['formtype'] == "m11") { //hidden fields
-			  $str .= '<input type="hidden" name="'.$field['name'].'" id="'.$field['id'].'" value="'.$field['value'].'"/>';
+				$hiddenValue = $field['value'] == null ? "" : $field['value'];
+				$hiddenName = $field['name'] == null ? "" : $field['name'];
+				$hiddenId = $field['id'] == null ? "" : $field['id'];
+			  $str .= '<input type="hidden" name="'.$hiddenName.'" id="'.$hiddenId.'" value="'.$hiddenValue.'"/>';
 		  } else {
 			  $str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
 			  $str .= isset($field['label']) ? $field['label'] : "";
-			  $str .= ' <span class="optional">(optional)</span></label><div>';
+			  if (in_array($field['formtype'], $nonOptionalFields)) {
+				$str .= '</label><div>';
+			  } else {
+				$str .= ' <span class="optional">(optional)</span></label><div>';
+			  }
 			  $str .= $this->printFormTypeStart($field['formtype']);
 			  $skipAttr = false;
 			  $isCheckbox = false;
@@ -339,7 +347,9 @@ class FormController extends Controller
 				  if ($value == "true") {
 					$attr .= 'required ';
 					$pos = strrpos($str, ' <span class="optional">(optional)</span>');
-					$str = substr_replace($str, '', $pos, 41);
+					if ($pos !== false) {
+						$str = substr_replace($str, '', $pos, 41);
+					}
 				  }
 				} else if ($key == "help") {
 				  $help = $value;
