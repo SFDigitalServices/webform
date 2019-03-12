@@ -28,7 +28,10 @@ jobs: # a collection of steps
       - run: docker-php-ext-install mysqli pdo_mysql
       - run:
           name: Install Project Dependencies
-          command: composer dumpautoload | composer install -n --prefer-dist
+          command: composer install -n --prefer-dist
+      - run:
+          name: Update Missed Dependencies
+          command: composer update
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
             - composer-v1-{{ checksum "composer.lock" }}
