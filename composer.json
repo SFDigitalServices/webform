@@ -9,16 +9,16 @@
         "laravel/lumen-framework": "5.4.*",
         "fzaninotto/faker": "~1.4",
         "vlucas/phpdotenv": "~2.2",
-		"aws/aws-sdk-php-laravel": "~3.0",
-        "sentry/sentry-laravel": "^0.11.0"
+	"aws/aws-sdk-php-laravel": "~3.0",
+        "sentry/sentry-laravel": "^0.11.0",
+        "doctrine/dbal": "^2.9"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "phpunit/phpunit": "~5.0",
         "mockery/mockery": "~0.9",
         "flipbox/lumen-generator": "^5.4",
-        "codeception/codeception": "^2.5",
-        "doctrine/dbal": "^2.9"
+        "codeception/codeception": "^2.5"
     },
     "autoload": {
         "psr-4": {
