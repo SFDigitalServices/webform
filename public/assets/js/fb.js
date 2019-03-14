@@ -457,22 +457,30 @@ $(document).ready(function(){
     $(".popover").delegate(".btn-info", "click", function(e){
       e.preventDefault();
 
+	  var saved = $("#SFDSWFB-save").val();
+	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	    
 	  //check id if in this form
 	  if ($('#id')[0] != undefined) {
-		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) {
+		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
 			var errorMsg = setTimeout(function() {
 				loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
 			},100);
 			return;
 		}
+		var curIndex = $(".popover").prevAll(".form-group").length-1;
+		var oldId = saved.data[curIndex].id;
+		var newId = $('#id').val();
+		//if the id is changing
+		if (oldId != newId) {
+			saved = changeIds(oldId, newId, saved);
+		}
 	  }
 	  
-	  var saved = $("#SFDSWFB-save").val();
-	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-	    
       var inputs = $(".popover input");
       inputs.push($(".popover textarea")[0]);
-	  inputs.push($(".popover select"));
+	  inputs.push($(".popover select"));	  	  
+	  
       $.each(inputs, function(i,e){
 		  var vartype = $(e).attr("id");
 		  var value = $active_component.find('[data-valtype="'+vartype+'"]')
@@ -856,6 +864,23 @@ function checkId(cid,i) {
 	} else {
 		return false;
 	}
+}
+function changeIds(oldId, newId, saved) {
+	for (ci in saved.data) {
+		if (saved.data[ci]["conditions"] != undefined) {
+			for (con in saved.data[ci]["conditions"].condition) {
+				if (saved.data[ci]["conditions"].condition[con].id == oldId) saved.data[ci]["conditions"].condition[con].id = newId;
+			}
+			//console.log(saved.data[ci]["conditions"]);
+		}
+		if (saved.data[ci]["calculations"] != undefined) {
+			for (calc in saved.data[ci].calculations) {
+				if ((calc % 2 == 0) && saved.data[ci].calculations[calc] == oldId) saved.data[ci].calculations[calc] = newId;
+			}
+			//console.log(saved.data[ci]["calculations"]);
+		}
+	}
+	return saved;
 }
 function addCalculation(str) {
 	//check if first conditional or not
