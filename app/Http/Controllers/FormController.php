@@ -400,10 +400,10 @@ class FormController extends Controller
 
 		if (!empty($sections)) {  
 		  $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-		  $nav = '<ul class="form-section-nav"><li class="active">'.$section1.'</li>';
+		  $nav = '<ul class="form-section-nav"><li tabindex="0" class="active">'.$section1.'</li>';
 		  foreach ($sections as $idx => $section) {
 			$active = $idx === "0" ? ' class="active"' : '';
-			$nav .= '<li'.$active.'>'.$section['label'].'</li>';
+			$nav .= '<li tabindex="0"'.$active.'>'.$section['label'].'</li>';
 		  }
 		  $nav .= '</ul>';
 		  $wrap1 = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
@@ -568,7 +568,7 @@ class FormController extends Controller
 		}
 
 		if ($sectional) { //additional controls for sectional forms
-			$js .= "jQuery('#SFDSWF-Container .form-section-nav li').click(function(e){";
+			$js .= "jQuery('#SFDSWF-Container .form-section-nav li').bind('click keypress', function(e){";
 			$js .= "var i = jQuery(e.target).prevAll().length;";
 			$js .= "SFDSWF_goto(i);";
 			$js .= "});";
