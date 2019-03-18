@@ -391,7 +391,7 @@ class FormController extends Controller
 				}
 				$str .= $this->printFormTypeEnd($field['formtype']);
 			  }
-			  $str .= '<p class="help-block">'.$help.'</p>';
+			  $str .= '<p class="help-block with-errors">'.$help.'</p>';
 			  $str .= '</div></div>';
 		  }
 		}
