@@ -179,6 +179,13 @@ $(document).ready(function(){
               $("#SFDSWFB-target fieldset").append($temp.append("\n\n\ \ \ \ ").html());
 			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
             }
+			
+			//add submit button if there is only one entry
+			if (timeToAddSubmitButton(saved)) {
+				saved = addSubmitButton(saved);
+				$("#SFDSWFB-load").val(JSON.stringify(saved));
+				loadForm();
+			}
 
 			//animation effect
 			var flashIndex = $(tops[0]).prevAll(".form-group").length != 0 ? $(tops[0]).prevAll(".form-group").length : $('#SFDSWFB-target .component').length - 1;
@@ -190,6 +197,10 @@ $(document).ready(function(){
 			
 			if (isReferenced(componentId)) { // check if section getting dragged out has dependencies
 				loadDialogModal("Oops!", "This field cannot be removed while it is being referenced in a calculation or conditional. Remove those dependencies first before attempting to remove this field.");
+				cancelDrag();
+				return;
+			} else if (componentId == "submit") {
+				loadDialogModal("Oops!", "The submit button cannot be removed.");
 				cancelDrag();
 				return;
 			} else {				
@@ -814,8 +825,8 @@ function loadForm() {
 	$('legend').text(saved.settings.name);
 
   // bind quick delete
-  $('#SFDSWFB-target .form-group.component').on('mouseover',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
-  $('#SFDSWFB-target .form-group.component').on('mouseout',function(){$(this).find('.fa-times-circle').remove()});
+  $('#SFDSWFB-target .form-group.component:not([data-formtype=m14])').on('mouseover',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+  $('#SFDSWFB-target .form-group.component:not([data-formtype=m14])').on('mouseout',function(){$(this).find('.fa-times-circle').remove()});
 	
   // check if csv and published
 	var submitUrl = new URL('/form/submit', window.location.href);
@@ -832,6 +843,13 @@ function protectPublished(response) {
 		$('#SFDSWFB-target').css("padding", "20px");
 		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="javascript:void(0)" onclick="openCSV('+csvFile+')" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
 	}
+}
+function timeToAddSubmitButton(saved) {
+	return saved.data.length == 1 ? true : false;
+}
+function addSubmitButton(saved) {
+	saved.data.push({"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"});
+	return saved;
 }
 function isUnique(cid,index) {
 	var saved = $("#SFDSWFB-save").val();

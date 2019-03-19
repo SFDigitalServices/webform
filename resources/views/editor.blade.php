@@ -1214,6 +1214,7 @@
                       </div>
                     </div>
 
+					<!-- button group must remain here but stay invisible -->
                     <div class="form-group component" data-formtype="m14" rel="popover" title="Button" trigger="manual"
                       data-content="
                       <form class='form'>
