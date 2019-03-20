@@ -68,7 +68,6 @@ class FormController extends Controller
             array_push($forms, $form);
         }
         return response()->json($forms);
-        //return view('editor', ['name' => $user->name, 'forms' => $user_forms]);
     }
     /**
     * Gets a form for the current logged in user.
@@ -891,6 +890,7 @@ class FormController extends Controller
             'Bucket' => env('BUCKETEER_BUCKET_NAME'),
             'Key' => 'public/'.$filename,
             'Body' => $body,
+
         ]);
 
         return $result;

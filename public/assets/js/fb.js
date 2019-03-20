@@ -180,6 +180,13 @@ $(document).ready(function(){
 			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
             }
 
+			//add submit button if there is only one entry
+			if (timeToAddSubmitButton(saved)) {
+				saved = addSubmitButton(saved);
+				$("#SFDSWFB-load").val(JSON.stringify(saved));
+				loadForm();
+			}
+
 			//animation effect
 			var flashIndex = $(tops[0]).prevAll(".form-group").length != 0 ? $(tops[0]).prevAll(".form-group").length : $('#SFDSWFB-target .component').length - 1;
 			$('#SFDSWFB-target .component:eq('+flashIndex+')').css('opacity', 0);
@@ -192,8 +199,13 @@ $(document).ready(function(){
 				loadDialogModal("Oops!", "This field cannot be removed while it is being referenced in a calculation or conditional. Remove those dependencies first before attempting to remove this field.");
 				cancelDrag();
 				return;
+
+			} else if (componentId == "submit") {
+				loadDialogModal("Oops!", "The submit button cannot be removed.");
+				cancelDrag();
+				return;
 			} else {
-				// do not add the component
+					// do not add the component
 				$("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
 				tops = [];
 			}
@@ -278,7 +290,6 @@ $(document).ready(function(){
 		//copy over validation section
 		$(".popover .accordion-section.attributes").after($('.accordion-validation').html());
 	}
-
 	//hide value and validate type for textarea
 	if ($active_component.find("textarea")[0]) {
 		$(".popover .accordion-section.attributes .accordion label:first-child()").remove(); //hacky, if value gets moved this will have to change
@@ -324,7 +335,6 @@ $(document).ready(function(){
 		if (e.currentTarget.attributes['data-conditions']) {
 			var fieldConditions = JSON.parse(e.currentTarget.attributes['data-conditions'].value);
 			for (c in fieldConditions.condition) {
-				//alert(fieldConditions.condition[c].id);
 				addConditional();
 				$(".popover .conditionalId").eq(c).val(fieldConditions.condition[c].id);
 				$(".popover .conditionalOperator").eq(c).val(fieldConditions.condition[c].op);
@@ -340,9 +350,6 @@ $(document).ready(function(){
     $.each(valtypes, function(i,e){
       var valID ="#" + $(e).attr("data-valtype");
       var val;
-
-	  //on popup, loop through valtypes (in 2nd input chunk)
-	  //alert('valID: '+valID+' val: '+val);
 
       if(valID ==="#placeholder"){
         val = $(e).attr("placeholder");
@@ -368,18 +375,6 @@ $(document).ready(function(){
         val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
         val = val.join("\n");
         $(".popover "+valID).text(val);
-        //$(".popover #name").val($(e).find("input").attr("name"));
-		/* not using right now
-      } else if(valID==="#inline-checkboxes"){
-        val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
-        val = val.join("\n")
-          $(".popover "+valID).text(val);
-      } else if(valID==="#inline-radios"){
-        val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
-        val = val.join("\n")
-          $(".popover "+valID).text(val);
-        $(".popover #name").val($(e).find("input").attr("name"));
-		*/
 	  } else if (valID==="#textarea") {
 		val = $(e).text();
         $(".popover " + valID).val(val);
@@ -819,6 +814,13 @@ function protectPublished(response) {
 		$('#SFDSWFB-target').css("padding", "20px");
 		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="javascript:void(0)" onclick="openCSV('+csvFile+')" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
 	}
+}
+function timeToAddSubmitButton(saved) {
+	return saved.data.length == 1 ? true : false;
+}
+function addSubmitButton(saved) {
+	saved.data.push({"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"});
+	return saved;
 }
 function isUnique(cid,index) {
 	var saved = $("#SFDSWFB-save").val();
