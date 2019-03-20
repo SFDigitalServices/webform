@@ -202,14 +202,14 @@ class HTMLHelper
      */
     public static function fieldLabel($field)
     {
-        $html = '<label class="control-label">';
+        $html = ($field['formtype'] == "s06") ? '<legend class="control-label">':  '<label class="control-label">';
         $html .= isset($field['label']) ? $field['label'] : "";
         if (array_key_exists('required', $field)) {
             if (! $field['required'] == "true") {
                 $html .= ' <span class="optional">(optional)</span>';
             }
         }
-        $html .= "</label><div>";
+        $html .= ($field['formtype'] == "s06") ? '</legend><div>' : '</label><div>';
         return $html;
     }
     /**

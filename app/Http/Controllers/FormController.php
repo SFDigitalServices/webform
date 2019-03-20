@@ -219,12 +219,9 @@ class FormController extends Controller
     {
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
-        //$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
         $sections = array();
 
         $form['content'] = json_decode($form['content'], true);
-
-        //return $this->wrapJS($this->generateHTML($form, $request->getHttpHost()), $this->isSectional($form['content']), $form['content']);
         return $this->wrapJS($this->getHTML($form, $request->getHttpHost()), $this->isSectional($form['content']), $form['content']);
     }
 
@@ -239,8 +236,6 @@ class FormController extends Controller
         $form = Form::where('id', $form_id)->first();
 
         $form['content'] = json_decode($form['content'], true);
-
-        //return $this->generateHTML($form, $request->getHttpHost());
         return $this->getHTML($form, $request->getHttpHost());
     }
 
@@ -724,7 +719,8 @@ class FormController extends Controller
             $str = $str1.$str.$str2;
         }
         return $str;
-			}
+    }
+
     public function rewriteCSV($content, $filename)
     {
         $column = 0;
