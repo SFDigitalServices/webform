@@ -7,7 +7,6 @@ use Aws\Credentials\CredentialProvider;
 
 use App\Form;
 use Auth;
-use Log;
 use App\User;
 use App\User_Form;
 use Validator;
@@ -274,7 +273,6 @@ class FormController extends Controller
     public function getHTML($form, $base_url = '')
     {
         $content = $form['content'];
-        //Log::info(print_r($content,1));
         // form setting (json)
         $form_div = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 
