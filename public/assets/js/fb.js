@@ -505,7 +505,7 @@ $(document).ready(function(){
 			  $(value).attr("checked", false);
 			}
 		  } else if (vartype==="option"){
-			var options = $(e).val().split("\n");
+			var options = $(e).val();
 			$(value).html("");
 			$.each(options, function(i,e){
 			  br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
@@ -744,7 +744,6 @@ function loadForm() {
 				}
 			} else if (key != "formtype") {
 				if (key == "checkboxes") {
-					//var checkboxes = saved.data[i][key].split("\n");
 					var checkboxes = saved.data[i][key];
 					var value = "\n<!-- Multiple Checkboxes -->";
 					$.each(checkboxes, function(i,e){
@@ -755,7 +754,6 @@ function loadForm() {
 					value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "radios") {
-						//var radios = saved.data[i][key].split("\n");
 						var radios = saved.data[i][key];
 				    var value = "<!--  Multiple Radios -->";
 				    $.each(radios, function(i,e) {
