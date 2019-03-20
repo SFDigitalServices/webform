@@ -871,13 +871,11 @@ function changeIds(oldId, newId, saved) {
 			for (con in saved.data[ci]["conditions"].condition) {
 				if (saved.data[ci]["conditions"].condition[con].id == oldId) saved.data[ci]["conditions"].condition[con].id = newId;
 			}
-			//console.log(saved.data[ci]["conditions"]);
 		}
 		if (saved.data[ci]["calculations"] != undefined) {
 			for (calc in saved.data[ci].calculations) {
 				if ((calc % 2 == 0) && saved.data[ci].calculations[calc] == oldId) saved.data[ci].calculations[calc] = newId;
 			}
-			//console.log(saved.data[ci]["calculations"]);
 		}
 	}
 	return saved;
