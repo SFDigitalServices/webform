@@ -239,3 +239,4 @@ legend {padding: 2px 0}
 #SFDSWFB-target .form-group[data-required=true] > label:after {content:""}
 #SFDSWFB-target .form-group[data-formtype=m11] > label:after {content:""}
 #SFDSWFB-target .popover .form-group > label:after {content:""}
+#SFDSWFB-components .form-group[data-formtype=m14] {visibility:hidden;height:0px}

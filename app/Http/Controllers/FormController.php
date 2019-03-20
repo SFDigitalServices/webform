@@ -304,12 +304,20 @@ class FormController extends Controller
 				$hiddenId = $field['id'] == null ? "" : $field['id'];
 			  $str .= '<input type="hidden" name="'.$hiddenName.'" id="'.$hiddenId.'" value="'.$hiddenValue.'"/>';
 		  } else {
-			  $str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
+			  if ($field['formtype'] == "s06") {
+				$str .= '<fieldset class="form-group" data-id="'.$field['id'].'"><legend class="control-label">';
+			  } else {
+				$str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
+			  }
 			  $str .= isset($field['label']) ? $field['label'] : "";
 			  if (in_array($field['formtype'], $nonOptionalFields)) {
 				$str .= '</label><div>';
 			  } else {
-				$str .= ' <span class="optional">(optional)</span></label><div>';
+				if ($field['formtype'] == "s06") {
+					$str .= ' <span class="optional">(optional)</span></legend><div>';
+				} else {
+					$str .= ' <span class="optional">(optional)</span></label><div>';					
+				}
 			  }
 			  $str .= $this->printFormTypeStart($field['formtype']);
 			  $skipAttr = false;
