@@ -1,6 +1,6 @@
 <?php
 namespace App\Helpers;
-
+use Log;
 use App\Helpers\ListHelper;
 
 class HTMLHelper
@@ -14,17 +14,25 @@ class HTMLHelper
     public static function formRadio($field)
     {
         $html = "";
+        $value = "";
         $formtype = isset($field['formtype']) ?  $field['formtype']: "";
         $required = (isset($field['required']) && $field['required'] == 'true') ? 'required ': "";
+        $name = $field['id'];
+
+        if (array_key_exists('value', $field)) {
+            $value = $field['value'];
+        }
 
         //construct radio inputs, one or more
         if (array_key_exists('radios', $field)) {
             foreach ($field['radios'] as $radio) {
-                $val = "";
-                if (array_key_exists('value', $field)) {
-                    $val = $field['value'];
+                if ( strcasecmp($radio, $value) == 0 ){
+                    $isCheck = "checked ";
+                }else{
+                    $isCheck = "";
                 }
-                $html .= '<label class="radio"><input type="radio" value="'.$val.'" formtype="'. $formtype . '" '. $required .'/>'.$radio.'</label>';
+                $id = str_replace(' ', '_', $radio);
+                $html .= '<input type="radio" id="'.$id.'" name="'.$name.'" value="'.$radio.'" formtype="'. $formtype . '" '. $required .$isCheck. '><label for="'.$id.'" class="radio">'.$radio.'</label>';
             }
         }
         return $html;
@@ -37,21 +45,26 @@ class HTMLHelper
     public static function formCheckbox($field)
     {
         $html = "";
+        $isCheck = "";
         //get attributes
         $formType = $field['formtype'];
-        //construct radio inputs, one or more
+        if (array_key_exists('name', $field)) {
+            $name = $field['name']."[]";
+        }
+        if (array_key_exists('value', $field)) {
+            $value = $field['value'];
+        }
+        //construct checkbox inputs, one or more
         if (array_key_exists('checkboxes', $field)) {
             foreach ($field['checkboxes'] as $checkbox) {
-                $val = "";
-                $name = "";
-                if (array_key_exists('value', $field)) {
-                    $val = $field['value'];
+                $id = str_replace(' ', '_', $checkbox);
+                if ( strcasecmp($checkbox, $value) == 0 ){
+                    $isCheck = "checked ";
+                }else{
+                    $isCheck = "";
                 }
-                if (array_key_exists('name', $field)) {
-                    $name = $field['name']."[]";
-                }
-                $html .= '<label class="checkbox">
-               <input type="checkbox" value="'.$val.'" formtype="'. $formType . '" name = "'.$name .'"/>'.$checkbox.'</label>';
+
+                $html .= '<input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name = "'.$name .'" '.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label>';
             }
         }
         return $html;
@@ -202,7 +215,11 @@ class HTMLHelper
      */
     public static function fieldLabel($field)
     {
-        $html = ($field['formtype'] == "s06") ? '<legend class="control-label">':  '<label class="control-label">';
+        $label_for = $field['id'];
+        if(! $label_for)
+            $label_for = $field['name'];
+
+        $html = ($field['formtype'] == "s06") ? '<legend class="control-label">':  '<label for="'.$label_for.'" class="control-label">';
         $html .= isset($field['label']) ? $field['label'] : "";
         if (array_key_exists('required', $field)) {
             if (! $field['required'] == "true") {
