@@ -410,7 +410,11 @@ class FormController extends Controller
 				$str .= $this->printFormTypeEnd($field['formtype']);
 			  }
 			  $str .= '<p class="help-block with-errors">'.$help.'</p>';
-			  $str .= '</div></div>';
+			  if ($field['formtype'] == "s06") {
+				$str .= '</div></fieldset>';
+			  } else {
+				$str .= '</div></div>';
+			  }
 		  }
 		}
 
