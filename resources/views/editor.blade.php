@@ -706,7 +706,7 @@
                     </div>
 
 					<!-- must preserve whitespace formatting between options! -->
-                    <div class="form-group component" data-formtype="s08" rel="popover" data-required="true" data-choose="true" title="Multiple Radios" trigger="manual"
+                    <div class="form-group component" data-formtype="s08" rel="popover" data-required="true" data-choose="true" data-name="multiple_radios" title="multiple radios" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>

@@ -892,7 +892,6 @@ class FormController extends Controller
             'Bucket' => env('BUCKETEER_BUCKET_NAME'),
             'Key' => 'public/'.$filename,
             'Body' => $body,
-
         ]);
 
         return $result;
