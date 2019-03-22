@@ -39,8 +39,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 's08';
         $notEmptyRadio = HTMLHelper::formRadio($this->attributes);
 
-        $expected = '<label class="radio"><input type="radio" value="" formtype="s08" />option one</label>';
-        $expected .= '<label class="radio"><input type="radio" value="" formtype="s08" />option two</label>';
+        $expected = '<input type="radio" id="option_one" name="radio_id" value="option one" formtype="s08" ><label for="option_one" class="radio">option one</label>';
+        $expected .= '<input type="radio" id="option_two" name="radio_id" value="option two" formtype="s08" ><label for="option_two" class="radio">option two</label>';
         $this->assertEquals($notEmptyRadio, $expected);
     }
 

@@ -46,6 +46,8 @@ class HTMLHelper
     {
         $html = "";
         $isCheck = "";
+        $value = "";
+        $name = "";
         //get attributes
         $formType = $field['formtype'];
         if (array_key_exists('name', $field)) {
@@ -78,7 +80,10 @@ class HTMLHelper
     {
         $html = "<input ";
         $step = "any";
+        //unset unused attributes
         unset($field['label'], $field['help']);
+        unset($field['conditions']);
+        unset($field['calculations']);
         foreach ($field as $key => $value) {
             if (array_key_exists('regex', $field)) {
                 $html .= ' pattern="'.$value.'" ';
@@ -248,6 +253,10 @@ class HTMLHelper
      */
     private static function setAttributes($field)
     {
+        //unset unused attributes such as conditions and calculations
+        unset($field['conditions']);
+        unset($field['calculations']);
+
         $formtype = isset($field['formtype']) ? ' formtype="' . $field['formtype'] . '"': "";
         $id = isset($field['id']) ? ' id="' . $field['id'] . '"': "";
         $name = isset($field['name']) ? ' name="' . $field['name'] .'"': "";

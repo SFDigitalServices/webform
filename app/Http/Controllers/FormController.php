@@ -7,6 +7,7 @@ use Aws\Credentials\CredentialProvider;
 
 use App\Form;
 use Auth;
+use Log;
 use App\User;
 use App\User_Form;
 use Validator;
@@ -78,6 +79,7 @@ class FormController extends Controller
     {
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
+				$form['content'] = $this->scrubString($form['content']);
 
         return $form ? response()->json($form) : response()->json(['status' => 'failed']);
     }
