@@ -11,18 +11,17 @@ class GetFormCest
     }
 
      // tests
-
     public function getFormViaAPI(\ApiTester $I){
         $I->sendPOST('/form/getApiToken', $this->userAttributes);
         $response = json_decode($I->grabResponse());
 
         $I->haveHttpHeader('authorization', 'Bearer '. $response->api_token);
         $I->haveHttpHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $I->sendPOST('/form/getForm', ['form_id' => 2]);
+        $I->sendPOST('/form/getForm', ['form_id' => 1]); // get form #1, this is the form created in the migration script
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
         $I->seeResponseIsJson();
 
-        $I->seeResponseContains('{"id":2');
+        $I->seeResponseContains('{"id":1');
     }
 
 }

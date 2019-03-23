@@ -64,8 +64,9 @@ class FormController extends Controller
 
         $forms = array();
         foreach ($user_forms as $form_arr) {
-            $form = Form::where('id', $form_arr['form_id'])->get()->first();
-            $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+						$form = Form::where('id', $form_arr['form_id'])->get()->first();
+						$form['content'] = $this->scrubString($form['content']);
+						$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
             array_push($forms, $form);
         }
         return response()->json($forms);
@@ -936,6 +937,8 @@ class FormController extends Controller
 
     private function scrubString($str)
     {
+				if ( empty($str) ) return $str;
+
         $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
         $scrubbed = str_replace("'", "&apos;", $scrubbed);
         $scrubbed = str_replace('\"', "", $scrubbed);
