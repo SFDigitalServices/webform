@@ -281,12 +281,23 @@ class FormController extends Controller
        return response()->json(['status' => 0, 'message' => 'Failed to delete form']);      
     }
 	
+	function hasFileUpload($data) {
+		foreach ($data as $field) {
+			if ($field['formtype'] == "m13") {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	// EMBED FUNCTIONS
 	public function generateHTML($form, $base_url = '') {
 		$nonOptionalFields = array("m02", "m04", "m06", "m08", "m10", "m11", "m14", "m16");
 		$content = $form['content'];
 
-		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
+		$formEncoding = $this->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
+		
+		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 		$str = '';
 	
 		$csvPath = '//'.$base_url.'/form/submit';
@@ -867,8 +878,23 @@ class FormController extends Controller
 		//todo backend validation
 		$column = 0;
 		$write = Array();
+		$uploadedFiles = Array();
+		
+		//write file uploads, todo check filetype, mimetype, and size
+		foreach($_FILES as $key => $value) {
+			if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES[$key]) && $_FILES[$key]['error'] == UPLOAD_ERR_OK && is_uploaded_file($_FILES[$key]['tmp_name'])) {
+				$newFilename = $this->generateUploadedFilename($form_id, $key, $_FILES[$key]['name']);
+				$this->writeS3($newFilename, fopen($_FILES[$key]['tmp_name'], 'rb'));
+				foreach ($form['content']['data'] as $idx => $val) {
+					if ($val['formtype'] == "m13" && $val['name'] == $key) {
+						$uploadedFiles[$key] = $this->getBucketPath().$newFilename;
+					}
+				}
+			}				
+		}
+		
 		foreach ($form['content']['data'] as $field) {
-			if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m13" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
+			if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
 			} else if ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
 				if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
 					$options = explode("\n",$field['option']);
@@ -885,6 +911,9 @@ class FormController extends Controller
 					}
 					$column++;
 				}
+			} else if ($field['formtype'] == "m13") { //for file uploads
+				$write[$column] = $uploadedFiles[$field['name']];
+				$column++;
 			} else {
 				$write[$column] = $request->input($field['name']);
 				//$write[$column] = $field['name']; //todo write first row
@@ -939,7 +968,7 @@ class FormController extends Controller
 		
 		return $result;
 	}
-	
+
 	public function readS3($filename) {
 		
 		/*$s3 = new S3Client([
@@ -980,9 +1009,21 @@ class FormController extends Controller
 		}
 	}
 	
+	public function getBucketPath() {
+		return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
+	}
+	
 	private function generateFilename($id) {
 		$hash = substr(sha1($id.env('FILE_SALT')),0,8);
 		return $id.'-'.$hash.'.csv';
+	}
+
+	private function generateUploadedFilename($formId, $name, $filename) { //todo use responseId instead of time
+		$time = time();
+		$ext = pathinfo($filename, PATHINFO_EXTENSION);
+		$hash = substr(sha1($formId.$time.env('FILE_SALT')),0,8);
+		//return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
+		return $formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
 	}
 	
 	private function scrubString($str) {

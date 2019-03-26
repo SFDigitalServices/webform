@@ -849,7 +849,7 @@ function protectPublished(response) {
 	if (response == 1) {
 		$('.clickMenu').hide();
 		$('#SFDSWFB-target').css("padding", "20px");
-		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="javascript:void(0)" onclick="openCSV('+csvFile+')" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
+		$('#SFDSWFB-target').html('<h2>Your form is currently published.</h2><p>Editing is not allowed while your form is receiving submissions.</p><a href="javascript:void(0)" onclick="openCSV(\''+csvFile+'\')" class="btn btn-info">Open CSV File</a> &nbsp;<a href="javascript:void(0)" class="btn btn-info" onclick="confirmAction(\'clone\',\'doAction.php?action=clone\')">Clone Form</a> &nbsp;<a href="javascript:void(0)" onclick="confirmAction(\'purge\',\'doAction.php?action=purge\')" class="btn btn-danger">Purge Data</a>');
 	}
 }
 function timeToAddSubmitButton(saved) {
