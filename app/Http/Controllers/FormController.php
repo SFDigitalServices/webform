@@ -64,9 +64,9 @@ class FormController extends Controller
 
         $forms = array();
         foreach ($user_forms as $form_arr) {
-						$form = Form::where('id', $form_arr['form_id'])->get()->first();
-						$form['content'] = $this->scrubString($form['content']);
-						$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+            $form = Form::where('id', $form_arr['form_id'])->get()->first();
+            $form['content'] = $this->scrubString($form['content']);
+            $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
             array_push($forms, $form);
         }
         return response()->json($forms);
@@ -80,7 +80,7 @@ class FormController extends Controller
     {
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
-				$form['content'] = $this->scrubString($form['content']);
+        $form['content'] = $this->scrubString($form['content']);
 
         return $form ? response()->json($form) : response()->json(['status' => 'failed']);
     }
@@ -221,8 +221,7 @@ class FormController extends Controller
     {
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
-        $sections = array();
-
+				$form['content'] = $this->scrubString($form['content']);
         $form['content'] = json_decode($form['content'], true);
         return $this->wrapJS($this->getHTML($form, $request->getHttpHost()), $this->isSectional($form['content']), $form['content']);
     }
@@ -235,9 +234,9 @@ class FormController extends Controller
     public function generate(Request $request)
     {
         $form_id = $request->input('id');
-        $form = Form::where('id', $form_id)->first();
-
-        $form['content'] = json_decode($form['content'], true);
+				$form = Form::where('id', $form_id)->first();
+				$form['content'] = $this->scrubString($form['content']);
+				$form['content'] = json_decode($form['content'], true);
         return $this->getHTML($form, $request->getHttpHost());
     }
 
@@ -286,8 +285,8 @@ class FormController extends Controller
             $field_header = '<div class="form-group" data-id="'.$field['id'].'">' . HTMLHelper::fieldLabel($field);
 
             switch ($field['formtype']) {
-                        case "s08": $form_container .= $field_header . HTMLHelper::formRadio($field);
-                            break;
+							case "s08": $form_container .= $field_header . HTMLHelper::formRadio($field);
+								break;
                         case "s06": $form_container .= $field_header . HTMLHelper::formCheckbox($field);
                             break;
                         case "i14": $form_container .= $field_header . HTMLHelper::formTextArea($field);
@@ -315,10 +314,11 @@ class FormController extends Controller
                             break;
                         default: $form_container .= $field_header . HTMLHelper::formText($field);
                             break;
-                    }
+              }
             // append help block
             $form_container .= HTMLHelper::helpBlock($field);
         } //end of foreach
+
 
         // Form Sections
         if (!empty($sections)) {
@@ -937,12 +937,14 @@ class FormController extends Controller
 
     private function scrubString($str)
     {
-				if ( empty($str) ) return $str;
+        if (empty($str)) {
+            return $str;
+        }
 
         $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
         $scrubbed = str_replace("'", "&apos;", $scrubbed);
         $scrubbed = str_replace('\"', "", $scrubbed);
-        $scrubbed = json_encode($this->parseOptionValues(json_decode($scrubbed, true)));
+				$scrubbed = json_encode($this->parseOptionValues(json_decode($scrubbed, true)));
         return $scrubbed;
     }
 

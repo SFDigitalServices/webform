@@ -22,7 +22,6 @@ class HTMLHelper
         if (array_key_exists('value', $field)) {
             $value = $field['value'];
         }
-
         //construct radio inputs, one or more
         if (array_key_exists('radios', $field)) {
             foreach ($field['radios'] as $radio) {
@@ -50,7 +49,7 @@ class HTMLHelper
         $name = "";
         //get attributes
         $formType = $field['formtype'];
-        if (array_key_exists('name', $field)) {
+        if (array_key_exists('name', $field) && ! empty($field['name']) ) {
             $name = $field['name']."[]";
         }
         if (array_key_exists('value', $field)) {
@@ -66,7 +65,7 @@ class HTMLHelper
                     $isCheck = "";
                 }
 
-                $html .= '<input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name = "'.$name .'" '.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label>';
+                $html .= '<input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name="'.$name .'" '.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label>';
             }
         }
         return $html;
@@ -117,12 +116,11 @@ class HTMLHelper
     public static function formSelect($field)
     {
         $attributes = self::setAttributes($field);
-
         // need to check for formtypes: s02, s04, s14, s15, s16
         $html = '<select'. $attributes .'>';
         if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16") {
             $html .= ListHelper::getStates($field['formtype']);
-        } else {
+        } elseif(isset($field['option'])) {
             foreach ($field['option'] as $option) {
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
@@ -140,7 +138,7 @@ class HTMLHelper
     {
         $attributes = self::setAttributes($field);
 
-        $html = "<button".$attributes .">" . $field['button'] ."</button> ";
+        $html = "<button".$attributes .">" . $field['button'] ."</button>";
         return $html;
     }
     /**
@@ -167,6 +165,7 @@ class HTMLHelper
     public static function formHtag($field)
     {
         // type and formtype are not valid attributes for accessibility.
+        $html = "";
         $formtype = $field['formtype'];
         unset($field['type']);
         unset($field['formtype']);
@@ -195,9 +194,7 @@ class HTMLHelper
      */
     public static function formSection($field)
     {
-        $html = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a>
-                <a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div>
-                <div class="form-section" data-id="'.$field['id'].'">';
+        $html = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
 
         return $html;
     }
