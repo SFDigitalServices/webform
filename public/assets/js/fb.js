@@ -472,7 +472,7 @@ $(document).ready(function(){
 	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 	    
 	  //check id if in this form
-	  if ($('#id')[0] != undefined) {
+	  if ($('.popover #id')[0] != undefined) {
 		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
 			var errorMsg = setTimeout(function() {
 				loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
