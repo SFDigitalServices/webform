@@ -6,11 +6,11 @@ var csvFile = '';
 var allForms; //load all the forms into global?
 
 $(document).ready(function(){
-	
+
   emptyForm = $("#SFDSWFB-target").html();
-  
+
   $("form").delegate(".component", "mousedown", function(md) {
-	  
+
 	//remove the popup
     $(".popover").remove();
 
@@ -77,7 +77,7 @@ $(document).ready(function(){
 	  var dataMax = $($this).attr("data-max");
 
       $(document).delegate("body", "mousemove", function(mm){
-		  
+
         var mm_mouseX = mm.pageX;
         var mm_mouseY = mm.pageY;
 
@@ -85,10 +85,10 @@ $(document).ready(function(){
 			"top" : mm_mouseY - half_box_height + "px",
 			"left" : mm_mouseX - half_box_width  + "px"
 		});
-		
+
 		//added 100 to center drag
 		if (
-			mm_mouseX > $("#SFDSWFB-build").offset().left && 
+			mm_mouseX > $("#SFDSWFB-build").offset().left &&
 			mm_mouseX < tar_pos.left + $target.width() + $target.width() + $temp.width() &&
 			mm_mouseY > tar_pos.top + 100 &&
 			mm_mouseY < tar_pos.top + $target.height() + $temp.height()/2 + 100
@@ -140,13 +140,13 @@ $(document).ready(function(){
 			$("#SFDSWFB-target .component").popover({trigger: "manual"});
 			$temp.remove();
 		}
-		
+
 		//disallow if dragged in less than a second
 		if (dragExisting && Date.now() - clickNow < 1000) {
 			cancelDrag();
 			return;
 		}
-		
+
         var mu_mouseX = mu.pageX;
         var mu_mouseY = mu.pageY;
         var tar_pos = $target.position();
@@ -154,7 +154,7 @@ $(document).ready(function(){
         $("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
 
 		//calculate height, animation code only
-		var oldHeight = $('#SFDSWFB-target').height();			
+		var oldHeight = $('#SFDSWFB-target').height();
 
         // acting only if mouse is in right place
 		//added 150 and 100 to center drag
@@ -168,7 +168,7 @@ $(document).ready(function(){
 
 			//populate id field, almost all fields have id
 			var componentId = setComponentId($temp);
-			
+
             // where to add
             if(tops.length > 0){
               $($temp.html()).insertBefore(tops[0]);
@@ -179,7 +179,7 @@ $(document).ready(function(){
               $("#SFDSWFB-target fieldset").append($temp.append("\n\n\ \ \ \ ").html());
 			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
             }
-			
+
 			//add submit button if there is only one entry
 			if (timeToAddSubmitButton(saved)) {
 				saved = addSubmitButton(saved);
@@ -194,22 +194,23 @@ $(document).ready(function(){
 
         } else {
 			var componentId = setComponentId($temp);
-			
+
 			if (isReferenced(componentId)) { // check if section getting dragged out has dependencies
 				loadDialogModal("Oops!", "This field cannot be removed while it is being referenced in a calculation or conditional. Remove those dependencies first before attempting to remove this field.");
 				cancelDrag();
 				return;
+
 			} else if (componentId == "submit") {
 				loadDialogModal("Oops!", "The submit button cannot be removed.");
 				cancelDrag();
 				return;
-			} else {				
-				// do not add the component
+			} else {
+					// do not add the component
 				$("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
 				tops = [];
 			}
         }
-		  
+
 		//calculate new height, animation code only
 		$('#SFDSWFB-target').css('height', "auto");
 		var newHeight = $('#SFDSWFB-target').height();
@@ -226,7 +227,7 @@ $(document).ready(function(){
         $("body").undelegate("#SFDSWFB-temp","mouseup");
         $("#SFDSWFB-target .component").popover({trigger: "manual"});
         $temp.remove();
-		
+
 		//auto save
 		saveForm();
       });
@@ -244,7 +245,7 @@ $(document).ready(function(){
 
   //activate legend popover
   $("#SFDSWFB-target .component").popover({trigger: "manual"});
-  
+
   //popover on click event
   $("#SFDSWFB-target").delegate(".component", "click", function(e){
     e.preventDefault();
@@ -257,7 +258,7 @@ $(document).ready(function(){
 	} else {
 		$('.popover').offset({top:posOffset.top-50});
 	}
-	
+
 	//copy over attributes section
 	$(".popover .accordion-section.general").after($('.accordion-attributes').html());
 
@@ -289,7 +290,6 @@ $(document).ready(function(){
 		//copy over validation section
 		$(".popover .accordion-section.attributes").after($('.accordion-validation').html());
 	}
-
 	//hide value and validate type for textarea
 	if ($active_component.find("textarea")[0]) {
 		$(".popover .accordion-section.attributes .accordion label:first-child()").remove(); //hacky, if value gets moved this will have to change
@@ -305,7 +305,7 @@ $(document).ready(function(){
 	if (e.currentTarget.attributes['data-maxlength']) $(".popover #maxlength").val(e.currentTarget.attributes['data-maxlength'].value);
 	if (e.currentTarget.attributes['data-min']) $(".popover #min").val(e.currentTarget.attributes['data-min'].value);
 	if (e.currentTarget.attributes['data-max']) $(".popover #max").val(e.currentTarget.attributes['data-max'].value);
-	
+
 	//add calculation
 	if (e.currentTarget.dataset.formtype == "d06" || e.currentTarget.dataset.formtype == "d08") { //only show for numbers or prices
 		addCalculation(e.currentTarget.dataset.id);
@@ -327,7 +327,7 @@ $(document).ready(function(){
 			}
 		}
 	}
-	
+
 	//add conditional
 	if (e.currentTarget.id != "SFDSWFB-legend" && e.currentTarget.dataset.formtype != "m11") { //hide for hidden inputs and form title
 		$(".popover-content hr").before($('.accordion-conditionals').html());
@@ -335,7 +335,6 @@ $(document).ready(function(){
 		if (e.currentTarget.attributes['data-conditions']) {
 			var fieldConditions = JSON.parse(e.currentTarget.attributes['data-conditions'].value);
 			for (c in fieldConditions.condition) {
-				//alert(fieldConditions.condition[c].id);
 				addConditional();
 				$(".popover .conditionalId").eq(c).val(fieldConditions.condition[c].id);
 				$(".popover .conditionalOperator").eq(c).val(fieldConditions.condition[c].op);
@@ -351,9 +350,6 @@ $(document).ready(function(){
     $.each(valtypes, function(i,e){
       var valID ="#" + $(e).attr("data-valtype");
       var val;
-
-	  //on popup, loop through valtypes (in 2nd input chunk)
-	  //alert('valID: '+valID+' val: '+val);
 
       if(valID ==="#placeholder"){
         val = $(e).attr("placeholder");
@@ -379,18 +375,6 @@ $(document).ready(function(){
         val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
         val = val.join("\n");
         $(".popover "+valID).text(val);
-        //$(".popover #name").val($(e).find("input").attr("name"));
-		/* not using right now
-      } else if(valID==="#inline-checkboxes"){
-        val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
-        val = val.join("\n")
-          $(".popover "+valID).text(val);
-      } else if(valID==="#inline-radios"){
-        val = $.map($(e).find("label"), function(e,i){return $(e).text().trim()});
-        val = val.join("\n")
-          $(".popover "+valID).text(val);
-        $(".popover #name").val($(e).find("input").attr("name"));
-		*/
 	  } else if (valID==="#textarea") {
 		val = $(e).text();
         $(".popover " + valID).val(val);
@@ -400,13 +384,13 @@ $(document).ready(function(){
       } else if(valID==="#button") {
         val = $(e).text();
         var type = $(e).find("button").attr("class").split(" ").filter(function(e){return e.match(/btn-.*/)});
-		
+
         if(type.length === 0){
           $(".popover #color").val("btn-default");
         } else {
           $(".popover #color").val(type[0]);
         }
-		
+
         val = $(e).find(".btn").text();
         $(".popover #button").val(val);
       } else {
@@ -454,7 +438,7 @@ $(document).ready(function(){
 			text:	item
 		}));
 	});
-	
+
 	//init tooltips
 	$(".popover [data-toggle='tooltip']").tooltip();
 
@@ -470,7 +454,6 @@ $(document).ready(function(){
 
 	  var saved = $("#SFDSWFB-save").val();
 	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-	    
 	  //check id if in this form
 	  if ($('.popover #id')[0] != undefined) {
 		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
@@ -487,16 +470,17 @@ $(document).ready(function(){
 			saved = changeIds(oldId, newId, saved);
 		}
 	  }
-	  
+
+	  var saved = $("#SFDSWFB-save").val();
+	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+
       var inputs = $(".popover input");
-      inputs.push($(".popover textarea")[0]);
-	  inputs.push($(".popover select"));	  	  
-	  
+			inputs.push($(".popover textarea")[0]);
+			inputs.push($(".popover select"));
+
       $.each(inputs, function(i,e){
 		  var vartype = $(e).attr("id");
-		  var value = $active_component.find('[data-valtype="'+vartype+'"]')
-
-		  //alert('vartype: '+vartype+' value: '+value);
+			var value = $active_component.find('[data-valtype="'+vartype+'"]')
 
 		  if(vartype==="placeholder"){
 			$(value).attr("placeholder", $(e).val());
@@ -516,7 +500,7 @@ $(document).ready(function(){
 			  $(value).attr("checked", false);
 			}
 		  } else if (vartype==="option"){
-			var options = $(e).val().split("\n");
+			var options = $(e).val();
 			$(value).html("");
 			$.each(options, function(i,e){
 			  br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
@@ -542,28 +526,6 @@ $(document).ready(function(){
 			  }
 			});
 			  $($(value).find("input")[0]).attr("checked", true)
-			  /* not using for now
-		  } else if (vartype==="inline-checkboxes"){
-			var checkboxes = $(e).val().split("\n");
-			$(value).html("\n      <!-- Inline Checkboxes -->");
-			$.each(checkboxes, function(i,e){
-			  if(e.length > 0){
-				$(value).append('\n      <label class="checkbox inline">\n        <input type="checkbox" value="'+e+'">\n        '+e+'\n      </label>');
-			  }
-			});
-			$(value).append("\n  ")
-		  } else if (vartype==="inline-radios"){
-			var radios = $(e).val().split("\n");
-			var group_name = $(".popover #name").val();
-			$(value).html("\n      <!-- Inline Radios -->");
-			$.each(radios, function(i,e){
-			  if(e.length > 0){
-				$(value).append('\n      <label class="radio inline">\n        <input type="radio" value="'+e+'" name="'+group_name+'">\n        '+e+'\n      </label>');
-			  }
-			});
-			$(value).append("\n  ")
-			  $($(value).find("input")[0]).attr("checked", true)
-			  */
 		  } else if (vartype === "button"){
 			var type =  $(".popover #color option:selected").val();
 			$(value).find("button").text($(e).val()).attr("class", "btn "+type);
@@ -583,7 +545,7 @@ $(document).ready(function(){
 			$(value).text($(e).val());
 			//alert("not caught: "+vartype); //label, help, undefined
 		  }
-		  
+
 		  if (vartype != null) {
 			  if ($(e).attr('name') == "title") {
 				//save form title to json
@@ -597,7 +559,7 @@ $(document).ready(function(){
 			  }
 		  }
       });
-	  
+
 	  //save calculations
 	  if ($(".popover .calculation").length) {
 		  var calculations = [];
@@ -613,7 +575,7 @@ $(document).ready(function(){
 		  saved.data[currentIndex]["calculations"] = calculations;
 		  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').attr("data-calculations", JSON.stringify(calculations));
 	  }
-	  
+
 	  //save conditionals
 	  var currentIndex = $(".popover").prevAll(".form-group").length-1;
 	  if ($(".popover .condition").length) {
@@ -637,7 +599,7 @@ $(document).ready(function(){
 			  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
 		  }
 	  }
-	  
+
 	  //moved down, used to be in the loop for some reason?
 	  $active_component.popover("hide");
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
@@ -645,7 +607,7 @@ $(document).ready(function(){
 	  //auto save
 	  saveForm();
    });
-   
+
   });  //end popover on click event
 
   //bind additional actions
@@ -655,7 +617,7 @@ $(document).ready(function(){
   $("#SFDSWFB-7 input").change(function() {
 	updateSettings();
   });
-  
+
   /*
   $('#SFDSWFB-authors').tagsinput({
 	confirmKeys: [13, 44, 32]
@@ -663,9 +625,9 @@ $(document).ready(function(){
   */
 
   $('[data-toggle="tooltip"]').tooltip();
-  
+
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display','block');
-  
+
 }); //end document ready
 
 function quickDelete(obj) {
@@ -683,9 +645,9 @@ function genSource() {
 		$("#SFDSWFB-source").val("Please save your form before generating HTML.");
 		return;
 	}
-	
+
 	$("#SFDSWFB-snippet").val(embedCode(formId));
-	
+
 	$.get("/form/generate?id="+formId, function(data) {
 		$("#SFDSWFB-source").val(data);
 	});
@@ -754,7 +716,7 @@ function loadForm() {
 	$("#SFDSWFB-save").val(saved);
 
 	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-	
+
 	$("#SFDSWFB-target").html(emptyForm);
 
 	//iterate through data
@@ -777,7 +739,7 @@ function loadForm() {
 				}
 			} else if (key != "formtype") {
 				if (key == "checkboxes") {
-					var checkboxes = saved.data[i][key].split("\n");
+					var checkboxes = saved.data[i][key];
 					var value = "\n<!-- Multiple Checkboxes -->";
 					$.each(checkboxes, function(i,e){
 					  if(e.length > 0){
@@ -787,7 +749,7 @@ function loadForm() {
 					value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "radios") {
-				    var radios = saved.data[i][key].split("\n");
+						var radios = saved.data[i][key];
 				    var value = "<!--  Multiple Radios -->";
 				    $.each(radios, function(i,e) {
 					    if (e.length > 0) {
@@ -796,14 +758,15 @@ function loadForm() {
 					});
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "option") {
-				    var options = saved.data[i][key].split("\n");
+					//console.log(saved.data[i][key]);
+				    var options = saved.data[i][key];
 				    var value = "\n<!-- Select Basic -->";
 				    $.each(options, function(i,e) {
 					    if (e.length > 0) {
-						value += '\n<option value="'+e+'">'+e+'</option>';
+									value += '\n<option value="'+e+'">'+e+'</option>';
 					    }
-					});
-				        value += "\n  ";
+						});
+				  value += "\n  ";
 					$(newSection).find("[data-valtype='"+key+"']").html(value);
 				} else if (key == "button") {
 					var color = saved.data[i]['color'] != undefined ? saved.data[i]['color'] : '';
@@ -833,9 +796,9 @@ function loadForm() {
 	$('legend').text(saved.settings.name);
 
   // bind quick delete
-  $('#SFDSWFB-target .form-group.component:not([data-formtype=m14])').on('mouseover',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
-  $('#SFDSWFB-target .form-group.component:not([data-formtype=m14])').on('mouseout',function(){$(this).find('.fa-times-circle').remove()});
-	
+  $('#SFDSWFB-target .form-group.component').on('mouseover',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+  $('#SFDSWFB-target .form-group.component').on('mouseout',function(){$(this).find('.fa-times-circle').remove()});
+
   // check if csv and published
 	var submitUrl = new URL('/form/submit', window.location.href);
 	if ((saved.settings.action).includes(submitUrl)) {
@@ -869,7 +832,7 @@ function isUnique(cid,index) {
 				if (key == "id") {
 					if (saved.data[i][key] == cid) {
 						return false;
-					} 
+					}
 				}
 			}
 		}
@@ -909,7 +872,7 @@ function addCalculation(str) {
 		$('.popover-content .addCalculation').before($(".calculationContainer").html());
 		str = str == undefined ? $('.popover #id').val() : str;
 		var ids = getMathIds(str);
-		
+
 		$(".popover-content .allMathIds").each(function() {
 			if ($(this).val() == null) {
 				var thisSelect = $(this);
@@ -918,7 +881,7 @@ function addCalculation(str) {
 						value: item,
 						text:	item
 					}));
-				});	
+				});
 			}
 		});
 	}
@@ -934,7 +897,7 @@ function addConditional() {
 					value: item,
 					text:	item
 				}));
-			});	
+			});
 		}
 	});
 	//check if first conditional or not
@@ -1040,11 +1003,11 @@ function updateSettings() {
 						if ($('#SFDSWFB-7 input[name=action]').val() == submitUrl) $('#SFDSWFB-7 input[name=action]').val('');
 						$(".csvFile").hide('medium');
 						$(".confirmPage").hide('medium');
-						$('#SFDSWFB-7 input[name=action]').removeAttr('readonly');						
+						$('#SFDSWFB-7 input[name=action]').removeAttr('readonly');
 					} else if ($(this).is(":checked") && $(this).val() == "csv") {
 						$('#SFDSWFB-7 input[name=action]').val(submitUrl);
 						$(".confirmPage").show('medium');
-						$('#SFDSWFB-7 input[name=action]').attr('readonly', true);						
+						$('#SFDSWFB-7 input[name=action]').attr('readonly', true);
 						populateCSV();
 					}
 				} else {
@@ -1091,18 +1054,18 @@ function confirmAction(action) {
 		url = "/form/clone";
 		return callAPI(url, {"id" : formId}, goHome);
 	} else if (action == "delete") {
-		msg = "Are you sure you want to delete this form?";		
+		msg = "Are you sure you want to delete this form?";
 		url = "/form/delete";
 	} else if (action == "purge") {
 		msg = "Purging will erase all of your form submission data permanently! To make a new revision, clone your form. Only purge if you're sure it's test/junk data. Are you sure you want to purge?";
 		url = "/form/purge-csv";
 	}
-	
+
 	var callback;
 	if (action == "delete" || action == "purge") {
 		callback = function(){callAPI(url, {"id" : formId}, goHome)};
 	}
-	
+
 	loadConfirmModal("Warning!", msg, callback);
 }
 function share() {
@@ -1125,7 +1088,7 @@ function goHome(back) {
 	if (back != undefined) {
 		window.history.back();
 		return;
-	} 
+	}
 	$('.container').hide('fast');
 	callAPI("/form/getForms", {}, loadHome);
 	$('.forms').html('<i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i>');
@@ -1140,7 +1103,7 @@ function saveForm() {
 	form.id = formId;
 	form.user_id = user_id;
 	form.api_token = api_token;
-			
+
 	var settings = {
 		"async": true,
 		"crossDomain": true,
@@ -1165,7 +1128,7 @@ function saveForm() {
 	.fail(function() {
 		$('.saveSpinner').hide();
 		loadDialogModal("Oops!", "Error saving form. Please try again or contact SFDS.");
-	});	
+	});
 }
 var autofillNames = null;
 function loadNames(obj) {
@@ -1201,16 +1164,16 @@ var substringMatcher = function(strs) {
     };
 }
 function embedCode(id) {
-	
+
 	var url = new URL('/form/embed', window.location.href);
-	
+
 	var str = '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'+
 	'<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'+
 	'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>'+
 	'<script src="'+url+'?id='+id+'"></script>'+
 	'<div id="SFDSWF-Container"></div>';
 	return str;
-	
+
 }
 function callAPI(url, dataObj, callback) {
 	var settings = {
@@ -1245,7 +1208,7 @@ function loadHome(response) {
 	});
 }
 function loadContent(id) {
-	$(".content").hide("fast", function(){ 
+	$(".content").hide("fast", function(){
 		if (id == undefined) {
 			if (history.state == undefined) history.pushState({formId : 0} , null, "/home?new");
 			formId = 0;
@@ -1267,7 +1230,7 @@ function loadContent(id) {
 			if (allForms[id].content.settings.action == submitUrl) {
 				$("input[name=backend][value=csv]").attr('checked', true);
 				$(".confirmPage").show('medium');
-				$('#SFDSWFB-7 input[name=action]').attr('readonly', true);						
+				$('#SFDSWFB-7 input[name=action]').attr('readonly', true);
 				populateCSV();
 			}
 			loadForm();
@@ -1277,7 +1240,7 @@ function loadContent(id) {
 }
 function resizeHeight() {
 	//calculate height, animation code only
-	var oldHeight = $('#SFDSWFB-target').height();			
+	var oldHeight = $('#SFDSWFB-target').height();
 	//calculate new height, animation code only
 	$('#SFDSWFB-target').css('height', "auto");
 	var newHeight = $('#SFDSWFB-target').height();
