@@ -153,6 +153,7 @@ class HTMLHelper
         unset($field['type']);
         unset($field['formtype']);
         $attributes = self::setAttributes($field);
+
         $field_value = isset($field['textarea']) ? $field['textarea'] : $field['codearea'];
         $field_value = str_replace("\n", "<br/>", $field_value);
         $html = '<p'. $attributes .'>'.$field_value.'</p>';

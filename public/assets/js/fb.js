@@ -455,7 +455,7 @@ $(document).ready(function(){
 	  var saved = $("#SFDSWFB-save").val();
 	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 	  //check id if in this form
-	  if ($('#id')[0] != undefined) {
+	  if ($('.popover #id')[0] != undefined) {
 		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
 			var errorMsg = setTimeout(function() {
 				loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
@@ -507,7 +507,7 @@ $(document).ready(function(){
 			  $(value).append("<option>"+e+"</option>"+br);
 			});
 		  } else if (vartype==="checkboxes"){
-			var checkboxes = $(e).val().split("\n");
+			var checkboxes = $(e).val();
 			$(value).html("<!-- Multiple Checkboxes -->");
 			$.each(checkboxes, function(i,e){
 			  if(e.length > 0){
@@ -517,7 +517,7 @@ $(document).ready(function(){
 			});
 		  } else if (vartype==="radios"){
 			var group_name = $(".popover #name").val();
-			var radios = $(e).val().split("\n");
+			var radios = $(e).val();
 			$(value).html("<!-- Multiple Radios -->");
 			$.each(radios, function(i,e){
 			  if(e.length > 0){

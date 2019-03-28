@@ -128,6 +128,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $notEmptyParagraph);
 
     }
+
     public function testFormTextArea(){
         $emptyParagraph = HTMLHelper::formTextArea($this->attributes);
         $expected = '<textarea  id="" name="" type="" formtype="" class="" ></textarea>';
@@ -141,6 +142,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $notEmptyParagraph);
 
     }
+
     public function testFormHtag(){
         $this->attributes['formtype'] = "m02";
         $emptyHtag = HTMLHelper::formHtag($this->attributes);
