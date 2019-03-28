@@ -285,38 +285,38 @@ class FormController extends Controller
             $field_header = '<div class="form-group" data-id="'.$field['id'].'">' . HTMLHelper::fieldLabel($field);
 
             switch ($field['formtype']) {
-							case "s08": $form_container .= $field_header . HTMLHelper::formRadio($field);
-								break;
-                        case "s06": $form_container .= $field_header . HTMLHelper::formCheckbox($field);
+												case "s08": $form_container .= $field_header . HTMLHelper::formRadio($field). HTMLHelper::helpBlock($field);
+														break;
+                        case "s06": $form_container .= $field_header . HTMLHelper::formCheckbox($field) . HTMLHelper::helpBlock($field);
                             break;
-                        case "i14": $form_container .= $field_header . HTMLHelper::formTextArea($field);
+                        case "i14": $form_container .= $field_header . HTMLHelper::formTextArea($field) . HTMLHelper::helpBlock($field);
                             break;
                         case "s02":
                         case "s04":
                         case "s14":
                         case "s15":
                         case "s16":
-                            $form_container .= $field_header . HTMLHelper::formSelect($field);
+                            $form_container .= $field_header . HTMLHelper::formSelect($field) . HTMLHelper::helpBlock($field);
                             break;
                         case "m02":
                         case "m04":
-                        case "m06": $form_container .= $field_header . HTMLHelper::formHtag($field);
+                        case "m06": $form_container .= $field_header . HTMLHelper::formHtag($field) . HTMLHelper::helpBlock($field);
                             break;
                         case "m08":
                         case "m10":
-                            $form_container .= $field_header . HTMLHelper::formParagraph($field);
+                            $form_container .= $field_header . HTMLHelper::formParagraph($field) .HTMLHelper::helpBlock($field);
                             break;
-                        case "m14": $form_container .= $field_header . HTMLHelper::formButton($field);
+                        case "m14": $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
                             break;
                         case "m16": $form_container .= HTMLHelper::formSection($field); $sections[] = $field;
                             break;
                         case "m11": $form_container .= HTMLHelper::formHidden($field);
                             break;
-                        default: $form_container .= $field_header . HTMLHelper::formText($field);
+                        default: $form_container .= $field_header . HTMLHelper::formText($field) . HTMLHelper::helpBlock($field);
                             break;
               }
             // append help block
-            $form_container .= HTMLHelper::helpBlock($field);
+            //$form_container .= HTMLHelper::helpBlock($field);
         } //end of foreach
 
 
@@ -616,16 +616,17 @@ class FormController extends Controller
                 foreach ($field as $key => $value) {
                     if ($key == "option") {
                         $inner .= '>';
-                        $options = explode("\n", $value);
+                        $options = $value;
                         foreach ($options as $option) {
                             $inner .= '<option value="'.$option.'">'.$option.'</option>';
                         }
                     } elseif ($key == "checkboxes") {
-                        $skipAttr = explode("\n", $value);
+                        $skipAttr = $value;
                         $manyType ="checkbox";
                         $isCheckbox = true;
                     } elseif ($key == "radios") {
-                        $skipAttr = explode("\n", $value);
+												$skipAttr = $value;
+												//$skipAttr = explode("\n", $value);
                         $manyType = "radio";
                     } elseif ($key == "textarea") {
                         if ($field['formtype'] == "m08" || $field['formtype'] == "m10") { //paragraph tags need to convert line breaks to page breaks
@@ -966,6 +967,100 @@ class FormController extends Controller
         return $ret;
     }
 
+
+		public function printFormTypeStart($formtype) {
+			switch ($formtype) {
+			/*
+			case "i06": //todo prepended text
+			case "i08": //todo appended text
+			case "i10": //todo prepended checkbox
+			case "i12": //todo appended checkbox
+			case "m13": //todo file upload
+			*/
+			case "s08": //input radio do nothing
+			case "s06": //input checkbox do nothing
+				$str = "";
+				break;
+			case "i14":
+				$str = "<textarea ";
+				break;
+			case "s02":
+			case "s04":
+			case "s14":
+			case "s15":
+			case "s16":
+				$str = "<select ";
+				break;
+			case "m02":
+				$str = "<h1 ";
+				break;
+			case "m04":
+				$str = "<h2 ";
+				break;
+			case "m06":
+				$str = "<h3 ";
+				break;
+			case "m08":
+			case "m10":
+				$str = "<p ";
+				break;
+			case "m14":
+				$str = "<button ";
+				break;
+			case "m16":
+				// form separator handled above
+				break;
+			default:
+				$str = "<input ";
+			}
+			return ($str);
+		}
+		public function printFormTypeEnd($formtype) {
+            switch ($formtype) {
+            /*
+            case "i06": //todo prepended text
+            case "i08": //todo appended text
+            case "i10": //todo prepended checkbox
+            case "i12": //todo appended checkbox
+            case "m13": //todo file upload
+            */
+            case "s08": // input radio do nothing
+            case "s06": // input checkbox do nothing
+            break;
+            case "m16":
+            // form separator handled above
+            break;
+            case "i14":
+            $str = "</textarea>";
+            break;
+            case "s02":
+            case "s04":
+            case "s14":
+            case "s15":
+            case "s16":
+            $str = "</select>";
+            break;
+            case "m02":
+            $str = "</h1>";
+            break;
+            case "m04":
+            $str = "</h2>";
+            break;
+            case "m06":
+            $str = "</h3>";
+            break;
+            case "m08":
+            case "m10":
+            $str = "</p>";
+            break;
+            case "m14":
+            $str = "</button>";
+            break;
+            default:
+            $str = "/>";
+            }
+            return ($str);
+        }
     public function notifyUser(Request $request)
     {
         $form_id = $request->input('form_id');
