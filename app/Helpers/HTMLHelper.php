@@ -230,7 +230,7 @@ class HTMLHelper
                 $html .= ' <span class="optional">(optional)</span>';
             }
         }
-        $html .= ($field['formtype'] == "s06") ? '</legend><div>' : '</label><div>';
+        $html .= ($field['formtype'] == "s06") ? '</legend><div class="field-legend">' : '</label><div class="field-wrapper">';
         return $html;
     }
     /**
@@ -240,7 +240,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<p class="help-block">'.$field['help'].'</p>' : '<p class="help-block"></p>';
+        $str = array_key_exists('help', $field) ? '<p class="help-block with-errors">'.$field['help'].'</p>' : '<p class="help-block with-errors"></p>';
         $str .= '</div></div>';
         return $str;
     }
