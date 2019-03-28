@@ -507,7 +507,7 @@ $(document).ready(function(){
 			  $(value).append("<option>"+e+"</option>"+br);
 			});
 		  } else if (vartype==="checkboxes"){
-			var checkboxes = $(e).val().split("\n");
+			var checkboxes = $(e).val();
 			$(value).html("<!-- Multiple Checkboxes -->");
 			$.each(checkboxes, function(i,e){
 			  if(e.length > 0){
@@ -517,7 +517,7 @@ $(document).ready(function(){
 			});
 		  } else if (vartype==="radios"){
 			var group_name = $(".popover #name").val();
-			var radios = $(e).val().split("\n");
+			var radios = $(e).val();
 			$(value).html("<!-- Multiple Radios -->");
 			$.each(radios, function(i,e){
 			  if(e.length > 0){
