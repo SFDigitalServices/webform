@@ -104,7 +104,8 @@ class HTMLHelper
     public static function formTextArea($field)
     {
         $attributes = self::setAttributes($field);
-
+        $textarea = isset($field['textarea']) ? $field['textarea'] : "";
+        $textarea = str_replace("\n", "<br/>", $textarea);
         $html = '<textarea'. $attributes .'>'.$textarea.'</textarea>';
         return $html;
     }
@@ -154,6 +155,7 @@ class HTMLHelper
         $attributes = self::setAttributes($field);
 
         $field_value = isset($field['textarea']) ? $field['textarea'] : $field['codearea'];
+        $field_value = str_replace("\n", "<br/>", $field_value);
         $html = '<p'. $attributes .'>'.$field_value.'</p>';
         return $html;
     }
@@ -172,7 +174,7 @@ class HTMLHelper
         $attributes = self::setAttributes($field);
 
         $textarea = isset($field['textarea']) ? $field['textarea'] : "";
-
+        $textarea = str_replace("\n", "<br/>", $textarea);
         switch ($formtype) {
             case "m02":
                 $html = '<h1'. $attributes.'>'.$textarea.'</h1>';
