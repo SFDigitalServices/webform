@@ -479,52 +479,53 @@ $(document).ready(function(){
 			inputs.push($(".popover select"));
 
       $.each(inputs, function(i,e){
-		  var vartype = $(e).attr("id");
-			var value = $active_component.find('[data-valtype="'+vartype+'"]')
+				var vartype = $(e).attr("id");
 
-		  if(vartype==="placeholder"){
-			$(value).attr("placeholder", $(e).val());
-		  }else if (vartype==="href"){
-			$($active_component.find('a')).attr("href", $(e).val());
-		  }else if (vartype==="src"){
-			$(value).attr("src", $(e).val());
-		  }else if (vartype==="textarea") {
-			  $(value).text($(e).val());
-		  }else if (vartype==="codearea") {
-			  $(value).html($(e).val());
-		  } else if (vartype==="checkbox"){
-			if($(e).is(":checked")){
-			  $(value).attr("checked", true);
-			}
-			else{
-			  $(value).attr("checked", false);
-			}
+				var value = $active_component.find('[data-valtype="'+vartype+'"]')
+
+				if(vartype==="placeholder"){
+					$(value).attr("placeholder", $(e).val());
+				}else if (vartype==="href"){
+					$($active_component.find('a')).attr("href", $(e).val());
+				}else if (vartype==="src"){
+					$(value).attr("src", $(e).val());
+				}else if (vartype==="textarea") {
+					$(value).text($(e).val());
+				}else if (vartype==="codearea") {
+					$(value).html($(e).val());
+				} else if (vartype==="checkbox"){
+					if($(e).is(":checked")){
+						$(value).attr("checked", true);
+					}
+					else{
+						$(value).attr("checked", false);
+					}
 		  } else if (vartype==="option"){
-			var options = $(e).val();
-			$(value).html("");
-			$.each(options, function(i,e){
-			  br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
-			  $(value).append("<option>"+e+"</option>"+br);
-			});
+					var options = $(e).val().split("\n");
+					$(value).html("");
+					$.each(options, function(i,e){
+						br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+						$(value).append("<option>"+e+"</option>"+br);
+					});
 		  } else if (vartype==="checkboxes"){
-			var checkboxes = $(e).val();
-			$(value).html("<!-- Multiple Checkboxes -->");
-			$.each(checkboxes, function(i,e){
-			  if(e.length > 0){
-				br = i < checkboxes.length - 1 ? "\n" : ""; //add line breaks for each option but the last
-				$(value).append('<label class="checkbox"><input type="checkbox" value="'+e+'">'+e+'</label>'+br);
-			  }
-			});
+					var checkboxes = $(e).val().split("\n");
+					$(value).html("<!-- Multiple Checkboxes -->");
+					$.each(checkboxes, function(i,e){
+						if(e.length > 0){
+							br = i < checkboxes.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+							$(value).append('<label class="checkbox"><input type="checkbox" value="'+e+'">'+e+'</label>'+br);
+						}
+					});
 		  } else if (vartype==="radios"){
-			var group_name = $(".popover #name").val();
-			var radios = $(e).val();
-			$(value).html("<!-- Multiple Radios -->");
-			$.each(radios, function(i,e){
-			  if(e.length > 0){
-				br = i < radios.length - 1 ? "\n" : ""; //add line breaks for each option but the last
-				$(value).append('<label class="radio"><input type="radio" value="'+e+'" name="'+group_name+'">'+e+'</label>'+br);
-			  }
-			});
+				var group_name = $(".popover #name").val();
+				var radios = $(e).val().split("\n");
+				$(value).html("<!-- Multiple Radios -->");
+				$.each(radios, function(i,e){
+					if(e.length > 0){
+					br = i < radios.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+					$(value).append('<label class="radio"><input type="radio" value="'+e+'" name="'+group_name+'">'+e+'</label>'+br);
+					}
+				});
 			  $($(value).find("input")[0]).attr("checked", true)
 		  } else if (vartype === "button"){
 			var type =  $(".popover #color option:selected").val();

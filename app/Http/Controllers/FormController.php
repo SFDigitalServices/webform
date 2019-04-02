@@ -59,7 +59,6 @@ class FormController extends Controller
     {
         $user_id = $request->input('user_id');
         $user = Auth::user()->where('id', $user_id)->get();
-
         $user_forms = User_Form::where('user_id', $user_id)->get();
 
         $forms = array();
@@ -733,11 +732,12 @@ class FormController extends Controller
             $multipleInputs = array("s02", "s04", "s06", "s08");
             if (in_array($field->formtype, $multipleInputs)) {
                 if ($field->formtype == "s02" || $field->formtype == "s04") {
-                    $options = explode("\n", $field->option);
+										//$options = explode("\n", $field->option);
+										$options = $field->option;
                 } elseif ($field->formtype == "s06") {
-                    $options = explode("\n", $field->checkboxes);
+                    $options = $field->checkboxes;
                 } elseif ($field->formtype == "s08") {
-                    $options = explode("\n", $field->radios);
+                    $options = $field->radios;
                 }
                 foreach ($options as $option) {
                     $write[$column] = isset($field->name) ? $field->name." ".$option : $option;
@@ -840,11 +840,11 @@ class FormController extends Controller
             if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m13" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
             } elseif ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
                 if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
-                    $options = explode("\n", $field['option']);
+                    $options = $field['option'];
                 } elseif ($field['formtype'] == "s06") {
-                    $options = explode("\n", $field['checkboxes']);
+                    $options = $field['checkboxes'];
                 } elseif ($field['formtype'] == "s08") {
-                    $options = explode("\n", $field['radios']);
+                    $options = $field['radios'];
                 }
                 foreach ($options as $option) {
                     if (is_array($request->input($field['name']))) {
@@ -960,10 +960,10 @@ class FormController extends Controller
             } elseif (array_key_exists('checkboxes', $field) && !is_array($field['checkboxes'])) {
                 $field['checkboxes'] = explode("\n", $field['checkboxes']);
             } elseif (array_key_exists('radios', $field) && !is_array($field['radios'])) {
-                $field['radios'] = explode("\n", $field['radios']);
+								$field['radios'] = explode("\n", $field['radios']);
             }
             $ret['data'][] = $field;
-        }
+				}
         return $ret;
     }
 
