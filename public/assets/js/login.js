@@ -1,3 +1,3 @@
 $(document).ready(function(){
-    Sentry.captureMessage('Testing Sentry logging');
+    //Sentry.captureMessage('Testing Sentry logging');
 });
