@@ -12,6 +12,7 @@ use App\User_Form;
 use Validator;
 use App\Helpers\UserHelper;
 use App\Helpers\ListHelper;
+use App\Helpers\FileStoreHelper;
 
 use Illuminate\Http\Request;
 class FormController extends Controller
@@ -103,7 +104,7 @@ class FormController extends Controller
         } else {
 			$returnForm = Form::where('id', $form_id)->first();
 			//$returnForm['content'] = $form_data['content'];
-			$this->processCSV($returnForm, $request->getHttpHost());
+			FileStoreHelper::processCSV($returnForm, $request->getHttpHost());
 			$returnForm['content'] = $this->scrubString($request->input('content'));
 			$returnForm->save();
 			return response()->json($returnForm);
@@ -210,7 +211,7 @@ class FormController extends Controller
 			$form = Form::create(['content' => $this->scrubString($request->input('content'))]);
 			
             if( $form ){
-				$this->processCSV($form, $request->getHttpHost());
+				FileStoreHelper::processCSV($form, $request->getHttpHost());
                 // create entry in user_form
                 $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
@@ -281,21 +282,12 @@ class FormController extends Controller
        return response()->json(['status' => 0, 'message' => 'Failed to delete form']);      
     }
 	
-	function hasFileUpload($data) {
-		foreach ($data as $field) {
-			if ($field['formtype'] == "m13") {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	// EMBED FUNCTIONS
 	public function generateHTML($form, $base_url = '') {
 		$nonOptionalFields = array("m02", "m04", "m06", "m08", "m10", "m11", "m14", "m16");
 		$content = $form['content'];
 
-		$formEncoding = $this->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
+		$formEncoding = FileStoreHelper::hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
 		
 		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 		$str = '';
@@ -780,94 +772,14 @@ class FormController extends Controller
         return true;
     }
 	
-	public function rewriteCSV($content, $filename) {
-		$column = 0;
-		$write = Array();
-		foreach ($content->data as $field) {
-			$nonInputs = array("m02", "m04", "m06", "m08", "m10", "m13", "m14", "m16");
-			$multipleInputs = array("s02", "s04", "s06", "s08");
-			if (in_array($field->formtype, $multipleInputs)) {
-				if ($field->formtype == "s02" || $field->formtype == "s04") {
-					$options = explode("\n",$field->option);
-				} else if ($field->formtype == "s06") {
-					$options = explode("\n",$field->checkboxes);
-				} else if ($field->formtype == "s08") {
-					$options = explode("\n",$field->radios);
-				}
-				foreach ($options as $option) {
-					$write[$column] = isset($field->name) ? $field->name." ".$option : $option;
-					$column++;
-				}
-			} else if (!in_array($field->formtype, $nonInputs)) { // catch all for everything except multiple and non-inputs
-				$write[$column] = isset($field->name) ? $field->name : '';
-				$column++;
-			}
-		}
-		//file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
-		$this->writeCSV($filename, implode(",",$write)."\n");
-	}
-
 	public function purgeCSV(Request $request) {
       $form_id = $request->input('id');
       $form = Form::where('id', $form_id)->first();
 			$content = json_decode($form->content);
-			$filename = $this->generateFilename($form_id);
-			$this->rewriteCSV($content, $filename);
+			$filename = FileStoreHelper::generateFilename($form_id);
+			FileStoreHelper::rewriteCSV($content, $filename);
 			return response()->json(['status' => 1, 'message' => 'Purged CSV']); 
  	}
-	
-	public function processCSV($form, $base_url = '') {
-		//read content and settings
-		$content = json_decode($form->content);
-		if ($this->isCSVDatabase($content->settings->action, $base_url)) {
-			$filename = $this->generateFilename($form->id);
-			//rewrite header row if CSV is not published (only header row or less exists)
-			if (!$this->isCSVPublished($filename)) $this->rewriteCSV($content, $filename);
-		}
-	}
-	
-	public function isCSVDatabase($formAction, $base_url = '') {
-		$path = '//'. $base_url.'/form/submit';
-		//if form action matches a csv transaction
-		return substr($formAction,0 - strlen($path)) == $path ? true : false;
-	}
-	
-	public function CSVPublished(Request $request) {
-		return $this->isCSVPublished($this->getFilename($request)) ? 1 : 0;
-	}
-	
-	public function isCSVPublished($filename) {
-		$csv = $this->readCSV($filename);
-		return count($csv) > 1 ? true : false;
-	}
-
-	public function readCSV($filename) {
-		//$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
-		$csv = array();
-		$read = $this->readS3($filename);
-		if ($read) {
-			$rows = str_getcsv($read,"\n");
-			foreach ($rows as $row) {
-				$csv[] = str_getcsv($row);
-			}
-		}
-		return $csv;
-	}
-	
-	public function writeCSV($filename, $body) {
-		//file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
-		return $this->writeS3($filename, $body);
-	}
-	
-	public function appendCSV($filename, $arr) {
-		$csv = $this->readCSV($filename);
-		array_push($csv, $arr);
-		$output = "";
-		foreach ($csv as $row) {
-			$output .= implode(",", $row)."\n";
-		}
-		$this->writeCSV($filename, $output);
-	}
 	
 	public function submitCSV(Request $request) {
         $form_id = $request->input('form_id');
@@ -883,11 +795,11 @@ class FormController extends Controller
 		//write file uploads, todo check filetype, mimetype, and size
 		foreach($_FILES as $key => $value) {
 			if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES[$key]) && $_FILES[$key]['error'] == UPLOAD_ERR_OK && is_uploaded_file($_FILES[$key]['tmp_name'])) {
-				$newFilename = $this->generateUploadedFilename($form_id, $key, $_FILES[$key]['name']);
-				$this->writeS3($newFilename, fopen($_FILES[$key]['tmp_name'], 'rb'));
+				$newFilename = FileStoreHelper::generateUploadedFilename($form_id, $key, $_FILES[$key]['name']);
+				FileStoreHelper::writeS3($newFilename, fopen($_FILES[$key]['tmp_name'], 'rb'));
 				foreach ($form['content']['data'] as $idx => $val) {
 					if ($val['formtype'] == "m13" && $val['name'] == $key) {
-						$uploadedFiles[$key] = $this->getBucketPath().$newFilename;
+						$uploadedFiles[$key] = FileStoreHelper::getBucketPath().$newFilename;
 					}
 				}
 			}				
@@ -934,7 +846,7 @@ class FormController extends Controller
 		fclose($fp);
 		*/
 		
-		$this->appendCSV($this->generateFilename($form_id), $write);
+		FileStoreHelper::appendCSV(FileStoreHelper::generateFilename($form_id), $write);
 		
 		return redirect($form['content']['settings']['confirmation']);
 		//print "Form Submitted!";
@@ -942,89 +854,7 @@ class FormController extends Controller
 		//return;
 	}
 
-	public function writeS3($filename, $body) {
-		//require('../vendor/autoload.php');
-		
-		/*$s3 = new S3Client([
-			'profile' => 'default',
-			'version' => 'latest',
-			'region' => env('BUCKETEER_AWS_REGION'),
-			'credentials' => [
-				'key' => env('BUCKETEER_AWS_ACCESS_KEY_ID'),
-				'secret' => env('BUCKETEER_AWS_SECRET_ACCESS_KEY')
-			]
-		]);*/
-		$s3 = new S3Client([
-			'region'      => env('BUCKETEER_AWS_REGION'),
-			'version'     => 'latest',
-			'credentials' => CredentialProvider::env()
-	]);	
-		
-		$result = $s3->putObject([
-			'Bucket' => env('BUCKETEER_BUCKET_NAME'),
-			'Key' => 'public/'.$filename,
-			'Body' => $body,
-		]);
-		
-		return $result;
-	}
 
-	public function readS3($filename) {
-		
-		/*$s3 = new S3Client([
-			'profile' => 'default',
-			'version' => 'latest',
-			'region' => env('BUCKETEER_AWS_REGION'),
-			'credentials' => [
-				'key' => env('BUCKETEER_AWS_ACCESS_KEY_ID'),
-				'secret' => env('BUCKETEER_AWS_SECRET_ACCESS_KEY')
-			]
-		]);	*/
-		$s3 = new S3Client([
-			'region'      => env('BUCKETEER_AWS_REGION'),
-			'version'     => 'latest',
-			'credentials' => CredentialProvider::env()
-	]);
-		
-		if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), 'public/'.$filename)) {
-			$result = $s3->getObject([
-				'Bucket' => env('BUCKETEER_BUCKET_NAME'),
-				'Key' => 'public/'.$filename
-			]);
-			return $result['Body'];
-		} else {
-			return false;
-		}
-		
-	}
-	
-	public function getFilename(Request $request) {
-		$id = $request->input('id');
-		//todo make sure user has access to this form id
-		$path = $request->input('path');
-		if ($path) {
-			return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$this->generateFilename($id);
-		} else {
-			return $this->generateFilename($id);
-		}
-	}
-	
-	public function getBucketPath() {
-		return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
-	}
-	
-	private function generateFilename($id) {
-		$hash = substr(sha1($id.env('FILE_SALT')),0,8);
-		return $id.'-'.$hash.'.csv';
-	}
-
-	private function generateUploadedFilename($formId, $name, $filename) { //todo use responseId instead of time
-		$time = time();
-		$ext = pathinfo($filename, PATHINFO_EXTENSION);
-		$hash = substr(sha1($formId.$time.env('FILE_SALT')),0,8);
-		//return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
-		return $formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
-	}
 	
 	private function scrubString($str) {
 		$scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
