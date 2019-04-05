@@ -7,14 +7,17 @@ use Aws\Credentials\CredentialProvider;
 
 use App\Form;
 use Auth;
+use Log;
 use App\User;
 use App\User_Form;
 use Validator;
 use App\Helpers\UserHelper;
 use App\Helpers\ListHelper;
 use App\Helpers\FileStoreHelper;
+use App\Helpers\HTMLHelper;
 
 use Illuminate\Http\Request;
+
 class FormController extends Controller
 {
     /**
@@ -25,684 +28,603 @@ class FormController extends Controller
     public function __construct()
     {
         // defines operations that need to be protected
-        $this->middleware('auth', ['only' => 
-            ['create',
+        $this->middleware('auth', ['only' =>
+          [
+                        'create',
             'save',
             'clone',
             'getUserForms',
             'getForm',
-						'getFilename',
-						'share',
-						'getAuthors',
-						'purgeCSV'
-            ]]);
+            'getFilename',
+            'share',
+               'getAuthors',
+              'purgeCSV'
+          ]]);
     }
 
-		/**
-		 *  Provide API to obtain user api token.
-		 *  This is expected to change when SSO is available.
-		 */
-		public function getApiToken(Request $request){
-			return UserHelper::getApiToken($request->input('email'), $request->input('password'));
-		}
-
-     /**
-     * Gets all the forms for the current logged in user.
-     *
-     * @return json object
+    /**
+     *  Provide API to obtain user api token.
+     *  This is expected to change when SSO is available.
      */
-    public function getUserForms(Request $request){
+    public static function getApiToken(Request $request)
+    {
+        return UserHelper::getApiToken($request->input('email'), $request->input('password'));
+    }
+
+    /**
+    * Gets all the forms for the current logged in user.
+    *
+    * @return json object
+    */
+    public function getUserForms(Request $request)
+    {
         $user_id = $request->input('user_id');
         $user = Auth::user()->where('id', $user_id)->get();
-
         $user_forms = User_Form::where('user_id', $user_id)->get();
-       
+
         $forms = array();
-        foreach($user_forms as $form_arr){
-						$form = Form::where('id', $form_arr['form_id'])->get()->first();
-						$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+        foreach ($user_forms as $form_arr) {
+            $form = Form::where('id', $form_arr['form_id'])->get()->first();
+            $form['content'] = $this->scrubString($form['content']);
+            $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
             array_push($forms, $form);
         }
         return response()->json($forms);
-        //return view('editor', ['name' => $user->name, 'forms' => $user_forms]);
     }
-     /**
-     * Gets a form for the current logged in user.
-     *
-     * @return json object
-     */
-    public function getForm(Request $request){
+    /**
+    * Gets a form for the current logged in user.
+    *
+    * @return json object
+    */
+    public function getForm(Request $request)
+    {
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
-        
+        $form['content'] = $this->scrubString($form['content']);
+
         return $form ? response()->json($form) : response()->json(['status' => 'failed']);
     }
 
-     /**
-     * Saves the edited form for the current logged in user.
-     *
-     * @return bool 
-     */
-    public function save(Request $request){
-		//todo I think this is needed for html
-		/*
-		$form_data = [];
-		$form_data['content'] = $request->input('content');
-
-        $form_data['content'] = str_replace('\"','\\\\\"', $form_data['content']);
-        $form_data['content'] = str_replace("'","&apos;", $form_data['content']);
-        $form_data['content'] = str_replace("<","&lt;",$form_data['content']);
-        $form_data['content'] = str_replace(">","&gt;",$form_data['content']);
-        $form_data['content'] = json_decode($form_data['content']);
-		*/
-
+    /**
+    * Saves the edited form for the current logged in user.
+    *
+    * @return bool
+    */
+    public function save(Request $request)
+    {
         $form_id = $request->input('id');
-       
-        if($form_id == 0)
-        {
+
+        if ($form_id == 0) {
             return $this->create($request);
         } else {
-			$returnForm = Form::where('id', $form_id)->first();
-			//$returnForm['content'] = $form_data['content'];
-			FileStoreHelper::processCSV($returnForm, $request->getHttpHost());
-			$returnForm['content'] = $this->scrubString($request->input('content'));
-			$returnForm->save();
-			return response()->json($returnForm);
-		}
+      			$returnForm = Form::where('id', $form_id)->first();
+      			FileStoreHelper::processCSV($returnForm, $request->getHttpHost());
+      			$returnForm['content'] = $this->scrubString($request->input('content'));
+      			$returnForm->save();
+      			return response()->json($returnForm);
+    		}
         return response()->json(['status' => 0, 'message' => 'Failed to save form']); 
     }
 
-     /**
-     * Clone from an existing form.
-     *
-     * @return json object
-     */
-    public function clone(Request $request){
+    /**
+    * Clone from an existing form.
+    *
+    * @return json object
+    */
+    public function clone(Request $request)
+    {
         $user_id = $request->input('user_id');
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
-        
-        if($form){
+
+        if ($form) {
             $content = json_decode($form['content'], true);
             //return $content->settings->name;
-			//$content = $form->content;
+            //$content = $form->content;
             $content['settings']['name'] = "Clone of ".$content['settings']['name'];
-            $cloned_form = Form::create(['content' => json_encode($content)] );
+            $cloned_form = Form::create(['content' => json_encode($content)]);
 
-            if( $cloned_form ){
+            if ($cloned_form) {
                 // create entry in user_form
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $cloned_form->id]);
-                if($user_form){
-                    return response()->json(['status' => 1, 'data' => $user_form]);  
+                if ($user_form) {
+                    return response()->json(['status' => 1, 'data' => $user_form]);
                 }
             }
-            return response()->json(['status' => 0, 'message' => 'Failed to clone form']); 
+            return response()->json(['status' => 0, 'message' => 'Failed to clone form']);
         }
-        return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']); 
+        return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']);
     }
-	
-     /**
-     * Share an existing form with another user.
-     *
-     * @return json object
-     */
-    public function share(Request $request){
 
-		$this->validate($request, [
-			'id' => 'required',
-			'email' => 'required|email'
-		]);
-	
-		$email = $request->input('email');
+    /**
+    * Share an existing form with another user.
+    *
+    * @return json object
+    */
+    public function share(Request $request)
+    {
+        $this->validate($request, [
+            'id' => 'required',
+            'email' => 'required|email'
+        ]);
+
+        $email = $request->input('email');
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
-		
-        if(!$form){
-			return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']); 
-		} else {
-			$user = UserHelper::getUserByEmail($email);
-			if (!$user) {
-				return response()->json(['status' => 0, 'message' => $email.' does not have an account.']); 
-			} else {
-				$user_already_has_access = User_Form::where([['user_id','=', $user->id], ['form_id', '=', $form_id]])->first();
-				if ($user_already_has_access) {
-					return response()->json(['status' => 0, 'message' => 'Form has already been shared with '.$user->name.'.']); 
-				} else {
-					$user_form = User_Form::create(['user_id' => $user->id, 'form_id' => $form_id]);
-					if ($user_form) {
-						$authors = UserHelper::formatAuthors(UserHelper::getFormUsers($form_id));
-						return response()->json(['status' => 1, 'message' => 'Form shared with '.$user->name.'.', 'data' => $authors]);  
-					} else {
-						return response()->json(['status' => 0, 'message' => 'Failed to share form']); 
-					}
-				}
-			}
+
+        if (!$form) {
+            return response()->json(['status' => 0, 'message' => 'Form doesn\'t exist']);
+        } else {
+            $user = UserHelper::getUserByEmail($email);
+            if (!$user) {
+                return response()->json(['status' => 0, 'message' => $email.' does not have an account.']);
+            } else {
+                $user_already_has_access = User_Form::where([['user_id','=', $user->id], ['form_id', '=', $form_id]])->first();
+                if ($user_already_has_access) {
+                    return response()->json(['status' => 0, 'message' => 'Form has already been shared with '.$user->name.'.']);
+                } else {
+                    $user_form = User_Form::create(['user_id' => $user->id, 'form_id' => $form_id]);
+                    if ($user_form) {
+                        $authors = UserHelper::formatAuthors(UserHelper::getFormUsers($form_id));
+                        return response()->json(['status' => 1, 'message' => 'Form shared with '.$user->name.'.', 'data' => $authors]);
+                    } else {
+                        return response()->json(['status' => 0, 'message' => 'Failed to share form']);
+                    }
+                }
+            }
         }
     }
-	
-     /**
-     * Provides a list of users attached to a form.
-     *
-     * @return a comma separated string of emails
-     */
-	public function getAuthors(Request $request) {
+
+    /**
+    * Provides a list of users attached to a form.
+    *
+    * @return a comma separated string of emails
+    */
+    public function getAuthors(Request $request)
+    {
         $form_id = $request->input('id');
-		return response()->json(['status' => 1, 'data' => UserHelper::formatAuthors(UserHelper::getFormUsers($form_id))]);  
-	}
-		
-     /**
-     * Creates a new form for the current logged in user.
-     *
-     * @return json object
-     */
-    public function create(Request $request) {
+        return response()->json(['status' => 1, 'data' => UserHelper::formatAuthors(UserHelper::getFormUsers($form_id))]);
+    }
+
+    /**
+    * Creates a new form for the current logged in user.
+    *
+    * @return json object
+    */
+    public function create(Request $request)
+    {
         // validate form data
         if( $this->validateForm($request) ) {
-
-			/*generate a hash based on id
-			$form = Form::create(['content' => $request->input('content')]);
-			$hash = sha1($form['id']."#lfk&$#3mXqVekHQjpaqW");
-			$content = json_decode($form['content']);
-			$content->settings->hash = $hash;
-			$form['content'] = json_encode($content);
-			$form->save();
-			*/
-			
-			$form = Form::create(['content' => $this->scrubString($request->input('content'))]);
+      			$form = Form::create(['content' => $this->scrubString($request->input('content'))]);
 			
             if( $form ){
-				FileStoreHelper::processCSV($form, $request->getHttpHost());
+        				FileStoreHelper::processCSV($form, $request->getHttpHost());
                 // create entry in user_form
                 $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
-                if($user_form){
-                    //return response()->json(['status' => 1, 'data' => $user_form]);  
-					$returnForm = Form::where('id', $form->id)->first();
-					$returnForm['content'] = json_decode($returnForm['content'], true);
-					return response()->json($returnForm);
+                if ($user_form) {
+                    $returnForm = Form::where('id', $form->id)->first();
+                    $returnForm['content'] = json_decode($returnForm['content'], true);
+                    return response()->json($returnForm);
                 }
             }
-            return response()->json(['status' => 0, 'message' => 'Failed to create form']);  
-        }      
+            return response()->json(['status' => 0, 'message' => 'Failed to create form']);
+        }
     }
 
-     /**
-     * Creates an embed JS for the form
-     *
-     * @return HTML
-     */
-    public function embedJS(Request $request){
+    /**
+    * Creates an embed JS for the form
+    *
+    * @return HTML
+    */
+    public function embedJS(Request $request)
+    {
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
-		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-		$sections = array();
+				$form['content'] = $this->scrubString($form['content']);
+        $form['content'] = json_decode($form['content'], true);
+        return $this->wrapJS($this->getHTML($form, $request->getHttpHost()), $this->isSectional($form['content']), $form['content']);
+    }
 
-		$form['content'] = json_decode($form['content'], true);
-
-		return $this->wrapJS($this->generateHTML($form, $request->getHttpHost()),$this->isSectional($form['content']), $form['content']);
-   }
-
-     /**
-     * Generates HTML from the form
-     *
-     * @return HTML
-     */
-    public function generate(Request $request){
+    /**
+    * Generates HTML from the form
+    *
+    * @return HTML
+    */
+    public function generate(Request $request)
+    {
         $form_id = $request->input('id');
-        $form = Form::where('id', $form_id)->first();
-		//$form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-		$sections = array();
+				$form = Form::where('id', $form_id)->first();
+				$form['content'] = $this->scrubString($form['content']);
+				$form['content'] = json_decode($form['content'], true);
+        return $this->getHTML($form, $request->getHttpHost());
+    }
 
-		$form['content'] = json_decode($form['content'], true);
-
-		return $this->generateHTML($form, $request->getHttpHost());
-   }
-   
-     /**
-     * Deletes a form
-     *
-     * @return json object
-     */
-    public function delete(Request $request) {
+    /**
+    * Deletes a form
+    *
+    * @return json object
+    */
+    public function delete(Request $request)
+    {
         $user_id = $request->input('user_id');
         $form_id = $request->input('id');
 
         // soft delete?
-		// check permission
+        // check permission
         $user_form_delete = User_Form::where([['user_id','=', $user_id], ['form_id', '=', $form_id]])->delete();
-        if( $user_form_delete ){ //check if no more users own that form, then delete
-			$remaining_form_users = User_Form::where('form_id', $form_id)->first();
-			if (!$remaining_form_users) {
-				$form_delete = Form::where([['id', $form_id]])->delete();
-				if( $form_delete ){
-					 return response()->json(['status' => 1, 'message' => 'Deleted form from user']); 
-				}
-			}
+        if ($user_form_delete) { //check if no more users own that form, then delete
+            $remaining_form_users = User_Form::where('form_id', $form_id)->first();
+            if (!$remaining_form_users) {
+                $form_delete = Form::where([['id', $form_id]])->delete();
+                if ($form_delete) {
+                    return response()->json(['status' => 1, 'message' => 'Deleted form from user']);
+                }
+            }
         }
-       return response()->json(['status' => 0, 'message' => 'Failed to delete form']);      
+        return response()->json(['status' => 0, 'message' => 'Failed to delete form']);
     }
-	
-	// EMBED FUNCTIONS
-	public function generateHTML($form, $base_url = '') {
-		$nonOptionalFields = array("m02", "m04", "m06", "m08", "m10", "m11", "m14", "m16");
-		$content = $form['content'];
 
-		$formEncoding = FileStoreHelper::hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
-		
-		$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
-		$str = '';
-	
-		$csvPath = '//'.$base_url.'/form/submit';
+    // EMBED FUNCTIONS
+    public function getHTML($form, $base_url = '')
+    {
+        $content = $form['content'];
+        // form setting (json)
+        $form_div = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 
-		//if this form is a csv transaction, add form_id
-		if (substr($content['settings']['action'],0 - strlen($csvPath)) == $csvPath) $str .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
+        $form_container = '';
+        $sections = [];
 
-		foreach ($content['data'] as $field) {
-		  if ($field['formtype'] == "m16") { //special parsing for form sections
-			  $sections[] = $field;
-			  $str .= '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
-		  } else if ($field['formtype'] == "m11") { //hidden fields
-				$hiddenValue = $field['value'] == null ? "" : $field['value'];
-				$hiddenName = $field['name'] == null ? "" : $field['name'];
-				$hiddenId = $field['id'] == null ? "" : $field['id'];
-			  $str .= '<input type="hidden" name="'.$hiddenName.'" id="'.$hiddenId.'" value="'.$hiddenValue.'"/>';
-		  } else {
-			  if ($field['formtype'] == "s06") {
-				$str .= '<fieldset class="form-group" data-id="'.$field['id'].'"><legend class="control-label">';
-			  } else {
-				$str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
-			  }
-			  $str .= isset($field['label']) ? $field['label'] : "";
-			  if (in_array($field['formtype'], $nonOptionalFields)) {
-				$str .= '</label><div>';
-			  } else {
-				if ($field['formtype'] == "s06") {
-					$str .= ' <span class="optional">(optional)</span></legend><div>';
-				} else {
-					$str .= ' <span class="optional">(optional)</span></label><div>';					
+        //if this form is a csv transaction, add form_id.
+        $csvPath = '//'.$base_url.'/form/submit';
+        if (substr($content['settings']['action'], 0 - strlen($csvPath)) == $csvPath) {
+            $form_container .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
+        }
+        // looping through all form fields.
+        foreach ($content['data'] as $field) {
+            $field_header = '<div class="form-group" data-id="'.$field['id'].'">' . HTMLHelper::fieldLabel($field);
+
+            switch ($field['formtype']) {
+												case "s08": $form_container .= $field_header . HTMLHelper::formRadio($field). HTMLHelper::helpBlock($field);
+														break;
+                        case "s06": $form_container .= $field_header . HTMLHelper::formCheckbox($field) . HTMLHelper::helpBlock($field);
+                            break;
+                        case "i14": $form_container .= $field_header . HTMLHelper::formTextArea($field) . HTMLHelper::helpBlock($field);
+                            break;
+                        case "s02":
+                        case "s04":
+                        case "s14":
+                        case "s15":
+                        case "s16":
+                            $form_container .= $field_header . HTMLHelper::formSelect($field) . HTMLHelper::helpBlock($field);
+                            break;
+                        case "m02":
+                        case "m04":
+                        case "m06": $form_container .= $field_header . HTMLHelper::formHtag($field) . HTMLHelper::helpBlock($field);
+                            break;
+                        case "m08":
+                        case "m10":
+                            $form_container .= $field_header . HTMLHelper::formParagraph($field) .HTMLHelper::helpBlock($field);
+                            break;
+                        case "m14": $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
+                            break;
+                        case "m16": $form_container .= HTMLHelper::formSection($field); $sections[] = $field;
+                            break;
+                        case "m11": $form_container .= HTMLHelper::formHidden($field);
+                            break;
+                        default: $form_container .= $field_header . HTMLHelper::formText($field) . HTMLHelper::helpBlock($field);
+                            break;
+              }
+            // append help block
+            //$form_container .= HTMLHelper::helpBlock($field);
+        } //end of foreach
+
+
+        // Form Sections
+        if (!empty($sections)) {
+            $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
+            $nav = '<ul class="form-section-nav"><li class="active">'.$section1.'</li>';
+            foreach ($sections as $idx => $section) {
+                $active = $idx === "0" ? ' class="active"' : '';
+                $nav .= '<li'.$active.'>'.$section['label'].'</li>';
+            }
+            $nav .= '</ul>';
+            $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
+            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button class="btn btn-lg form-section-next submit">Submit</button></div></div></div>';
+            $form_container = $nav. $form_div. $form_wraper_top. $form_container. $form_wrapper_bottom;
+        } else {
+            $form_container = $form_div. $form_container;
+        }
+
+        $form_end = '</fieldset></form>';
+        // clean up line breaks, otherwise embedjs will fail
+        return preg_replace("/\r|\n/", "", $form_container . $form_end);
+    }
+
+    public function isSectional($content)
+    {
+        foreach ($content['data'] as $field) {
+            if ($field['formtype'] == "m16") {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function getInputSelector($id, $arr, $checked)
+    {
+        $output = "";
+        switch ($arr[$id]) {
+            case "s06":
+                if ($checked) {
+                    $output = 'input[name="'.$id.'[]"]:checked';
+                } else {
+                    $output = 'input[name="'.$id.'[]"]';
+                }
+                break;
+            case "s08":
+                if ($checked) {
+                    $output = "input[name=".$id."]:checked";
+                } else {
+                    $output = "input[name=".$id."]";
+                }
+                break;
+            default:
+                $output = "#".$id;
+        }
+        return $output;
+    }
+
+    public function getConditionalStatement($value1, $op, $value2)
+    {
+        if ($op == "contains") {
+            $output = "(".$value1.").search(/".$value2."/i) != -1";
+        } elseif ($op == "doesn't contain") {
+            $output = "(".$value1.").search(/".$value2."/i) == -1";
+        } else {
+            $output = $value1." ".$op." '".$value2."'";
+        }
+        return $output;
+    }
+
+    public function wrapJS($str, $sectional, $content)
+    {
+        $js = "jQuery( document ).ready(function() {"; //start ready
+        $js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
+        $js .= "jQuery('#SFDSWF-Container form').validator();";
+
+        //check content for extra features
+        $calculations = [];
+        $conditions = [];
+        $formtypes = [];
+        if ($content) {
+            foreach ($content['data'] as $field) {
+                $fieldId = $field['id'];
+                $formtypes[$fieldId] = $field['formtype'];
+                foreach ($field as $key => $value) {
+                    if ($key == "calculations") { //gather calculations
+                        $calculations[$fieldId] = $value;
+                    } elseif ($key == "conditions") { //gather conditionals
+                        $conditions[$fieldId] = $value;
+                    }
+                }
+            }
+        }
+
+        if (!empty($calculations)) { //add calculational behavior
+            $calculationIds = [];
+            $calculationOps = [];
+            foreach ($calculations as $id => $arr) {
+                $calculationIds[$id] = [];
+                $calculationOps[$id] = [];
+                foreach ($arr as $i => $val) {
+                    if ($i % 2 == 0) {
+                        $calculationIds[$id][] = $val;
+                    } else {
+                        $val2 = "";
+                        if ($val == "Plus") {
+                            $val2 = "+";
+                        } elseif ($val == "Minus") {
+                            $val2 = "-";
+                        } elseif ($val == "Multiplied by") {
+                            $val2 = "*";
+                        } elseif ($val == "Divided by") {
+                            $val2 = "/";
+                        }
+                        $calculationOps[$id][] = $val2;
+                    }
+                }
+                $count = 0;
+                $js .= "jQuery('";
+                while ($count < count($calculationIds[$id])) {
+                    $js .= $this->getInputSelector($calculationIds[$id][$count], $formtypes, false).", ";
+                    $count++;
+                }
+                $js = substr($js, 0, -2)."').on('keyup change',function(){";
+
+                $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
+
+                $count = 0;
+                while ($count < count($calculationIds[$id])) {
+                    $js .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
+                    if (isset($calculationOps[$id][$count])) {
+                        $js .= " ".$calculationOps[$id][$count]." ";
+                    }
+                    $count++;
+                }
+                $js .= 	")";
+                $js .= "});";
+            }
+        }
+
+        if (!empty($conditions)) { //add conditional behavior
+            foreach ($conditions as $id => $fld) {
+                //set default visibility
+                $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group')";
+                if ($fld['showHide'] == "Show") {
+                    $js .= ".hide();";
+                    $revert = "hide";
+                } elseif ($fld['showHide'] == "Hide") {
+                    $js .= ".show();";
+                    $revert = "show";
+                }
+                $conditionIds = [];
+                $conditionSts = [];
+                //loop through each condition
+                foreach ($fld['condition'] as $index => $condition) {
+                    if (!in_array($condition['id'], $conditionIds)) {
+                        $conditionIds[] = $condition['id'];
+                    }
+                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->getOp($condition['op']), $condition['val']);
+                }
+                if ($fld['allAny']) {
+                    //group multiple conditions
+                    $allConditionSts = implode(" ".$this->getOp($fld['allAny'])." ", $conditionSts);
+                } else {
+                    //or just assign single statement
+                    $allConditionSts = $conditionSts[0];
+                }
+                //set up listeners and populate conditional statements
+                $js .= "jQuery('";
+                foreach ($conditionIds as $chId) {
+                    $js .= $this->getInputSelector($chId, $formtypes, false).", ";
+                }
+                $js = substr($js, 0, -2)."').on('keyup change',function(){";
+                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."('medium')} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."('medium')}});";
+            }
+        }
+
+        if ($sectional) { //additional controls for sectional forms
+            $js .= "jQuery('#SFDSWF-Container .form-section-nav li').click(function(e){";
+            $js .= "var i = jQuery(e.target).prevAll().length;";
+            $js .= "SFDSWF_goto(i);";
+            $js .= "});";
+
+            $js .= "jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {";
+            $js .= "var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;";
+            $js .= "SFDSWF_goto(i < 1 ? 0 : i-1);";
+            $js .= "});";
+
+            $js .= "jQuery('#SFDSWF-Container .form-section-next').click(function(e) {";
+            $js .= "var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;";
+            $js .= "SFDSWF_goto(i+1);";
+            $js .= "});";
+
+            $js .= "var SFDSWF_goto = function(i) {";
+            $js .= "jQuery('#SFDSWF-Container .form-section-nav li').removeClass('active');";
+            $js .= "jQuery('#SFDSWF-Container .form-section-nav li').eq(i).addClass('active');";
+            $js .= "jQuery('#SFDSWF-Container .form-section').removeClass('active');";
+            $js .= "jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');";
+            $js .= "jQuery('#SFDSWF-Container .form-section-header').removeClass('active');";
+            $js .= "jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');";
+            $js .= "jQuery('html,body').animate({ scrollTop: 0 }, 'medium');";
+            $js .= "}";
+        }
+
+        $js .= "});"; //end ready
+
+        return $js;
+    }
+
+    public function getOp($str)
+    {
+        $output = "";
+        switch ($str) {
+            case "Any":
+                $output = "||";
+                break;
+            case "All":
+                $output = "&&";
+                break;
+            case "matches":
+                $output = "==";
+                break;
+            case "doesn't match":
+                $output = "!=";
+                break;
+            case "is less than":
+                $output = "<";
+                break;
+            case "is more than":
+                $output = ">";
+                break;
+            case "contains anything":
+                $output = "!=";
+                break;
+            case "is blank":
+                $output = "==";
+                break;
+            case "contains":
+                $output = "contains";
+                break;
+            case "doesn't contain":
+                $output = "doesn't contain";
+                break;
+        }
+        return $output;
+    }
+
+    private function parseOptionValues($content)
+    {
+        $ret['settings'] = $content['settings'];
+        $ret['data'] = array();
+
+        foreach ($content['data'] as $field) {
+            if (array_key_exists('option', $field) && !is_array($field['option'])) {
+                $field['option'] = explode("\n", $field['option']);
+            } elseif (array_key_exists('checkboxes', $field) && !is_array($field['checkboxes'])) {
+                $field['checkboxes'] = explode("\n", $field['checkboxes']);
+            } elseif (array_key_exists('radios', $field) && !is_array($field['radios'])) {
+								$field['radios'] = explode("\n", $field['radios']);
+            }
+            $ret['data'][] = $field;
 				}
-			  }
-			  $str .= $this->printFormTypeStart($field['formtype']);
-			  $skipAttr = false;
-			  $isCheckbox = false;
-			  $attr = "";
-			  $inner = "";
-			  $help = "";
-			  foreach ($field as $key => $value) {
-				if ($key == "option") {
-				  $inner .= '>';
-				  $options = explode("\n",$value);
-				  foreach ($options as $option) {
-					$inner .= '<option value="'.$option.'">'.$option.'</option>';
-				  }
-				} else if ($key == "checkboxes") {
-				  $skipAttr = explode("\n",$value);
-				  $manyType ="checkbox";
-				  $isCheckbox = true;
-				} else if ($key == "radios") {
-				  $skipAttr = explode("\n",$value);
-				  $manyType = "radio";
-				} else if ($key == "textarea") {
-				  if ($field['formtype'] == "m08" || $field['formtype'] == "m10") { //paragraph tags need to convert line breaks to page breaks
-					$inner = '>'.str_replace("\n", "<br/>", $value);
-				  } else {
-					$inner = '>'.$value;
-				  }
-				} else if ($key == "codearea") {
-				  $inner = '>'.html_entity_decode($value);
-				} else if ($key == "type" && $value == "number") {
-				  $attr .= 'type="number" step="any" ';
-				} else if ($key == "regex") {
-				  if (!$skipAttr) $attr .= 'pattern="'.$value.'" ';
-				} else if ($key == "required") { //this tends to be last in the array
-				  if ($value == "true") {
-					$attr .= 'required ';
-					$pos = strrpos($str, ' <span class="optional">(optional)</span>');
-					if ($pos !== false) {
-						$str = substr_replace($str, '', $pos, 41);
-					}
-				  }
-				} else if ($key == "help") {
-				  $help = $value;
-				} else if ($key == "button") {
-				  $inner = '>'.$value;
-				} else if ($key == "color") {
-				  if (strpos($attr, "class=") !== false) {
-					  $attr = str_replace('class="', 'class="'.$value.' ', $attr);
-				  } else {
-					  $attr .= 'class="'.$value.'" ';
-				  }
-				} else if ($key == "label") {
-				  //do nothing, already used above
-				} else if ($key == "calculations" || $key == "conditions") {
-				  //do nothing
-				} else {
-				  //key value attributes
-				  if ($key == "name" && $isCheckbox) {
-					  $value = $value."[]";
-					  $isCheckbox = false;
-				  }
-				  if (!$skipAttr) {
-					$attr .= $key.'="'.$value.'" ';
-				  } else {
-					if ($key != "id" && $key != "value") {
-					  $attr .= $key.'="'.$value.'" ';
-					} else if ($key == "value") {
-					  $defVal = $value;
-					}
-				  }
-				}
-			  }
-			  if (is_array($skipAttr)) {
-				foreach ($skipAttr as $val) {
-					$manySelected = "";
-					if (isset($defVal)) {
-						if ($val == $defVal) {
-							$manySelected = "checked ";
-						}
-					}
-					$str .= '<label class="'.$manyType.'"><input type="'.$manyType.'" value="'.$val.'" '.$attr.$manySelected.'/>'.$val.'</label>';
-				}
-			  } else {
-				$str .= $attr.$inner;
-				// do special processing for state dropdowns
-				if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16")  {
-					$str .= '>';
-					$str .= ListHelper::getStates($field['formtype']);
-				}
-				$str .= $this->printFormTypeEnd($field['formtype']);
-			  }
-			  $str .= '<p class="help-block with-errors">'.$help.'</p>';
-			  if ($field['formtype'] == "s06") {
-				$str .= '</div></fieldset>';
-			  } else {
-				$str .= '</div></div>';
-			  }
-		  }
-		}
+        return $ret;
+    }
 
-		$str2 = '</fieldset></form>';
 
-		if (!empty($sections)) {  
-		  $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-		  $nav = '<ul class="form-section-nav"><li tabindex="0" class="active">'.$section1.'</li>';
-		  foreach ($sections as $idx => $section) {
-			$active = $idx === "0" ? ' class="active"' : '';
-			$nav .= '<li tabindex="0"'.$active.'>'.$section['label'].'</li>';
-		  }
-		  $nav .= '</ul>';
-		  $wrap1 = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
-		  $wrap2 = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button class="btn btn-lg form-section-next submit">Submit</button></div></div></div>';
-		  $str = $nav.$str1.$wrap1.$str.$wrap2.$str2;
-		} else {
-		  $str = $str1.$str.$str2;
-		}
-		
-		return $str;
-	}
-
-	public function isSectional($content) {
-		
-		foreach ($content['data'] as $field) {
-		  if ($field['formtype'] == "m16") return true;
-		}
-		return false;
-		
-	}
-	
-	public function getInputSelector($id, $arr, $checked) {
-		$output = "";
-		switch ($arr[$id]) {
-			case "s06":
-				if ($checked) {
-					$output = 'input[name="'.$id.'[]"]:checked';
-				} else {
-					$output = 'input[name="'.$id.'[]"]';
-				}
+		public function printFormTypeStart($formtype) {
+			switch ($formtype) {
+			/*
+			case "i06": //todo prepended text
+			case "i08": //todo appended text
+			case "i10": //todo prepended checkbox
+			case "i12": //todo appended checkbox
+			case "m13": //todo file upload
+			*/
+			case "s08": //input radio do nothing
+			case "s06": //input checkbox do nothing
+				$str = "";
 				break;
-			case "s08":
-				if ($checked) {
-					$output = "input[name=".$id."]:checked";
-				} else {
-					$output = "input[name=".$id."]";
-				}
+			case "i14":
+				$str = "<textarea ";
 				break;
-			default:
-				$output = "#".$id;
-		}
-		return $output;
-	}
-	
-	public function getConditionalStatement($value1, $op, $value2) {
-		if ($op == "contains") {
-			$output = "(".$value1.").search(/".$value2."/i) != -1";
-		} else if ($op == "doesn't contain") {
-			$output = "(".$value1.").search(/".$value2."/i) == -1";
-		} else {
-			$output = $value1." ".$op." '".$value2."'";
-		}
-		return $output;
-	}
-
-	public function wrapJS($str, $sectional, $content) {
-		
-		$js = "jQuery( document ).ready(function() {"; //start ready
-		$js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
-		$js .= "jQuery('#SFDSWF-Container form').validator();";
-
-		//check content for extra features
-		$calculations = [];
-		$conditions = [];
-		$formtypes = [];
-		if ($content) {
-			foreach ($content['data'] as $field) {
-				$fieldId = $field['id'];
-				$formtypes[$fieldId] = $field['formtype'];
-				foreach ($field as $key => $value) {
-					if ($key == "calculations") { //gather calculations
-						$calculations[$fieldId] = $value;
-					} else if ($key == "conditions") { //gather conditionals
-						$conditions[$fieldId] = $value;
-					}
-				}
-			}
-		}
-		
-		if (!empty($calculations)) { //add calculational behavior
-			$calculationIds = [];
-			$calculationOps = [];
-			foreach ($calculations as $id => $arr) {
-				
-				$calculationIds[$id] = [];
-				$calculationOps[$id] = [];
-				foreach ($arr as $i => $val) {
-					if ($i % 2 == 0) { 
-						$calculationIds[$id][] = $val;
-					} else {
-						$val2 = "";
-						if ($val == "Plus") {
-							$val2 = "+";
-						} else if ($val == "Minus") {
-							$val2 = "-";
-						} else if ($val == "Multiplied by") {
-							$val2 = "*";
-						} else if ($val == "Divided by") {
-							$val2 = "/";
-						}
-						$calculationOps[$id][] = $val2;
-					}
-				}
-				$count = 0;
-				$js .= "jQuery('";
-				while ($count < count($calculationIds[$id])) {
-					$js .= $this->getInputSelector($calculationIds[$id][$count], $formtypes, false).", ";
-					$count++;
-				}
-				$js = substr($js, 0, -2)."').on('keyup change',function(){";
-				
-				$js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
-				
-				$count = 0;
-				while ($count < count($calculationIds[$id])) {
-					$js .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
-					if (isset($calculationOps[$id][$count])) {
-						$js .= " ".$calculationOps[$id][$count]." ";
-					}
-					$count++;
-				}
-				$js .= 	")";
-				$js .= "});";
-				
-			}
-			
-		}
-		
-		if (!empty($conditions)) { //add conditional behavior
-			foreach($conditions as $id => $fld) {
-				//set default visibility
-				$js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group')";
-				if ($fld['showHide'] == "Show") {
-					$js .= ".hide();";
-					$revert = "hide";
-				} else if ($fld['showHide'] == "Hide") {
-					$js .= ".show();";
-					$revert = "show";
-				}
-				$conditionIds = [];
-				$conditionSts = [];
-				//loop through each condition
-				foreach ($fld['condition'] as $index => $condition) {
-					if (!in_array($condition['id'], $conditionIds)) $conditionIds[] = $condition['id'];
-					$conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->getOp($condition['op']), $condition['val']);
-				}
-				if ($fld['allAny']) {
-					//group multiple conditions
-					$allConditionSts = implode(" ".$this->getOp($fld['allAny'])." ",$conditionSts);
-				} else {
-					//or just assign single statement
-					$allConditionSts = $conditionSts[0];
-				}
-				//set up listeners and populate conditional statements
-				$js .= "jQuery('";
-				foreach ($conditionIds as $chId) {
-					$js .= $this->getInputSelector($chId, $formtypes, false).", ";
-				}
-				$js = substr($js, 0, -2)."').on('keyup change',function(){";
-				$js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."('medium')} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."('medium')}});";
-			}
-		}
-
-		if ($sectional) { //additional controls for sectional forms
-			$js .= "jQuery('#SFDSWF-Container .form-section-nav li').bind('click keypress', function(e){";
-			$js .= "var i = jQuery(e.target).prevAll().length;";
-			$js .= "SFDSWF_goto(i);";
-			$js .= "});";
-
-			$js .= "jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {";
-			$js .= "var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;";
-			$js .= "SFDSWF_goto(i < 1 ? 0 : i-1);";
-			$js .= "});";
-
-			$js .= "jQuery('#SFDSWF-Container .form-section-next').click(function(e) {";
-			$js .= "var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;";
-			$js .= "SFDSWF_goto(i+1);";
-			$js .= "});";
-
-			$js .= "var SFDSWF_goto = function(i) {";
-			$js .= "jQuery('#SFDSWF-Container .form-section-nav li').removeClass('active');";
-			$js .= "jQuery('#SFDSWF-Container .form-section-nav li').eq(i).addClass('active');";
-			$js .= "jQuery('#SFDSWF-Container .form-section').removeClass('active');";
-			$js .= "jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');";
-			$js .= "jQuery('#SFDSWF-Container .form-section-header').removeClass('active');";
-			$js .= "jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');";
-			$js .= "jQuery('html,body').animate({ scrollTop: 0 }, 'medium');";
-			$js .= "}";
-		}
-
-		$js .= "});"; //end ready
-
-		return $js;
-	}
-	
-	public function getOp($str) {
-		$output = "";
-		switch($str) {
-			case "Any":
-				$output = "||";
+			case "s02":
+			case "s04":
+			case "s14":
+			case "s15":
+			case "s16":
+				$str = "<select ";
 				break;
-			case "All":
-				$output = "&&";
+			case "m02":
+				$str = "<h1 ";
 				break;
-			case "matches":
-				$output = "==";
+			case "m04":
+				$str = "<h2 ";
 				break;
-			case "doesn't match":
-				$output = "!=";
+			case "m06":
+				$str = "<h3 ";
 				break;
-			case "is less than":
-				$output = "<";
+			case "m08":
+			case "m10":
+				$str = "<p ";
 				break;
-			case "is more than":
-				$output = ">";
+			case "m14":
+				$str = "<button ";
 				break;
-			case "contains anything":
-				$output = "!=";
+			case "m16":
+				// form separator handled above
 				break;
-			case "is blank":
-				$output = "==";
-				break;
-			case "contains":
-				$output = "contains";
-				break;
-			case "doesn't contain":
-				$output = "doesn't contain";
-				break;
-		}
-		return $output;
-	}
-
-	public function printFormTypeStart($formtype) {
-	  switch ($formtype) {
-		/*
-		case "i06": //todo prepended text
-		case "i08": //todo appended text
-		case "i10": //todo prepended checkbox
-		case "i12": //todo appended checkbox
-		case "m13": //todo file upload
-		*/
-		case "s08": //input radio do nothing
-		case "s06": //input checkbox do nothing
-		  $str = "";
-		  break;
-		case "i14":
-		  $str = "<textarea ";
-		  break;
-		case "s02":
-		case "s04":
-		case "s14":
-		case "s15":
-		case "s16":
-		  $str = "<select ";
-		  break;
-		case "m02":
-		  $str = "<h1 ";
-		  break;
-		case "m04":
-		  $str = "<h2 ";
-		  break;
-		case "m06":
-		  $str = "<h3 ";
-		  break;
-		case "m08":
-		case "m10":
-		  $str = "<p ";
-		  break;
-		case "m14":
-		  $str = "<button ";
-		  break;
-		case "m16":
-		  // form separator handled above
-		  break;
 		default:
 		  $str = "<input ";
 	  }
@@ -856,58 +778,68 @@ class FormController extends Controller
 
 
 	
-	private function scrubString($str) {
-		$scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
-		$scrubbed = str_replace("'","&apos;", $scrubbed);
-		$scrubbed = str_replace('\"',"", $scrubbed);
-		return $scrubbed;
-	}
+    private function scrubString($str)
+    {
+        if (empty($str)) {
+            return $str;
+        }
+
+        $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
+        $scrubbed = str_replace("'", "&apos;", $scrubbed);
+        $scrubbed = str_replace('\"', "", $scrubbed);
+				$scrubbed = json_encode($this->parseOptionValues(json_decode($scrubbed, true)));
+        return $scrubbed;
+    }
 	
-	function notifyUser(Request $request) {
-		$form_id = $request->input('form_id');		
-		$started = false;
-		$num = 0;
-		
-		header("Content-Type: text/event-stream");
-		header("Cache-Control: no-store");
-		header("Access-Control-Allow-Origin: *");
+    public function notifyUser(Request $request)
+    {
+        $form_id = $request->input('form_id');
+        $started = false;
+        $num = 0;
 
-		while (1) {
-			// 1 is always true, so repeat the while loop forever (aka event-loop)
-			$num++;
+        header("Content-Type: text/event-stream");
+        header("Cache-Control: no-store");
+        header("Access-Control-Allow-Origin: *");
 
-			//todo make sure user has access to this form id
-			$form = $this->getForm($request);
-			if (!$form) {
-				echo "Error, form does not exist.";
-				return;
-			}
- 			
-			if (!$started) {
-				$last_updated = $form->original['updated_at'];
-				$started = true;
-			} else {
-				if ($form->original['updated_at'] > $last_updated) {
-					$formData = json_encode($form->original);
-					echo "data: {$formData}\n\n";
-					$last_updated = $form->original['updated_at'];
-				}
-			}
-			
-			// flush the output buffer and send echoed messages to the browser
+        while (1) {
+            // 1 is always true, so repeat the while loop forever (aka event-loop)
+            $num++;
 
-			while (ob_get_level() > 0) {
-				ob_end_flush();
-			}
-			flush();
+            //todo make sure user has access to this form id
+            $form = 
+              getForm($request);
+            if (!$form) {
+                echo "Error, form does not exist.";
+                return;
+            }
 
-			// break the loop if the client aborted the connection (closed the page)
-		  
-			if ( connection_aborted() ) break;
+            if (!$started) {
+                $last_updated = $form->original['updated_at'];
+                $started = true;
+            } else {
+                if ($form->original['updated_at'] > $last_updated) {
+                    $formData = json_encode($form->original);
+                    echo "data: {$formData}\n\n";
+                    $last_updated = $form->original['updated_at'];
+                }
+            }
 
-			// sleep for 10 second before running the loop again
-		  
-			sleep(10);
-		}
-	}
+            // flush the output buffer and send echoed messages to the browser
+
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            flush();
+
+            // break the loop if the client aborted the connection (closed the page)
+
+            if (connection_aborted()) {
+                break;
+            }
+
+            // sleep for 10 second before running the loop again
+
+            sleep(10);
+        }
+    }
 }
