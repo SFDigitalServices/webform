@@ -1199,6 +1199,9 @@
                       <form class='form'>
                         <div class='form-group col-md-12'>
                           <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
+                          <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
+                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
+                          <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>                                
 							</div>
 						  </div>
                           <hr/>
