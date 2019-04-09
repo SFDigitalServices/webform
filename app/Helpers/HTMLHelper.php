@@ -261,7 +261,6 @@ class HTMLHelper
         $name = isset($field['name']) ? ' name="' . $field['name'] .'"': "";
         $type = isset($field['type']) ? ' type="' .$field['type']. '"': "";
         $class = isset($field['class']) ? ' class="' . $field['class'] : "";
-
         // append color class to $class
         if (isset($field['color'])) {
             if (isset($field['class'])) {
@@ -276,7 +275,7 @@ class HTMLHelper
         $required = (isset($field['required']) && $field['required'] == 'true') ? " required": "";
         $value = isset($field['value']) ? ' value="' . $field['value'] : "";
 
-        $attributes = $id.$name.$type.$formtype.$class.$required;
+        $attributes = $id.$name.$type.$formtype.$class.$value.$required;
         if ($attributes != "") {
             $attributes = " " . $attributes . " ";
         }
