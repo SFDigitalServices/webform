@@ -41,8 +41,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 's08';
         $notEmptyRadio = HTMLHelper::formRadio($this->attributes);
 
-        $expected = '<input type="radio" id="option_one" name="radio_id" value="option one" formtype="s08" ><label for="option_one" class="radio">option one</label>';
-        $expected .= '<input type="radio" id="option_two" name="radio_id" value="option two" formtype="s08" ><label for="option_two" class="radio">option two</label>';
+        $expected = '<div class="rb-input-group"><input type="radio" id="option_one" name="radio_id" value="option one" formtype="s08" ><label for="option_one" class="radio">option one</label></div>';
+        $expected .= '<div class="rb-input-group"><input type="radio" id="option_two" name="radio_id" value="option two" formtype="s08" ><label for="option_two" class="radio">option two</label></div>';
         $this->assertEquals($expected, $notEmptyRadio);
     }
 
@@ -57,8 +57,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 's06';
         $notEmptyCheckBox= HTMLHelper::formCheckbox($this->attributes);
 
-        $expected = '<input type="checkbox" id="option_one" value="option one" name="checkbox_id[]" ><label for="option_one" class="checkbox">option one</label>';
-        $expected .= '<input type="checkbox" id="option_two" value="option two" name="checkbox_id[]" ><label for="option_two" class="checkbox">option two</label>';
+        $expected = '<div class="cb-input-group"><input type="checkbox" id="option_one" value="option one" name="checkbox_id[]" ><label for="option_one" class="checkbox">option one</label></div>';
+        $expected .= '<div class="cb-input-group"><input type="checkbox" id="option_two" value="option two" name="checkbox_id[]" ><label for="option_two" class="checkbox">option two</label></div>';
         $this->assertEquals($expected, $notEmptyCheckBox);
     }
     public function testFormText(){
