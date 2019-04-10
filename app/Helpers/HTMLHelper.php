@@ -260,7 +260,7 @@ class HTMLHelper
         $id = isset($field['id']) ? ' id="' . $field['id'] . '"': "";
         $name = isset($field['name']) ? ' name="' . $field['name'] .'"': "";
         $type = isset($field['type']) ? ' type="' .$field['type']. '"': "";
-            $class = isset($field['class']) ? ' class="' . $field['class'] : "";
+           $class = isset($field['class']) ? ' class="' . $field['class'] : "";
 
         // append color class to $class
         if (isset($field['color'])) {

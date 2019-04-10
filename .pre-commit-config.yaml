@@ -19,3 +19,6 @@ repos:
     sha: 1.3.0
     hooks:
       - id: php-lint
+      - id: php-cs
+        files: \.(php)$
+        args: [--standard=PSR1 -p]
