@@ -21,4 +21,7 @@ repos:
       - id: php-lint
       - id: php-cs
         files: \.(php)$
-        args: [--standard=PSR1 -p]
+        args: [--standard=PSR2 -p]
+      - id: php-cs-fixer
+        files: \.(php)$
+        args: [--level=PSR2]
