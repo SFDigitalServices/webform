@@ -17,7 +17,7 @@ This guide is only for the Form Builder, but can extend for other projects.  Pre
 4.  Warnings are expected since your files will likely not pass all the pre-commit checks. Errors mean some hooks need additional local installs, you will find installation instructions in the .pre-commit-config.yaml file.
 > For php-linter to work, install php code sniffer from [https://github.com/squizlabs/PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer)
 > For shellcheck to work, install from [https://github.com/koalaman/shellcheck#installing](https://github.com/koalaman/shellcheck#installing)
-As more hooks are added, additional installs may be required, please refer to the config file for instructions if you run into errors.
+As more hooks are added, additional installs may be required, please update this document.
 
 
 ## Usage
