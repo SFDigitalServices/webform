@@ -32,7 +32,7 @@ class HTMLHelper
                     $isCheck = "";
                 }
                 $id = str_replace(' ', '_', $radio);
-                $html .= '<input type="radio" id="'.$id.'" name="'.$name.'" value="'.$radio.'" formtype="'. $formtype . '" '. $required .$isCheck. '><label for="'.$id.'" class="radio">'.$radio.'</label>';
+                $html .= '<div class="rb-input-group"><input type="radio" id="'.$id.'" name="'.$name.'" value="'.$radio.'" formtype="'. $formtype . '" '. $required .$isCheck. '><label for="'.$id.'" class="radio">'.$radio.'</label></div>';
             }
         }
         return $html;
@@ -66,7 +66,7 @@ class HTMLHelper
                     $isCheck = "";
                 }
 
-                $html .= '<input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name="'.$name .'" '.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label>';
+                $html .= '<div class="cb-input-group"><input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name="'.$name .'" '.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label></div>';
             }
         }
         return $html;
@@ -278,7 +278,7 @@ class HTMLHelper
         $required = (isset($field['required']) && $field['required'] == 'true') ? " required": "";
         $value = isset($field['value']) ? ' value="' . $field['value'] : "";
 
-        $attributes = $id.$name.$type.$formtype.$class.$required;
+        $attributes = $id.$name.$type.$formtype.$class.$value.$required;
         if ($attributes != "") {
             $attributes = " " . $attributes . " ";
         }
