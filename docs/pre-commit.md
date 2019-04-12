@@ -21,7 +21,8 @@ As more hooks are added, additional installs may be required, please update this
 
 
 ## Usage
-Pre-commit works on staged files, that means when you add files to your commit, pre-commit knows these are the files to check for. **If you made changes to the staged files, you will need to need to git add the changed files again**
+Pre-commit works on staged files, that means when you add files to your commit, pre-commit knows these are the files to check for and automatically runs the hooks when you commit the files.
+**If you made changes to the staged files, you will need to need to git add the changed files again. Otherwise pre-commit won't pick up the changes**
 
 Run pre-commit after files are added.
 ```
