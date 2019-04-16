@@ -1167,13 +1167,19 @@ function embedCode(id) {
 	var embedUrl = new URL('/form/embed', window.location.href);
 	var assetsUrl = new URL('/assets/', window.location.href);
 
-	var str = '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'+
-	'<link rel="stylesheet" href="'+assetsUrl+'css/form-base.css" />'+
-	'<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'+
-	'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>'+
-	'<script src="'+assetsUrl+'js/error-msgs.js"></script>'+
-	'<script src="'+embedUrl+'?id='+id+'"></script>'+
-	'<div id="SFDSWF-Container"></div>';
+	var str = "<!-- If possible, place the following in your <head> tag. -->"+
+	"\n"+
+	"<script>window.jQuery || document.write('<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\">')</script>\n"+
+	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js\"></script>\n"+
+	"\n"+
+	"<link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\" />\n"+
+	"<link rel=\"stylesheet\" href=\""+cssUrl+"\" />\n"+
+	"\n"+
+	"<!-- Insert the following in the <body>, wherever\n"+
+	"you would like the form to appear. -->"+
+	"\n"+
+	"<script src=\""+embedUrl+"?id="+id+"\"></script>\n"+
+	"<div id=\"SFDSWF-Container\"></div>";
 	return str;
 
 }
