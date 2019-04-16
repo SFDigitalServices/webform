@@ -202,7 +202,7 @@
                       </div>
                     </div>
 					
-                    <div class="form-group component" data-formtype="c14" data-type="number" data-name="zip" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
+                    <div class="form-group component" data-formtype="c14" data-type="text" data-name="zip" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
