@@ -647,7 +647,7 @@ function genSource() {
 		return;
 	}
 
-	$("#SFDSWFB-snippet").val(embedCode(formId));
+	$("#SFDSWFB-snippet").text(embedCode(formId));
 
 	$.get("/form/generate?id="+formId, function(data) {
 		$("#SFDSWFB-source").val(data);
@@ -1221,7 +1221,7 @@ function loadContent(id) {
 			if (history.state == undefined) history.pushState({formId : 0} , null, "/home?new");
 			formId = 0;
 			$('#SFDSWFB-load').html('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}');
-			$('#SFDSWFB-snippet').val('Save your form to get embed code');
+			$('#SFDSWFB-snippet').text('Save your form to get embed code');
 			$('#SFDSWFB-source').val('');
 			$('#SFDSWFB-7 input:not([type=radio])').val('');
 			$("input[name=backend][value=db]").attr('checked', true);
