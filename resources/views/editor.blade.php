@@ -1271,7 +1271,7 @@
                   <div class="tab-pane" id="SFDSWFB-6">
 					<h4>Embed Code</h4>
 					<p>Copy and paste the following code into your page.</p>
-					<textarea id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</textarea>&nbsp;
+					<pre id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</pre>&nbsp;
 					<br/>
 					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Show Debug Info</div>
 					<div id="SFDSWFB-debug" style="display:none">
