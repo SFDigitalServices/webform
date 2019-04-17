@@ -500,7 +500,7 @@ class FormController extends Controller
                     $js .= $this->getInputSelector($chId, $formtypes, false).", ";
                 }
                 $js = substr($js, 0, -2)."').on('keyup change',function(){";
-                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."('medium')} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."('medium')}});";
+                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
             }
         }
 
