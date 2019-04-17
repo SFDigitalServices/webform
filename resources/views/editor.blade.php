@@ -1150,7 +1150,7 @@
                       </div>
                     </div>
 					
-                    <div class="form-group component" data-formtype="m11" data-type="text" rel="popover" title="Hidden" trigger="manual"
+                    <div class="form-group component" data-formtype="m11" data-type="hidden" rel="popover" title="Hidden" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
