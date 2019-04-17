@@ -1171,9 +1171,10 @@ function embedCode(id) {
 	"\n"+
 	"<script>window.jQuery || document.write('<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\">')</script>\n"+
 	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js\"></script>\n"+
+	"<script src=\""+assetsUrl+"js/error-msgs.js\"></script>"+
 	"\n"+
 	"<link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\" />\n"+
-	"<link rel=\"stylesheet\" href=\""+cssUrl+"\" />\n"+
+	"<link rel=\"stylesheet\" href=\""+assetsUrl+"css/form-base.css\" />\n"+
 	"\n"+
 	"<!-- Insert the following in the <body>, wherever\n"+
 	"you would like the form to appear. -->"+
