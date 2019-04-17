@@ -153,9 +153,6 @@ $(document).ready(function(){
 
         $("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
 
-		//calculate height, animation code only
-		var oldHeight = $('#SFDSWFB-target').height();
-
         // acting only if mouse is in right place
 		//added 150 and 100 to center drag
 		if (
@@ -211,13 +208,7 @@ $(document).ready(function(){
 			}
         }
 
-		//calculate new height, animation code only
-		$('#SFDSWFB-target').css('height', "auto");
-		var newHeight = $('#SFDSWFB-target').height();
-		$('#SFDSWFB-target').css('height', (oldHeight+12)+"px");
-		setTimeout(function() {
-			$('#SFDSWFB-target').css('height', (newHeight+12)+"px");
-		}, 100);
+		resizeHeight();
 
 		$("#SFDSWFB-save").val(JSON.stringify(saved));
 
@@ -227,6 +218,8 @@ $(document).ready(function(){
         $("body").undelegate("#SFDSWFB-temp","mouseup");
         $("#SFDSWFB-target .component").popover({trigger: "manual"});
         $temp.remove();
+		
+		bindQuickDelete();
 
 		//auto save
 		saveForm();
@@ -631,6 +624,12 @@ $(document).ready(function(){
 
 }); //end document ready
 
+function bindQuickDelete() {
+	$('#SFDSWFB-target .form-group.component').unbind('mouseenter mouseleave');
+	$('#SFDSWFB-target .form-group.component').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+	$('#SFDSWFB-target .form-group.component').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
+}
+
 function quickDelete(obj) {
 	existingPos = $(obj.parentNode).prevAll(".form-group").length;
 	$('#SFDSWFB-target .form-group').eq(existingPos).remove();
@@ -639,6 +638,7 @@ function quickDelete(obj) {
 	saved.data.splice(existingPos, 1);
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
 	saveForm();
+	resizeHeight();
 }
 
 function genSource() {
@@ -796,9 +796,7 @@ function loadForm() {
 
 	$('legend').text(saved.settings.name);
 
-  // bind quick delete
-  $('#SFDSWFB-target .form-group.component').on('mouseover',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
-  $('#SFDSWFB-target .form-group.component').on('mouseout',function(){$(this).find('.fa-times-circle').remove()});
+    bindQuickDelete();
 
   // check if csv and published
 	var submitUrl = new URL('/form/submit', window.location.href);
