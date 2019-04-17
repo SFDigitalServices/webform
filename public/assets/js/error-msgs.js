@@ -1,5 +1,5 @@
 var SFDSerrorMsgs = function() {
-	jQuery('#SFDSWF-Container input[required=true], #SFDSWF-Container form select[required=true] #SFDSWF-Container form textarea[required=true]').attr('data-required-error','Please fill in this field.');
+	jQuery('#SFDSWF-Container input[required=true], #SFDSWF-Container select[required=true] #SFDSWF-Container textarea[required=true]').attr('data-required-error','Please fill in this field.');
 	jQuery('#SFDSWF-Container input[type=tel]').attr('data-required-error','Please enter a valid phone number.'); //doesn't seem to validate phone numbers
 	jQuery('#SFDSWF-Container input[type=email]').attr('data-type-error','Please enter a valid email address.');
 	jQuery('#SFDSWF-Container input[type=number]').attr('data-required-error','Please enter a number.'); //does not work as a type error
