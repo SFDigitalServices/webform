@@ -1167,7 +1167,7 @@ var substringMatcher = function(strs) {
 function embedCode(id) {
 
 	var embedUrl = new URL('/form/embed', window.location.href);
-	var cssUrl = new URL('/assets/css/form-base.css', window.location.href);
+	var assetsUrl = new URL('/assets/', window.location.href);
 
 	var str = "<!-- If possible, place the following in your <head> tag. -->"+
 	"\n"+

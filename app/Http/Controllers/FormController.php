@@ -401,7 +401,7 @@ class FormController extends Controller
     {
         $js = "jQuery( document ).ready(function() {"; //start ready
         $js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
-        $js .= "jQuery('#SFDSWF-Container form').validator();";
+		$js .= "if (typeof SFDSerrorMsgs != 'undefined') { SFDSerrorMsgs(); } else { jQuery('#SFDSWF-Container form').validator(); }";
 
         //check content for extra features
         $calculations = [];
