@@ -218,7 +218,7 @@ $(document).ready(function(){
         $("body").undelegate("#SFDSWFB-temp","mouseup");
         $("#SFDSWFB-target .component").popover({trigger: "manual"});
         $temp.remove();
-		
+
 		bindQuickDelete();
 
 		//auto save
@@ -800,7 +800,8 @@ function loadForm() {
 
   // check if csv and published
 	var submitUrl = new URL('/form/submit', window.location.href);
-	if ((saved.settings.action).includes(submitUrl)) {
+	//if ((saved.settings.action).includes(submitUrl)) {
+	if(saved.settings.backend == 'csv'){
 		callAPI('/form/csv-published', {id : formId}, protectPublished)
 	}
 
@@ -987,10 +988,10 @@ function isReferenced(myId) {
 
 function updateSettings() {
 	var saved = $("#SFDSWFB-save").val();
-	//saved = JSON.parse(saved);
-        saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 
 	var newSettings = {};
+	var useCSV = false;
 
 	//iterate over inputs in settings tab
 	$("#SFDSWFB-7 input").each(function(i) {
@@ -999,23 +1000,26 @@ function updateSettings() {
 				if ($(this).attr("name") == "backend") {
 					var submitUrl = new URL('/form/submit', window.location.href);
 					if ($(this).is(":checked") && $(this).val() == "db") {
-						if ($('#SFDSWFB-7 input[name=action]').val() == submitUrl) $('#SFDSWFB-7 input[name=action]').val('');
+						if ($('#SFDSWFB-7 input[name=action]').val() == submitUrl)
+							$('#SFDSWFB-7 input[name=action]').val('');
 						$(".csvFile").hide('medium');
 						$(".confirmPage").hide('medium');
 						$('#SFDSWFB-7 input[name=action]').removeAttr('readonly');
+						newSettings[$(this).attr("name")] = $(this).val();
 					} else if ($(this).is(":checked") && $(this).val() == "csv") {
 						$('#SFDSWFB-7 input[name=action]').val(submitUrl);
 						$(".confirmPage").show('medium');
 						$('#SFDSWFB-7 input[name=action]').attr('readonly', true);
-						populateCSV();
+						newSettings[$(this).attr("name")] = $(this).val();
+						useCSV = true;
 					}
 				} else {
-					if ($(this).is(":checked")) {
-						newSettings[$(this).attr("name")] = $(this).val();
+						if ($(this).is(":checked")) {
+							newSettings[$(this).attr("name")] = $(this).val();
+						}
 					}
-				}
 		    } else {
-				newSettings[$(this).attr("name")] = $(this).val();
+					newSettings[$(this).attr("name")] = $(this).val();
 		    }
 		}
 	});
@@ -1023,14 +1027,16 @@ function updateSettings() {
 	for (i in newSettings) {
 	    saved.settings[i] = newSettings[i];
 	}
-	console.log(saved);
 
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
+	if(useCSV)
+		populateCSV();
 }
 function populateCSV() {
-	if (csvFile) { //global
+	if (csvFile && formId > 0) { //global
 		showCSV(csvFile);
 	} else if (formId) {
+		saveForm();
 		callAPI('/form/getFilename', {id : formId, 'path' : true}, showCSV);
 	}
 }

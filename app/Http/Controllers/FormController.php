@@ -97,8 +97,8 @@ class FormController extends Controller
             return $this->create($request);
         } else {
             $returnForm = Form::where('id', $form_id)->first();
-            $this->processCSV($returnForm, $request->getHttpHost());
             $returnForm['content'] = $this->scrubString($request->input('content'));
+            $this->processCSV($returnForm, $request->getHttpHost());
             $returnForm->save();
             return response()->json($returnForm);
         }
@@ -272,14 +272,14 @@ class FormController extends Controller
         }
         return false;
     }
-    
+
     // EMBED FUNCTIONS
     public function getHTML($form, $base_url = '')
     {
         $content = $form['content'];
         // form setting (json)
         $formEncoding = $this->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
-        
+
         $form_div = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 
         $form_container = '';
@@ -777,7 +777,7 @@ class FormController extends Controller
     {
         //read content and settings
         $content = json_decode($form->content);
-        if ($this->isCSVDatabase($content->settings->action, $base_url)) {
+        if( isset($content->settings->backend) && $content->settings->backend == "csv"){
             $filename = $this->generateFilename($form->id);
             //rewrite header row if CSV is not published (only header row or less exists)
             if (!$this->isCSVPublished($filename)) {
@@ -793,6 +793,9 @@ class FormController extends Controller
         return substr($formAction, 0 - strlen($path)) == $path ? true : false;
     }
 
+    /**
+    *   Called from fb.js
+    */
     public function CSVPublished(Request $request)
     {
         return $this->isCSVPublished($this->getFilename($request)) ? 1 : 0;
@@ -847,8 +850,8 @@ class FormController extends Controller
         //todo backend validation
         $column = 0;
         $write = array();
-         $uploadedFiles = Array();
-        
+        $uploadedFiles = Array();
+
         //write file uploads, todo check filetype, mimetype, and size
         foreach($_FILES as $key => $value) {
             if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES[$key]) && $_FILES[$key]['error'] == UPLOAD_ERR_OK && is_uploaded_file($_FILES[$key]['tmp_name'])) {
@@ -859,9 +862,9 @@ class FormController extends Controller
                         $uploadedFiles[$key] = $this->getBucketPath().$newFilename;
                     }
                 }
-            }                
+            }
         }
-        
+
        foreach ($form['content']['data'] as $field) {
             if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
             } elseif ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
@@ -889,19 +892,6 @@ class FormController extends Controller
                 $column++;
             }
         }
-
-        //print_r($write);
-        //die;
-
-        /*
-        $fp = fopen('/var/www/html/public/csv/'.$this->generateFilename($form_id), 'a');
-
-        //foreach ($write as $fields) {
-          fputcsv($fp, $write);
-        //}
-
-        fclose($fp);
-        */
 
         $this->appendCSV($this->generateFilename($form_id), $write);
 
@@ -962,7 +952,7 @@ class FormController extends Controller
     public function getBucketPath() {
         return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
     }
-    
+
     private function generateFilename($id)
     {
         $hash = substr(sha1($id.env('FILE_SALT')), 0, 8);
