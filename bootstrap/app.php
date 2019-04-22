@@ -44,7 +44,9 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-$app->withFacades();
+$app->withFacades(true, [
+    'Illuminate\Support\Facades\Mail' => 'Mail',
+]);
 
 $app->withEloquent();
 
@@ -119,7 +121,7 @@ $app->routeMiddleware([
 //$app->register(Zeek\LumenDingoAdapter\Providers\LumenDingoAdapterServiceProvider::class);
 
 // Lumen Generator disabled it on production if you want
-//$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -135,5 +137,14 @@ $app->routeMiddleware([
 $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/api.php';
 });
+
+/*
+|--------------------------------------------------------------------------
+| Sendgrid integration
+|--------------------------------------------------------------------------
+|
+*/
+$app->configure('mail');
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 return $app;
