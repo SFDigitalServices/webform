@@ -20,7 +20,7 @@ class FormBuilderMailer extends Mailable
 
     public function build()
     {
-        $address = 'henry.jiang@sfgov.org'; //FROM address
+            $address = 'henry.jiang@sfgov.org'; //FROM address
         $subject = 'This is a demo!';
         $name = 'Jane Doe';
 
