@@ -84,8 +84,10 @@ class HTMLHelper
         unset($field['conditions']);
         unset($field['calculations']);
         foreach ($field as $key => $value) {
-            if (array_key_exists('regex', $field)) {
+            if ($key == 'regex') {
                 $html .= ' pattern="'.$value.'" ';
+			} else if ($key == "match") {
+				$html .= ' data-match="#'.$value.'" ';
             } else {
                 $html .= ' '. $key .'="'. $value . '"';
             }
@@ -274,6 +276,7 @@ class HTMLHelper
         //$textarea = isset($field['textarea']) ? $field['textarea']: "";
         $required = (isset($field['required']) && $field['required'] == 'true') ? " required": "";
         $value = isset($field['value']) ? ' value="' . $field['value'] : "";
+		$match = isset($field['match']) ? ' data-match="#' . $field['value'] . '"': "";
 
         $attributes = $id.$name.$type.$formtype.$class.$value.$required;
         if ($attributes != "") {
