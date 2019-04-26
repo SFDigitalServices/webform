@@ -276,7 +276,7 @@ class HTMLHelper
         }
         //$textarea = isset($field['textarea']) ? $field['textarea']: "";
         $required = (isset($field['required']) && $field['required'] == 'true') ? " required": "";
-        $value = isset($field['value']) ? ' value="' . $field['value'] : "";
+        $value = isset($field['value']) ? ' value="' . $field['value'] . '"': "";
 
         $attributes = $id.$name.$type.$formtype.$class.$value.$required;
         if ($attributes != "") {
