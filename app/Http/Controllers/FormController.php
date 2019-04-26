@@ -876,7 +876,8 @@ class FormController extends Controller
                     $column++;
             } else {
                 // fixed bug: if 'name' attribute was not set, exception is thrown here.
-                $write[$column] = isset( $field['name'])  ? $request->input($field['name']) : $request->input($field['id']);
+                if( isset( $field['name']) )
+                    $write[$column] = $request->input($field['name']);
                 //$write[$column] = $field['name']; //todo write first row
                 $column++;
             }
