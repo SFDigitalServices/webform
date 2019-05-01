@@ -846,24 +846,9 @@ class FormController extends Controller
         }
         $form = Form::where('id', $form_id)->first();
         $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-        //print_r($form);
         //todo backend validation
         $column = 0;
         $write = array();
-        $uploadedFiles = Array();
-
-        //write file uploads, todo check filetype, mimetype, and size
-        foreach($_FILES as $key => $value) {
-            if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES[$key]) && $_FILES[$key]['error'] == UPLOAD_ERR_OK && is_uploaded_file($_FILES[$key]['tmp_name'])) {
-                $newFilename = $this->generateUploadedFilename($form_id, $key, $_FILES[$key]['name']);
-                $this->writeS3($newFilename, fopen($_FILES[$key]['tmp_name'], 'rb'));
-                foreach ($form['content']['data'] as $idx => $val) {
-                    if ($val['formtype'] == "m13" && $val['name'] == $key) {
-                        $uploadedFiles[$key] = $this->getBucketPath().$newFilename;
-                    }
-                }
-            }
-        }
 
        foreach ($form['content']['data'] as $field) {
             if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
@@ -883,11 +868,16 @@ class FormController extends Controller
                     }
                     $column++;
                 }
-            } else if ($field['formtype'] == "m13") { //for file uploads
-                $write[$column] = $uploadedFiles[$field['name']];
-                $column++;
+            } else if ($field['formtype'] == "m13" && isset($field['name']) && $request->file($field['name'])->isValid() ) { //for file uploads
+                    $file = $request->file($field['name']);
+                    $newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
+                    $this->writeS3($newFilename, file_get_contents($file));
+                    $write[$column] = $this->getBucketPath().$newFilename;
+                    $column++;
             } else {
-                $write[$column] = $request->input($field['name']);
+                // fixed bug: if 'name' attribute was not set, exception is thrown here.
+                if( isset( $field['name']) )
+                    $write[$column] = $request->input($field['name']);
                 //$write[$column] = $field['name']; //todo write first row
                 $column++;
             }
@@ -896,9 +886,6 @@ class FormController extends Controller
         $this->appendCSV($this->generateFilename($form_id), $write);
 
         return redirect($form['content']['settings']['confirmation']);
-        //print "Form Submitted!";
-
-        //return;
     }
 
     public function writeS3($filename, $body)

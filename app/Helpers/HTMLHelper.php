@@ -1,5 +1,6 @@
 <?php
 namespace App\Helpers;
+
 use Log;
 use App\Helpers\ListHelper;
 
@@ -25,9 +26,9 @@ class HTMLHelper
         //construct radio inputs, one or more
         if (array_key_exists('radios', $field)) {
             foreach ($field['radios'] as $radio) {
-                if ( strcasecmp($radio, $value) == 0 ){
+                if (strcasecmp($radio, $value) == 0) {
                     $isCheck = "checked ";
-                }else{
+                } else {
                     $isCheck = "";
                 }
                 $id = str_replace(' ', '_', $radio);
@@ -49,7 +50,7 @@ class HTMLHelper
         $name = "";
         //get attributes
         $formType = $field['formtype'];
-        if (array_key_exists('name', $field) && ! empty($field['name']) ) {
+        if (array_key_exists('name', $field) && ! empty($field['name'])) {
             $name = $field['name']."[]";
         }
         if (array_key_exists('value', $field)) {
@@ -59,9 +60,9 @@ class HTMLHelper
         if (array_key_exists('checkboxes', $field)) {
             foreach ($field['checkboxes'] as $checkbox) {
                 $id = str_replace(' ', '_', $checkbox);
-                if ( strcasecmp($checkbox, $value) == 0 ){
+                if (strcasecmp($checkbox, $value) == 0) {
                     $isCheck = "checked ";
-                }else{
+                } else {
                     $isCheck = "";
                 }
 
@@ -123,7 +124,7 @@ class HTMLHelper
         $html = '<select'. $attributes .'>';
         if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16") {
             $html .= ListHelper::getStates($field['formtype']);
-        } elseif(isset($field['option'])) {
+        } elseif (isset($field['option'])) {
             foreach ($field['option'] as $option) {
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
@@ -222,8 +223,9 @@ class HTMLHelper
     public static function fieldLabel($field)
     {
         $label_for = $field['id'];
-        if(! $label_for)
+        if (! $label_for) {
             $label_for = $field['name'];
+        }
 
         $html = ($field['formtype'] == "s06") ? '<legend class="control-label">':  '<label for="'.$label_for.'" class="control-label">';
         $html .= isset($field['label']) ? $field['label'] : "";
@@ -263,6 +265,7 @@ class HTMLHelper
         $name = isset($field['name']) ? ' name="' . $field['name'] .'"': "";
         $type = isset($field['type']) ? ' type="' .$field['type']. '"': "";
         $class = isset($field['class']) ? ' class="' . $field['class'] : "";
+
         // append color class to $class
         if (isset($field['color'])) {
             if (isset($field['class'])) {
@@ -275,8 +278,8 @@ class HTMLHelper
         }
         //$textarea = isset($field['textarea']) ? $field['textarea']: "";
         $required = (isset($field['required']) && $field['required'] == 'true') ? " required": "";
-        $value = isset($field['value']) ? ' value="' . $field['value'] : "";
-		$match = isset($field['match']) ? ' data-match="#' . $field['value'] . '"': "";
+        $value = isset($field['value']) ? ' value="' . $field['value'] . '"': "";
+        $match = isset($field['match']) ? ' data-match="#' . $field['value'] . '"': "";
 
         $attributes = $id.$name.$type.$formtype.$class.$value.$required;
         if ($attributes != "") {

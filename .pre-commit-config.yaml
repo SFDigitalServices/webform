@@ -8,7 +8,6 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.1.0  # Use the ref you want to point at
     hooks:
-      - id: trailing-whitespace
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: check-symlinks
@@ -19,3 +18,11 @@ repos:
     sha: 1.3.0
     hooks:
       - id: php-lint
+      - id: php-cs
+        exclude: \.(blade)
+        files: \.(php)$
+        args: [--standard=PSR1 -p]
+      - id: php-cs-fixer
+        exclude: \.(blade)
+        files: \.(php)$
+        args: [--rules=@PSR1]

@@ -11,7 +11,8 @@
         "vlucas/phpdotenv": "~2.2",
 	"aws/aws-sdk-php-laravel": "~3.0",
         "sentry/sentry-laravel": "^0.11.0",
-        "doctrine/dbal": "^2.9"
+        "doctrine/dbal": "^2.9",
+        "illuminate/mail": "5.4.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
