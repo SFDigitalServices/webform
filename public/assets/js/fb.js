@@ -1029,6 +1029,7 @@ function updateSettings() {
 	}
 
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
+	saveForm();
 	if(useCSV)
 		populateCSV();
 }
