@@ -50,6 +50,7 @@ class HTMLHelper
         $name = "";
         //get attributes
         $formType = $field['formtype'];
+        $required = (isset($field['required']) && $field['required'] == 'true') ? 'required ': "";
         if (array_key_exists('name', $field) && ! empty($field['name'])) {
             $name = $field['name']."[]";
         }
@@ -66,7 +67,7 @@ class HTMLHelper
                     $isCheck = "";
                 }
 
-                $html .= '<div class="cb-input-group"><input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name="'.$name .'" '.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label></div>';
+                $html .= '<div class="cb-input-group"><input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name="'.$name .'" '.$required.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label></div>';
             }
         }
         return $html;
@@ -79,7 +80,6 @@ class HTMLHelper
     public static function formText($field)
     {
         $html = "<input ";
-        $step = "any";
         //unset unused attributes
         unset($field['label'], $field['help']);
         unset($field['conditions']);
@@ -87,6 +87,8 @@ class HTMLHelper
         foreach ($field as $key => $value) {
             if (array_key_exists('regex', $field)) {
                 $html .= ' pattern="'.$value.'" ';
+			} else if ($key == "required") {
+				if ($value == "true") $html .= 'required ';
             } else {
                 $html .= ' '. $key .'="'. $value . '"';
             }
