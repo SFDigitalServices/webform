@@ -1031,6 +1031,7 @@ function updateSettings() {
 	}
 
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
+	saveForm();
 	if(useCSV)
 		populateCSV();
 }
@@ -1038,7 +1039,6 @@ function populateCSV() {
 	if (csvFile && formId > 0) { //global
 		showCSV(csvFile);
 	} else if (formId) {
-		saveForm();
 		callAPI('/form/getFilename', {id : formId, 'path' : true}, showCSV);
 	}
 }
