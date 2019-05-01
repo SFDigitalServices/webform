@@ -316,7 +316,8 @@ class FormController extends Controller
                         case "m10":
                             $form_container .= $field_header . HTMLHelper::formParagraph($field) .HTMLHelper::helpBlock($field);
                             break;
-                        case "m14": $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
+                        case "m14":
+							if (empty($sections)) $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
                             break;
                         case "m16": $form_container .= HTMLHelper::formSection($field); $sections[] = $field;
                             break;
@@ -340,7 +341,7 @@ class FormController extends Controller
             }
             $nav .= '</ul>';
             $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
-            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button class="btn btn-lg form-section-next submit">Submit</button></div></div></div>';
+            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div>';
             $form_container = $nav. $form_div. $form_wraper_top. $form_container. $form_wrapper_bottom;
         } else {
             $form_container = $form_div. $form_container;
