@@ -884,7 +884,7 @@ class FormController extends Controller
                     $column++;
                 }
             } else if ($field['formtype'] == "m13") { //for file uploads
-                $write[$column] = $uploadedFiles[$field['name']];
+				if (isset($uploadedFiles[$field['name']])) $write[$column] = $uploadedFiles[$field['name']];
                 $column++;
             } else {
                 $write[$column] = $request->input($field['name']);
