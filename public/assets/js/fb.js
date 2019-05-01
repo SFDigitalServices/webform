@@ -547,6 +547,8 @@ $(document).ready(function(){
 			  } else {
 			      if (vartype == "label" || vartype == "help" || vartype == "placeholder") {
 				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
+				  } else if (vartype == "value" && $(e).val() == "") {
+				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = undefined;
 			      } else if ($(e).val() != "") {
 				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
 			      }
