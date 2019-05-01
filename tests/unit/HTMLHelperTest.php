@@ -64,7 +64,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     public function testFormText(){
         // test each type of text inputs: search, address, email...etc
         $emptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input  id="" name="" type="" formtype="" required="" class="" codearea=""/>';
+        $expected = '<input  id="" name="" type="" formtype="" class="" codearea=""/>';
 
         $this->assertSame($expected, $emptyText);
 
@@ -72,14 +72,14 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['id'] = 'address';
         $this->attributes['formtype'] = 'i02';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input  id="address" name="" type="" formtype="i02" required="" class="" codearea=""/>';
+        $expected = '<input  id="address" name="" type="" formtype="i02" class="" codearea=""/>';
         $this->assertEquals($expected, $notEmptyText);
 
         // Email fields
         $this->attributes['id'] = 'email';
         $this->attributes['formtype'] = 'c04';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input  id="email" name="" type="" formtype="c04" required="" class="" codearea=""/>';
+        $expected = '<input  id="email" name="" type="" formtype="c04" class="" codearea=""/>';
         $this->assertEquals($expected, $notEmptyText);
 
     }
