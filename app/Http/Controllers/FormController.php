@@ -869,11 +869,15 @@ class FormController extends Controller
                     }
                     $column++;
                 }
-            } else if ($field['formtype'] == "m13" && isset($field['name']) && $request->file($field['name'])->isValid() ) { //for file uploads
-                    $file = $request->file($field['name']);
-                    $newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
-                    $this->writeS3($newFilename, file_get_contents($file));
-                    $write[$column] = $this->getBucketPath().$newFilename;
+            } else if ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads
+					if ($request->file($field['name']) != null) {
+						if ($request->file($field['name'])->isValid()) {
+							$file = $request->file($field['name']);
+							$newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
+							$this->writeS3($newFilename, file_get_contents($file));
+							$write[$column] = $this->getBucketPath().$newFilename;
+						}
+					}
                     $column++;
             } else {
                 // fixed bug: if 'name' attribute was not set, exception is thrown here.
