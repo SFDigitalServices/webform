@@ -177,14 +177,3 @@ textarea {
     clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
     clip: rect(1px, 1px, 1px, 1px);
 }
-
-/* Hide duplicate submit button? */
-
-.form-section-next.submit {
-	display: none;
-}
-
-/* Hide hidden inputs */
-input[formtype="m11"] {
-	display: none;
-}
