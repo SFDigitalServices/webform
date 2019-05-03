@@ -11,35 +11,35 @@
 |
 */
 
-$app->get('/', function () use ($app) {
+$router->get('/', function () use ($router) {
     return view('login');
  });
 
-$app->post('/home', 'UserController@login');
-$app->get('/home', 'UserController@login');
-$app->get('/createView', 'UserController@createView');
-$app->post('/user/logout', 'UserController@logout');
-$app->get('/user/register', 'UserController@register');
-$app->get('/user/delete', 'UserController@delete');
-$app->get('/user/debug', 'UserController@debug');
+$router->post('/home', 'UserController@login');
+$router->get('/home', 'UserController@login');
+$router->get('/createView', 'UserController@createView');
+$router->post('/user/logout', 'UserController@logout');
+$router->get('/user/register', 'UserController@register');
+$router->get('/user/delete', 'UserController@delete');
+$router->get('/user/debug', 'UserController@debug');
 
-$app->group(['prefix' => 'form'], function($app) {
+$router->group(['prefix' => 'form'], function($router) {
     //$app->get('getIndex', ['as' => 'getIndex', 'uses' => 'FormController@getIndex']);
-    $app->post('getForms', ['as' => 'getForms', 'uses' => 'FormController@getUserForms']);
-    $app->post('getApiToken', ['as' => 'getApiToken', 'uses' =>'FormController@getApiToken']);
+    $router->post('getForms', ['as' => 'getForms', 'uses' => 'FormController@getUserForms']);
+    $router->post('getApiToken', ['as' => 'getApiToken', 'uses' =>'FormController@getApiToken']);
     //$app->post('createUser', ['as' => 'createUser', 'uses' =>'FormController@createUser']);
-    $app->post('getForm', ['as' => 'getForm', 'uses' => 'FormController@getForm']);
-    $app->get('embed', ['as' => 'embed', 'uses' => 'FormController@embedJS']);
-    $app->get('generate', ['as' => 'generate', 'uses' => 'FormController@generate']);
-    $app->get('push', ['as' => 'push', 'uses' => 'FormController@notifyUser']);
-    $app->post('save', ['as' => 'save', 'uses' => 'FormController@save']);
-    $app->post('create',['as' => 'create', 'uses' =>'FormController@create']);
-    $app->post('clone', ['as' => 'clone', 'uses' => 'FormController@clone']);
-    $app->post('delete',['as' => 'delete', 'uses' => 'FormController@delete']);
-	$app->post('share', ['as' => 'share', 'uses' => 'FormController@share']);
-    $app->post('submit',['as' => 'submit', 'uses' => 'FormController@submitCSV']);
-	$app->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
-    $app->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
-	$app->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
-	$app->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
+    $router->post('getForm', ['as' => 'getForm', 'uses' => 'FormController@getForm']);
+    $router->get('embed', ['as' => 'embed', 'uses' => 'FormController@embedJS']);
+    $router->get('generate', ['as' => 'generate', 'uses' => 'FormController@generate']);
+    $router->get('push', ['as' => 'push', 'uses' => 'FormController@notifyUser']);
+    $router->post('save', ['as' => 'save', 'uses' => 'FormController@save']);
+    $router->post('create',['as' => 'create', 'uses' =>'FormController@create']);
+    $router->post('clone', ['as' => 'clone', 'uses' => 'FormController@clone']);
+    $router->post('delete',['as' => 'delete', 'uses' => 'FormController@delete']);
+	$router->post('share', ['as' => 'share', 'uses' => 'FormController@share']);
+    $router->post('submit',['as' => 'submit', 'uses' => 'FormController@submitCSV']);
+	$router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
+    $router->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
+	$router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
+	$router->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
 });
