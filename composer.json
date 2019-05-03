@@ -6,20 +6,21 @@
     "type": "project",
     "require": {
         "php": ">=7.1.0",
-        "laravel/lumen-framework": "5.4.*",
+        "laravel/lumen-framework": "5.7.*",
         "fzaninotto/faker": "~1.4",
-        "vlucas/phpdotenv": "~2.2",
-	"aws/aws-sdk-php-laravel": "~3.0",
-        "sentry/sentry-laravel": "^0.11.0",
+        "vlucas/phpdotenv": "^3.3",
+	    "aws/aws-sdk-php-laravel": "~3.0",
         "doctrine/dbal": "^2.9",
-        "illuminate/mail": "5.4.*"
+        "illuminate/mail": "5.7.*",
+        "sentry/sentry-laravel": "^0.11.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
-        "phpunit/phpunit": "~5.0",
+        "phpunit/phpunit": "~7.5",
         "mockery/mockery": "~0.9",
         "flipbox/lumen-generator": "^5.4",
-        "codeception/codeception": "^2.5"
+        "codeception/codeception": "^2.5",
+        "filp/whoops": "~2.0"
     },
     "autoload": {
         "psr-4": {

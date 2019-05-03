@@ -316,7 +316,8 @@ class FormController extends Controller
                         case "m10":
                             $form_container .= $field_header . HTMLHelper::formParagraph($field) .HTMLHelper::helpBlock($field);
                             break;
-                        case "m14": $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
+                        case "m14":
+							if (empty($sections)) $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
                             break;
                         case "m16": $form_container .= HTMLHelper::formSection($field); $sections[] = $field;
                             break;
@@ -340,7 +341,7 @@ class FormController extends Controller
             }
             $nav .= '</ul>';
             $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
-            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button class="btn btn-lg form-section-next submit">Submit</button></div></div></div>';
+            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div>';
             $form_container = $nav. $form_div. $form_wraper_top. $form_container. $form_wrapper_bottom;
         } else {
             $form_container = $form_div. $form_container;
@@ -868,11 +869,13 @@ class FormController extends Controller
                     }
                     $column++;
                 }
-            } else if ($field['formtype'] == "m13" && isset($field['name']) && $request->file($field['name'])->isValid() ) { //for file uploads
-                    $file = $request->file($field['name']);
-                    $newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
-                    $this->writeS3($newFilename, file_get_contents($file));
-                    $write[$column] = $this->getBucketPath().$newFilename;
+            } else if ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
+					if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+						$file = $request->file($field['name']);
+						$newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
+						$this->writeS3($newFilename, file_get_contents($file));
+						$write[$column] = $this->getBucketPath().$newFilename;
+					}
                     $column++;
             } else {
                 // fixed bug: if 'name' attribute was not set, exception is thrown here.

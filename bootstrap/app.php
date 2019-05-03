@@ -23,7 +23,9 @@ require_once __DIR__.'/../vendor/autoload.php';
 */
 
 try {
-    (new Dotenv\Dotenv(__DIR__.'/../'))->load();
+    //(new Dotenv\Dotenv(__DIR__.'/../'))->load();
+    $dotenv = Dotenv\Dotenv::create(__DIR__.'/../');
+    $dotenv->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
     //
 }
@@ -116,12 +118,13 @@ $app->routeMiddleware([
 
  // Sentry.io integration
  $app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
-	
+ //$app->register('Sentry\Laravel\ServiceProvider');
+
 // Dingo Adapter for Lumen
 //$app->register(Zeek\LumenDingoAdapter\Providers\LumenDingoAdapterServiceProvider::class);
 
 // Lumen Generator disabled it on production if you want
-//$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -134,8 +137,9 @@ $app->routeMiddleware([
 |
 */
 
-$app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
-    require __DIR__.'/../routes/api.php';
+$app->router->group(
+    ['namespace' => 'App\Http\Controllers'], function ($router) {
+        require __DIR__.'/../routes/api.php';
 });
 
 /*
