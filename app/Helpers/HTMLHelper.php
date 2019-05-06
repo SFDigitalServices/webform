@@ -89,8 +89,8 @@ class HTMLHelper
                 $html .= ' pattern="'.$value.'" ';
             } else if ($key == "match") {
               $html .= ' data-match="#'.$value.'" ';
-            } else if ($key == "required" && $value == "true") {
-              $html .= 'required ';
+            } else if ($key == "required") {
+				if ($value == "true") $html .= 'required ';
             } else {
                 $html .= ' '. $key .'="'. $value . '"';
             }
