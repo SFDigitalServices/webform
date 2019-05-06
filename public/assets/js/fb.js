@@ -558,6 +558,8 @@ $(document).ready(function(){
 				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
 				  } else if (vartype == "type" && $(e).val() == "match") { //for match type validation
 				saved.data[$(".popover").prevAll(".form-group").length-1]["match"] = $('#match').val();
+				  } else if (vartype == "value" && $(e).val() == "") {
+				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = undefined;
 			      } else if ($(e).val() != "") {
 				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
 			      }
@@ -1042,6 +1044,7 @@ function updateSettings() {
 	}
 
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
+	saveForm();
 	if(useCSV)
 		populateCSV();
 }
@@ -1049,7 +1052,6 @@ function populateCSV() {
 	if (csvFile && formId > 0) { //global
 		showCSV(csvFile);
 	} else if (formId) {
-		saveForm();
 		callAPI('/form/getFilename', {id : formId, 'path' : true}, showCSV);
 	}
 }
@@ -1188,7 +1190,7 @@ function embedCode(id) {
 
 	var str = "<!-- If possible, place the following in your <head> tag. -->"+
 	"\n"+
-	"<script>window.jQuery || document.write('<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>')</script>\n"+
+	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>\n"+
 	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js\"></script>\n"+
 	"<script src=\""+assetsUrl+"js/error-msgs.js\"></script>"+
 	"\n"+
