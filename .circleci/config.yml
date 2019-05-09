@@ -54,15 +54,12 @@ jobs: # a collection of steps
             export NVM_DIR=$HOME/.nvm
             touch $HOME/.nvmrc
             source $NVM_DIR/nvm.sh
-            # Use node 8.9
-            nvm install 8.9 && nvm alias default 8.9
-            echo 8.9 > $HOME/.nvmrc
+            # Use node 11.0.0
+            nvm install 11.0.0 && nvm alias default 11.0.0
+            echo 11.0.0 > $HOME/.nvmrc
             # Enable nvm in following steps
             echo '[ -s "$HOME/.bashrc" ] && \. "$HOME/.bashrc"' >> $HOME/.bash_profile
-      - run: nvm install node
-      - run:
-          name: Install puppeteer
-          command: cd tests/frontend | npm install codeceptjs puppeteer
+            npm install codeceptjs puppeteer
       - run:
           name: Configure & start Apache
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/circleci-default.conf && sudo a2ensite circleci-default && sudo service apache2 start
