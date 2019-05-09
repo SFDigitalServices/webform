@@ -29,7 +29,7 @@ jobs: # a collection of steps
       - run: sudo docker-php-ext-install mysqli pdo_mysql
       - run:
           name: Install Project Dependencies
-          command: composer install -n --prefer-dist
+          command: sudo composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
             - composer-v1-{{ checksum "composer.lock" }}
@@ -41,9 +41,9 @@ jobs: # a collection of steps
             - vendor
       - run:
           name: Update Missed Dependencies
-          command: composer update
-      - run: php artisan migrate:refresh --force
-      - run: php artisan db:seed
+          command: sudo composer update
+      - run: sudo php artisan migrate:refresh --force
+      - run: sudo php artisan db:seed
 
       - run: ./vendor/bin/codecept run
       - run:
