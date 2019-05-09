@@ -46,7 +46,8 @@ jobs: # a collection of steps
       - run: ./vendor/bin/codecept run
       - run:
           name: install node and npm
-          command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | source ~/.bashrc | nvm install node
+          command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+      -run: source ~/.bashrc &&  nvm install node
       - run:
           name: Install puppeteer
           command: cd tests/frontend | npm install codeceptjs puppeteer
