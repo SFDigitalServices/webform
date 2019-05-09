@@ -49,7 +49,7 @@ jobs: # a collection of steps
           command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
       - run:
           name: install node and npm
-          command: source ~/.bashrc
+          command: source /home/circleci/.bashrc
       - run: nvm install node
       - run:
           name: Install puppeteer
