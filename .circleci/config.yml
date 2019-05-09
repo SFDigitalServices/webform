@@ -60,8 +60,9 @@ jobs: # a collection of steps
             # Enable nvm in following steps
             echo '[ -s "$HOME/.bashrc" ] && \. "$HOME/.bashrc"' >> $HOME/.bash_profile
             npm install codeceptjs puppeteer
+            export NPX_HOME=$HOME/.nvm/versions/node/v11.0.0/bin
       - run:
           name: Configure & start Apache
-          command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/circleci-default.conf && sudo a2ensite circleci-default && sudo service apache2 start
-      - run: cd tests/frontend | npx codeceptjs run
+          command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
+      - run: cd tests/frontend && $NPX_HOME/npx codeceptjs run
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
