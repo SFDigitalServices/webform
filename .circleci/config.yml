@@ -31,11 +31,11 @@ jobs: # a collection of steps
           command: composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
-            - composer-v1-{{ checksum "composer.lock" }}
+            - composer-v2-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - composer-v1-
+            - composer-v2-
       - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
-          key: composer-v1-{{ checksum "composer.lock" }}
+          key: composer-v2-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:
