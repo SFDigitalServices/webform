@@ -25,8 +25,8 @@ jobs: # a collection of steps
     working_directory: ~/project # directory where steps will run
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
-      - run: a2enmod rewrite
-      - run: docker-php-ext-install mysqli pdo_mysql
+      - run: sudo a2enmod rewrite
+      - run: sudo docker-php-ext-install mysqli pdo_mysql
       - run:
           name: Install Project Dependencies
           command: composer install -n --prefer-dist
