@@ -2,7 +2,7 @@ version: "3"
 
 services:
   apache_php:
-    image: markoshust/lumen-php-apache:7.2-0
+    image: circleci/php:7.2-apache-browsers
     build: .
     volumes:
       - ~/.composer:/root/.composer:delegated
@@ -21,4 +21,4 @@ services:
     volumes:
      - ./mysql-data:/docker-entrypoint-initdb.d
     ports:
-     - 3306:3306
+     - 3307:3307
