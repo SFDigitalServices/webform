@@ -20,9 +20,10 @@ RUN  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub |  apt-k
       --no-install-recommends \
     &&  rm -rf /var/lib/apt/lists/*
 
-RUN npm install codeceptjs
-RUN cd /var/www/html/tests/frontend && npm install puppeteer
 WORKDIR /var/www/html/tests/frontend
+RUN npm install codeceptjs
+RUN npm install puppeteer
+
 EXPOSE 80
 EXPOSE 443
 
