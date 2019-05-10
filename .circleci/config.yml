@@ -65,6 +65,7 @@ jobs: # a collection of steps
             echo '[ -s "$HOME/.bashrc" ] && \. "$HOME/.bashrc"' >> $HOME/.bash_profile
             npm install codeceptjs puppeteer
             export NPX_HOME=$HOME/.nvm/versions/node/v11.0.0/bin
+            chmod -R 777 storage
             cd tests/frontend
-            sudo $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
+            $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
