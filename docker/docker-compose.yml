@@ -2,7 +2,7 @@ version: "3"
 
 services:
   apache_php:
-    image: circleci/php:7.2-apache-browsers
+    image: markoshust/lumen-php-apache:7.2-0
     build: .
     volumes:
       - ~/.composer:/root/.composer:delegated
