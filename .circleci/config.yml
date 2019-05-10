@@ -5,7 +5,7 @@ jobs: # a collection of steps
     docker: # run the steps with Docker
       - image: circleci/php:7.2-apache-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment:
-          APP_ENV: testing
+          APP_ENV: production
           APP_DEBUG: true
           APP_KEY: kjcndjjksddwdwdw
           DB_CONNECTION: mysql
