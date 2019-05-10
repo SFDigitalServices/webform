@@ -46,7 +46,7 @@ jobs: # a collection of steps
       - run: ./vendor/bin/codecept run
       - run:
           name: Configure & start Apache
-          command: cp ~project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && service apache2 start
+          command: sudo cp ~project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
       # end to end testing
       - run:
           name: install nvm
