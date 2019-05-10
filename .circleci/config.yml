@@ -43,7 +43,7 @@ jobs: # a collection of steps
           name: Update Missed Dependencies
           command: composer update
       - run: php artisan migrate:refresh --force
-      - run: php artisan db:seed
+      - run: php artisan db:seed --force
       - run: ./vendor/bin/codecept run
       - run:
           name: Configure & start Apache
@@ -69,5 +69,5 @@ jobs: # a collection of steps
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
             cd tests/frontend
-            #$HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
+            $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
