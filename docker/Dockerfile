@@ -20,8 +20,6 @@ RUN  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub |  apt-k
       --no-install-recommends \
     &&  rm -rf /var/lib/apt/lists/*
 
-RUN composer update --prefer-dist
-
 WORKDIR /var/www/html/tests/frontend
 RUN npm install node
 RUN npm install codeceptjs
