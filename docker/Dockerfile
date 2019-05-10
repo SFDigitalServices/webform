@@ -6,6 +6,8 @@ RUN  a2enmod ssl
 RUN  docker-php-ext-install mysqli
 RUN  docker-php-ext-install pdo_mysql
 
+ADD . /var/www/html
+
 RUN  apt-get update -yq \
     &&  apt-get install curl gnupg -yq \
     &&  curl -sL https://deb.nodesource.com/setup_8.x |  bash \
@@ -18,10 +20,9 @@ RUN  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub |  apt-k
       --no-install-recommends \
     &&  rm -rf /var/lib/apt/lists/*
 
-RUN npm install puppeteer
-
-ADD . /var/www/html
-
+RUN npm install codeceptjs
+RUN cd /var/www/html/tests/frontend && npm install puppeteer
+WORKDIR /var/www/html/tests/frontend
 EXPOSE 80
 EXPOSE 443
 
