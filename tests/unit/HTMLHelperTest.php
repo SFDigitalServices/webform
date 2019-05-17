@@ -20,7 +20,13 @@ class HTMLHelperTest extends \Codeception\Test\Unit
             "name" => "",
             "type" => "",
             "formtype" => "",
+			"regex" => "",
+			"match" => "",
             "required" => "",
+			"minlength" => "",
+			"maxlength" => "",
+			"min" => "",
+			"max" => "",
             "class" => "",
             "codearea" => "",
         );
@@ -64,24 +70,725 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     public function testFormText(){
         // test each type of text inputs: search, address, email...etc
         $emptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input  id="" name="" type="" formtype="" class="" codearea=""/>';
+        $expected = '<input/>';
 
         $this->assertSame($expected, $emptyText);
-
-        // Address fields
-        $this->attributes['id'] = 'address';
-        $this->attributes['formtype'] = 'i02';
+		
+		// Name fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input  id="address" name="" type="" formtype="i02" class="" codearea=""/>';
+        $expected = '<input id="test" formtype="c02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = 'test';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" name="test" formtype="c02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = 'large';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02" class="large"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="c02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = 'false';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02" required/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '5';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02" minlength="5"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = '';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '5';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" formtype="c02" maxlength="5"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'c02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="c02" required minlength="3" maxlength="9" class="large rounded"/>';
         $this->assertEquals($expected, $notEmptyText);
 
         // Email fields
-        $this->attributes['id'] = 'email';
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'email';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
         $this->attributes['formtype'] = 'c04';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input  id="email" name="" type="" formtype="c04" class="" codearea=""/>';
+        $expected = '<input id="test" type="email" formtype="c04"/>';
         $this->assertEquals($expected, $notEmptyText);
 
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'email';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'c04';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="email" formtype="c04" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+		// Phone fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'tel';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c06';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="tel" formtype="c06"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'tel';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'c06';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="tel" formtype="c06" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Address fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c08';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="c08"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'c08';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="c08" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // City fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c10';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="c10"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'c10';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="c10" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Zip fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'c14';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="c14"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'c14';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="c14" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Date fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'date';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'd02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="test" type="date" formtype="d02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'date';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = '19500101';
+		$this->attributes['max'] = '20191231';
+        $this->attributes['formtype'] = 'd02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="foo" name="bar" type="date" formtype="d02" required minlength="3" maxlength="9" min="19500101" max="20191231" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Time fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'time';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'd04';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="time" formtype="d04"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'time';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'd04';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="time" formtype="d04" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Numbers fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'number';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'd06';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="test" type="number" formtype="d06"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'number';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '5';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'd06';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="test" type="number" formtype="d06" min="5"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'number';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '5';
+        $this->attributes['formtype'] = 'd06';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="test" type="number" formtype="d06" max="5"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'number';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = '10';
+		$this->attributes['max'] = '20';
+        $this->attributes['formtype'] = 'd06';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="foo" name="bar" type="number" formtype="d06" required minlength="3" maxlength="9" min="10" max="20" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Price fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'number';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'd08';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="test" type="number" formtype="d08"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'number';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = '10';
+		$this->attributes['max'] = '20';
+        $this->attributes['formtype'] = 'd08';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input step="any" id="foo" name="bar" type="number" formtype="d08" required minlength="3" maxlength="9" min="10" max="20" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // URL fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'url';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'd10';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="url" formtype="d10"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'url';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'd10';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="url" formtype="d10" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Text fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'i02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="i02"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'text';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'i02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="i02" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Regex Text fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'regex';
+        $this->attributes['regex'] = '^[_A-z0-9]{1,}$';
+        $this->attributes['required'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'i02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="i02" pattern="^[_A-z0-9]{1,}$"/>';
+        $this->assertEquals($expected, $notEmptyText);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'regex';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = '^[_A-z0-9]{1,}$';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'i02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="i02" pattern="^[_A-z0-9]{1,}$" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        // Match Text fields
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'match';
+        $this->attributes['match'] = 'foo';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'i02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="test" type="text" formtype="i02" data-match="#foo"/>';
+        $this->assertEquals($expected, $notEmptyText);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'test';
+	    $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'match';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'world';
+		$this->attributes['minlength'] = '3';
+		$this->attributes['maxlength'] = '9';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'i02';
+        $notEmptyText = HTMLHelper::formText($this->attributes);
+        $expected = '<input id="foo" name="bar" type="text" formtype="i02" data-match="#world" required minlength="3" maxlength="9" class="large rounded"/>';
+        $this->assertEquals($expected, $notEmptyText);
     }
     public function testFormSelect(){
         // test each type of drop downs

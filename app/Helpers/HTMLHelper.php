@@ -79,24 +79,37 @@ class HTMLHelper
      */
     public static function formText($field)
     {
-        $html = "<input ";
+        $html = "<input";
         //unset unused attributes
         unset($field['label'], $field['help']);
         unset($field['conditions']);
         unset($field['calculations']);
+        unset($field['codearea']); //shouldn't ever be set for text inputs, only text areas
+		
+		//strip attributes for specific types, this is for handling extraneous/bad data
+		if ($field['type'] != "number" && $field['type'] != "date" && $field['type'] != "price") {
+			unset($field['min']);
+			unset($field['max']);
+		} else {
+            $html .= ' step="any"';
+		}
+		if ($field['type'] != "regex") unset($field['regex']);
+		if ($field['type'] != "match") unset($field['match']);
+		
         foreach ($field as $key => $value) {
-            if ($key == 'regex') {
-                $html .= ' pattern="'.$value.'" ';
+            if ($value == '') {
+				//fields with empty values are skipped
+            } else if ($key == 'type' && ($value == 'regex' || $value == 'match')) {
+                $html .= ' type="text"';
+            } else if ($key == 'regex') {
+                $html .= ' pattern="'.$value.'"';
             } else if ($key == "match") {
-              $html .= ' data-match="#'.$value.'" ';
+              $html .= ' data-match="#'.$value.'"';
             } else if ($key == "required") {
-				if ($value == "true") $html .= 'required ';
+				if ($value == "true") $html .= ' required';
             } else {
                 $html .= ' '. $key .'="'. $value . '"';
             }
-        }
-        if ($field['formtype'] == 'number') {
-            $html .= 'step="any"';
         }
         $html .= "/>";
         return $html;
