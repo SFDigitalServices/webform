@@ -7,7 +7,7 @@ use App\Helpers\ListHelper;
 class HTMLHelper
 {
     /**
-    * Generate Radio button element
+    * Generate Radio input element
     *
     * @returns html
     */
@@ -15,59 +15,47 @@ class HTMLHelper
     public static function formRadio($field)
     {
         $html = "";
-        $value = "";
-        $formtype = isset($field['formtype']) ?  $field['formtype']: "";
-        $required = (isset($field['required']) && $field['required'] == 'true') ? 'required ': "";
-        $name = $field['id'];
 
-        if (array_key_exists('value', $field)) {
-            $value = $field['value'];
-        }
+		//id is set per option
+		$field_id = isset($field['id']) ? $field['id'] : "";
+		unset($field['id']);
+		//convert radios to options and remove them from fields
+		$options = isset($field['radios']) ? $field['radios'] : array();
+		unset($field['radios']);
+        //get attributes
+		$attributes = self::setAttributes($field);
         //construct radio inputs, one or more
-        if (array_key_exists('radios', $field)) {
-            foreach ($field['radios'] as $radio) {
-                if (strcasecmp($radio, $value) == 0) {
-                    $isCheck = "checked ";
-                } else {
-                    $isCheck = "";
-                }
-                $id = str_replace(' ', '_', $radio);
-                $html .= '<div class="rb-input-group"><input type="radio" id="'.$id.'" name="'.$name.'" value="'.$radio.'" formtype="'. $formtype . '" '. $required .$isCheck. '><label for="'.$id.'" class="radio">'.$radio.'</label></div>';
+		if (!empty($options)) {
+            foreach ($options as $option) {
+                $id = str_replace(' ', '_', $field_id . '_' . $option);
+                $html .= '<div class="rb-input-group"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><label for="'.$id.'" class="radio">'.$option.'</label></div>';
             }
         }
         return $html;
     }
     /**
-    * Generate Checkbox button element
+    * Generate Checkbox input element
     *
     * @returns html
     */
     public static function formCheckbox($field)
     {
         $html = "";
-        $isCheck = "";
-        $value = "";
-        $name = "";
+		//name needs to be an array
+		$field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
+		//id is set per option
+		$field_id = isset($field['id']) ? $field['id'] : "";
+		unset($field['id']);
+		//convert checkboxes to options and remove them from fields
+		$options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
+		unset($field['checkboxes']);
         //get attributes
-        $formType = $field['formtype'];
-        $required = (isset($field['required']) && $field['required'] == 'true') ? 'required ': "";
-        if (array_key_exists('name', $field) && ! empty($field['name'])) {
-            $name = $field['name']."[]";
-        }
-        if (array_key_exists('value', $field)) {
-            $value = $field['value'];
-        }
+		$attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
-        if (array_key_exists('checkboxes', $field)) {
-            foreach ($field['checkboxes'] as $checkbox) {
-                $id = str_replace(' ', '_', $checkbox);
-                if (strcasecmp($checkbox, $value) == 0) {
-                    $isCheck = "checked ";
-                } else {
-                    $isCheck = "";
-                }
-
-                $html .= '<div class="cb-input-group"><input type="checkbox" id="'.$id.'" value="'.$checkbox.'" name="'.$name .'" '.$required.$isCheck .'><label for="'. $id .'" class="checkbox">'.$checkbox.'</label></div>';
+        if (!empty($options)) {
+            foreach ($options as $option) {
+                $id = str_replace(' ', '_', $field_id . '_' . $option);
+                $html .= '<div class="cb-input-group"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><label for="'. $id .'" class="checkbox">'.$option.'</label></div>';
             }
         }
         return $html;
@@ -79,26 +67,8 @@ class HTMLHelper
      */
     public static function formText($field)
     {
-        $html = "<input ";
-        //unset unused attributes
-        unset($field['label'], $field['help']);
-        unset($field['conditions']);
-        unset($field['calculations']);
-        foreach ($field as $key => $value) {
-            if ($key == 'regex') {
-                $html .= ' pattern="'.$value.'" ';
-            } else if ($key == "match") {
-              $html .= ' data-match="#'.$value.'" ';
-            } else if ($key == "required") {
-				if ($value == "true") $html .= 'required ';
-            } else {
-                $html .= ' '. $key .'="'. $value . '"';
-            }
-        }
-        if ($field['formtype'] == 'number') {
-            $html .= 'step="any"';
-        }
-        $html .= "/>";
+		$attributes = self::setAttributes($field);
+        $html = "<input". $attributes . "/>";
         return $html;
     }
     /**
@@ -122,8 +92,9 @@ class HTMLHelper
     public static function formSelect($field)
     {
         $attributes = self::setAttributes($field);
-        // need to check for formtypes: s02, s04, s14, s15, s16
         $html = '<select'. $attributes .'>';
+
+        // need to check for formtypes: s02, s04, s14, s15, s16
         if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16") {
             $html .= ListHelper::getStates($field['formtype']);
         } elseif (isset($field['option'])) {
@@ -131,6 +102,7 @@ class HTMLHelper
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
+		
         $html .= "</select>";
         return $html;
     }
@@ -142,25 +114,30 @@ class HTMLHelper
     */
     public static function formButton($field)
     {
+		$button = isset($field['button']) ? $field['button'] : "";
         $attributes = self::setAttributes($field);
 
-        $html = "<button".$attributes .">" . $field['button'] ."</button>";
+        $html = "<button".$attributes .">" . $button ."</button>";
         return $html;
     }
     /**
-    * Generate hidden element
+    * Generate paragraph element
     *
     * @returns html
     */
     public static function formParagraph($field)
     {
         // type and formtype are not valid attributes for accessibility.
-        unset($field['type']);
-        unset($field['formtype']);
         $attributes = self::setAttributes($field);
 
-        $field_value = isset($field['textarea']) ? $field['textarea'] : $field['codearea'];
-        $field_value = str_replace("\n", "<br/>", $field_value);
+		if ($field['formtype'] == "m08") {
+			$field_value = isset($field['textarea']) ? str_replace("\n", "<br/>", $field['textarea']) : "";
+		} else if ($field['formtype'] == "m10") {
+			$field_value = isset($field['codearea']) ? str_replace("\n", "<br/>", $field['codearea']) : ""; //todo unescape code?
+		} else {
+			$field_value = ''; //should not happen
+		}
+		
         $html = '<p'. $attributes .'>'.$field_value.'</p>';
         return $html;
     }
@@ -173,14 +150,10 @@ class HTMLHelper
     {
         // type and formtype are not valid attributes for accessibility.
         $html = "";
-        $formtype = $field['formtype'];
-        unset($field['type']);
-        unset($field['formtype']);
         $attributes = self::setAttributes($field);
 
-        $textarea = isset($field['textarea']) ? $field['textarea'] : "";
-        $textarea = str_replace("\n", "<br/>", $textarea);
-        switch ($formtype) {
+        $textarea = isset($field['textarea']) ? str_replace("\n", "<br/>", $field['textarea']) : "";
+        switch ($field['formtype']) {
             case "m02":
                 $html = '<h1'. $attributes.'>'.$textarea.'</h1>';
                 break;
@@ -206,15 +179,17 @@ class HTMLHelper
         return $html;
     }
     /**
-    * Generate Paragrap element
+    * Generate hidden element
     *
     * @returns html
     */
     public static function formHidden($field)
     {
+		//this one probably needs value!
+		$value = isset($field['value']) ? ' value="'.$field['value'].'"' : "";
         $attrbiutes = self::setAttributes($field);
 
-        return '<input'.$attrbiutes .'/>';
+        return '<input'.$attrbiutes.$value.'/>';
     }
 
     /**
@@ -251,6 +226,80 @@ class HTMLHelper
         return $str;
     }
 
+	
+    /**
+     * Strips field attributes by formType
+     *
+     * @returns field array
+     */
+    private static function stripAttributesByFormType($field) {
+		switch ($field['formtype']) {
+			case 'i14': //textarea
+				unset($field['type']);
+				break;
+			case 's02': //dropdown
+			case 's06': //checkboxes
+			case 's08': //radios
+			case 's14': //dropdown
+			case 's15': //dropdown
+			case 's16': //dropdown
+				unset($field['type']);
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
+			case 'm02': //h1
+			case 'm04': //h2
+			case 'm06': //h3
+			case 'm08': //p
+			case 'm10': //p html
+				unset($field['type']);
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				unset($field['required']);
+				break;
+			case 'm11': //hidden
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				unset($field['required']);
+				unset($field['class']);
+				break;
+			case 'm14': //button
+				unset($field['button']);
+				unset($field['type']);
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				unset($field['required']);
+				break;
+			default:
+				break;
+		}
+		return $field;
+	}
+	
+    /**
+     * Strips field attributes by type
+     *
+     * @returns field array
+     */
+    private static function stripAttributesByType($field) {
+		if (isset($field['type'])) {
+			if (in_array($field['type'], array("number", "date", "price"))) {
+				$field['step'] = 'any';
+			} else {
+				unset($field['min']);
+				unset($field['max']);
+			}
+			if ($field['type'] != "regex") unset($field['regex']);
+			if ($field['type'] != "match") unset($field['match']);
+		} else {
+			unset($field['min']);
+			unset($field['max']);
+			unset($field['regex']);
+			unset($field['match']);
+		}
+		return $field;
+	}
+	
     /**
      * Constructs field attributes
      *
@@ -258,35 +307,41 @@ class HTMLHelper
      */
     private static function setAttributes($field)
     {
-        //unset unused attributes such as conditions and calculations
-        unset($field['conditions']);
-        unset($field['calculations']);
+		$html = '';
+		
+        //unset unused attributes
+        unset($field['label'], $field['help']);
+        unset($field['conditions'], $field['calculations']);
+        unset($field['codearea'], $field['textarea'], $field['option'], $field['checkboxes'], $field['radios']); //content, not attributes
+		unset($field['value']); //deprecated
+		
+		//strip attributes for specific formTypes, this is for handling extraneous/bad data
+		$field = isset($field['formtype']) ? self::stripAttributesByFormType($field) : $field;
+		
+		//strip attributes for specific types, this is for handling extraneous/bad data
+		$field = self::stripAttributesByType($field);		
 
-        $formtype = isset($field['formtype']) ? ' formtype="' . $field['formtype'] . '"': "";
-        $id = isset($field['id']) ? ' id="' . $field['id'] . '"': "";
-        $name = isset($field['name']) ? ' name="' . $field['name'] .'"': "";
-        $type = isset($field['type']) ? ' type="' .$field['type']. '"': "";
-        $class = isset($field['class']) ? ' class="' . $field['class'] : "";
-
-        // append color class to $class
-        if (isset($field['color'])) {
-            if (isset($field['class'])) {
-                $class .= ' ' . $field['color'] . '"';
+		//add color to the class in the case of buttons
+		$color = isset($field['color']) ? ' ' . $field['color'] : "";
+        $field['class'] = isset($field['class']) ? $field['class'] . $color : $color;
+		unset($field['color']);
+		
+        foreach ($field as $key => $value) {
+            if ($value == '') {
+				//fields with empty values are skipped
+            } else if ($key == 'type' && ($value == 'regex' || $value == 'match')) {
+                $html .= ' type="text"';
+            } else if ($key == 'regex') {
+                $html .= ' pattern="'.$value.'"';
+            } else if ($key == "match") {
+              $html .= ' data-match="#'.$value.'"';
+            } else if ($key == "required") {
+				if ($value == "true") $html .= ' required';
             } else {
-                $class = ' class="' . $field['color'] . '"';
+                $html .= ' '. $key .'="'. $value . '"';
             }
-        } elseif ($class != '') {
-            $class .= '"';
         }
-        //$textarea = isset($field['textarea']) ? $field['textarea']: "";
-        $required = (isset($field['required']) && $field['required'] == 'true') ? " required": "";
-        $value = isset($field['value']) ? ' value="' . $field['value'] . '"': "";
-        $match = isset($field['match']) ? ' data-match="#' . $field['value'] . '"': "";
-
-        $attributes = $id.$name.$type.$formtype.$class.$value.$required;
-        if ($attributes != "") {
-            $attributes = " " . $attributes . " ";
-        }
-        return $attributes;
+		
+		return $html;
     }
 }

@@ -37,6 +37,38 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ```
 4. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
+### Unit Testing
+1. Navigate to the src/docker directory and spin up docker as normal
+```
+        docker-compose up -d 
+```
+2. List your docker containers and get the id of your db
+```
+        docker ps 
+```
+3. Inspect your database container and write down the db's IPAddress
+```
+        docker inspect docker_db_1
+```
+4. Navigate to the src directory and edit codeception.yml
+```
+		modules:
+			enabled:
+				- Db:
+					dsn: 'mysql:host=put ip address from earlier here;dbname=webform'
+					user: 'root'
+					password: 'yourpassword'
+```
+5. Run bash from your php docker container
+```
+        docker exec -it docker_apache_php_1 /bin/bash
+```
+6. From /var/www/html execute unit tests
+```
+		vendor/bin/codecept run unit
+```
+
+
 ## Deplopyment to Heroku
 
 A pipeline has been setup for this project on Heroku that connects to the github repo. Every push to the branch you specify here will deploy a new version of this app. 
