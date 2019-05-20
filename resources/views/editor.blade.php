@@ -1006,7 +1006,7 @@
 					-->
 
 					
-                    <div class="form-group component" data-formtype="m13" data-type="file" data-required="true" rel="popover" title="File Upload" trigger="manual"
+                    <div class="form-group component" data-formtype="m13" data-type="file" data-name="file_upload" data-required="true" rel="popover" title="File Upload" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
