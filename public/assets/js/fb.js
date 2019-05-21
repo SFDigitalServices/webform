@@ -418,15 +418,21 @@ $(document).ready(function(){
 
 	//validation extra options
 	$('.popover #type').on('change',function(){
-		if ($(this).val() == "regex") {
+		showValidation($(this).val());
+	});
+	
+	showValidation($('.popover #type').val());
+	
+	function showValidation(str) {
+		if (str == "regex") {
 			$('.popover .validate-regex').show('slow');
 			$('.popover .validate-minmax').hide('slow');
 			$('.popover .validate-match').hide('slow');
-		} else if ($(this).val() == "number" || $(this).val() == "date") {
+		} else if (str == "number" || str == "date") {
 			$('.popover .validate-minmax').show('slow');
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-match').hide('slow');
-		} else if ($(this).val() == "match") {
+		} else if (str == "match") {
 			$('.popover .validate-match').show('slow');
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-minmax').hide('slow');
@@ -435,7 +441,7 @@ $(document).ready(function(){
 			$('.popover .validate-minmax').hide('slow');
 			$('.popover .validate-match').hide('slow');
 		}
-	});
+	}
 
 	//init tooltips
 	$(".popover [data-toggle='tooltip']").tooltip();
