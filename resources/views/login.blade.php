@@ -4,8 +4,6 @@
 	html,
 	body {
 		height: 100%;
-		margin: 0 !important;
-		padding: 0 !important;
 	}
 
 	body {
@@ -35,10 +33,11 @@
 </style>
 	<div class="container container-fluid">
 		<div class="row">
-			<header class="col-md-8 col-md-offset-2">
+			<header class="col-xs-12 col-sm-6 col-sm-offset-3">
 				<h1 class="text-center">Webform Builder</h1>
 
-				<p class="text-center">City and County of San Francisco - Digital Services</p>
+				<p class="text-center">City and County of San Francisco</p>
+				<p class="text-center">Digital Services</p>
 			</div>
 		</header>
 
