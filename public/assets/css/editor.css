@@ -229,6 +229,10 @@
 		right:15px;
 	}
 
+	.accordion-section {
+		cursor: pointer;
+	}
+
 #SFDSWFB-target .form-group {position:relative}
 #SFDSWFB-target .form-group.component .fa-times-circle {display;block;position:absolute;top:0;right:0;font-size:1.5em;color:#ccc;cursor:pointer;z-index:99}
 
