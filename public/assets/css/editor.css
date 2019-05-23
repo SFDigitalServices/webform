@@ -56,10 +56,6 @@ legend {
   padding-bottom: 5px;
 }
 
-.tabbable li.active a:focus {
-  outline: none;
-}
-
 .form-section {
   padding-bottom: 1em;
   margin-bottom: 1em;
@@ -130,6 +126,10 @@ legend {
 }
 
 /* Lefthand pane */
+
+.tabbable li.active a:focus {
+  outline: none;
+}
 
 #SFDSWFB-components {
   min-height: 600px;
