@@ -12,18 +12,7 @@ body {
   }
 }
 
-h1 {
-  color: #333;
-}
-
-.header {
-  background: #428bca;
-  color: #fff;
-  text-align: center;
-  font-size: 24px;
-  padding: 1em 0;
-  margin-bottom: 1em;
-}
+/* Utility classes */
 
 .floatleft {
   float: left;
@@ -37,73 +26,26 @@ h1 {
   clear: both;
 }
 
-#SFDSWFB-components {
-  min-height: 600px;
-  margin-top: 5px;
+/* Basic elements */
+
+h1 {
+  color: #333;
 }
 
-#SFDSWFB-target {
-  min-height: 200px;
-  border: 1px solid #ccc;
-  padding: 5px;
-  transition: height .3s;
-  overflow: hidden;
+h2 {
+  margin-top: 1em;
+  margin-bottom: 32px;
 }
 
-#SFDSWFB-target .form-group {
-  width: 100%;
-  margin-left: 0;
+h5 {
+  font-weight: bold;
 }
 
-#SFDSWFB-target .component {
-  border: 1px solid #fff;
+legend {
+  padding: 2px 0;
 }
 
-#SFDSWFB-target .floatleft,
-#SFDSWFB-target .floatright {
-  width: 45%;
-}
-
-#SFDSWFB-temp {
-  width: 500px;
-  background: white;
-  border: 1px dotted #ccc;
-  border-radius: 10px;
-}
-
-.popover {
-  min-width: 245px;
-}
-
-.popover-content form {
-  margin: 0 auto;
-  width: 213px;
-}
-
-.popover-content form .btn{
-  margin-right: 10px
-}
-
-.popover-content select {
-  border: 1px solid #ccc;
-  height: 34px;
-  padding: 6px 12px;
-  width: 100%;
-  border-radius: 3px;
-  margin-bottom: 1em;
-}
-
-.popover-content select.showHide {
-  width: 50%;
-}
-
-#SFDSWFB-snippet {
-  min-height: 250px;
-}
-
-#SFDSWFB-source {
-  min-height: 100px;
-}
+/* Forms */
 
 .form-horizontal .component {
   padding: 0 17px;
@@ -124,6 +66,220 @@ h1 {
   border-bottom: 1px solid #aaa;
 }
 
+/* Modals */
+
+.modal .close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+/* App header */
+
+.header {
+  background: #428bca;
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  padding: 1em 0;
+  margin-bottom: 1em;
+}
+
+.header > div {
+  display: block;
+  max-width: 1140px;
+  text-align: right;
+  margin: auto;
+}
+
+.header > div > a {
+  display: block;
+  background: #fff;
+  width: 232px;
+  float: left;
+  position: absolute;
+  top: 0px;
+  box-shadow: 0 0 10px #888;
+}
+
+/* Welcome page */
+
+.welcomeBack {
+  margin-top: 15vh;
+}
+
+.welcomeBox {
+  text-align: center;
+  padding: 4em;
+  margin: 2em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.forms a.btn {
+  margin-bottom: 3px;
+}
+
+.text-muted {
+  padding: 2em 0;
+}
+
+.contact .fa-spin {
+  font-size: 2em;
+  color: #ddd;
+}
+
+/* Lefthand pane */
+
+#SFDSWFB-components {
+  min-height: 600px;
+  margin-top: 5px;
+}
+
+#SFDSWFB-components .form-group[data-formtype=m14] {
+  visibility: hidden;
+  height: 0px;
+}
+
+#SFDSWFB-snippet {
+  /* Embed code */
+  min-height: 250px;
+}
+
+#SFDSWFB-source {
+  /* Under "Debug Info" */
+  min-height: 100px;
+}
+
+/* Preview pane */
+
+#SFDSWFB-target {
+  min-height: 200px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  transition: height .3s;
+  overflow: hidden;
+}
+
+#SFDSWFB-target .form-group {
+  width: 100%;
+  margin-left: 0;
+}
+
+#SFDSWFB-target .form-group {
+  position: relative;
+}
+
+#SFDSWFB-target .form-group.component .fa-times-circle {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5em;
+  color: #ccc;
+  cursor: pointer;
+  z-index: 99
+}
+
+#SFDSWFB-target .component {
+  border: 1px solid #fff;
+}
+
+#SFDSWFB-target .floatleft,
+#SFDSWFB-target .floatright {
+  width: 45%;
+}
+
+#SFDSWFB-target .form-group > label:after {
+  padding-left: 1em;
+  font-size: .8em;
+  content: "(optional)";
+}
+
+#SFDSWFB-target .form-group[data-required=true] > label:after,
+#SFDSWFB-target .form-group[data-formtype=m11] > label:after,
+#SFDSWFB-target .popover .form-group > label:after {
+  content: "";
+}
+
+/* "Ghost" field when dragging inputs */
+#SFDSWFB-temp {
+  width: 500px;
+  background: white;
+  border: 1px dotted #ccc;
+  border-radius: 10px;
+}
+
+
+/* "Edit field" popovers */
+
+.accordion-header {
+  font-size: 1.5em;
+  border-bottom: 1px solid #eee;
+  margin: 1em 0;
+}
+
+.popover {
+  min-width: 245px;
+}
+
+.popover-content form {
+  margin: 0 auto;
+  width: 213px;
+}
+
+.popover-content form .btn {
+  margin-right: 10px;
+}
+
+.popover-content select {
+  border: 1px solid #ccc;
+  height: 34px;
+  padding: 6px 12px;
+  width: 100%;
+  border-radius: 3px;
+  margin-bottom: 1em;
+}
+
+.popover-content select.showHide {
+  width: 50%;
+}
+
+.condition,
+.calculation {
+  position: relative;
+}
+
+.fa-minus-circle.conditionIcon {
+  position: absolute;
+  right: -1.2em;
+  font-size: 1.5em;
+  color: #eee;
+  cursor: pointer;
+}
+
+.fa-minus-circle.conditionIcon:hover {
+  color: #aaa;
+}
+
+.condition,
+.calculation {
+  border-bottom: 1px solid transparent;
+}
+
+.condition:hover,
+.calculation:hover {
+  border-bottom: 1px solid #000;
+}
+
+.addConditional {
+  padding-top: 1em;
+}
+
+.addCalculation {
+  padding-top: 1em;
+}
+
 hr.and::before {
   content: "&";
   position: relative;
@@ -136,11 +292,8 @@ hr.and::before {
   text-align: center;
 }
 
-.accordion-header {
-  font-size: 1.5em;
-  border-bottom: 1px solid #eee;
-  margin: 1em 0;
-}
+
+/* Form-wide action menu */
 
 .clickMenu {
   display: block;
@@ -156,11 +309,6 @@ hr.and::before {
   margin-top: 10px;
 }
 
-h2 {
-  margin-top: 1em;
-  margin-bottom: 32px;
-}
-
 .clickMenu li {
   display: inline-block;
   padding: .5em 1em;
@@ -172,6 +320,8 @@ h2 {
   background: #eee;
   color: #2a6496;
 }
+
+/* Typeahead styles (for autofilling name attributes) */
 
 .tt-query,
 .tt-hint {
@@ -223,127 +373,4 @@ h2 {
 
 .tt-suggestion p {
   margin: 0;
-}
-
-.condition,
-.calculation {
-  position: relative;
-}
-
-.fa-minus-circle.conditionIcon {
-  position: absolute;
-  right: -1.2em;
-  font-size: 1.5em;
-  color: #eee;
-  cursor: pointer;
-}
-
-.fa-minus-circle.conditionIcon:hover {
-  color: #aaa;
-}
-
-.condition, .calculation {
-  border-bottom: 1px solid transparent;
-}
-
-.condition:hover,
-.calculation:hover {
-  border-bottom: 1px solid #000;
-}
-
-h5 {
-  font-weight: bold;
-}
-
-.modal .close {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-}
-
-#SFDSWFB-target .form-group {
-  position: relative;
-}
-
-#SFDSWFB-target .form-group.component .fa-times-circle {
-  display;block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.5em;
-  color: #ccc;
-  cursor: pointer;
-  z-index: 99
-}
-
-/* specific to editor page (pulling out inline styles) */
-.header > div {
-  display: block;
-  max-width: 1140px;
-  text-align: right;
-  margin: auto;
-}
-
-.header > div > a {
-  display: block;
-  background: #fff;
-  width: 232px;
-  float: left;
-  position: absolute;
-  top: 0px;
-  box-shadow: 0 0 10px #888;
-}
-
-.welcomeBack {
-  margin-top: 15vh;
-}
-
-.welcomeBox {
-  text-align: center;
-  padding: 4em;
-  margin: 2em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-.forms a.btn {
-  margin-bottom: 3px;
-}
-
-.text-muted {
-  padding: 2em 0;
-}
-
-.contact .fa-spin {
-  font-size: 2em;
-  color: #ddd;
-}
-
-.addConditional {
-  padding-top: 1em;
-}
-
-.addCalculation {
-  padding-top: 1em;
-}
-
-legend {
-  padding: 2px 0;
-}
-
-#SFDSWFB-target .form-group > label:after {
-  padding-left: 1em;
-  font-size: .8em;
-  content: "(optional)";
-}
-
-#SFDSWFB-target .form-group[data-required=true] > label:after,
-#SFDSWFB-target .form-group[data-formtype=m11] > label:after,
-#SFDSWFB-target .popover .form-group > label:after {
-  content: "";
-}
-
-#SFDSWFB-components .form-group[data-formtype=m14] {
-  visibility: hidden;
-  height: 0px;
 }
