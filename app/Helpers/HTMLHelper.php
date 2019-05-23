@@ -284,7 +284,11 @@ class HTMLHelper
     private static function stripAttributesByType($field) {
 		if (isset($field['type'])) {
 			if (in_array($field['type'], array("number", "date", "price"))) {
-				$field['step'] = 'any';
+				if ($field['formtype'] == "d08") {
+					$field['step'] = '0.01';
+				} else {
+					$field['step'] = 'any';
+				}
 			} else {
 				unset($field['min']);
 				unset($field['max']);
