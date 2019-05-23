@@ -472,18 +472,24 @@ class FormController extends Controller
                 }
                 $js = substr($js, 0, -2)."').on('keyup change',function(){";
 
-                $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
+				
+                $calcFunc = "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
 
                 $count = 0;
                 while ($count < count($calculationIds[$id])) {
-                    $js .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
+                    $calcFunc .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
                     if (isset($calculationOps[$id][$count])) {
-                        $js .= " ".$calculationOps[$id][$count]." ";
+                        $calcFunc .= " ".$calculationOps[$id][$count]." ";
                     }
                     $count++;
                 }
-                $js .= 	")";
+                $calcFunc .= 	")";
+				
+				$js .= $calcFunc;
+				
                 $js .= "});";
+				
+				$js .= $calcFunc;
             }
         }
 
