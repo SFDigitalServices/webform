@@ -409,7 +409,7 @@ $(document).ready(function(){
 
 	//popover accordion section collapse animation
 	var firstTime = true;
-	$('.accordion-section').hover(function(){
+	$('.accordion-section').click(function(){
 		if (!$(this).find('.accordion').is(':visible')) {
 			$(this).find('.accordion').show();
 			$('.accordion').not($(this).find('.accordion')).hide();
