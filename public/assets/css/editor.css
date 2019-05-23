@@ -293,7 +293,7 @@ hr.and::before {
 }
 
 
-/* Form-wide action menu */
+/* Form-wide action menu (clone, delete, etc.) */
 
 .clickMenu {
   display: block;
