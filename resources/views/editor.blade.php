@@ -7,7 +7,7 @@
 		  var api_token = '<?php echo $api_token;?>';
 
 		  $(document).ready(function(){
-			  $(".content").show(1500);
+			  $(".content").show();
 
 			  callAPI("/form/getForms", {}, loadHome);
 			});
@@ -15,7 +15,7 @@
 			//$(window).unload(function(){});
 
 			window.onpopstate = function (event) {
-				$('.container').hide('fast');
+				$('.container').hide();
 				if (event.state) {
 					if (event.state.formId) {
 						loadContent(event.state.formId);

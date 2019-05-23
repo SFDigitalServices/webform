@@ -222,7 +222,7 @@ if (isset($_GET['id'])) {
     <![endif]-->
     <script>
   $(document).ready(function(){
-      $(".content").show(1500);
+      $(".content").show();
 
 		var settings = {
 			"async": true,
