@@ -30,6 +30,14 @@
 		  .clear {
 			clear:both;
 		  }
+	  .fa-circle-notch {
+      	color: #ddd;
+      }
+
+      .forms .fa-circle-notch {
+      	font-size: 2em;
+      }
+      
       #SFDSWFB-components{
         min-height: 600px;
         margin-top: 5px;

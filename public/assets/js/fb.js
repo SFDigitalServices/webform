@@ -1111,7 +1111,7 @@ function goHome(back) {
 	}
 	$('.container').hide();
 	callAPI("/form/getForms", {}, loadHome);
-	$('.forms').html('<i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i>');
+	$('.forms').html('<i class="fas fa-circle-notch fa-spin"></i>');
     $(".content").show();
 }
 function saveForm() {

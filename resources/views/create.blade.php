@@ -1591,7 +1591,7 @@ if (isset($_GET['id'])) {
 		  <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
 			<div>
 				<h2 style="display:block;float:left;width:auto;margin-bottom:0">Customize Form</h2>
-				<div class="clickMenu"><i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;color:#aaa"></i>
+				<div class="clickMenu"><i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
 					<button class="btn btn-info" style="border-radius:5px 0 0 5px;width:130px" onclick="javascript:saveForm()">Save Changes</button>
 					<button class="btn btn-info" style="border-radius:0 5px 5px 0;margin-left:-3px" onclick="javascript:toggleClickMenu()"><i class="fas fa-caret-down"></i></button>
 					<ul>
