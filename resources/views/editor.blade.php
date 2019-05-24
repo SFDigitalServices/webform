@@ -72,70 +72,57 @@
 
                   <div class="tab-pane active" id="SFDSWFB-1">
 				  
-                    <div class="form-group component" data-formtype="c02" data-type="text" data-name="name" data-required="true" rel="popover" title="Name" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-							<div class='accordion-section general'>
-								<div class='accordion-header'>General</div>
-								<div class='accordion'>
-									<label class='control-label'>Label Text</label> <input class='form-control' type='text' data-toggle='tooltip' title='This text will appear before the input field' name='label' id='label'>
-									<label class='control-label'>Placeholder</label> <input type='text' data-toggle='tooltip' title='This text will appear inside the input before a user types into it, we recommend leaving this blank' name='placeholder' id='placeholder' class='form-control'>
-									<label class='control-label'>Help Text</label> <input type='text' data-toggle='tooltip' title='This is helper text that will appear after the input field' name='help' id='help' class='form-control'>
-								</div>
-							</div>
-							<hr/>
-							<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
 
-                      <!-- Name input-->
-                      <label class="control-label valtype" for="input01" data-valtype='label'>Name</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>
-					
-                    <div class="form-group component" data-formtype="c04" data-type="email" data-name="email" data-required="true" rel="popover" title="Email" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
+                    <!-- Name field -->
+                    @component('partials/editor/form-component', [
+                      'formtype' => 'c02',
+                      'type' => 'name',
+                      'name' => 'name',
+                      'title' => 'Name'
+                    ])
 
-                      <!-- Email input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Email</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>
+                      @slot('popover')
+                        @component('partials/editor/general', [
+                          'placeholder' => true
+                        ])
+                        @endcomponent
+                      @endslot
+
+                      @component('partials/fields/name')
+                      @endcomponent
+
+                    @endcomponent
+
+
+                    <!-- Email field -->
+
+                    @component('partials/editor/form-component', [
+                      'formtype' => 'c04',
+                      'type' => 'email',
+                      'name' => 'email',
+                      'title' => 'Email'
+                    ])
+
+                      @slot('popover')
+                        @component('partials/editor/general', [
+                          'placeholder' => true
+                        ])
+                        @endcomponent
+                      @endslot
+
+                      @component('partials/fields/email')
+                      @endcomponent
+
+                    @endcomponent
 					
                     <div class="form-group component" data-formtype="c06" data-type="tel" data-name="phone" data-minlength="10" data-required="true" rel="popover" title="Phone" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
- 						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							 <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -154,14 +141,8 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general')
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -180,14 +161,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-                          <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                          <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                          <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -206,14 +183,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                            <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -236,14 +209,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -262,14 +231,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -288,14 +253,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -314,14 +275,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -340,14 +297,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -370,14 +323,10 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -428,15 +377,11 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-								<label class='control-label'>Options: </label>
-								<textarea class='form-control' style='min-height: 200px' id='option'> </textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
-							</div>
-						  </div>
+                          @component('partials/editor/general', [
+                            'required' => true,
+                            'options' => 'option'
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -497,15 +442,11 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-								<label class='control-label'>Options: </label>
-								<textarea class='form-control' style='min-height: 200px' id='checkboxes'> </textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
-							</div>
-						  </div>
+          								@component('partials/editor/general', [
+                            'required' => true,
+                            'options' => 'checkboxes'
+                          ])
+                          @endcomponent						
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -522,15 +463,11 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Options: </label>
-							  <textarea class='form-control' style='min-height: 200px' id='radios'></textarea>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
-							</div>
-						  </div>
+                          @component('partials/editor/general', [
+                            'required' => true, 
+                            'options' => 'radios'
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -621,15 +558,11 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'required' => true,
+                            'placeholder' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -640,60 +573,8 @@
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
                       <div class="">
-							<select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-							    <option value="">Select</option>
-								<option value="alabama">Alabama</option>
-								<option value="alaska">Alaska</option>
-								<option value="arizona">Arizona</option>
-								<option value="arkansas">Arkansas</option>
-								<option value="california">California</option>
-								<option value="colorado">Colorado</option>
-								<option value="connecticut">Connecticut</option>
-								<option value="delaware">Delaware</option>
-								<option value="district-of-columbia">District Of Columbia</option>
-								<option value="florida">Florida</option>
-								<option value="georgia">Georgia</option>
-								<option value="hawaii">Hawaii</option>
-								<option value="idaho">Idaho</option>
-								<option value="illinois">Illinois</option>
-								<option value="indiana">Indiana</option>
-								<option value="iowa">Iowa</option>
-								<option value="kansas">Kansas</option>
-								<option value="kentucky">Kentucky</option>
-								<option value="louisiana">Louisiana</option>
-								<option value="maine">Maine</option>
-								<option value="maryland">Maryland</option>
-								<option value="massachusetts">Massachusetts</option>
-								<option value="michigan">Michigan</option>
-								<option value="minnesota">Minnesota</option>
-								<option value="mississippi">Mississippi</option>
-								<option value="missouri">Missouri</option>
-								<option value="montana">Montana</option>
-								<option value="nebraska">Nebraska</option>
-								<option value="nevada">Nevada</option>
-								<option value="new-hampshire">New Hampshire</option>
-								<option value="new-jersey">New Jersey</option>
-								<option value="new-mexico">New Mexico</option>
-								<option value="new-york">New York</option>
-								<option value="north-carolina">North Carolina</option>
-								<option value="north-dakota">North Dakota</option>
-								<option value="ohio">Ohio</option>
-								<option value="oklahoma">Oklahoma</option>
-								<option value="oregon">Oregon</option>
-								<option value="pennsylvania">Pennsylvania</option>
-								<option value="rhode-island">Rhode Island</option>
-								<option value="south-carolina">South Carolina</option>
-								<option value="south-dakota">South Dakota</option>
-								<option value="tennessee">Tennessee</option>
-								<option value="texas">Texas</option>
-								<option value="utah">Utah</option>
-								<option value="vermont">Vermont</option>
-								<option value="virginia">Virginia</option>
-								<option value="washington">Washington</option>
-								<option value="west-virginia">West Virginia</option>
-								<option value="wisconsin">Wisconsin</option>
-								<option value="wyoming">Wyoming</option>
-							</select>
+                        @component("partials/fields/state-full-names")
+                        @endcomponent
                         <p class="help-block valtype" data-valtype='help'>Full names</p>
                       </div>
                     </div>
@@ -702,15 +583,11 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'required' => true,
+                            'placeholder' => true]
+                          )
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -720,60 +597,8 @@
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
                       <div class="">
-							<select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-							    <option value="">Select</option>
-								<option value="AL">Alabama</option>
-								<option value="AK">Alaska</option>
-								<option value="AZ">Arizona</option>
-								<option value="AR">Arkansas</option>
-								<option value="CA">California</option>
-								<option value="CO">Colorado</option>
-								<option value="CT">Connecticut</option>
-								<option value="DE">Delaware</option>
-								<option value="DC">District Of Columbia</option>
-								<option value="FL">Florida</option>
-								<option value="GA">Georgia</option>
-								<option value="HI">Hawaii</option>
-								<option value="ID">Idaho</option>
-								<option value="IL">Illinois</option>
-								<option value="IN">Indiana</option>
-								<option value="IA">Iowa</option>
-								<option value="KS">Kansas</option>
-								<option value="KY">Kentucky</option>
-								<option value="LA">Louisiana</option>
-								<option value="ME">Maine</option>
-								<option value="MD">Maryland</option>
-								<option value="MA">Massachusetts</option>
-								<option value="MI">Michigan</option>
-								<option value="MN">Minnesota</option>
-								<option value="MS">Mississippi</option>
-								<option value="MO">Missouri</option>
-								<option value="MT">Montana</option>
-								<option value="NE">Nebraska</option>
-								<option value="NV">Nevada</option>
-								<option value="NH">New Hampshire</option>
-								<option value="NJ">New Jersey</option>
-								<option value="NM">New Mexico</option>
-								<option value="NY">New York</option>
-								<option value="NC">North Carolina</option>
-								<option value="ND">North Dakota</option>
-								<option value="OH">Ohio</option>
-								<option value="OK">Oklahoma</option>
-								<option value="OR">Oregon</option>
-								<option value="PA">Pennsylvania</option>
-								<option value="RI">Rhode Island</option>
-								<option value="SC">South Carolina</option>
-								<option value="SD">South Dakota</option>
-								<option value="TN">Tennessee</option>
-								<option value="TX">Texas</option>
-								<option value="UT">Utah</option>
-								<option value="VT">Vermont</option>
-								<option value="VA">Virginia</option>
-								<option value="WA">Washington</option>
-								<option value="WV">West Virginia</option>
-								<option value="WI">Wisconsin</option>
-								<option value="WY">Wyoming</option>
-							</select>
+							         @component("partials/fields/state-abbr-value")
+                       @endcomponent
                         <p class="help-block valtype" data-valtype='help'>Full names, abbr value</p>
                       </div>
                     </div>
@@ -782,15 +607,11 @@
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
-							</div>
-						  </div>
+            							@component('partials/editor/general', [
+                            'placeholder' => true,
+                            'required' => true
+                          ])
+                          @endcomponent
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
@@ -800,60 +621,8 @@
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
                       <div class="">
-							<select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-							    <option value="">Select</option>
-								<option value="AL">AL</option>
-								<option value="AK">AK</option>
-								<option value="AR">AR</option>	
-								<option value="AZ">AZ</option>
-								<option value="CA">CA</option>
-								<option value="CO">CO</option>
-								<option value="CT">CT</option>
-								<option value="DC">DC</option>
-								<option value="DE">DE</option>
-								<option value="FL">FL</option>
-								<option value="GA">GA</option>
-								<option value="HI">HI</option>
-								<option value="IA">IA</option>	
-								<option value="ID">ID</option>
-								<option value="IL">IL</option>
-								<option value="IN">IN</option>
-								<option value="KS">KS</option>
-								<option value="KY">KY</option>
-								<option value="LA">LA</option>
-								<option value="MA">MA</option>
-								<option value="MD">MD</option>
-								<option value="ME">ME</option>
-								<option value="MI">MI</option>
-								<option value="MN">MN</option>
-								<option value="MO">MO</option>	
-								<option value="MS">MS</option>
-								<option value="MT">MT</option>
-								<option value="NC">NC</option>	
-								<option value="NE">NE</option>
-								<option value="NH">NH</option>
-								<option value="NJ">NJ</option>
-								<option value="NM">NM</option>			
-								<option value="NV">NV</option>
-								<option value="NY">NY</option>
-								<option value="ND">ND</option>
-								<option value="OH">OH</option>
-								<option value="OK">OK</option>
-								<option value="OR">OR</option>
-								<option value="PA">PA</option>
-								<option value="RI">RI</option>
-								<option value="SC">SC</option>
-								<option value="SD">SD</option>
-								<option value="TN">TN</option>
-								<option value="TX">TX</option>
-								<option value="UT">UT</option>
-								<option value="VT">VT</option>
-								<option value="VA">VA</option>
-								<option value="WA">WA</option>
-								<option value="WI">WI</option>	
-								<option value="WV">WV</option>
-								<option value="WY">WY</option>
-							</select>
+							         @component("partials/fields/state-abbr")
+                       @endcomponent
                         <p class="help-block valtype" data-valtype='help'>Abbreviated</p>
                       </div>
                     </div>
@@ -1314,52 +1083,13 @@
 			<select class="allMathIds calculationId"></select>
 		</div>
 	</div>
-	<div class="hidden clonable accordion-attributes">
-		<div class='accordion-section attributes'>
-			<div class='accordion-header'>Attributes</div>
-			<div class='accordion' style='display:none'>
-			  <label class='control-label'>Default Value</label> <input data-toggle='tooltip' title='Use this to prefill this field with a value, otherwise this should be left blank' class='form-control' type='text' name='value' id='value'>
-			  <label class='control-label'>Name Attribute</label> <input data-toggle='tooltip' title='You must set a unique machine name for this field' class='form-control' type='text' name='name' id='name'>
-			  <label class='control-label'>Unique ID</label> <input data-toggle='tooltip' title='Use this to set the unique id of this field, it is good practice to use the same value as the name' class='form-control' type='text' name='id' id='id'>
-			  <label class='control-label'>Class Attribute</label> <input data-toggle='tooltip' title='Use this to set the css identifier, it is not required unless needed for styling' class='form-control' type='text' name='class' id='class'>
-			</div>
-		</div>
-	</div>
-	<div class="hidden clonable accordion-validation">
-		<div class='accordion-section validation'>
-			<div class='accordion-header'>Validation</div>
-			<div class='accordion' style='display:none'>
-			  <div class="validate-required" data-toggle="tooltip" title="Check this to indicate the user must fill out this field">
-				<label class='control-label' for="required">Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'><br/>
-			  </div>
-			  <div class="validate-type" data-toggle="tooltip" title="This is to make sure the user response fits the field type">
-				<label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select>
-			  </div>
-			  <div class='validate-regex' style='display:none' data-toggle="tooltip" title="For advanced users only">
-				<label class='control-label'>Regular Expression</label> <input class='form-control' type='text' name='regex' id='regex'>
-			  </div>
-			  <div class='validate-minmax' style='display:none'>
-				  <div class='floatleft' data-toggle="tooltip" title="The lowest acceptable numerical value, leave blank if there is none">
-					<label class='control-label'>Min Value</label> <input class='form-control' type='text' name='min' id='min'>
-				  </div>
-				  <div class='floatright' data-toggle="tooltip" title="The highest acceptable numerical value, leave blank if there is none">
-					<label class='control-label'>Max Value</label> <input class='form-control' type='text' name='max' id='max'>
-				  </div>
-				  <div class='clear'></div>
-			  </div>
-			  <div class="validate-match" style="display:none" data-toggle="tooltip" title="Use this to only accept a user response if the value matches a different field that you specify">
-				<label class='control-label' style='display:none'>Match Another</label> <select class='form-control' name='match' id='match'><option value=''></option></select>
-			  </div>
-			  <div class='floatleft' data-toggle="tooltip" title="The minimum amount of characters allowed, leave blank if there is none">
-				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'>
-			  </div>
-			  <div class='floatright' data-toggle="tooltip" title="The maximum amount of charcaters allowed, leave blank if there is none">
-				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'>
-			  </div>
-			  <div class='clear'></div>
-			</div>
-		</div>
-	</div>
+
+  @component('partials/editor/attributes')
+  @endcomponent
+
+	@component('partials/editor/validation')
+  @endcomponent
+
 	<div class="hidden clonable accordion-conditionals">
 		<div class='accordion-section conditionals'>
 			<div class='accordion-header'>Conditionals</div>
@@ -1368,101 +1098,56 @@
 		</div>
 	</div>
 
-	<div class="modal" id="modal-dialog" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title"></h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p></p>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
+  @component('partials/modal', [
+    "id" => "modal-dialog",
+    "secondary" => "Okay"
+  ])
+  @endcomponent
 
-	<div class="modal" id="modal-confirm" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title"></h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p></p>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-dismiss="modal">Do It</button>
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-	
-	<div class="modal" id="welcome" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title">Welcome to Webform Builder!</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p>Let us help you get started creating your new form.</p>
-			<p>Would you like to view the introduction tutorial?</p>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#tutorial').modal()">Yes Please</button>
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">No Thanks</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
+  @component('partials/modal', [
+    "id" => "modal-confirm",
+    "primary" => "Do It",
+    "secondary" => "Cancel"]
+  )
+  @endcomponent
 
-	<div class="modal" id="tutorial" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title">How to get the most out of Webform Builder</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p>Start by dragging components (name, email, phone, etc.) from the left side into the form box on the right.</p>
-			<ul>
-				<li>Click on the tabs (Contact, Data, etc.) to change the list of components.</li>
-				<li>Click the Rendered tab to get code to embed your form on your website.</li>
-				<li>Click the Settings tab to setup your database or share your form with others.</li>
-			</ul>
-			<br/>
-			<p>Modify your components by clicking them after dragging them into the form box.</p>
-			<ul>
-				<li>Be sure to rename your form by clicking "My Form" and typing in a new title.</li>
-				<li>Click each dragged component in the right to change the labeling, html attributes and more.</li>
-			</ul>
-			<br/>
-			<p>Perform advanced features like validation, conditionals, and calculations.</p>
-			<ul>
-				<li>Set form validation by clicking your component and mousing over "Validation".</li>
-				<li>Conditionals can show or hide components based on respondents' previous answers.</li>
-				<li>Totals can be tallied by choosing a "Numbers" component and adding a calculation.</li>
-			</ul>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Got It</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
-	
+  @component('partials/modal', [
+    "id" => "welcome",
+    "primary" => "Yes Please",
+    "primaryattrs" => "onclick='$('#tutorial').modal()'",
+    "secondary" => "No Thanks"
+  ])
+    <p>Let us help you get started creating your new form.</p>
+    <p>Would you like to view the introduction tutorial?</p>
+  @endcomponent
+
+  @component('partials/modal', [
+    "id" => "tutorial",
+    "secondary" => "Got It"
+  ])
+
+    @slot('title')
+      How to get the most out of Webform Builder
+    @endslot
+
+    <p>Start by dragging components (name, email, phone, etc.) from the left side into the form box on the right.</p>
+    <ul>
+      <li>Click on the tabs (Contact, Data, etc.) to change the list of components.</li>
+      <li>Click the Rendered tab to get code to embed your form on your website.</li>
+      <li>Click the Settings tab to setup your database or share your form with others.</li>
+    </ul>
+    <br/>
+    <p>Modify your components by clicking them after dragging them into the form box.</p>
+    <ul>
+      <li>Be sure to rename your form by clicking "My Form" and typing in a new title.</li>
+      <li>Click each dragged component in the right to change the labeling, html attributes and more.</li>
+    </ul>
+    <br/>
+    <p>Perform advanced features like validation, conditionals, and calculations.</p>
+    <ul>
+      <li>Set form validation by clicking your component and mousing over "Validation".</li>
+      <li>Conditionals can show or hide components based on respondents' previous answers.</li>
+      <li>Totals can be tallied by choosing a "Numbers" component and adding a calculation.</li>
+    </ul>
+  @endcomponent	
 @endsection
