@@ -7,28 +7,28 @@
 		padding-bottom: 10px;
 	}
 
-	.container-login {
+	.login {
 		background:#222 url(/assets/images/bg4.jpg) no-repeat center center;
 		background-size: 100% 100%;
 		min-height: 100%;
 	}
 
-	.container-login .row {
+	.login .row {
 		margin-top: 6em;
 	}
 
-	.container-login header,
-	.container-login h1 {
+	.login header,
+	.login h1 {
 		font-size: 2em;
 		color: #fff;
 		text-shadow: 0 0 18px #000;
 	}
 
-	.container-login h2 {
+	.login h2 {
 		margin-top: 0;
 	}
 
-	.container-login .panel {
+	.login .panel {
 		padding: 2em;
 	}
 

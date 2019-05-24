@@ -31,7 +31,7 @@
 		<script src="/assets/js/login.js"></script>
 		<script src="/assets/js/fb.js"></script>
 	</head>
-	<body>
+	<body @if('body-class')class="@yield('body-class')"@endif>
 		@yield("content")
 	</body>
 </html>
