@@ -1,7 +1,7 @@
 <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
 <div class="">
   <select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-      <option value="">Select</option>
+    <option value="">Select</option>
     <option value="alabama">Alabama</option>
     <option value="alaska">Alaska</option>
     <option value="arizona">Arizona</option>
