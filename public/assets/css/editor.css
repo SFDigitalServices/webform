@@ -52,6 +52,14 @@
 		  .clear {
 			clear:both;
 		  }
+	  .fa-circle-notch {
+      	color: #ddd;
+      }
+
+      .forms .fa-circle-notch {
+      	font-size: 2em;
+      }
+      
       #SFDSWFB-components{
         min-height: 600px;
         margin-top: 5px;
@@ -241,6 +249,10 @@
 		position:absolute;
 		top:15px;
 		right:15px;
+	}
+
+	.accordion-section {
+		cursor: pointer;
 	}
 
 #SFDSWFB-target .form-group {position:relative}
