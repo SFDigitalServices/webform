@@ -418,24 +418,30 @@ $(document).ready(function(){
 
 	//validation extra options
 	$('.popover #type').on('change',function(){
-		if ($(this).val() == "regex") {
-			$('.popover .validate-regex').show();
-			$('.popover .validate-minmax').hide();
-			$('.popover .validate-match').hide();
-		} else if ($(this).val() == "number" || $(this).val() == "date") {
-			$('.popover .validate-minmax').show();
-			$('.popover .validate-regex').hide();
-			$('.popover .validate-match').hide();
-		} else if ($(this).val() == "match") {
-			$('.popover .validate-match').show();
-			$('.popover .validate-regex').hide();
-			$('.popover .validate-minmax').hide();
+		showValidation($(this).val());
+	});
+	
+	showValidation($('.popover #type').val());
+	
+	function showValidation(str) {
+		if (str == "regex") {
+			$('.popover .validate-regex').show('slow');
+			$('.popover .validate-minmax').hide('slow');
+			$('.popover .validate-match').hide('slow');
+		} else if (str == "number" || str == "date") {
+			$('.popover .validate-minmax').show('slow');
+			$('.popover .validate-regex').hide('slow');
+			$('.popover .validate-match').hide('slow');
+		} else if (str == "match") {
+			$('.popover .validate-match').show('slow');
+			$('.popover .validate-regex').hide('slow');
+			$('.popover .validate-minmax').hide('slow');
 		} else {
 			$('.popover .validate-regex').hide();
 			$('.popover .validate-minmax').hide();
 			$('.popover .validate-match').hide();
 		}
-	});
+	}
 
 	//init tooltips
 	$(".popover [data-toggle='tooltip']").tooltip();
