@@ -25,7 +25,7 @@
 				} else {
 					goHome(true);
 				}
-			}		
+			}
 </script>
 
 
@@ -48,8 +48,8 @@
 					<div class="forms"><i class="fas fa-circle-notch fa-spin"></i></div>
                 </div>
             </div>
-			<div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div> 
-        </div>  
+			<div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
+        </div>
 
     <div style="display:none" class="container">
 		<div class="row clearfix">
@@ -92,7 +92,7 @@
                       'title' => 'Email',
                       'placeholder' => true,
                       'partial' => 'partials.fields.email'
-                    ])					
+                    ])
 
                     {{-- Phone input --}}
                     @include('partials.editor.form-component', [
@@ -131,7 +131,7 @@
                     @include('partials.editor.form-component', [
                       'formtype' => 'c14',
                       'required' => true,
-                      'type' => 'text',
+                      'type' => 'number',
                       'name' => 'zip',
                       'title' => 'Zip',
                       'minlength' => '5',
@@ -162,7 +162,7 @@
                       'placeholder' => true,
                       'partial' => 'partials.fields.time'
                     ])
-					
+
 					         {{-- Numbers input --}}
                    @include('partials.editor.form-component', [
                       'formtype' => 'd06',
@@ -173,7 +173,7 @@
                       'partial' => 'partials.fields.numbers'
                     ])
 
-                    {{-- Price --}}	  
+                    {{-- Price --}}
                     @include('partials.editor.form-component', [
                       'formtype' => 'd08',
                       'required' => true,
@@ -193,7 +193,7 @@
                       'partial' => 'partials.fields.url'
                     ])
 				          </div>
-				  
+
                   <div class="tab-pane" id="SFDSWFB-3">
 
                     {{-- Text --}}
@@ -287,7 +287,7 @@
                           <input type="checkbox" value="1"> 1
                         </label>   <label class="checkbox inline">
                           <input type="checkbox" value="2"> 2
-                     
+
                         </label>
                         <label class="checkbox inline">
                           <input type="checkbox" value="3"> 3
@@ -436,7 +436,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- calculation field-->
@@ -490,7 +490,7 @@
 						  </div>
 					  </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="m16" data-type="text" rel="popover" title="Page Separator" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -499,7 +499,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Page Separator-->
@@ -508,7 +508,7 @@
                         <hr class="pb"/>
                       </div>
                     </div>
-					
+
                   </div>
                   <div class="tab-pane" id="SFDSWFB-6">
                     @include('partials.embed-code')
@@ -521,12 +521,12 @@
             </form>
 		  </div>
 	    </div>
-			
+
 		<div class="col-md-6">
 		  <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
 			<div>
 				<h2 style="display:block;float:left;width:auto;margin-bottom:0">Customize Form</h2>
-				@include('partials.editor.form-actions')
+				@include('partials.form-actions')
 				<div class="clear"></div>
 			</div>
 			<hr>
@@ -552,14 +552,14 @@
 		  </div>
 		</div>
 
-																																																	
+
       </div> <!-- row -->
       <div class="row clearfix">
         <div class="col-md-12"></div>
       </div>
     </div><!-- /container -->
-	
-	
+
+
 	@include('partials.editor.conditionals')
 	@include('partials.editor.calculations')
 
@@ -607,5 +607,5 @@
     @endslot
 
     @include('partials.tutorial')
-  @endcomponent	
+  @endcomponent
 @endsection

@@ -1,4 +1,4 @@
-div class="hidden clonable conditionals">
+<div class="hidden clonable conditionals">
   <div class="addConditional" style="padding-top:1em">
     <a href="#" onclick="javascript:addConditional()">+Add A Condition</a>
   </div>

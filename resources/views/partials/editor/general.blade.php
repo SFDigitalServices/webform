@@ -8,7 +8,7 @@
   @isset($hidden)
     <label class='control-label'>Default Value</label>
     <input class='form-control' type='text' name='value' id='value'>
-    
+
     <label class='control-label'>Name Attribute</label>
     <input class='form-control' type='text' name='name' id='name'>
   @endisset
@@ -17,7 +17,7 @@
   <input class='form-control' type='text' name='id' id='id'>
 
   @isset($text)
-    <label class='control-label'>Class Attribute</label> 
+    <label class='control-label'>Class Attribute</label>
     <input class='form-control' type='text' name='class' id='class'>
   @endisset
 
@@ -30,8 +30,19 @@
 
       @isset($options)
         <label class='control-label'>Options: </label>
+        <textarea class='form-control' style='min-height: 200px' id='$options'></textarea>
+      @endisset
 
-        <textarea class='form-control' style='min-height: 200px' id='$options'> </textarea>
+      @isset($type)
+        @if ($type == "prep-text")
+          <label class='control-label'>Prepend</label>
+          <input type='text' name='prepend' id='prepend' class='form-control'>
+        @endif
+
+        @if ($type == "app-text")
+          <label class='control-label'>Appepend</label>
+          <input type='text' name='append' id='append' class='form-control'>
+        @endif
       @endisset
 
       @isset($placeholder)
@@ -45,8 +56,8 @@
       @isset($required)
         <label class='control-label' for='required'>Required</label>
         &nbsp;
-        <input class='' type='checkbox' name='required' id='required'>   
-      @endisset             
+        <input class='' type='checkbox' name='required' id='required'>
+      @endisset
     </div>
   </div>
 @endempty

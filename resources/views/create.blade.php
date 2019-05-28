@@ -102,11 +102,11 @@ if (isset($_GET['id'])) {
       #SFDSWFB-source{
         min-height: 500px;
       }
-    
+
     .form-horizontal .component {
       padding:0 17px
     }
-    
+
     .form-horizontal .control-label {
       text-align:left;
     padding-bottom:5px;
@@ -115,7 +115,7 @@ if (isset($_GET['id'])) {
     .tabbable li.active a:focus {
       outline: none;
     }
-    
+
     .form-section {
     padding-bottom: 1em;
     margin-bottom: 1em;
@@ -246,7 +246,7 @@ if (isset($_GET['id'])) {
                   text: 'Form id = ' + element.id,
           id: 'form-' + element.id,
         }));
-        
+
           });
     });
   }
@@ -263,7 +263,7 @@ if (isset($_GET['id'])) {
       SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
     </div>
   </div>
-  
+
     <div class="container">
     <div class="row clearfix">
         <div class="col-md-6">
@@ -284,7 +284,7 @@ if (isset($_GET['id'])) {
                 <div class="tab-content">
 
                   <div class="tab-pane active" id="SFDSWFB-1">
-          
+
                     {{-- Name field --}}
                     @include('partials.editor.form-component', [
                       'formtype' => 'c02',
@@ -305,7 +305,7 @@ if (isset($_GET['id'])) {
                       'title' => 'Email',
                       'placeholder' => true,
                       'partial' => 'partials.fields.email'
-                    ])  
+                    ])
 
                     {{-- Phone input --}}
                     @include('partials.editor.form-component', [
@@ -319,84 +319,39 @@ if (isset($_GET['id'])) {
                       'partial' => 'partials.fields.phone'
                     ])
 
-                    <div class="form-group component" data-formtype="c08" data-type="text" data-name="address" data-required="true" rel="popover" title="Address" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
+                    {{-- Address input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c08',
+                      'required' => true,
+                      'type' => 'text',
+                      'name' => 'address',
+                      'title' => 'Address',
+                      'partial' => 'partials.fields.address'
+                    ])
 
-            <!-- Address input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Address</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>
-          
-                    <div class="form-group component" data-formtype="c10" data-type="text" data-name="city" data-required="true" rel="popover" title="City" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                          <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                          <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                          <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
+                    {{-- City input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c10',
+                      'required' => true,
+                      'type' => 'text',
+                      'name' => 'city',
+                      'title' => 'City',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.city'
+                    ])
 
-            <!-- City input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>City</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>
-          
-                    <div class="form-group component" data-formtype="c14" data-type="number" data-name="zip" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-              </div>
-              </div>
-                           <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-            <!-- Zip input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Zip</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>          
-          
+                    {{-- ZIP Code input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c14',
+                      'required' => true,
+                      'type' => 'number',
+                      'name' => 'zip',
+                      'title' => 'Zip',
+                      'minlength' => '5',
+                      'maxlength' => '5',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.zip'
+                    ])
           </div>
 
                   <div class="tab-pane" id="SFDSWFB-2">
@@ -430,7 +385,7 @@ if (isset($_GET['id'])) {
                       'partial' => 'partials.fields.numbers'
                     ])
 
-                    {{-- Price --}}   
+                    {{-- Price --}}
                     @include('partials.editor.form-component', [
                       'formtype' => 'd08',
                       'required' => true,
@@ -449,35 +404,21 @@ if (isset($_GET['id'])) {
                       'placeholder' => true,
                       'partial' => 'partials.fields.url'
                     ])
-            
-                    <div class="form-group component" data-formtype="d12" data-type="password" data-name="password" data-required="true" data-minlength="6" rel="popover" title="Password" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-                <div class='accordion-header'>General</div>
-                <div class='accordion'>
-                  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-                </div>
-              </div>
-              <hr/>
-              <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
 
-                      <!-- Password input-->
-                      <label class="control-label valtype" for="input01" data-valtype='label'>Password</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>          
-          
+                    {{-- Password input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'd12',
+                      'required' => true,
+                      'name' => 'password',
+                      'type' => 'password',
+                      'title' => 'Password',
+                      'minlength' => '6',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.url'
+                    ])
+
           </div>
-          
+
                   <div class="tab-pane" id="SFDSWFB-3">
 
                     {{-- Text --}}
@@ -489,97 +430,36 @@ if (isset($_GET['id'])) {
                       'placeholder' => true,
                       'partial' => 'partials.fields.text'
                     ])
-                    
-                    <div class="form-group component" data-formtype="i04" data-type="search" data-required="true" rel="popover" title="Search Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
 
-                      <!-- Search input-->
-                      <label class=" control-label valtype" data-valtype="label">Search input</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md search-query valtype" data-valtype="placeholder">
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
+                    {{-- Search --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'i04',
+                      'required' => true,
+                      'type' => 'search',
+                      'title' => 'Search input',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.search'
+                    ])
 
-                    </div>
+                    {{-- Prepended text --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'i06',
+                      'required' => true,
+                      'type' => 'prep-text',
+                      'title' => 'Prepended Text Input',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.prep-text'
+                    ])
 
-
-                    <div class="form-group component" data-formtype="i06" data-type="prep-text" data-required="true" rel="popover" title="Prepended Text Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Prepend</label> <input type='text' name='prepend' id='prepend' class='form-control'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-                      <!-- Prepended text-->
-                      <label class=" control-label valtype" data-valtype="label">Prepended text</label>
-                      <div class="">
-                        <div class="input-group">
-                          <span class="input-group-addon valtype" data-valtype="prepend">^_^</span>
-                          <input class="form-control valtype" placeholder="placeholder" id="prependedInput" type="text" data-valtype="placeholder">
-                        </div>
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group component" data-formtype="i08" data-type="app-text" data-required="true" rel="popover" title="Appended Text Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Appepend</label> <input type='text' name='append' id='append' class='form-control'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-                      <!-- Appended input-->
-                      <label class=" control-label valtype" data-valtype="label">Appended text</label>
-                      <div class="">
-                        <div class="input-group">
-                          <input name="appendedtext" class="form-control valtype" data-valtype="placeholder" placeholder="placeholder" type="text">
-                          <span class="input-group-addon valtype" data-valtype="append">^_^</span>
-                        </div>
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-
-
-                    </div>
+                    {{-- Appended text --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'i08',
+                      'required' => true,
+                      'type' => 'app-text',
+                      'title' => 'Appended Text Input',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.app-text'
+                    ])
 
                     <div class="form-group component" data-formtype="i10" rel="popover" data-required="true" title="Search Input" trigger="manual"
                       data-content="
@@ -597,7 +477,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Prepended checkbox -->
@@ -630,7 +510,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Appended checkbox -->
@@ -660,7 +540,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Textarea -->
@@ -686,7 +566,7 @@ if (isset($_GET['id'])) {
                 <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
                 <label class='control-label'>Options: </label>
                 <textarea class='form-control' style='min-height: 200px' id='option'> </textarea>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
+                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
               </div>
               </div>
                           <hr/>
@@ -718,7 +598,7 @@ if (isset($_GET['id'])) {
                 <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
                   <label class='control-label'>Options: </label>
                   <textarea class='form-control' style='min-height: 200px' id='option'></textarea>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
+                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
               </div>
               </div>
                           <hr/>
@@ -755,7 +635,7 @@ if (isset($_GET['id'])) {
                 <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
                 <label class='control-label'>Options: </label>
                 <textarea class='form-control' style='min-height: 200px' id='checkboxes'> </textarea>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
+                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
               </div>
               </div>
                           <hr/>
@@ -789,7 +669,7 @@ if (isset($_GET['id'])) {
                 <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
                 <label class='control-label'>Options: </label>
                 <textarea class='form-control' style='min-height: 200px' id='radios'></textarea>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
+                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
               </div>
               </div>
                           <hr/>
@@ -887,247 +767,41 @@ if (isset($_GET['id'])) {
                     </div>
           -->
 
-                    <div class="form-group component" data-formtype="s14" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-          
+                {{-- State full names --}}
+                @include('partials.editor.form-component', [
+                  'formtype' => 's14',
+                  'type' => 'text',
+                  'name' => 'state',
+                  'title' => 'State',
+                  'choose' => true,
+                  'required' => true,
+                  'placeholder' => true,
+                  'partial' => 'partials.fields.state-full-names'
+                ])
 
-            <!-- State input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
-                      <div class="">
-              <select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-                  <option value="">Select</option>
-                <option value="alabama">Alabama</option>
-                <option value="alaska">Alaska</option>
-                <option value="arizona">Arizona</option>
-                <option value="arkansas">Arkansas</option>
-                <option value="california">California</option>
-                <option value="colorado">Colorado</option>
-                <option value="connecticut">Connecticut</option>
-                <option value="delaware">Delaware</option>
-                <option value="district-of-columbia">District Of Columbia</option>
-                <option value="florida">Florida</option>
-                <option value="georgia">Georgia</option>
-                <option value="hawaii">Hawaii</option>
-                <option value="idaho">Idaho</option>
-                <option value="illinois">Illinois</option>
-                <option value="indiana">Indiana</option>
-                <option value="iowa">Iowa</option>
-                <option value="kansas">Kansas</option>
-                <option value="kentucky">Kentucky</option>
-                <option value="louisiana">Louisiana</option>
-                <option value="maine">Maine</option>
-                <option value="maryland">Maryland</option>
-                <option value="massachusetts">Massachusetts</option>
-                <option value="michigan">Michigan</option>
-                <option value="minnesota">Minnesota</option>
-                <option value="mississippi">Mississippi</option>
-                <option value="missouri">Missouri</option>
-                <option value="montana">Montana</option>
-                <option value="nebraska">Nebraska</option>
-                <option value="nevada">Nevada</option>
-                <option value="new-hampshire">New Hampshire</option>
-                <option value="new-jersey">New Jersey</option>
-                <option value="new-mexico">New Mexico</option>
-                <option value="new-york">New York</option>
-                <option value="north-carolina">North Carolina</option>
-                <option value="north-dakota">North Dakota</option>
-                <option value="ohio">Ohio</option>
-                <option value="oklahoma">Oklahoma</option>
-                <option value="oregon">Oregon</option>
-                <option value="pennsylvania">Pennsylvania</option>
-                <option value="rhode-island">Rhode Island</option>
-                <option value="south-carolina">South Carolina</option>
-                <option value="south-dakota">South Dakota</option>
-                <option value="tennessee">Tennessee</option>
-                <option value="texas">Texas</option>
-                <option value="utah">Utah</option>
-                <option value="vermont">Vermont</option>
-                <option value="virginia">Virginia</option>
-                <option value="washington">Washington</option>
-                <option value="west-virginia">West Virginia</option>
-                <option value="wisconsin">Wisconsin</option>
-                <option value="wyoming">Wyoming</option>
-              </select>
-                        <p class="help-block valtype" data-valtype='help'>Full names</p>
-                      </div>
-                    </div>
+                {{-- State full names, abbreviated values --}}
+                @include('partials.editor.form-component', [
+                  'formtype' => 's15',
+                  'type' => 'text',
+                  'name' => 'state',
+                  'title' => 'State',
+                  'choose' => true,
+                  'required' => true,
+                  'placeholder' => true,
+                  'partial' => 'partials.fields.state-abbr-value'
+                ])
 
-                    <div class="form-group component" data-formtype="s15" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-            <!-- State input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
-                      <div class="">
-              <select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-                  <option value="">Select</option>
-                <option value="AL">Alabama</option>
-                <option value="AK">Alaska</option>
-                <option value="AZ">Arizona</option>
-                <option value="AR">Arkansas</option>
-                <option value="CA">California</option>
-                <option value="CO">Colorado</option>
-                <option value="CT">Connecticut</option>
-                <option value="DE">Delaware</option>
-                <option value="DC">District Of Columbia</option>
-                <option value="FL">Florida</option>
-                <option value="GA">Georgia</option>
-                <option value="HI">Hawaii</option>
-                <option value="ID">Idaho</option>
-                <option value="IL">Illinois</option>
-                <option value="IN">Indiana</option>
-                <option value="IA">Iowa</option>
-                <option value="KS">Kansas</option>
-                <option value="KY">Kentucky</option>
-                <option value="LA">Louisiana</option>
-                <option value="ME">Maine</option>
-                <option value="MD">Maryland</option>
-                <option value="MA">Massachusetts</option>
-                <option value="MI">Michigan</option>
-                <option value="MN">Minnesota</option>
-                <option value="MS">Mississippi</option>
-                <option value="MO">Missouri</option>
-                <option value="MT">Montana</option>
-                <option value="NE">Nebraska</option>
-                <option value="NV">Nevada</option>
-                <option value="NH">New Hampshire</option>
-                <option value="NJ">New Jersey</option>
-                <option value="NM">New Mexico</option>
-                <option value="NY">New York</option>
-                <option value="NC">North Carolina</option>
-                <option value="ND">North Dakota</option>
-                <option value="OH">Ohio</option>
-                <option value="OK">Oklahoma</option>
-                <option value="OR">Oregon</option>
-                <option value="PA">Pennsylvania</option>
-                <option value="RI">Rhode Island</option>
-                <option value="SC">South Carolina</option>
-                <option value="SD">South Dakota</option>
-                <option value="TN">Tennessee</option>
-                <option value="TX">Texas</option>
-                <option value="UT">Utah</option>
-                <option value="VT">Vermont</option>
-                <option value="VA">Virginia</option>
-                <option value="WA">Washington</option>
-                <option value="WV">West Virginia</option>
-                <option value="WI">Wisconsin</option>
-                <option value="WY">Wyoming</option>
-              </select>
-                        <p class="help-block valtype" data-valtype='help'>Full names, abbr value</p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="s16" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-              <div class='accordion-section general'>
-              <div class='accordion-header'>General</div>
-              <div class='accordion'>
-                <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-                <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>               
-              </div>
-              </div>
-                          <hr/>
-                          <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-            <!-- State input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
-                      <div class="">
-              <select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
-                  <option value="">Select</option>
-                <option value="AL">AL</option>
-                <option value="AK">AK</option>
-                <option value="AR">AR</option>  
-                <option value="AZ">AZ</option>
-                <option value="CA">CA</option>
-                <option value="CO">CO</option>
-                <option value="CT">CT</option>
-                <option value="DC">DC</option>
-                <option value="DE">DE</option>
-                <option value="FL">FL</option>
-                <option value="GA">GA</option>
-                <option value="HI">HI</option>
-                <option value="IA">IA</option>  
-                <option value="ID">ID</option>
-                <option value="IL">IL</option>
-                <option value="IN">IN</option>
-                <option value="KS">KS</option>
-                <option value="KY">KY</option>
-                <option value="LA">LA</option>
-                <option value="MA">MA</option>
-                <option value="MD">MD</option>
-                <option value="ME">ME</option>
-                <option value="MI">MI</option>
-                <option value="MN">MN</option>
-                <option value="MO">MO</option>  
-                <option value="MS">MS</option>
-                <option value="MT">MT</option>
-                <option value="NC">NC</option>  
-                <option value="NE">NE</option>
-                <option value="NH">NH</option>
-                <option value="NJ">NJ</option>
-                <option value="NM">NM</option>      
-                <option value="NV">NV</option>
-                <option value="NY">NY</option>
-                <option value="ND">ND</option>
-                <option value="OH">OH</option>
-                <option value="OK">OK</option>
-                <option value="OR">OR</option>
-                <option value="PA">PA</option>
-                <option value="RI">RI</option>
-                <option value="SC">SC</option>
-                <option value="SD">SD</option>
-                <option value="TN">TN</option>
-                <option value="TX">TX</option>
-                <option value="UT">UT</option>
-                <option value="VT">VT</option>
-                <option value="VA">VA</option>
-                <option value="WA">WA</option>
-                <option value="WI">WI</option>  
-                <option value="WV">WV</option>
-                <option value="WY">WY</option>
-              </select>
-                        <p class="help-block valtype" data-valtype='help'>Abbreviated</p>
-                      </div>
-                    </div>
-
+                {{-- State abbreviated --}}
+                @include('partials.editor.form-component', [
+                  'formtype' => 's16',
+                  'type' => 'text',
+                  'name' => 'state',
+                  'title' => 'State',
+                  'choose' => true,
+                  'required' => true,
+                  'placeholder' => true,
+                  'partial' => 'partials.fields.state-abbr-value'
+                ])
 
                   </div>
 
@@ -1143,7 +817,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- h1 input-->
@@ -1162,7 +836,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- h2 input-->
@@ -1181,7 +855,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- h3 input-->
@@ -1189,7 +863,7 @@ if (isset($_GET['id'])) {
             <h3 class="valtype" data-valtype="textarea">H3 Header Text</h3>
                       </div>
                     </div>
-          
+
                     <div class="form-group component" data-formtype="m08" rel="popover" title="Paragraph" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -1200,7 +874,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Textarea -->
@@ -1221,7 +895,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Textarea -->
@@ -1231,7 +905,7 @@ if (isset($_GET['id'])) {
                         </div>
                       </div>
                     </div>
-          
+
                     <div class="form-group component" data-formtype="m11" data-type="text" rel="popover" title="Hidden" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -1241,7 +915,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- hidden input-->
@@ -1262,7 +936,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- calculation field-->
@@ -1274,7 +948,7 @@ if (isset($_GET['id'])) {
                     </div>
           -->
 
-          
+
                     <div class="form-group component" data-formtype="m13" data-type="file" data-required="true" rel="popover" title="File Upload" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -1325,7 +999,7 @@ if (isset($_GET['id'])) {
                         <button class='btn btn-success'>Button</button>
                       </div>
                     </div>
-          
+
                     <div class="form-group component" data-formtype="m16" data-type="text" rel="popover" title="Page Separator" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -1334,7 +1008,7 @@ if (isset($_GET['id'])) {
                           <hr/>
                           <button class='btn btn-info'>Save</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Page Separator-->
@@ -1343,7 +1017,7 @@ if (isset($_GET['id'])) {
                         <hr class="pb"/>
                       </div>
                     </div>
-          
+
                   </div>
                   <div class="tab-pane" id="SFDSWFB-6">
                     <textarea id="SFDSWFB-source" class="col-md-12"></textarea>
@@ -1437,15 +1111,15 @@ if (isset($_GET['id'])) {
             <br/>
             <a class="btn btn-success" onclick="loadForm()" href="javascript:void(0)">Load</a>
           </div>
-               
-          
+
+
           </div>
                 </div>
               </fieldset>
             </form>
       </div>
       </div>
-      
+
     <div class="col-md-6">
       <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
       <div>
@@ -1483,105 +1157,19 @@ if (isset($_GET['id'])) {
       </div>
     </div>
 
-      
+
       </div> <!-- row -->
       <div class="row clearfix">
         <div class="col-md-12"></div>
       </div>
     </div><!-- /container -->
-  
-  
-<div class="hidden clonable conditionals">
-  <div class="addConditional" style="padding-top:1em">
-    <a href="#" onclick="javascript:addConditional()">+Add A Condition</a>
-  </div>
-</div>
-<div class="hidden clonable firstConditional">
-  <hr/>
-  <select class="showHide">
-    <option>Show</option>
-    <option>Hide</option>
-  </select>
-</div>
-<div class="hidden clonable multipleConditionals">
-  <select>
-    <option>All</option>
-    <option>Any</option>
-  </select>
-</div>
-<div class="hidden clonable conditional">
-  <div style="padding-top:1em">
-    <span class="conditionalLabel"></span>
-    <select class="allIds">
-    </select>
-    <select>
-      <option>matches</option>
-      <option>contains</option>
-      <option>doesn't match</option>
-      <option>doesn't contain</option>
-      <option>is less than</option>
-      <option>is more than</option>
-      <option>contains anything</option>
-      <option>is blank</option>
-    </select>
-    <input type="text" class="form-control" />
-  </div>
-</div>
-  <div class="hidden clonable calculationType">
-    <select>
-      <option>Plus</option>
-      <option>Minus</option>
-      <option>Multiplied by</option>
-      <option>Divided by</option>
-    </select>
-  </div>
-  <div class="hidden clonable accordion-attributes">
-    <div class='accordion-section attributes'>
-      <div class='accordion-header'>Attributes</div>
-      <div class='accordion' style='display:none'>
-        <label class='control-label'>Default Value</label> <input class='form-control' type='text' name='value' id='value'>
-        <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
-        <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-        <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-      </div>
-    </div>
-  </div>
-  <div class="hidden clonable accordion-validation">
-    <div class='accordion-section validation'>
-      <div class='accordion-header'>Validation</div>
-      <div class='accordion' style='display:none'>
-        <div class="validate-required">
-        <label class='control-label' for="required">Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'><br/>
-        </div>
-        <div class="validate-type">
-        <label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select>
-        </div>
-        <div class='validate-regex' style='display:none'>
-        <label class='control-label'>Regular Expression</label> <input class='form-control' type='text' name='regex' id='regex'>
-        </div>
-        <div class='validate-minmax' style='display:none'>
-          <div class='floatleft'>
-          <label class='control-label'>Min Value</label> <input class='form-control' type='text' name='min' id='min'>
-          </div>
-          <div class='floatright'>
-          <label class='control-label'>Max Value</label> <input class='form-control' type='text' name='max' id='max'>
-          </div>
-          <div class='clear'></div>
-        </div>
-        <div class="validate-match" style="display:none">
-        <label class='control-label' style='display:none'>Match Another</label> <select class='form-control' name='match' id='match'><option value=''></option></select>
-        </div>
-        <div class='floatleft'>
-        <label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'>
-        </div>
-        <div class='floatright'>
-        <label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'>
-        </div>
-        <div class='clear'></div>
-      </div>
-    </div>
-  </div>
-  
+
+
+  @include('partials.editor.conditionals')
+  @include('partials.editor.calculation')
+  @include('partials.editor.validation')
+
+
   <!--
     <div id="site-navbar" style="position: absolute; top: -4px; right: -3px; border: 0; z-index: 2000;padding:0;margin:0;"><a href="http://github.com/aiopio/Bootstrap3-form-builder" title="在github关注我" style="background:none;"><img src="http://aral.github.io/fork-me-on-github-retina-ribbons/right-white@2x.png" style="padding:0;margin:0;border:0; -webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;width:100px"></a></div>
   -->
