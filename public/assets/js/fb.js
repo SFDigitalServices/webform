@@ -409,10 +409,10 @@ $(document).ready(function(){
 
 	//popover accordion section collapse animation
 	var firstTime = true;
-	$('.accordion-section').hover(function(){
+	$('.accordion-section').click(function(){
 		if (!$(this).find('.accordion').is(':visible')) {
-			$(this).find('.accordion').show('fast');
-			$('.accordion').not($(this).find('.accordion')).hide('fast');
+			$(this).find('.accordion').show();
+			$('.accordion').not($(this).find('.accordion')).hide();
 		}
 	});
 
@@ -437,9 +437,9 @@ $(document).ready(function(){
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-minmax').hide('slow');
 		} else {
-			$('.popover .validate-regex').hide('slow');
-			$('.popover .validate-minmax').hide('slow');
-			$('.popover .validate-match').hide('slow');
+			$('.popover .validate-regex').hide();
+			$('.popover .validate-minmax').hide();
+			$('.popover .validate-match').hide();
 		}
 	}
 
@@ -1023,13 +1023,13 @@ function updateSettings() {
 					if ($(this).is(":checked") && $(this).val() == "db") {
 						if ($('#SFDSWFB-7 input[name=action]').val() == submitUrl)
 							$('#SFDSWFB-7 input[name=action]').val('');
-						$(".csvFile").hide('medium');
-						$(".confirmPage").hide('medium');
+						$(".csvFile").hide('fast');
+						$(".confirmPage").hide('fast');
 						$('#SFDSWFB-7 input[name=action]').removeAttr('readonly');
 						newSettings[$(this).attr("name")] = $(this).val();
 					} else if ($(this).is(":checked") && $(this).val() == "csv") {
 						$('#SFDSWFB-7 input[name=action]').val(submitUrl);
-						$(".confirmPage").show('medium');
+						$(".confirmPage").show('fast');
 						$('#SFDSWFB-7 input[name=action]').attr('readonly', true);
 						newSettings[$(this).attr("name")] = $(this).val();
 						useCSV = true;
@@ -1063,7 +1063,7 @@ function populateCSV() {
 }
 function showCSV(response) {
 	csvFile = response;
-	$(".csvFile").show('medium');
+	$(".csvFile").show('fast');
 	$(".csvFile > a").on('click', function(){openCSV(response)});
 }
 function openCSV(url) {
@@ -1115,10 +1115,10 @@ function goHome(back) {
 		window.history.back();
 		return;
 	}
-	$('.container').hide('fast');
+	$('.container').hide();
 	callAPI("/form/getForms", {}, loadHome);
-	$('.forms').html('<i class="fas fa-circle-notch fa-spin" style="font-size:2em;color:#ddd"></i>');
-    $(".content").show(1500);
+	$('.forms').html('<i class="fas fa-circle-notch fa-spin"></i>');
+    $(".content").show();
 }
 function saveForm() {
 	//requires GLOBALS to be set
@@ -1244,7 +1244,7 @@ function loadHome(response) {
 	});
 }
 function loadContent(id) {
-	$(".content").hide("fast", function(){
+	$(".content").hide(0, function(){
 		if (id == undefined) {
 			if (history.state == undefined) history.pushState({formId : 0} , null, "/home?new");
 			formId = 0;
@@ -1265,13 +1265,13 @@ function loadContent(id) {
 			var submitUrl = new URL('/form/submit', window.location.href);
 			if (allForms[id].content.settings.action == submitUrl) {
 				$("input[name=backend][value=csv]").attr('checked', true);
-				$(".confirmPage").show('medium');
+				$(".confirmPage").show();
 				$('#SFDSWFB-7 input[name=action]').attr('readonly', true);
 				populateCSV();
 			}
 			loadForm();
 		}
-		$('.container').show('fast');
+		$('.container').show();
 	});
 }
 function resizeHeight() {

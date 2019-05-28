@@ -7,7 +7,7 @@
 		  var api_token = '<?php echo $api_token;?>';
 
 		  $(document).ready(function(){
-			  $(".content").show(1500);
+			  $(".content").show();
 
 			  callAPI("/form/getForms", {}, loadHome);
 			});
@@ -15,7 +15,7 @@
 			//$(window).unload(function(){});
 
 			window.onpopstate = function (event) {
-				$('.container').hide('fast');
+				$('.container').hide();
 				if (event.state) {
 					if (event.state.formId) {
 						loadContent(event.state.formId);
@@ -39,7 +39,7 @@
 		<div class="content" style="display:none">
             <div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
 			<div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
-				<h1 class="welcomeBack">Welcome back <?php print $name; ?>!</h1>
+				<h1 class="welcomeBack text-center">Welcome back, <?php print $name; ?>!</h1>
 				<div class="welcomeBox">
 					<div>
 						<a href="javascript:void(0)" onclick="loadContent()" class="btn btn-info btn-lg btn-block">Create a New Form</a>
@@ -362,32 +362,6 @@
                       </div>
                     </div>
 
-                    <div class="form-group component" data-formtype="d12" data-type="password" data-name="password" data-required="true" data-minlength="6" rel="popover" title="Password" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-							<div class='accordion-section general'>
-								<div class='accordion-header'>General</div>
-								<div class='accordion'>
-									<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-									<label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-									<label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-								</div>
-							</div>
-							<hr/>
-							<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-                      <!-- Password input-->
-                      <label class="control-label valtype" for="input01" data-valtype='label'>Password</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
-                      </div>
-                    </div>					
-					
 				  </div>
 				  
                   <div class="tab-pane" id="SFDSWFB-3">
@@ -418,168 +392,6 @@
                       </div>
                     </div>
 
-                    <div class="form-group component" data-formtype="i04" data-type="search" data-required="true" rel="popover" title="Search Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
-
-                      <!-- Search input-->
-                      <label class=" control-label valtype" data-valtype="label">Search input</label>
-                      <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md search-query valtype" data-valtype="placeholder">
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-
-                    </div>
-
-<!-- hide for now
-                    <div class="form-group component" data-formtype="i06" data-type="prep-text" data-required="true" rel="popover" title="Prepended Text Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Prepend</label> <input type='text' name='prepend' id='prepend' class='form-control'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
--->
-					  
-                      <!-- Prepended text-->
-<!--
-                      <label class=" control-label valtype" data-valtype="label">Prepended text</label>
-                      <div class="">
-                        <div class="input-group">
-                          <span class="input-group-addon valtype" data-valtype="prepend">^_^</span>
-                          <input class="form-control valtype" placeholder="placeholder" id="prependedInput" type="text" data-valtype="placeholder">
-                        </div>
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group component" data-formtype="i08" data-type="app-text" data-required="true" rel="popover" title="Appended Text Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Appepend</label> <input type='text' name='append' id='append' class='form-control'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
--->
-					  
-                      <!-- Appended input-->
-<!--
-                      <label class=" control-label valtype" data-valtype="label">Appended text</label>
-                      <div class="">
-                        <div class="input-group">
-                          <input name="appendedtext" class="form-control valtype" data-valtype="placeholder" placeholder="placeholder" type="text">
-                          <span class="input-group-addon valtype" data-valtype="append">^_^</span>
-                        </div>
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-
-
-                    </div>
-
-                    <div class="form-group component" data-formtype="i10" rel="popover" data-required="true" title="Prepended Checkbox" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='checkbox'><input type='checkbox' class='input-inline' name='checked' id='checkbox'>Checked</label>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
--->
-                      <!-- Prepended checkbox -->
-<!--
-                      <label class=" control-label valtype" data-valtype="label">Prepended checkbox</label>
-                      <div class="">
-                        <div class="input-group">
-                          <span class="input-group-addon">
-                            <input type="checkbox" class="valtype" data-valtype="checkbox">
-                          </span>
-                          <input class="form-control valtype" placeholder="placeholder" type="text" data-valtype="placeholder">
-                        </div>
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group component" data-formtype="i12" rel="popover" data-required="true" title="Append Checkbox" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='checkbox'><input type='checkbox' class='input-inline' name='checked' id='checkbox'>Checked</label>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true" 
-                      >
--->
-                      <!-- Appended checkbox -->
-<!--					  
-                      <label class=" control-label valtype" data-valtype="label">Append checkbox</label>
-                      <div class="">
-                        <div class="input-group">
-                          <input class="form-control valtype" placeholder="placeholder" type="text" data-valtype="placeholder">
-                          <span class="input-group-addon">
-                            <input type="checkbox" class="valtype" data-valtype="checkbox">
-                          </span>
-                        </div>
-                        <p class="help-block valtype" data-valtype="help">Supporting help text</p>
-                      </div>
-                    </div>
--->					
 
                     <div class="form-group component" data-formtype="i14" rel="popover" data-required="true" title="Textarea" trigger="manual"
                       data-content="
@@ -1194,7 +1006,7 @@
 					-->
 
 					
-                    <div class="form-group component" data-formtype="m13" data-type="file" data-required="true" rel="popover" title="File Upload" trigger="manual"
+                    <div class="form-group component" data-formtype="m13" data-type="file" data-name="file_upload" data-required="true" rel="popover" title="File Upload" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -1407,7 +1219,7 @@
 				<div class="clickMenu">
 					<ul>
 						<span class="saveStatus"></span> 
-						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;color:#aaa"></i>
+						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('clone','doAction.php?action=clone')" onclick="javascript:confirmAction('clone','doAction.php?action=clone')" tabindex="0" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('delete','doAction.php?action=delete')" onclick="javascript:confirmAction('delete','doAction.php?action=delete')" tabindex="0" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('exit','editor.php')" onclick="javascript:confirmAction('exit','editor.php')" data-toggle="tooltip" tabindex="0" title="Exit"><i class="fas fa-sign-out-alt"></i></li>
