@@ -32,7 +32,9 @@
 		<div class="header">
       <div class="header-container">
   			<div class="logo">
-  				<img src="/assets/images/SF_Digital_Services-logo.png" onkeydown="if(event.keyCode == 13) confirmAction('exit','editor.php')" onclick="javascript:confirmAction('exit','editor.php')" />
+  				<a href="#" onclick="javascript:event.preventDefault(); confirmAction('exit','editor.php')">
+            <img src="/assets/images/SF_Digital_Services-logo.png" alt="SF Digital Services Logo" />
+          </a>
         </div>
   				Webform Builder
           <a href="/home" class="header-sign-out btn btn-default">Sign Out</a>
