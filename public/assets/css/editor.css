@@ -1,15 +1,37 @@
-		  body {
-			//padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-			padding-bottom: 10px;
-		  }
-			.hero-header {
-				background: url(/assets/images/bg4.jpg) no-repeat center center / auto 100%;
-			}
-			@media only screen and (min-width: 64.063em) {
-				.hero-header {
-					background: url(/assets/images/bg4.jpg) no-repeat center center / 100% auto;
-				}
-			}
+	html,
+	body {
+		height: 100%;
+	}
+
+	body {
+		padding-bottom: 10px;
+	}
+
+	.login {
+		background:#222 url(/assets/images/bg4.jpg) no-repeat center center;
+		background-size: 100% 100%;
+		min-height: 100%;
+	}
+
+	.login .row {
+		margin-top: 6em;
+	}
+
+	.login header,
+	.login h1 {
+		font-size: 2em;
+		color: #fff;
+		text-shadow: 0 0 18px #000;
+	}
+
+	.login h2 {
+		margin-top: 0;
+	}
+
+	.login .panel {
+		padding: 2em;
+	}
+
 			h1 {
 				color:#333;
 			}
