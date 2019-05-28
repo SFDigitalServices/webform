@@ -277,14 +277,18 @@ class HTMLHelper
 	}
 	
     /**
-     * Strips field attributes by type
+     * Process fields by type, adds steps to numbers, and strips invalid validators
      *
      * @returns field array
      */
-    private static function stripAttributesByType($field) {
+    private static function processFieldsByType($field) {
 		if (isset($field['type'])) {
 			if (in_array($field['type'], array("number", "date", "price"))) {
-				$field['step'] = 'any';
+				if ($field['formtype'] == "d08") {
+					$field['step'] = '0.01';
+				} else {
+					$field['step'] = 'any';
+				}
 			} else {
 				unset($field['min']);
 				unset($field['max']);
@@ -319,7 +323,7 @@ class HTMLHelper
 		$field = isset($field['formtype']) ? self::stripAttributesByFormType($field) : $field;
 		
 		//strip attributes for specific types, this is for handling extraneous/bad data
-		$field = self::stripAttributesByType($field);		
+		$field = self::processFieldsByType($field);		
 
 		//add color to the class in the case of buttons
 		$color = isset($field['color']) ? ' ' . $field['color'] : "";

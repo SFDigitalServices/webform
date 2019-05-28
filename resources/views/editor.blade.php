@@ -7,7 +7,7 @@
 		  var api_token = '<?php echo $api_token;?>';
 
 		  $(document).ready(function(){
-			  $(".content").show(1500);
+			  $(".content").show();
 
 			  callAPI("/form/getForms", {}, loadHome);
 			});
@@ -15,7 +15,7 @@
 			//$(window).unload(function(){});
 
 			window.onpopstate = function (event) {
-				$('.container').hide('fast');
+				$('.container').hide();
 				if (event.state) {
 					if (event.state.formId) {
 						loadContent(event.state.formId);
@@ -44,7 +44,7 @@
 		<div class="content" style="display:none">
             <div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
 			<div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
-				<h1 class="welcomeBack">Welcome back <?php print $name; ?>!</h1>
+				<h1 class="welcomeBack text-center">Welcome back, <?php print $name; ?>!</h1>
 				<div class="welcomeBox">
 					<div>
 						<a href="javascript:void(0)" onclick="loadContent()" class="btn btn-info btn-lg btn-block">Create a New Form</a>
@@ -1091,6 +1091,7 @@
 					<pre id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</pre>&nbsp;
 					<br/>
 					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Show Debug Info</div>
+					<div class="btn btn-info" onclick="window.open('/form/preview?id='+formId, '_blank')">Preview Form</div>
 					<div id="SFDSWFB-debug" style="display:none">
 						<h4>Source Code</h4>
 						<textarea id="SFDSWFB-source" class="col-md-12"></textarea>
@@ -1224,7 +1225,7 @@
 				<div class="clickMenu">
 					<ul>
 						<span class="saveStatus"></span> 
-						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;color:#aaa"></i>
+						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('clone','doAction.php?action=clone')" onclick="javascript:confirmAction('clone','doAction.php?action=clone')" tabindex="0" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('delete','doAction.php?action=delete')" onclick="javascript:confirmAction('delete','doAction.php?action=delete')" tabindex="0" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
 					</ul>
