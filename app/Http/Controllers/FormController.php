@@ -210,6 +210,25 @@ class FormController extends Controller
             return response()->json(['status' => 0, 'message' => 'Failed to create form']);
         }
     }
+	
+    /**
+    * Creates a page preview of the form
+    *
+    * @return HTML
+    */
+    public function preview(Request $request)
+    {
+        $form_id = $request->input('id');
+		
+		$embedHTML = $this->embedJS($request);
+        return '<!DOCTYPE html><html><head><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'.
+		'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>'.
+		'<script src="https://formbuilder-sf-staging.herokuapp.com/assets/js/error-msgs.js"></script>'.
+		'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
+		'<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
+		'<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
+		'<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script></body></html>';
+    }
 
     /**
     * Creates an embed JS for the form
@@ -453,18 +472,24 @@ class FormController extends Controller
                 }
                 $js = substr($js, 0, -2)."').on('keyup change',function(){";
 
-                $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
+				
+                $calcFunc = "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
 
                 $count = 0;
                 while ($count < count($calculationIds[$id])) {
-                    $js .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
+                    $calcFunc .= "parseFloat(jQuery('".$this->getInputSelector($calculationIds[$id][$count], $formtypes, true)."').val())";
                     if (isset($calculationOps[$id][$count])) {
-                        $js .= " ".$calculationOps[$id][$count]." ";
+                        $calcFunc .= " ".$calculationOps[$id][$count]." ";
                     }
                     $count++;
                 }
-                $js .= 	")";
+                $calcFunc .= 	")";
+				
+				$js .= $calcFunc;
+				
                 $js .= "});";
+				
+				$js .= $calcFunc;
             }
         }
 
