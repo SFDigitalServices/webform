@@ -6,7 +6,6 @@
 		<meta name="description" content="" />
 		<meta name="keywords" content="Modified Bootstrap 3 Form Builder" />
 		
-		<!--<link rel="stylesheet" href="/assets/css/toolkit.css">-->
 		<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/assets/css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link href="/assets/css/bootstrap-tagsinput.css" rel="stylesheet">
@@ -24,7 +23,6 @@
 
 		<script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/jquery.validationEngine.min.js"></script>
-		<!--<script type="text/javascript" language="Javascript" src="/assets/js/toolkit.js"></script>-->
 		<script src="/assets/js/bootstrap.min.js"></script>
 		<script src="/assets/js/popper.min.js"></script>
 		<script src="/assets/js/bootstrap-tagsinput.min.js"></script>
@@ -33,9 +31,7 @@
 		<script src="/assets/js/login.js"></script>
 		<script src="/assets/js/fb.js"></script>
 	</head>
-	<body>
-		<content>
-			@yield("content")
-		</content>
+	<body @if('body-class')class="@yield('body-class')"@endif>
+		@yield("content")
 	</body>
 </html>
