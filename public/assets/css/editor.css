@@ -1,15 +1,35 @@
+html,
+body {
+  height: 100%;
+}
+
 body {
   padding-bottom: 10px;
 }
 
-.hero-header {
-  background: url(/assets/images/bg4.jpg) no-repeat center center / auto 100%;
+.login {
+  background:#222 url(/assets/images/bg4.jpg) no-repeat center center;
+  background-size: 100% 100%;
+  min-height: 100%;
 }
 
-@media only screen and (min-width: 64.063em) {
-  .hero-header {
-    background: url(/assets/images/bg4.jpg) no-repeat center center / 100% auto;
-  }
+.login .row {
+  margin-top: 6em;
+}
+
+.login header,
+.login h1 {
+  font-size: 2em;
+  color: #fff;
+  text-shadow: 0 0 18px #000;
+}
+
+.login h2 {
+  margin-top: 0;
+}
+
+.login .panel {
+  padding: 2em;
 }
 
 /* Utility classes */
@@ -120,9 +140,12 @@ legend {
   padding: 2em 0;
 }
 
-.contact .fa-spin {
-  font-size: 2em;
+.fa-circle-notch {
   color: #ddd;
+}
+
+.forms .fa-circle-notch {
+  font-size: 2em;
 }
 
 /* Lefthand pane */
@@ -217,6 +240,10 @@ legend {
   font-size: 1.5em;
   border-bottom: 1px solid #eee;
   margin: 1em 0;
+}
+
+.accordion-section {
+  cursor: pointer;
 }
 
 .popover {
