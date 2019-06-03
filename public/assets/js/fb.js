@@ -1162,7 +1162,7 @@ function loadNames(obj) {
     if (selected == "0") {
 	autofillNames = null;
     } else {
-	$.get('/webform/js/'+selected+".json", function(data) {
+	$.get('/assets/js/'+selected+".json", function(data) {
 		autofillNames = data.fields;
 		//console.log(autofillNames);
 	});
