@@ -290,6 +290,16 @@ $(document).ready(function(){
 		$(".popover .validate-type").remove();
 	}
 
+	//get ids for validation match field
+	var ids = getIds();
+	$(".popover-content #match").html("<option value=''></option>");
+	$.each(ids, function(i, item) {
+		$(".popover-content #match").append($('<option>', {
+			value: item,
+			text:	item
+		}));
+	});
+
 	//populate validation rules
 	if (e.currentTarget.attributes['data-required']) $(".popover #required").prop("checked",true);
 	if (e.currentTarget.attributes['data-type']) $(".popover #type").val(e.currentTarget.attributes['data-type'].value);
@@ -298,6 +308,11 @@ $(document).ready(function(){
 	if (e.currentTarget.attributes['data-maxlength']) $(".popover #maxlength").val(e.currentTarget.attributes['data-maxlength'].value);
 	if (e.currentTarget.attributes['data-min']) $(".popover #min").val(e.currentTarget.attributes['data-min'].value);
 	if (e.currentTarget.attributes['data-max']) $(".popover #max").val(e.currentTarget.attributes['data-max'].value);
+	if (e.currentTarget.attributes['data-match']) {
+		$(".popover #type").val("match");
+		$('.popover .validate-match').show();
+		$(".popover #match").val(e.currentTarget.attributes['data-match'].value);
+	}
 
 	//add calculation
 	if (e.currentTarget.dataset.formtype == "d06" || e.currentTarget.dataset.formtype == "d08") { //only show for numbers or prices
@@ -422,16 +437,6 @@ $(document).ready(function(){
 		}
 	});
 
-	//get ids for validation match field
-	var ids = getIds();
-	$(".popover-content #match").html("<option value=''></option>");
-	$.each(ids, function(i, item) {
-		$(".popover-content #match").append($('<option>', {
-			value: item,
-			text:	item
-		}));
-	});
-
 	//init tooltips
 	$(".popover [data-toggle='tooltip']").tooltip();
 
@@ -534,7 +539,11 @@ $(document).ready(function(){
 		  } else if (vartype === "value" || vartype === "name" || vartype === "id" || vartype === "class" || vartype === "regex" || vartype === "min" || vartype === "max" || vartype === "minlength" || vartype === "maxlength") {
 			$active_component.attr("data-"+vartype,$(e).val());
 		  } else if (vartype === ("type" || "match")) { //selects
-			$active_component.attr("data-"+vartype,$(e).val());
+			if (vartype == "type" && $(e).val() == "match") { //for match type validation
+				$active_component.attr("data-match", $('#match').val());
+			} else {
+				$active_component.attr("data-"+vartype,$(e).val());
+			}
 		  } else {
 			$(value).text($(e).val());
 			//alert("not caught: "+vartype); //label, help, undefined
@@ -547,6 +556,8 @@ $(document).ready(function(){
 			  } else {
 			      if (vartype == "label" || vartype == "help" || vartype == "placeholder") {
 				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
+				  } else if (vartype == "type" && $(e).val() == "match") { //for match type validation
+				saved.data[$(".popover").prevAll(".form-group").length-1]["match"] = $('#match').val();
 				  } else if (vartype == "value" && $(e).val() == "") {
 				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = undefined;
 			      } else if ($(e).val() != "") {
@@ -740,6 +751,8 @@ function loadForm() {
 				if (saved.data[i][key] == "false") {
 							$(newSection).removeAttr("data-required", );
 				}
+			} else if (key == "match") {
+                            $(newSection).attr('data-match',saved.data[i][key]);
 			} else if (key != "formtype") {
 				if (key == "checkboxes") {
 					var checkboxes = saved.data[i][key];

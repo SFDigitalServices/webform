@@ -5,7 +5,7 @@ jobs: # a collection of steps
     docker: # run the steps with Docker
       - image: circleci/php:7.2-apache-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment:
-          APP_ENV: testing
+          APP_ENV: production
           APP_DEBUG: true
           APP_KEY: kjcndjjksddwdwdw
           DB_CONNECTION: mysql
@@ -16,6 +16,7 @@ jobs: # a collection of steps
           DB_PASSWORD: 1234
           CACHE_DRIVER: file
           QUEUE_DRIVER: sync
+          SENTRY_DSN: https://b53658ff4ec749719da39905217d41e0@sentry.io/1366253
       - image: circleci/mysql:5.6-ram
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
@@ -42,7 +43,8 @@ jobs: # a collection of steps
           name: Update Missed Dependencies
           command: composer update
       - run: php artisan migrate:refresh --force
-      - run: php artisan db:seed
+      - run: php artisan db:seed --force
+
       - run: ./vendor/bin/codecept run
       - run:
           name: Configure & start Apache
@@ -68,5 +70,5 @@ jobs: # a collection of steps
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
             cd tests/frontend
-            #$HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
+            $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
