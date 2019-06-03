@@ -44,7 +44,6 @@ jobs: # a collection of steps
           command: composer update
       - run: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
-
       - run: ./vendor/bin/codecept run
       - run:
           name: Configure & start Apache
