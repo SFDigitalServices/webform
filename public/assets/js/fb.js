@@ -644,9 +644,9 @@ $(document).ready(function(){
 }); //end document ready
 
 function bindQuickDelete() {
-	$('#SFDSWFB-target .form-group.component').unbind('mouseenter mouseleave');
-	$('#SFDSWFB-target .form-group.component').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
-	$('#SFDSWFB-target .form-group.component').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').unbind('mouseenter mouseleave');
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
 }
 
 function quickDelete(obj) {
