@@ -5,3 +5,4 @@ Homestead.yaml
 database/seeds
 public/formbuilder/env.inc
 vendor/
+tests/_support/_generated
