@@ -2,6 +2,7 @@
 
 namespace tests;
 
+use Illuminate\Support\Facades\Schema;
 use App\Helpers\DataStoreHelper;
 
 class DataStoreHelperTest extends \Codeception\Test\Unit
