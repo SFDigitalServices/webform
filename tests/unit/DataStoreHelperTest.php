@@ -1,5 +1,7 @@
 <?php
-namespace App\Helpers;
+
+namespace tests;
+
 use App\Helpers\DataStoreHelper;
 
 class DataStoreHelperTest extends \Codeception\Test\Unit
