@@ -4,22 +4,26 @@ namespace App\Helpers;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
+use Log;
 
 class DataStoreHelper
 {
     /**
      * Creates database table for created form
      *
-     * @returns name of the created table
+     * @returns the created table
      */
     public static function createFormTable($tablename, $definitions = null)
     {
         if ($definitions) {
             $class = new DataStoreHelper();
-            Schema::create($tablename, function ($table) use ($tablename, $definitions, $class) {
+            $object = null;
+            Schema::create($tablename, function ($table) use ($tablename, $definitions, $class, &$object) {
                 $table->increments('id');
                 $class->upsertFields($table, $definitions, 'create');
+                $object = $table;
             });
+            return $object;
         }
     }
 
@@ -52,7 +56,6 @@ class DataStoreHelper
                 $class->upsertFields($table, $definitions, 'create');
                 $columns = $table->getAddedColumns();
             });
-            //Log::info(print_r($columns,1));
             return $columns;
         }
     }
@@ -140,39 +143,36 @@ class DataStoreHelper
             $class = new DataStoreHelper();
             //mapDefinitions($definitions);
             foreach ($definitions as $definition) {
-                switch ($definition['type']) {
+                $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+                switch ($type) {
                     case 'text':
                     case 'email':
                     case 'password':
                     case 'search':
                     case 'url':
                     case 'tel':
-                    $class->mapTextField($table, $definition, $operation);
+                        $class->mapTextField($table, $definition, $operation);
                         break;
                     case 'file':
                     $class->mapFileField($table, $definition, $operation);
                         break;
                     case 'radio':
                     case 'checkbox':
-                    $class->mapEnumField($table, $definition, $operation);
+                        $class->mapEnumField($table, $definition, $operation);
                         break;
                     case 'number':
-                    $class->mapNumberField($table, $definition, $operation);
+                        $class->mapNumberField($table, $definition, $operation);
                         break;
                     case 'date':
-                    $class->mapDateField($table, $definition, $operation);
+                        $class->mapDateField($table, $definition, $operation);
+                        break;
+                    case 'i14':
+                        $class->mapTextAreaField($table, $definition, $operation);
+                        break;
+                    case 'd04': // Time
+                        $class->mapTimeField($table, $definition, $operation);
                         break;
                     default:
-                        switch ($definition['formtype']) {
-                            case 'i14':
-                            $class->mapTextAreaField($table, $definition, $operation);
-                                break;
-                            case 'd04': // Time
-                            $class->mapTimeField($table, $definition, $operation);
-                                break;
-                            default:
-                                break;
-                        }
                         break;
                 }
             }

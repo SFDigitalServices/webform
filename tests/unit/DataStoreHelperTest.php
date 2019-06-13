@@ -4,6 +4,7 @@ namespace tests;
 
 use Illuminate\Support\Facades\Schema;
 use App\Helpers\DataStoreHelper;
+use Log;
 
 class DataStoreHelperTest extends \Codeception\Test\Unit
 {
@@ -43,64 +44,31 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         $this->assertTrue(Schema::hasColumns($tablename, $columns));
     }
 
-    public function testTextFieldMapping(){
-        $tablename= 'textfield_mapping';
-        $definition = array(
-            array('type' => 'email', 'id' => 'my_email')
-        );
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
-        $this->assertTrue(Schema::hasTable($tablename));
-    }
-
-    public function testTextAreaFieldMapping(){
-        $tablename= 'textareafield_mapping';
-        $definition = array(
-            array('type' => 'textarea', 'formtype' => 'i14', 'id' => 'my_textarea')
-        );
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
-        $this->assertTrue(Schema::hasTable($tablename));
-    }
-    public function testTimeFieldMapping(){
-        $tablename= 'filefield_mapping';
-        $definition = array(
-            array('type' => 'file', 'id' => 'my_file')
-        );
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
-        $this->assertTrue(Schema::hasTable($tablename));
-    }
-    public function testDateFieldMapping(){
-        $tablename= 'datefield_mapping';
-        $definition = array(
-            array('type' => 'date', 'id' => 'my_date')
+    public function testFieldMapping(){
+        $tablename= 'field_mapping';
+        $mapping_definitions = array(
+            array('type' => 'text', 'id' => 'name'),
+            array('type' => 'email', 'id' => 'email', 'maxlength' => '25', 'required' => 'true'),
+            array('type' => 'password', 'id'=> 'password'),
+            array('type' => 'tel', 'id' => 'phonenumber', 'required' => 'false'),
+            array('type' => 'date', 'id' => 'date_created'),
+            array('type' => 'url', 'id' => 'my_url'),
+            array('formtype' => 'd04', 'id' => 'my_time', 'value' => '00:00:00'),
+            array('type' => 'file', 'id' => 'my_file', 'required' => 'false'),
+            array('formtype' => 'i14', 'id' => 'my_textarea'),
+            array('type' => 'number', 'id' => 'my_number', 'value' => '10'),
+            array('type' => 'radio', 'id' => 'my_radio', 'radios' => 'option1\noption2'),
+            array('type' => 'checkbox', 'id' => 'my_cb', 'checkboxes' => 'option1\noption2'),
         );
 
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
+        $mytable = $this->dataStoreHelperTester::createFormTable($tablename, $mapping_definitions);
         $this->assertTrue(Schema::hasTable($tablename));
+
+        foreach($mytable->getColumns() as $column){
+            // assert each column definition from above
+        }
     }
-    public function testNumberFieldMapping(){
-        $tablename= 'numberfield_mapping';
-        $definition = array(
-            array('type' => 'number', 'id' => 'my_number', 'value' => '10')
-        );
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
-        $this->assertTrue(Schema::hasTable($tablename));
-    }
-    public function testEnumFieldMapping(){
-        $tablename= 'enumfield_mapping';
-        $definition = array(
-            array('type' => 'radio', 'id' => 'my_radio', 'radios' => "option 1 \n option 2")
-        );
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
-        $this->assertTrue(Schema::hasTable($tablename));
-    }
-    public function testFileFieldMapping(){
-        $tablename= 'timefield_mapping';
-        $definition = array(
-            array('type' => 'file', 'id' => 'my_file')
-        );
-        $this->dataStoreHelperTester::createFormTable($tablename, $definition);
-        $this->assertTrue(Schema::hasTable($tablename));
-    }
+
     public function testAddFormTableColumn() {
         $tablename= 'forms_form2';
         $this->dataStoreHelperTester::createFormTable($tablename, $this->definitions);
@@ -167,13 +135,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         Schema::dropIfExists('forms_form3');
         Schema::dropIfExists('forms_form4');
         Schema::dropIfExists('forms_form5');
-        Schema::dropIfExists('textfield_mapping');
-        Schema::dropIfExists('filefield_mapping');
-        Schema::dropIfExists('textareafield_mapping');
-        Schema::dropIfExists('numberfield_mapping');
-        Schema::dropIfExists('enumfield_mapping');
-        Schema::dropIfExists('datefield_mapping');
-        Schema::dropIfExists('timefield_mapping');
+        Schema::dropIfExists('field_mapping');
     }
 
 }
