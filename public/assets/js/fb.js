@@ -644,9 +644,9 @@ $(document).ready(function(){
 }); //end document ready
 
 function bindQuickDelete() {
-	$('#SFDSWFB-target .form-group.component').unbind('mouseenter mouseleave');
-	$('#SFDSWFB-target .form-group.component').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
-	$('#SFDSWFB-target .form-group.component').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').unbind('mouseenter mouseleave');
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
 }
 
 function quickDelete(obj) {
@@ -1197,7 +1197,7 @@ function embedCode(id) {
 	var str = "<!-- If possible, place the following in your <head> tag. -->"+
 	"\n"+
 	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>\n"+
-	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js\"></script>\n"+
+	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js\"></script>\n"+
 	"<script src=\""+assetsUrl+"js/error-msgs.js\"></script>"+
 	"\n"+
 	"<link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\" />\n"+
