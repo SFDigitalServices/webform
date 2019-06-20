@@ -5,8 +5,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
 use Log;
+use DB;
 
-class DataStoreHelper
+class DataStoreHelper extends Migration
 {
     /**
      * Creates database table for created form
@@ -20,7 +21,7 @@ class DataStoreHelper
             $object = null;
             Schema::create($tablename, function ($table) use ($tablename, $definitions, $class, &$object) {
                 $table->increments('id');
-                $class->upsertFields($table, $definitions, 'create');
+                $class->upsertFields($table, $definitions);
                 $object = $table;
             });
             return $object;
@@ -47,103 +48,33 @@ class DataStoreHelper
      *
      * @returns bool
      */
-    public static function addFormTableColumn($tablename, $definitions)
+    public static function saveFormTableColumn($tablename, $definitions)
     {
         if ($definitions) {
             $class = new DataStoreHelper();
             $columns = array();
             Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
-                $class->upsertFields($table, $definitions, 'create');
+                $ret = $class->upsertFields($table, $definitions);
+                if(!$ret)
+                    $columns = $ret; // exception, return custom message
                 $columns = $table->getAddedColumns();
             });
             return $columns;
         }
-    }
-    /**
-    * Changing form table columns
-    *
-    * @returns bool
-    */
-    public static function changeFormTableColumn($tablename, $definitions)
-    {
-        if ($definitions) {
-            $class = new DataStoreHelper();
-            $columns = array();
-            Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
-                $class->upsertFields($table, $definitions, 'change');
-                $columns = $table->getChangedColumns();
-            });
-            return $columns;
-        }
-    }
-    /**
-    * Renaming form table columns
-    *
-    * @returns bool
-    */
-    public static function renameFormTableColumn($tablename, $definitions)
-    {
-        if ($definitions) {
-            $_fluents = array();
-            Schema::table($tablename, function ($table) use ($definitions, &$_fluents) {
-                foreach ($definitions as $definition) {
-                    $_fluent = $table->renameColumn($definition['from'], $definition['to']);
-                    if ($_fluent) {
-                        array_push($_fluents, $_fluent);
-                    }
-                }
-            });
-            return $_fluents;
-        }
-        return null;
-    }
-    /**
-    * Dropping form table columns
-    *
-    * @returns bool
-    */
-    public static function dropFormTableColumn($tablename, $definitions)
-    {
-        if ($definitions) {
-            $_fluent = '';
-            Schema::table($tablename, function ($table) use ($definitions, &$_fluent) {
-                $_fluent = $table->dropColumn($definitions);
-            });
-            return $_fluent;
-        }
-        return null;
-    }
-
-    /**
-     * Check existence of form table
-     *
-     * @returns bool
-     */
-    public static function checkExistsFormTable($tablename)
-    {
-        return Schema::hasTable($tablename);
-    }
-    /**
-    * Check existence of form table columns
-    *
-    * @returns bool
-    */
-    public static function checkExistsFormTableColumn($tablename, $definitions)
-    {
-        return Schema::hasColumns($tablename, $definitions);
     }
 
     /*
     * Insert or update table definition.
     * Each case may need a mapper function. Reference: https://laravel.com/docs/5.8/migrations#creating-columns
     */
-    private function upsertFields(&$table, $definitions, $operation = '')
+    private function upsertFields(&$table, $definitions)
     {
+        $ret = array();
         if ($definitions) {
             $class = new DataStoreHelper();
-            //mapDefinitions($definitions);
-            foreach ($definitions as $definition) {
+            foreach($definitions as $definition){
                 $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
                 switch ($type) {
                     case 'text':
                     case 'email':
@@ -151,165 +82,146 @@ class DataStoreHelper
                     case 'search':
                     case 'url':
                     case 'tel':
-                        $class->mapTextField($table, $definition, $operation);
+                    case 's02':  //state dropdown
+                    case 's14':  //state dropdown
+                    case 's15':  //state dropdown
+                    case 's16':  //state dropdown
+                    case 'file': //store file path only
+                        $ret = $class->createDatabaseFields($table, $definition);
                         break;
                     case 'file':
-                    $class->mapFileField($table, $definition, $operation);
-                        break;
-                    case 'radio':
-                    case 'checkbox':
-                        $class->mapEnumField($table, $definition, $operation);
+                    case 's08': //radios
+                    case 's06': //checkbox
+                        $ret = $class->createDatabaseEnumFields($table, $definition);
                         break;
                     case 'number':
-                        $class->mapNumberField($table, $definition, $operation);
+                        $ret = $class->createDatabaseFields($table, $definition, 'decimal');
                         break;
                     case 'date':
-                        $class->mapDateField($table, $definition, $operation);
+                        $ret = $class->createDatabaseFields($table, $definition, 'date');
                         break;
                     case 'i14':
-                        $class->mapTextAreaField($table, $definition, $operation);
+                        $ret = $class->createDatabaseFields($table, $definition, 'longText');
                         break;
                     case 'd04': // Time
-                        $class->mapTimeField($table, $definition, $operation);
+                        $ret = $class->createDatabaseFields($table, $definition, 'time');
                         break;
                     default:
                         break;
                 }
             }
         }
+        return $ret;
     }
 
     /*
     * Set of mapping functions
     *
     */
-    private function mapFileField($table, $definition, $operation)
-    {
-        if ($operation == 'create') {
-            $table->binary($definition['id']);
-        }
 
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->binary($definition['id'])->nullable(false)->change();
-            } else {
-                $table->binary($definition['id'])->nullable(true)->change();
-            }
-        }
-    }
-    private function mapTimeField($table, $definition, $operation)
+    private function createDatabaseFields(&$table, $definition, $fieldType = 'string')
     {
-        if ($operation == 'create') {
-            $table->time($definition['id']);
+        $ret = array();
+        $tablename = $table->getTable();
+        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
+            $table->$fieldType($definition['name']);
         }
-
-        if (isset($definition['value'])) {
-            $table->time($definition['id'])->default($definition['value'])->change();
-        }
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->time($definition['id'])->nullable(false)->change();
-            } else {
-                $table->time($definition['id'])->nullable(true)->change();
+        else{
+            if (Schema::hasColumn($tablename, $definition['name'])) {
+                switch($fieldType){
+                    case 'string': $dataType = "varchar(255)"; break;
+                    case 'number': $dataType = "Decimal(10,2)"; break;
+                    case 'longText': $dataType = "LongText"; break;
+                    case 'time': $dataType = "Time"; break;
+                    case 'date': $dataType = "Date"; break;
+                    default: $dataType = "varchar(255)"; break;
+                }
+                $raw_statement = "ALTER TABLE ". $tablename .
+                    " MODIFY ". $definition['name'] . " $dataType ";
+                if (isset($definition['value'])) {
+                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
+                }
+                if (isset($definition['required'])) {
+                    if ($definition['required'] == 'true') {
+                        $raw_statement .= " NOT NULL";
+                    } else {
+                        $raw_statement .= " NULL";
+                    }
+                }
+                try {
+                    //Log::info($raw_statement);
+                    DB::statement($raw_statement);
+                }
+                catch(\Illuminate\Database\QueryException $ex){
+                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                }
             }
         }
-    }
-
-    private function mapTextAreaField(&$table, $definition, $operation)
-    {
-        if ($operation == 'create') {
-            $table->longtext($definition['id']);
-        }
-        if (isset($definition['value'])) {
-            $table->longtext($definition['id'])->default($definition['value'])->change();
-        }
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->longtext($definition['id'])->nullable(false)->change();
-            } else {
-                $table->longtext($definition['id'])->nullable(true)->change();
-            }
-        }
-    }
-    private function mapDateField(&$table, $definition, $operation)
-    {
-        if ($operation == 'create') {
-            $table->date($definition['id']);
-        }
-        if (isset($definition['value'])) {
-            $table->date($definition['id'])->default($definition['value'])->change();
-        }
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->date($definition['id'])->nullable(false)->change();
-            } else {
-                $table->date($definition['id'])->nullable(true)->change();
-            }
-        }
+        return $ret;
     }
 
-    private function mapNumberField(&$table, $definition, $operation)
+    private function createDatabaseEnumFields(&$table, $definition)
     {
-        if ($operation == 'create') {
-            $table->mediumInteger($definition['id']);
+        $ret = array();
+        $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
+        $form_id = str_replace('forms_','', $table->getTable());
+        $tablename = $table->getTable();
+        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
+           foreach ($definition['options'] as $key => $value) {
+                $inserted_id = DB::table('enum_mappings')->insertGetId([
+                    'form_table_id' => $form_id,
+                    'form_field_name' => $definition['name'],
+                    'value' => $value,
+                ]);
+            }
+            $table->Integer($definition['name'])->default($inserted_id);
         }
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->mediumInteger($definition['id'])->nullable(false)->change();
-            } else {
-                $table->mediumInteger($definition['id'])->nullable(true)->change();
+        else{
+            //check column, rename not allowed
+            if (Schema::hasColumn($tablename, $definition['name'])) {
+                $raw_statement = "ALTER TABLE ". $tablename .
+                    " MODIFY ". $definition['name'] . " int(11) ";
+                if (isset($definition['value'])) {
+                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
+                }
+                if (isset($definition['required'])) {
+                    if ($definition['required'] == 'true') {
+                        $raw_statement .= " NOT NULL";
+                    } else {
+                        $raw_statement .= " NULL";
+                    }
+                }
+                try {
+                    DB::statement($raw_statement);
+                    //update the options lookup table
+                    $this->updateLookupTable($definition, $form_id);
+                }
+                catch(\Illuminate\Database\QueryException $ex){
+                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                }
             }
         }
-        if (isset($definition['value'])) {
-            $table->mediumInteger($definition['id'])->default($definition['value'])->change();
-        }
+        return $ret;
     }
-    private function mapEnumField(&$table, $definition, $operation)
-    {
-        if ($definition['type'] == 'radio') {
-            $definition['options'] = explode("\n", $definition['radios']);
-        } else {
-            $definition['options'] = explode("\n", $definition['checkboxes']);
-        }
-        if ($operation == 'create') {
-            $table->enum($definition['id'], ['']);
-        }
-        if (!empty($definition['options'])) {
-            $table->enum($definition['id'], $definition['options'])->change();
-        }
-        if (isset($definition['value'])) {
-            $table->enum($definition['id'])->default($definition['value'])->change();
-        }
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->enum($definition['id'])->nullable(false)->change();
-            } else {
-                $table->enum($definition['id'])->nullable(true)->change();
+    private function updateLookupTable($definition, $form_id){
+        if($form_id && $definition){
+            $results = DB::select('select * from enum_mappings where form_table_id = ? AND form_field_name = ? ', array($form_id, $definition['name']));
+            foreach($results as $result){
+                if(!in_array($result->value, $definition['options'])){
+                    DB::delete('delete from enum_mappings where id = ?', array($result->id));
+                }
+                else{
+                    if (($key = array_search($result->value, $definition['options'])) !== false) {
+                        unset($definition['options'][$key]);
+                    }
+                }
+            }
+            //Log::info(print_r($definition['options'],1));
+            if (! empty($definition['options'])) {
+                foreach ($definition['options'] as $option) {
+                    DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                }
             }
         }
-    }
-
-    private function mapTextField(&$table, $definition, $operation = '')
-    {
-        if ($operation == 'create') {
-            $table->string($definition['id']);
-        }
-
-        if (isset($definition['required'])) {
-            if ($definition['required'] == 'true') {
-                $table->string($definition['id'])->nullable(false)->change();
-            } else {
-                $table->string($definition['id'])->nullable(true)->change();
-            }
-        }
-        if (isset($definition['maxlength']) && intval($definition['maxlength']) > 0) {
-            $table->string($definition['id'], intval($definition['maxlength']))->change();
-        }
-        if (isset($definition['value'])) {
-            $table->string($definition['id'])->default($definition['value'])->change();
-        }
-
-        $columns = $table->getAddedColumns();
-        //Log::info(print_r($columns,1));
     }
 }

@@ -93,15 +93,23 @@ class FormController extends Controller
     public function save(Request $request)
     {
         $form_id = $request->input('id');
-
         if ($form_id == 0) {
             return $this->create($request);
         } else {
             $returnForm = Form::where('id', $form_id)->first();
             $returnForm['content'] = $this->scrubString($request->input('content'));
+            $previousContent = $request->input('previousContent');
             $this->processCSV($returnForm, $request->getHttpHost());
             $returnForm->save();
-            return response()->json($returnForm);
+            if ($returnForm) {
+                //update form table
+                $definitions = json_decode($returnForm['content'], true);
+                $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $definitions['data']);
+                //if($updated_table)
+                    return response()->json($returnForm);
+                //else
+                    //return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
+            }
         }
         return response()->json(['status' => 0, 'message' => 'Failed to save form']);
     }
@@ -205,7 +213,7 @@ class FormController extends Controller
                     $returnForm = Form::where('id', $form->id)->first();
                     $returnForm['content'] = json_decode($returnForm['content'], true);
                     // create the form table
-                    $created_table = DataStoreHelper::createFormTable($returnForm['content']['settings']['name'], $returnForm['content']['data']);
+                    $created_table = DataStoreHelper::createFormTable('forms_'.$form->id, $returnForm['content']['data']);
                     if($created_table)
                         return response()->json($returnForm);
                     else
@@ -282,7 +290,7 @@ class FormController extends Controller
             if (!$remaining_form_users) {
                 $form_delete = Form::where([['id', $form_id]])->delete();
                 if ($form_delete) {
-                    $deleted = DataStoreHelper::deleteFormTable($form_delete['content']['settings']['name']);
+                    $deleted = DataStoreHelper::deleteFormTable('forms_'.$form_id);
                     if( $deleted )
                         return response()->json(['status' => 1, 'message' => 'Deleted form from user']);
                     else
