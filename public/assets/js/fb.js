@@ -1156,10 +1156,10 @@ function saveForm(previousFormSettings) {
 	$.ajax(settings).done(function (data) {
 		$('.saveStatus').text('Form Saved!');
 		formId = data.id;
-		setTimeout(function(){
-			$('.saveStatus').text('');
+		//setTimeout(function(){
+			//$('.saveStatus').text('');
 			$('.saveSpinner').hide();
-			}, 2000);
+			//}, 2000);
 			isSaving = false; // saveForm is done, allow save again.
 	})
 	.fail(function() {
