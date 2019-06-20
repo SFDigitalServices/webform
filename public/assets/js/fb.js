@@ -4,6 +4,7 @@ var emptyForm;
 var formId = 0;
 var csvFile = '';
 var allForms; //load all the forms into global?
+var isSaving = false;
 
 $(document).ready(function(){
 
@@ -21,10 +22,10 @@ $(document).ready(function(){
     var mouseY = md.pageY;
     var $temp;
     var timeout;
-	var dragExisting = false;
-	var existingPos;
-	var existingCount;
-	var clickNow = Date.now();
+		var dragExisting = false;
+		var existingPos;
+		var existingCount;
+		var clickNow = Date.now();
     var $this = $(this);
     var delays = {
       main: 0,
@@ -32,7 +33,8 @@ $(document).ready(function(){
     }
     var type = $this.parent().parent().parent().parent().attr("id") === "SFDSWFB-components" ? "main" : "form";
     var saved = $("#SFDSWFB-save").val();
-    saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+		var previousFormSettings = saved;
 	if (saved.settings == undefined) saved.settings = new Object();
 	if (saved.data == undefined) saved.data = new Array();
 
@@ -206,7 +208,7 @@ $(document).ready(function(){
 				$("#SFDSWFB-target .component").css({"border-top" : "1px solid white", "border-bottom" : "none"});
 				tops = [];
 			}
-        }
+		}
 
 		resizeHeight();
 
@@ -222,7 +224,7 @@ $(document).ready(function(){
 		bindQuickDelete();
 
 		//auto save
-		saveForm();
+		saveForm(previousFormSettings);
       });
     }, delays[type]); //end delayed
 
@@ -456,33 +458,34 @@ $(document).ready(function(){
     $(".popover").delegate(".btn-info", "click", function(e){
       e.preventDefault();
 
-	  var saved = $("#SFDSWFB-save").val();
-	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-	  //check id if in this form
-	  if ($('.popover #id')[0] != undefined) {
-		if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
-			var errorMsg = setTimeout(function() {
-				loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
-			},100);
-			return;
-		}
-		var curIndex = $(".popover").prevAll(".form-group").length-1;
-		var oldId = saved.data[curIndex].id;
-		var newId = $('#id').val();
-		//if the id is changing
-		if (oldId != newId) {
-			saved = changeIds(oldId, newId, saved);
-		}
+			var saved = $("#SFDSWFB-save").val();
+			saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+			//check id if in this form
+			if ($('.popover #id')[0] != undefined) {
+			if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
+				var errorMsg = setTimeout(function() {
+					loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
+				},100);
+				return;
+			}
+			var curIndex = $(".popover").prevAll(".form-group").length-1;
+			var oldId = saved.data[curIndex].id;
+			var newId = $('#id').val();
+			//if the id is changing
+			if (oldId != newId) {
+				saved = changeIds(oldId, newId, saved);
+			}
 	  }
 
 	  var saved = $("#SFDSWFB-save").val();
-	  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+		var previousFormSettings = saved;
 
       var inputs = $(".popover input");
 			inputs.push($(".popover textarea")[0]);
 			inputs.push($(".popover select"));
 
-      $.each(inputs, function(i,e){
+    $.each(inputs, function(i,e){
 				var vartype = $(e).attr("id");
 
 				var value = $active_component.find('[data-valtype="'+vartype+'"]')
@@ -618,7 +621,7 @@ $(document).ready(function(){
 	  $("#SFDSWFB-save").val(JSON.stringify(saved));
 	  resizeHeight();
 	  //auto save
-	  saveForm();
+		saveForm(previousFormSettings);
    });
 
   });  //end popover on click event
@@ -654,9 +657,10 @@ function quickDelete(obj) {
 	$('#SFDSWFB-target .form-group').eq(existingPos).remove();
 	var saved = $("#SFDSWFB-save").val();
 	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	var previousFormSettings = saved;
 	saved.data.splice(existingPos, 1);
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
-	saveForm();
+	saveForm(previousFormSettings);
 	resizeHeight();
 }
 
@@ -1009,7 +1013,8 @@ function isReferenced(myId) {
 
 function updateSettings() {
 	var saved = $("#SFDSWFB-save").val();
-  saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	var previousFormSettings = saved;
 
 	var newSettings = {};
 	var useCSV = false;
@@ -1050,7 +1055,7 @@ function updateSettings() {
 	}
 
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
-	saveForm();
+	saveForm(previousFormSettings);
 	if(useCSV)
 		populateCSV();
 }
@@ -1120,12 +1125,18 @@ function goHome(back) {
 	$('.forms').html('<i class="fas fa-circle-notch fa-spin"></i>');
     $(".content").show();
 }
-function saveForm() {
+function saveForm(previousFormSettings) {
+	if(isSaving) //global to keep track of form save state
+		return; // could implement a while loop here to wait
+	isSaving = true;
 	//requires GLOBALS to be set
 	$('.saveStatus').text('Saving...');
 	$('.saveSpinner').show();
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
+	form.previousContent = previousFormSettings;
+	console.log(form.previousContent);
+	console.log(form.content);
 	form.id = formId;
 	form.user_id = user_id;
 	form.api_token = api_token;
@@ -1143,17 +1154,18 @@ function saveForm() {
 		"data": form
 	}
 	$.ajax(settings).done(function (data) {
-		//savedForm = JSON.parse(data);
 		$('.saveStatus').text('Form Saved!');
 		formId = data.id;
-		setTimeout(function(){
-			$('.saveStatus').text('');
+		//setTimeout(function(){
+			//$('.saveStatus').text('');
 			$('.saveSpinner').hide();
-	    }, 2000);
+			//}, 2000);
+			isSaving = false; // saveForm is done, allow save again.
 	})
 	.fail(function() {
 		$('.saveSpinner').hide();
 		loadDialogModal("Oops!", "Error saving form. Please try again or contact SFDS.");
+		isSaving = false; // saveForm fails, allow save again.
 	});
 }
 var autofillNames = null;
