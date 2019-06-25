@@ -57,8 +57,8 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             array('type' => 'file', 'id' => 'my_file', 'required' => 'false'),
             array('formtype' => 'i14', 'id' => 'my_textarea'),
             array('type' => 'number', 'id' => 'my_number', 'value' => '10'),
-            array('formtype' => 's08', 'id' => 'my_radio', 'radios' => array(array('option1'), array('option2'))),
-            array('formtype' => 's06', 'id' => 'my_cb', 'checkboxes' => array(array('option1'), array('option2'))),
+            array('formtype' => 's08', 'id' => 'my_radio', 'radios' => '["Option one","Option two","three","four"]'),
+            array('formtype' => 's06', 'id' => 'my_cb', 'checkboxes' => '["CB one","CB two","CB three","four"]'),
         );
         $mytable = $this->dataStoreHelperTester::createFormTable($tablename, $mapping_definitions);
         $this->assertTrue(Schema::hasTable($tablename));
@@ -67,7 +67,10 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             // assert each column definition from above, need to add more asserts for attributes.
             switch ($column['name']) {
                 case 'id': break;
-                case 'name': $this->assertEquals($column['type'], 'string');
+                case 'name':
+                    $this->assertEquals($column['type'], 'string');
+                    $this->assertEquals($column['name'], 'name');
+                    $this->assertEquals($column['length'], '255');
                     break;
                 case 'email': $this->assertEquals($column['type'], 'string');
                     break;
@@ -85,39 +88,27 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
                     break;
                 case 'my_textarea': $this->assertEquals($column['type'], 'longText');
                     break;
-                case 'my_radio': $this->assertEquals($column['type'], 'enum');
+                case 'my_radio': $this->assertEquals($column['type'], 'integer');
                     break;
-                case 'my_cb': $this->assertEquals($column['type'], 'enum');
+                case 'my_cb': $this->assertEquals($column['type'], 'integer');
                     break;
-                case 'my_file': $this->assertEquals($column['type'], 'binary');
+                case 'my_file': $this->assertEquals($column['type'], 'string');
                     break;
                 default:
                     break;
             }
         }
     }
-
-	public function testChangeFormTableColumn() {
-        $tablename = 'forms_form3';
+    public function testDropFormTableColumn() {
+        $tablename= 'forms_form5';
         $this->dataStoreHelperTester::createFormTable($tablename, $this->definitions);
         $this->assertTrue(Schema::hasTable($tablename));
-
-        $definition = array(
-            array(
-                'type' => 'email', 'id' => 'email', 'maxlength' => '40'
-            ),
-            array(
-                'type' => 'text', 'id' => 'lastname', 'maxlength' => '90'
-            )
-        );
-        $changedColumns = $this->dataStoreHelperTester::changeFormTableColumn($tablename, $definition);
-
-        // email length should = 40
-        $this->assertEquals($changedColumns[0]['length'], 40);
-        // lastname length should = 90
-        $this->assertEquals($changedColumns[1]['length'], 90);
+        $definition = array('email', 'firstname');
+        $_fluent = $this->dataStoreHelperTester::dropFormTableColumn($tablename, $definition);
+        $this->assertNotTrue(Schema::hasColumns($tablename, array('email')));
+        $this->assertNotTrue(Schema::hasColumns($tablename, array('firstname')));
+        $this->assertTrue(Schema::hasColumns($tablename, array('lastname')));
     }
-
     protected function _after()
     {
         Schema::dropIfExists('forms_form1');

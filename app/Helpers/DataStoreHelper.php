@@ -43,6 +43,25 @@ class DataStoreHelper extends Migration
         }
     }
 
+     /**
+     * Dropping form table columns
+     *
+     * @returns bool
+     */
+    public static function dropFormTableColumn($tablename, $definitions) {
+        if($definitions){
+            $_fluent = '';
+            Schema::table($tablename, function($table) use ($definitions, &$_fluent)
+            {
+                if (Schema::hasColumns($table->getTable(), $definitions)) {
+                    $_fluent = $table->dropColumn($definitions);
+                    return $_fluent;
+                }
+            });
+        }
+        return null;
+    }
+
     /**
      * Adding form table columns
      *
@@ -72,10 +91,14 @@ class DataStoreHelper extends Migration
         $ret = array();
         if ($definitions) {
             $class = new DataStoreHelper();
-            foreach($definitions as $definition){
-                $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
-                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                switch ($type) {
+            foreach ($definitions as $key => $definition) {
+                //Log::info(print_r($definition,1));
+                if ( strcmp($key, 'remove') == 0 ) {
+                    $ret[] = $class->dropFormTableColumn($table->getTable(), array($definition['name']));
+                } else {
+                    $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+                    $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+                    switch ($type) {
                     case 'text':
                     case 'email':
                     case 'password':
@@ -87,27 +110,29 @@ class DataStoreHelper extends Migration
                     case 's15':  //state dropdown
                     case 's16':  //state dropdown
                     case 'file': //store file path only
-                        $ret = $class->createDatabaseFields($table, $definition);
+                        $ret[] = $class->createDatabaseFields($table, $definition);
                         break;
                     case 'file':
                     case 's08': //radios
                     case 's06': //checkbox
-                        $ret = $class->createDatabaseEnumFields($table, $definition);
+                        $ret[] = $class->createDatabaseEnumFields($table, $definition);
                         break;
                     case 'number':
-                        $ret = $class->createDatabaseFields($table, $definition, 'decimal');
+                        $ret[] = $class->createDatabaseFields($table, $definition, 'decimal');
                         break;
                     case 'date':
-                        $ret = $class->createDatabaseFields($table, $definition, 'date');
+                        $ret[] = $class->createDatabaseFields($table, $definition, 'date');
                         break;
                     case 'i14':
-                        $ret = $class->createDatabaseFields($table, $definition, 'longText');
+                        $ret[] = $class->createDatabaseFields($table, $definition, 'longText');
                         break;
                     case 'd04': // Time
-                        $ret = $class->createDatabaseFields($table, $definition, 'time');
+                    case 'time':
+                        $ret[] = $class->createDatabaseFields($table, $definition, 'time');
                         break;
                     default:
                         break;
+                }
                 }
             }
         }
@@ -115,10 +140,9 @@ class DataStoreHelper extends Migration
     }
 
     /*
-    * Set of mapping functions
+    * Mapping functions for form fields to database columns.
     *
     */
-
     private function createDatabaseFields(&$table, $definition, $fieldType = 'string')
     {
         $ret = array();
@@ -160,10 +184,18 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
+    /*
+    * Map Radio buttons and Checkboxes to Database column.
+    * Opted to use a lookup table instead of the data type enum due to DBAL's defect.
+    *
+    */
+
     private function createDatabaseEnumFields(&$table, $definition)
     {
         $ret = array();
         $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
+        $definition['options'] = json_decode($definition['options'], true);
+        //Log::info(print_r($definition['options'],1));
         $form_id = str_replace('forms_','', $table->getTable());
         $tablename = $table->getTable();
         if ( ! Schema::hasColumn($tablename, $definition['name'])) {
@@ -181,7 +213,7 @@ class DataStoreHelper extends Migration
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
                     " MODIFY ". $definition['name'] . " int(11) ";
-                if (isset($definition['value'])) {
+                if (isset($definition['value'])) { // need to get reference id from lookup table.
                     $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
                 }
                 if (isset($definition['required'])) {
@@ -191,6 +223,7 @@ class DataStoreHelper extends Migration
                         $raw_statement .= " NULL";
                     }
                 }
+                //Log::info($raw_statement);
                 try {
                     DB::statement($raw_statement);
                     //update the options lookup table
@@ -203,6 +236,11 @@ class DataStoreHelper extends Migration
         }
         return $ret;
     }
+
+    /*
+    * Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
+    *
+    */
     private function updateLookupTable($definition, $form_id){
         if($form_id && $definition){
             $results = DB::select('select * from enum_mappings where form_table_id = ? AND form_field_name = ? ', array($form_id, $definition['name']));
@@ -210,14 +248,14 @@ class DataStoreHelper extends Migration
                 if(!in_array($result->value, $definition['options'])){
                     DB::delete('delete from enum_mappings where id = ?', array($result->id));
                 }
-                else{
+                else{ //if enum_mapping records is in $definitions['options], remove from $definition['option']
                     if (($key = array_search($result->value, $definition['options'])) !== false) {
                         unset($definition['options'][$key]);
                     }
                 }
             }
-            //Log::info(print_r($definition['options'],1));
-            if (! empty($definition['options'])) {
+           if (! empty($definition['options'])) {
+                // add record to enum_mappings one at a time, can we batch this?
                 foreach ($definition['options'] as $option) {
                     DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
                 }

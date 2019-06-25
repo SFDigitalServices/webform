@@ -15,11 +15,13 @@ use App\Helpers\UserHelper;
 use App\Helpers\ListHelper;
 use App\Helpers\HTMLHelper;
 use App\Helpers\DataStoreHelper;
+use App\Helpers\ControllerHelper;
 
 use Illuminate\Http\Request;
 
 class FormController extends Controller
 {
+    protected $controllerHelper;
     /**
      * Create a new controller instance.
      *
@@ -40,6 +42,7 @@ class FormController extends Controller
             'getAuthors',
             'purgeCSV'
           ]]);
+          $this->controllerHelper = new ControllerHelper();
     }
 
     /**
@@ -98,13 +101,26 @@ class FormController extends Controller
         } else {
             $returnForm = Form::where('id', $form_id)->first();
             $returnForm['content'] = $this->scrubString($request->input('content'));
-            $previousContent = $request->input('previousContent');
+            $previousContent = array();
+            $previousContent['data'] = ($request->input('previousContent'));
             $this->processCSV($returnForm, $request->getHttpHost());
+
             $returnForm->save();
             if ($returnForm) {
                 //update form table
                 $definitions = json_decode($returnForm['content'], true);
-                $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $definitions['data']);
+                //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
+                $count = count($definitions['data']);
+                for ($i = 0; $i < $count; $i++) {
+                    if( ! isset($definitions['data'][$i]['name']) )
+                    $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
+                }
+                $count = count($previousContent['data']);
+                for ($i = 0; $i < $count; $i++) {
+                    if( ! isset($previousContent['data'][$i]['name']) )
+                    $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
+                }
+                $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
                 //if($updated_table)
                     return response()->json($returnForm);
                 //else
@@ -859,26 +875,8 @@ class FormController extends Controller
         $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
         $scrubbed = str_replace("'", "&apos;", $scrubbed);
         $scrubbed = str_replace('\"', "", $scrubbed);
-				$scrubbed = json_encode($this->parseOptionValues(json_decode($scrubbed, true)));
+		$scrubbed = json_encode($this->controllerHelper->parseOptionValues(json_decode($scrubbed, true)));
         return $scrubbed;
-    }
-
-    private function parseOptionValues($content)
-    {
-        $ret['settings'] = $content['settings'];
-        $ret['data'] = array();
-
-        foreach ($content['data'] as $field) {
-            if (array_key_exists('option', $field) && !is_array($field['option'])) {
-                $field['option'] = explode("\n", $field['option']);
-            } elseif (array_key_exists('checkboxes', $field) && !is_array($field['checkboxes'])) {
-                $field['checkboxes'] = explode("\n", $field['checkboxes']);
-            } elseif (array_key_exists('radios', $field) && !is_array($field['radios'])) {
-				$field['radios'] = explode("\n", $field['radios']);
-            }
-            $ret['data'][] = $field;
-				}
-        return $ret;
     }
 
     public function notifyUser(Request $request)
