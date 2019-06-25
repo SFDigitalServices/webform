@@ -1,5 +1,7 @@
 <?php
 
+namespace tests;
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -36,6 +38,14 @@ class CreateUsersTable extends Migration
             $table->longText('content');
             $table->timestamps();
             $table->softDeletes();
+        });
+
+        Schema::dropIfExists('enum_mappings');
+        Schema::create('enum_mappings', function (Blueprint $table) {
+            $table->increments('id');
+            $table->smallInteger('form_table_id');
+            $table->string('form_field_name');
+            $table->string('value');
         });
     }
 
