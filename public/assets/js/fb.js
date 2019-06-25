@@ -226,7 +226,8 @@ $(document).ready(function(){
 
 		//auto save
 		saveForm(previousFormSettings);
-	});
+      });
+
     }, delays[type]); //end delayed
 
     $(document).mouseup(function () {
@@ -462,6 +463,7 @@ $(document).ready(function(){
 			var saved = $("#SFDSWFB-save").val();
 			saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 			var previousFormSettings = saved.data.slice();
+
 			//check id if in this form
 			if ($('.popover #id')[0] != undefined) {
 			if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
@@ -481,6 +483,7 @@ $(document).ready(function(){
 
 	  var saved = $("#SFDSWFB-save").val();
 		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+		var previousFormSettings = saved;
 
       var inputs = $(".popover input");
 			inputs.push($(".popover textarea")[0]);
@@ -648,9 +651,9 @@ $(document).ready(function(){
 }); //end document ready
 
 function bindQuickDelete() {
-	$('#SFDSWFB-target .form-group.component').unbind('mouseenter mouseleave');
-	$('#SFDSWFB-target .form-group.component').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
-	$('#SFDSWFB-target .form-group.component').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').unbind('mouseenter mouseleave');
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').on('mouseenter',function(){$(this).append('<i class="fas fa-times-circle" onclick="quickDelete(this)"></i>')});
+	$('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').on('mouseleave',function(){$(this).find('.fa-times-circle').remove()});
 }
 
 function quickDelete(obj) {
@@ -659,6 +662,7 @@ function quickDelete(obj) {
 	var saved = $("#SFDSWFB-save").val();
 	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 	var previousFormSettings = saved.data.slice();
+
 	saved.data.splice(existingPos, 1);
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
 	saveForm(previousFormSettings);
@@ -1136,6 +1140,8 @@ function saveForm(previousFormSettings) {
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
 	form.previousContent = previousFormSettings;
+	console.log(form.previousContent);
+	console.log(form.content);
 	form.id = formId;
 	form.user_id = user_id;
 	form.api_token = api_token;
@@ -1206,7 +1212,7 @@ function embedCode(id) {
 	var str = "<!-- If possible, place the following in your <head> tag. -->"+
 	"\n"+
 	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"></script>\n"+
-	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js\"></script>\n"+
+	"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js\"></script>\n"+
 	"<script src=\""+assetsUrl+"js/error-msgs.js\"></script>"+
 	"\n"+
 	"<link href=\"https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css\" rel=\"stylesheet\" />\n"+
