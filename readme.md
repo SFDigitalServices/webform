@@ -69,7 +69,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ```
 
 
-## Deplopyment to Heroku
+## Deployment to Heroku
 
 A pipeline has been setup for this project on Heroku that connects to the github repo. Every push to the branch you specify here will deploy a new version of this app. 
 
