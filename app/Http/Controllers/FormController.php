@@ -14,6 +14,7 @@ use Validator;
 use App\Helpers\UserHelper;
 use App\Helpers\ListHelper;
 use App\Helpers\HTMLHelper;
+use App\Helpers\DataStoreHelper;
 
 use Illuminate\Http\Request;
 
@@ -29,15 +30,15 @@ class FormController extends Controller
         // defines operations that need to be protected
         $this->middleware('auth', ['only' =>
           [
-                        'create',
+            'create',
             'save',
             'clone',
             'getUserForms',
             'getForm',
             'getFilename',
             'share',
-               'getAuthors',
-              'purgeCSV'
+            'getAuthors',
+            'purgeCSV'
           ]]);
     }
 
@@ -222,7 +223,7 @@ class FormController extends Controller
 		
 		$embedHTML = $this->embedJS($request);
         return '<!DOCTYPE html><html><head><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'.
-		'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>'.
+		'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js"></script>'.
 		'<script src="https://formbuilder-sf-staging.herokuapp.com/assets/js/error-msgs.js"></script>'.
 		'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
 		'<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
@@ -626,156 +627,6 @@ class FormController extends Controller
         return response()->json(['status' => 0, 'message' => 'Failed to delete form']);
     }
 
-    // EMBED FUNCTIONS
-    public function generateHTML($form, $base_url = '')
-    {
-        $nonOptionalFields = array("m02", "m04", "m06", "m08", "m10", "m11", "m14", "m16");
-        $content = $form['content'];
-
-        $str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
-        $str = '';
-
-        $csvPath = '//'.$base_url.'/form/submit';
-
-        //if this form is a csv transaction, add form_id
-        if (substr($content['settings']['action'], 0 - strlen($csvPath)) == $csvPath) {
-            $str .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
-        }
-
-        foreach ($content['data'] as $field) {
-            if ($field['formtype'] == "m16") { //special parsing for form sections
-                $sections[] = $field;
-                $str .= '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
-            } elseif ($field['formtype'] == "m11") { //hidden fields
-                $hiddenValue = $field['value'] == null ? "" : $field['value'];
-                $hiddenName = $field['name'] == null ? "" : $field['name'];
-                $hiddenId = $field['id'] == null ? "" : $field['id'];
-                $str .= '<input type="hidden" name="'.$hiddenName.'" id="'.$hiddenId.'" value="'.$hiddenValue.'"/>';
-            } else {
-                $str .= '<div class="form-group" data-id="'.$field['id'].'"><label class="control-label">';
-                $str .= isset($field['label']) ? $field['label'] : "";
-                if (in_array($field['formtype'], $nonOptionalFields)) {
-                    $str .= '</label><div>';
-                } else {
-                    $str .= ' <span class="optional">(optional)</span></label><div>';
-                }
-                $str .= $this->printFormTypeStart($field['formtype']);
-                $skipAttr = false;
-                $isCheckbox = false;
-                $attr = "";
-                $inner = "";
-                $help = "";
-                foreach ($field as $key => $value) {
-                    if ($key == "option") {
-                        $inner .= '>';
-                        $options = $value;
-                        foreach ($options as $option) {
-                            $inner .= '<option value="'.$option.'">'.$option.'</option>';
-                        }
-                    } elseif ($key == "checkboxes") {
-                        $skipAttr = $value;
-                        $manyType ="checkbox";
-                        $isCheckbox = true;
-                    } elseif ($key == "radios") {
-												$skipAttr = $value;
-												//$skipAttr = explode("\n", $value);
-                        $manyType = "radio";
-                    } elseif ($key == "textarea") {
-                        if ($field['formtype'] == "m08" || $field['formtype'] == "m10") { //paragraph tags need to convert line breaks to page breaks
-                            $inner = '>'.str_replace("\n", "<br/>", $value);
-                        } else {
-                            $inner = '>'.$value;
-                        }
-                    } elseif ($key == "codearea") {
-                        $inner = '>'.html_entity_decode($value);
-                    } elseif ($key == "type" && $value == "number") {
-                        $attr .= 'type="number" step="any" ';
-                    } elseif ($key == "regex") {
-                        if (!$skipAttr) {
-                            $attr .= 'pattern="'.$value.'" ';
-                        }
-                    } elseif ($key == "required") { //this tends to be last in the array
-                        if ($value == "true") {
-                            $attr .= 'required ';
-                            $pos = strrpos($str, ' <span class="optional">(optional)</span>');
-                            if ($pos !== false) {
-                                $str = substr_replace($str, '', $pos, 41);
-                            }
-                        }
-                    } elseif ($key == "help") {
-                        $help = $value;
-                    } elseif ($key == "button") {
-                        $inner = '>'.$value;
-                    } elseif ($key == "color") {
-                        if (strpos($attr, "class=") !== false) {
-                            $attr = str_replace('class="', 'class="'.$value.' ', $attr);
-                        } else {
-                            $attr .= 'class="'.$value.'" ';
-                        }
-                    } elseif ($key == "label") {
-                        //do nothing, already used above
-                    } elseif ($key == "calculations" || $key == "conditions") {
-                        //do nothing
-                    } else {
-                        //key value attributes
-                        if ($key == "name" && $isCheckbox) {
-                            $value = $value."[]";
-                            $isCheckbox = false;
-                        }
-                        if (!$skipAttr) {
-                            $attr .= $key.'="'.$value.'" ';
-                        } else {
-                            if ($key != "id" && $key != "value") {
-                                $attr .= $key.'="'.$value.'" ';
-                            } elseif ($key == "value") {
-                                $defVal = $value;
-                            }
-                        }
-                    }
-                }
-                if (is_array($skipAttr)) {
-                    foreach ($skipAttr as $val) {
-                        $manySelected = "";
-                        if (isset($defVal)) {
-                            if ($val == $defVal) {
-                                $manySelected = "checked ";
-                            }
-                        }
-                        $str .= '<label class="'.$manyType.'"><input type="'.$manyType.'" value="'.$val.'" '.$attr.$manySelected.'/>'.$val.'</label>';
-                    }
-                } else {
-                    $str .= $attr.$inner;
-                    // do special processing for state dropdowns
-                    if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16") {
-                        $str .= '>';
-                        $str .= ListHelper::getStates($field['formtype']);
-                    }
-                    $str .= $this->printFormTypeEnd($field['formtype']);
-                }
-                $str .= '<p class="help-block with-errors">'.$help.'</p>';
-                $str .= '</div></div>';
-            }
-        }
-
-        $str2 = '</fieldset></form>';
-
-        if (!empty($sections)) {
-            $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $nav = '<ul class="form-section-nav"><li tabindex="0" class="active">'.$section1.'</li>';
-            foreach ($sections as $idx => $section) {
-                $active = $idx === "0" ? ' class="active"' : '';
-                $nav .= '<li tabindex="0"'.$active.'>'.$section['label'].'</li>';
-            }
-            $nav .= '</ul>';
-            $wrap1 = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
-            $wrap2 = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button class="btn btn-lg form-section-next submit">Submit</button></div></div></div>';
-            $str = $nav.$str1.$wrap1.$str.$wrap2.$str2;
-        } else {
-            $str = $str1.$str.$str2;
-        }
-        return $str;
-    }
-
     public function rewriteCSV($content, $filename)
     {
         $column = 0;
@@ -1029,100 +880,6 @@ class FormController extends Controller
         return $ret;
     }
 
-
-		public function printFormTypeStart($formtype) {
-			switch ($formtype) {
-			/*
-			case "i06": //todo prepended text
-			case "i08": //todo appended text
-			case "i10": //todo prepended checkbox
-			case "i12": //todo appended checkbox
-			case "m13": //todo file upload
-			*/
-			case "s08": //input radio do nothing
-			case "s06": //input checkbox do nothing
-				$str = "";
-				break;
-			case "i14":
-				$str = "<textarea ";
-				break;
-			case "s02":
-			case "s04":
-			case "s14":
-			case "s15":
-			case "s16":
-				$str = "<select ";
-				break;
-			case "m02":
-				$str = "<h1 ";
-				break;
-			case "m04":
-				$str = "<h2 ";
-				break;
-			case "m06":
-				$str = "<h3 ";
-				break;
-			case "m08":
-			case "m10":
-				$str = "<p ";
-				break;
-			case "m14":
-				$str = "<button ";
-				break;
-			case "m16":
-				// form separator handled above
-				break;
-			default:
-				$str = "<input ";
-			}
-			return ($str);
-		}
-		public function printFormTypeEnd($formtype) {
-            switch ($formtype) {
-            /*
-            case "i06": //todo prepended text
-            case "i08": //todo appended text
-            case "i10": //todo prepended checkbox
-            case "i12": //todo appended checkbox
-            case "m13": //todo file upload
-            */
-            case "s08": // input radio do nothing
-            case "s06": // input checkbox do nothing
-            break;
-            case "m16":
-            // form separator handled above
-            break;
-            case "i14":
-            $str = "</textarea>";
-            break;
-            case "s02":
-            case "s04":
-            case "s14":
-            case "s15":
-            case "s16":
-            $str = "</select>";
-            break;
-            case "m02":
-            $str = "</h1>";
-            break;
-            case "m04":
-            $str = "</h2>";
-            break;
-            case "m06":
-            $str = "</h3>";
-            break;
-            case "m08":
-            case "m10":
-            $str = "</p>";
-            break;
-            case "m14":
-            $str = "</button>";
-            break;
-            default:
-            $str = "/>";
-            }
-            return ($str);
-        }
     public function notifyUser(Request $request)
     {
         $form_id = $request->input('form_id');
