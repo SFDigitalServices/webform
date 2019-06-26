@@ -40,7 +40,7 @@
         @endif
 
         @if ($type == "app-text")
-          <label class='control-label'>Appepend</label>
+          <label class='control-label'>Append</label>
           <input type='text' name='append' id='append' class='form-control'>
         @endif
       @endisset
