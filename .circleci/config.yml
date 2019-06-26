@@ -70,7 +70,7 @@ jobs: # a collection of steps
             cp .env.example .env
             cd tests/frontend
             $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
-       - run:
+      - run:
           name: CSS compilation requirements
           command: npm install laravel-mix cross-env node-sass acorn --save-dev
       - run: npm run dev
