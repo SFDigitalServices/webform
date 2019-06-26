@@ -42,6 +42,10 @@ jobs: # a collection of steps
       - run:
           name: Update Missed Dependencies
           command: composer update
+      - run:
+          name: CSS compilation requirements
+          command: npm install laravel-mix cross-env node-sass acorn --save-dev
+      - run: npm run dev
       - run: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
       - run: ./vendor/bin/codecept run
