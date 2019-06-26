@@ -419,13 +419,15 @@ class FormController extends Controller
 
     public function wrapJS($str, $sectional, $content)
     {
-        $js = "jQuery( document ).ready(function() {"; //start ready
+		$js = "var script = document.createElement('script');script.onload = function () {"; //start ready
+		
         $js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
 		$js .= "if (typeof SFDSerrorMsgs != 'undefined') { SFDSerrorMsgs(); } else { jQuery('#SFDSWF-Container form').validator(); }";
 
         //check content for extra features
         $calculations = [];
         $conditions = [];
+		$webhooks = [];
         $formtypes = [];
         if ($content) {
             foreach ($content['data'] as $field) {
@@ -436,7 +438,9 @@ class FormController extends Controller
                         $calculations[$fieldId] = $value;
                     } elseif ($key == "conditions") { //gather conditionals
                         $conditions[$fieldId] = $value;
-                    }
+                    } elseif ($key == "webhooks") {
+						$webhooks[$fieldId] = $value;
+					}
                 }
             }
         }
@@ -531,37 +535,49 @@ class FormController extends Controller
         }
 
         if ($sectional) { //additional controls for sectional forms
-            $js .= "jQuery('#SFDSWF-Container .form-section-nav li').click(function(e){";
-            $js .= "var i = jQuery(e.target).prevAll().length;";
-            $js .= "SFDSWF_goto(i);";
-            $js .= "});";
-
-            $js .= "jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {";
-            $js .= "var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;";
-            $js .= "SFDSWF_goto(i < 1 ? 0 : i-1);";
-            $js .= "});";
-
-            $js .= "jQuery('#SFDSWF-Container .form-section-next').click(function(e) {";
-            $js .= "var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;";
-            $js .= "SFDSWF_goto(i+1);";
-            $js .= "});";
-
-            $js .= "var SFDSWF_goto = function(i) {";
-            $js .= "jQuery('#SFDSWF-Container .form-section-nav li').removeClass('active');";
-            $js .= "jQuery('#SFDSWF-Container .form-section-nav li').eq(i).addClass('active');";
-            $js .= "jQuery('#SFDSWF-Container .form-section').removeClass('active');";
-            $js .= "jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');";
-            $js .= "jQuery('#SFDSWF-Container .form-section-header').removeClass('active');";
-            $js .= "jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');";
-            $js .= "jQuery('html,body').animate({ scrollTop: 0 }, 'medium');";
-            $js .= "}";
+			$js .= "initSectional();";
         }
-
-        $js .= "});"; //end ready
-
+		
+		//{"label":"BAN","id",:"BAN","webhooks":{"ids":["BAN"],"endpoint":"http://businessportal.sfgov.org/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC","responseIndex":"StreetAddress","populateField":true,"delimiter":"","responseOptionsIndex":""}}
+		
+        if (!empty($webhooks)) { //add webhooks behavior
+            foreach ($webhooks as $id => $fld) {
+				$webhookIds = [];
+                //loop through ids
+                foreach ($fld['ids'] as $index => $fieldId) {
+                    if (!in_array($fieldId, $webhookIds)) {
+                        $webhookIds[] = $fieldId;
+                    }
+                }
+                //set up listeners and populate conditional statements
+                $js .= "jQuery('";
+                foreach ($webhookIds as $whId) {
+                    $js .= $this->getInputSelector($whId, $formtypes, false).", ";
+                }
+                $js = substr($js, 0, -2)."').on('change',function(){";
+					//make function check all ids that need to post values have a value
+					$js .= "if (";
+						foreach ($webhookIds as $whId) {
+							$js .= "jQuery('" . $this->getInputSelector($whId, $formtypes, false) . "').val() != '' && ";
+						}
+						$delimiter = "";
+						$responseOptionsIndex = "";
+						if ($fld['optionsArray']) {
+							$delimiter = ", " . ($fld['delimiter'] != "" ? "'" . $fld['delimiter'] . "'" : "null");
+							$responseOptionsIndex = ", " . ($fld['responseOptionsIndex'] != "" ? "'" . $fld['responseOptionsIndex'] . "'" : "null");
+						}
+					$js = substr($js, 0, -4) . 	") ";
+					$js .= "callWebhook('" . $id . "', '" . $fld['endpoint'] . "', Array('" . implode(",",$webhookIds) . "'), '" . $fld['responseIndex'] . "', '" . $fld['method'] . "', " . $fld['optionsArray'] . $delimiter . $responseOptionsIndex . ");";
+				$js .= '});';
+				
+            }
+        }
+		
+		$js .= "};script.src = '/assets/js/embed.js';document.head.appendChild(script);"; //end ready
+		
         return $js;
     }
-
+	
     public function getOp($str)
     {
         $output = "";

@@ -315,7 +315,7 @@ class HTMLHelper
 		
         //unset unused attributes
         unset($field['label'], $field['help']);
-        unset($field['conditions'], $field['calculations']);
+        unset($field['conditions'], $field['calculations'], $field['webhooks']);
         unset($field['codearea'], $field['textarea'], $field['option'], $field['checkboxes'], $field['radios']); //content, not attributes
 		unset($field['value']); //deprecated
 		
