@@ -35,7 +35,10 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
                 context: ./path/to/Dockerfile
                 dockerfile: Dockerfile
 ```
-4. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
+
+4. To compile Sass stylesheets, run `npm run watch`
+
+5. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
 ### Unit Testing
 1. Navigate to the src/docker directory and spin up docker as normal
