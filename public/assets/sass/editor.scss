@@ -11,25 +11,25 @@ body {
   background:#222 url(/assets/images/bg4.jpg) no-repeat center center;
   background-size: 100% 100%;
   min-height: 100%;
-}
 
-.login .row {
-  margin-top: 6em;
-}
+  .row {
+    margin-top: 6em;
+  }
 
-.login header,
-.login h1 {
-  font-size: 2em;
-  color: #fff;
-  text-shadow: 0 0 18px #000;
-}
+  header,
+  h1 {
+    font-size: 2em;
+    color: #fff;
+    text-shadow: 0 0 18px #000;
+  }
 
-.login h2 {
-  margin-top: 0;
-}
+  h2 {
+    margin-top: 0;
+  }
 
-.login .panel {
-  padding: 2em;
+  .panel {
+    padding: 2em;
+  }
 }
 
 /* Utility classes */
@@ -67,13 +67,15 @@ legend {
 
 /* Forms */
 
-.form-horizontal .component {
-  padding: 0 17px;
-}
+.form-horizontal {
+  .component {
+    padding: 0 17px;
+  }
 
-.form-horizontal .control-label {
-  text-align: left;
-  padding-bottom: 5px;
+  .control-label {
+    text-align: left;
+    padding-bottom: 5px;
+  }
 }
 
 .form-section {
@@ -99,23 +101,23 @@ legend {
   font-size: 24px;
   padding: 1em 0;
   margin-bottom: 1em;
-}
 
-.header > div {
-  display: block;
-  max-width: 1140px;
-  text-align: right;
-  margin: auto;
-}
+  > div {
+    display: block;
+    max-width: 1140px;
+    text-align: right;
+    margin: auto;
 
-.header > div > a {
-  display: block;
-  background: #fff;
-  width: 232px;
-  float: left;
-  position: absolute;
-  top: 0px;
-  box-shadow: 0 0 10px #888;
+    > a {
+      display: block;
+      background: #fff;
+      width: 232px;
+      float: left;
+      position: absolute;
+      top: 0px;
+      box-shadow: 0 0 10px #888;
+    }
+  }
 }
 
 /* Welcome page */
@@ -142,10 +144,10 @@ legend {
 
 .fa-circle-notch {
   color: #ddd;
-}
 
-.forms .fa-circle-notch {
-  font-size: 2em;
+  .forms & {
+    font-size: 2em;
+  }
 }
 
 /* Lefthand pane */
@@ -157,11 +159,11 @@ legend {
 #SFDSWFB-components {
   min-height: 600px;
   margin-top: 5px;
-}
 
-#SFDSWFB-components .form-group[data-formtype=m14] {
-  visibility: hidden;
-  height: 0px;
+  .form-group[data-formtype=m14] {
+    visibility: hidden;
+    height: 0px;
+  }
 }
 
 #SFDSWFB-snippet {
@@ -182,47 +184,46 @@ legend {
   padding: 5px;
   transition: height .3s;
   overflow: hidden;
-}
 
-#SFDSWFB-target .form-group {
-  width: 100%;
-  margin-left: 0;
-}
+  .form-group {
+    width: 100%;
+    margin-left: 0;
+    position: relative;
 
-#SFDSWFB-target .form-group {
-  position: relative;
-}
+    > label:after {
+      padding-left: 1em;
+      font-size: .8em;
+      content: "(optional)";
+    }
+  }
 
-#SFDSWFB-target .form-group.component .fa-times-circle {
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 1.5em;
-  color: #ccc;
-  cursor: pointer;
-  z-index: 99
-}
+  .form-group[data-required=true],
+  .form-group[data-formtype=m11],
+  .popover .form-group {
+    > label:after {
+      content: "";
+    }
+  }
 
-#SFDSWFB-target .component {
-  border: 1px solid #fff;
-}
+  .form-group.component .fa-times-circle {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.5em;
+    color: #ccc;
+    cursor: pointer;
+    z-index: 99
+  }
 
-#SFDSWFB-target .floatleft,
-#SFDSWFB-target .floatright {
-  width: 45%;
-}
+  .component {
+    border: 1px solid #fff;
+  }
 
-#SFDSWFB-target .form-group > label:after {
-  padding-left: 1em;
-  font-size: .8em;
-  content: "(optional)";
-}
-
-#SFDSWFB-target .form-group[data-required=true] > label:after,
-#SFDSWFB-target .form-group[data-formtype=m11] > label:after,
-#SFDSWFB-target .popover .form-group > label:after {
-  content: "";
+  .floatleft,
+  .floatright {
+    width: 45%;
+  }
 }
 
 /* "Ghost" field when dragging inputs */
@@ -250,31 +251,28 @@ legend {
   min-width: 245px;
 }
 
-.popover-content form {
-  margin: 0 auto;
-  width: 213px;
-}
+.popover-content {
+  form {
+    margin: 0 auto;
+    width: 213px;
 
-.popover-content form .btn {
-  margin-right: 10px;
-}
+    .btn {
+      margin-right: 10px;
+    }
+  }
 
-.popover-content select {
-  border: 1px solid #ccc;
-  height: 34px;
-  padding: 6px 12px;
-  width: 100%;
-  border-radius: 3px;
-  margin-bottom: 1em;
-}
+  select {
+    border: 1px solid #ccc;
+    height: 34px;
+    padding: 6px 12px;
+    width: 100%;
+    border-radius: 3px;
+    margin-bottom: 1em;
 
-.popover-content select.showHide {
-  width: 50%;
-}
-
-.condition,
-.calculation {
-  position: relative;
+    &.showHide {
+      width: 50%;
+    }
+  }
 }
 
 .fa-minus-circle.conditionIcon {
@@ -283,20 +281,20 @@ legend {
   font-size: 1.5em;
   color: #eee;
   cursor: pointer;
-}
 
-.fa-minus-circle.conditionIcon:hover {
-  color: #aaa;
+  &:hover {
+    color: #aaa;
+  }
 }
 
 .condition,
 .calculation {
+  position: relative;
   border-bottom: 1px solid transparent;
-}
 
-.condition:hover,
-.calculation:hover {
-  border-bottom: 1px solid #000;
+  &:hover {
+    border-bottom: 1px solid #000;
+  }
 }
 
 .addConditional {
@@ -330,22 +328,22 @@ hr.and::before {
   margin-top: 1.5em;
   position: relative;
   color: #aaa;
-}
 
-.clickMenu > ul {
-  margin-top: 10px;
-}
+  > ul {
+    margin-top: 10px;
+  }
 
-.clickMenu li {
-  display: inline-block;
-  padding: .5em 1em;
-  color: #428bca;
-  cursor: pointer;
-}
+  li {
+    display: inline-block;
+    padding: .5em 1em;
+    color: #428bca;
+    cursor: pointer;
 
-.clickMenu li:hover {
-  background: #eee;
-  color: #2a6496;
+    &:hover {
+      background: #eee;
+      color: #2a6496;
+    }
+  }
 }
 
 /* Typeahead styles (for autofilling name attributes) */
@@ -388,16 +386,16 @@ hr.and::before {
   padding: 3px 20px;
   font-size: 18px;
   line-height: 24px;
-}
 
-.tt-suggestion.tt-cursor,
-.tt-suggestion:hover {
-  /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
-  color: #fff;
-  background-color: #0097cf;
-  cursor: pointer;
-}
+  &.tt-cursor,
+  &:hover {
+    /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
+    color: #fff;
+    background-color: #0097cf;
+    cursor: pointer;
+  }
 
-.tt-suggestion p {
-  margin: 0;
+  p {
+    margin: 0;
+  }
 }
