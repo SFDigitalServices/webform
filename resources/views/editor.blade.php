@@ -30,10 +30,15 @@
 
 
 		<div class="header">
-			<div>
-				<a href="/home"><img src="/assets/images/SF_Digital_Services-logo.png"/></a>
-				SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
-			</div>
+      <div class="header-container">
+  			<div class="logo">
+  				<a href="#" onclick="javascript:event.preventDefault(); confirmAction('exit','editor.php')">
+            <img src="/assets/images/SF_Digital_Services-logo.png" alt="SF Digital Services Logo" />
+          </a>
+        </div>
+  				Webform Builder
+          <a href="/home" class="header-sign-out btn btn-default">Sign Out</a>
+      </div>
 		</div>
 
 		<div class="content" style="display:none">
@@ -1223,7 +1228,6 @@
 						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('clone','doAction.php?action=clone')" onclick="javascript:confirmAction('clone','doAction.php?action=clone')" tabindex="0" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('delete','doAction.php?action=delete')" onclick="javascript:confirmAction('delete','doAction.php?action=delete')" tabindex="0" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
-						<li onkeydown="if(event.keyCode == 13) confirmAction('exit','editor.php')" onclick="javascript:confirmAction('exit','editor.php')" data-toggle="tooltip" tabindex="0" title="Exit"><i class="fas fa-sign-out-alt"></i></li>
 					</ul>
 				</div>
 				<div class="clear"></div>
