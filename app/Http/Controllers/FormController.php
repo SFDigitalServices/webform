@@ -242,7 +242,7 @@ class FormController extends Controller
         $form = Form::where('id', $form_id)->first();
 				$form['content'] = $this->scrubString($form['content']);
         $form['content'] = json_decode($form['content'], true);
-        return $this->wrapJS($this->getHTML($form, $request->getHttpHost()), $this->isSectional($form['content']), $form['content']);
+        return $this->wrapJS($form, $request->getHttpHost());
     }
 
     /**
@@ -385,6 +385,7 @@ class FormController extends Controller
     public function getInputSelector($id, $arr, $checked)
     {
         $output = "";
+		if (!$id) return $output;
         switch ($arr[$id]) {
             case "s06":
                 if ($checked) {
@@ -408,6 +409,7 @@ class FormController extends Controller
 
     public function getConditionalStatement($value1, $op, $value2)
     {
+		if (!$op) return "";
         if ($op == "contains") {
             $output = "(".$value1.").search(/".$value2."/i) != -1";
         } elseif ($op == "doesn't contain") {
@@ -418,8 +420,11 @@ class FormController extends Controller
         return $output;
     }
 
-    public function wrapJS($str, $sectional, $content)
+    public function wrapJS($form, $base_url = '')
     {
+		$str = $this->getHTML($form, $base_url);
+		$sectional = $this->isSectional($form['content']);
+		
 		$js = "var script = document.createElement('script');script.onload = function () {"; //start ready
 		
         $js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
@@ -430,8 +435,8 @@ class FormController extends Controller
         $conditions = [];
 		$webhooks = [];
         $formtypes = [];
-        if ($content) {
-            foreach ($content['data'] as $field) {
+        if ($form['content']) {
+            foreach ($form['content']['data'] as $field) {
                 $fieldId = $field['id'];
                 $formtypes[$fieldId] = $field['formtype'];
                 foreach ($field as $key => $value) {
@@ -539,8 +544,6 @@ class FormController extends Controller
 			$js .= "initSectional();";
         }
 		
-		//{"label":"BAN","id",:"BAN","webhooks":{"ids":["BAN"],"endpoint":"http://businessportal.sfgov.org/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC","responseIndex":"StreetAddress","populateField":true,"delimiter":"","responseOptionsIndex":""}}
-		
         if (!empty($webhooks)) { //add webhooks behavior
             foreach ($webhooks as $id => $fld) {
 				$webhookIds = [];
@@ -550,7 +553,7 @@ class FormController extends Controller
                         $webhookIds[] = $fieldId;
                     }
                 }
-                //set up listeners and populate conditional statements
+                //bind ids with onchange listeners to call webhook
                 $js .= "jQuery('";
                 foreach ($webhookIds as $whId) {
                     $js .= $this->getInputSelector($whId, $formtypes, false).", ";
