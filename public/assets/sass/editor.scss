@@ -8,7 +8,7 @@ body {
 }
 
 .login {
-  background:#222 url(/assets/images/bg4.jpg) no-repeat center center;
+  background: #222 url(/assets/images/bg4.jpg) no-repeat center center;
   background-size: 100% 100%;
   min-height: 100%;
 
@@ -101,23 +101,29 @@ legend {
   font-size: 24px;
   padding: 1em 0;
   margin-bottom: 1em;
+}
 
-  > div {
-    display: block;
-    max-width: 1140px;
-    text-align: right;
-    margin: auto;
+.header-container {
+  display: block;
+  max-width: 1140px;
+  text-align: right;
+  margin: auto;
+}
 
-    > a {
-      display: block;
-      background: #fff;
-      width: 232px;
-      float: left;
-      position: absolute;
-      top: 0px;
-      box-shadow: 0 0 10px #888;
-    }
-  }
+.logo {
+  display: block;
+  background: #fff;
+  width: 232px;
+  float: left;
+  position: absolute;
+  top: 0px;
+  box-shadow: 0 0 10px #888;
+  cursor: pointer;
+}
+
+.header-sign-out {
+  float: right;
+  margin-left: 2em;
 }
 
 /* Welcome page */
