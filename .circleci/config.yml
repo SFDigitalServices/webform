@@ -71,6 +71,6 @@ jobs: # a collection of steps
             cd tests/frontend
             $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
             npm run dev # compile sass
-            ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
-            ./node_modules/stylelint/bin/stylelint.js public/assets/sass/*.scss --fix #lint css source
+            ../../node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
+            ../../node_modules/stylelint/bin/stylelint.js public/assets/sass/*.scss --fix #lint css source
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
