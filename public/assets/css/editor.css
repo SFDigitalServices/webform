@@ -274,3 +274,5 @@ legend {padding: 2px 0}
 #SFDSWFB-target .form-group[data-formtype=m11] > label:after {content:""}
 #SFDSWFB-target .popover .form-group > label:after {content:""}
 #SFDSWFB-components .form-group[data-formtype=m14] {visibility:hidden;height:0px}
+select.webhookId {display:inline}
+.webhookEditor .fa-minus-circle {position:absolute;margin:0.5em 0 0 0.5em}
