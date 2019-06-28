@@ -483,7 +483,7 @@ $(document).ready(function(){
 
 	  var saved = $("#SFDSWFB-save").val();
 		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-		var previousFormSettings = saved;
+		//var previousFormSettings = saved;
 
       var inputs = $(".popover input");
 			inputs.push($(".popover textarea")[0]);
@@ -1140,8 +1140,6 @@ function saveForm(previousFormSettings) {
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
 	form.previousContent = previousFormSettings;
-	console.log(form.previousContent);
-	console.log(form.content);
 	form.id = formId;
 	form.user_id = user_id;
 	form.api_token = api_token;
