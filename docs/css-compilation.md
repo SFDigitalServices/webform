@@ -1,18 +1,19 @@
 
 ## Introduction
-The Formbuilder uses [Laravel Mix](https://laravel-mix.com/docs/4.0) to preprocess and postprocess CSS from source code(scss). Out of the box, Laravel Mix provides most of the functionality to achieve our needs.
+The Formbuilder uses [Laravel Mix](https://laravel-mix.com/docs/4.0) to preprocess and postprocess CSS from source code (SCSS). Out of the box, Laravel Mix provides most of the functionality to achieve our needs.
 
 All of these are baked into Formbuilder's build process on CircleCI. The instruction below are for local development setup.
 
 # Install
-All required packages and depdencies have been included in package.json. If you find any discrepency, please update this Readme.
+All required packages and depdencies have been included in package.json. If you find any discrepancies, please update this README.
 
 Install using npm:
+
 ```
 $ npm install
 ```
 
-# Css compilation and PostCSS
+# CSS compilation and PostCSS
 You should see the webpack.mix.js file when you checkout the code here. This is your configuration layer on top of webpack. Most of your time will be spent here.
 
 ```js
@@ -34,6 +35,6 @@ Css linting is not supported as a PostCss plugin, therefore, we need to install 
 
 ```
 ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix
-
 ```
-The command above will automatically lint all css files under the public/assets/css folder use the rules defined in `.stylelintrc.json`.  Take a look inside the json config file to make any adjustments. Learn more about [stylelint rules] (https://github.com/stylelint/stylelint/blob/master/docs/user-guide/about-rules.md).
+
+The command above will automatically lint all css files under the public/assets/css folder use the rules defined in `.stylelintrc.json`.  Take a look inside the json config file to make any adjustments. Learn more about [stylelint rules](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/about-rules.md).
