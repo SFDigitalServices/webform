@@ -1154,7 +1154,6 @@ function saveForm(previousFormSettings) {
 			"content-type": "application/x-www-form-urlencoded",
 			"cache-control": "no-cache"
 		},
-		"timeout": 3000,
 		"data": form
 	}
 	$.ajax(settings).done(function (data) {
