@@ -92,7 +92,6 @@ class DataStoreHelper extends Migration
         if ($definitions) {
             $class = new DataStoreHelper();
             foreach ($definitions as $key => $definition) {
-                //Log::info(print_r($definition,1));
                 if ( strcmp($key, 'remove') == 0 ) {
                     $ret[] = $class->dropFormTableColumn($table->getTable(), array($definition['name']));
                 } else {
@@ -173,7 +172,6 @@ class DataStoreHelper extends Migration
                     }
                 }
                 try {
-                    //Log::info($raw_statement);
                     DB::statement($raw_statement);
                 }
                 catch(\Illuminate\Database\QueryException $ex){
@@ -195,7 +193,6 @@ class DataStoreHelper extends Migration
         $ret = array();
         $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
         $definition['options'] = json_decode($definition['options'], true);
-        //Log::info(print_r($definition['options'],1));
         $form_id = str_replace('forms_','', $table->getTable());
         $tablename = $table->getTable();
         if ( ! Schema::hasColumn($tablename, $definition['name'])) {
@@ -223,7 +220,6 @@ class DataStoreHelper extends Migration
                         $raw_statement .= " NULL";
                     }
                 }
-                //Log::info($raw_statement);
                 try {
                     DB::statement($raw_statement);
                     //update the options lookup table
@@ -257,7 +253,8 @@ class DataStoreHelper extends Migration
            if (! empty($definition['options'])) {
                 // add record to enum_mappings one at a time, can we batch this?
                 foreach ($definition['options'] as $option) {
-                    DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                    if(trim($option) != '')
+                        DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
                 }
             }
         }
