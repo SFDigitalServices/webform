@@ -1219,6 +1219,7 @@ function embedCode(id) {
 	"you would like the form to appear. -->"+
 	"\n"+
 	"<script src=\""+embedUrl+"?id="+id+"\"></script>\n"+
+	"<noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>\n"+
 	"<div id=\"SFDSWF-Container\"></div>";
 	return str;
 
