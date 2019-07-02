@@ -680,7 +680,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '';
         $this->attributes['formtype'] = 'd08';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="test" type="number" formtype="d08" step="0.01"/>';
+        $expected = '<div class="prepended dollar">$</div><input id="test" type="number" formtype="d08" step="0.01"/>';
         $this->assertEquals($expected, $notEmptyText);
 
         $this->attributes['label'] = 'test';
