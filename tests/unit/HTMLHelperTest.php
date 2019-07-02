@@ -698,7 +698,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '20';
         $this->attributes['formtype'] = 'd08';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="foo" name="bar" type="number" formtype="d08" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="0.01"/>';
+        $expected = '<div class="prepended dollar">$</div><input id="foo" name="bar" type="number" formtype="d08" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="0.01"/>';
         $this->assertEquals($expected, $notEmptyText);
 		
         // URL fields
