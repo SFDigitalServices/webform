@@ -107,28 +107,32 @@ class FormController extends Controller
             $this->processCSV($returnForm, $request->getHttpHost());
 
             $returnForm->save();
-            if ($returnForm) {
-                //update form table
-                $definitions = json_decode($returnForm['content'], true);
-                //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
+            //update form table
+            $definitions = json_decode($returnForm['content'], true);
+            //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
+            if (!empty($definitions['data'])) {
                 $count = count($definitions['data']);
                 for ($i = 0; $i < $count; $i++) {
-                    if( ! isset($definitions['data'][$i]['name']) )
-                    $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
+                    if (! isset($definitions['data'][$i]['name'])) {
+                        $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
+                    }
                 }
+            }
+            if (!empty($previousContent['data'])) {
                 $count = count($previousContent['data']);
                 for ($i = 0; $i < $count; $i++) {
-                    if( ! isset($previousContent['data'][$i]['name']) )
-                    $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
+                    if (! isset($previousContent['data'][$i]['name'])) {
+                        $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
+                    }
                 }
-                $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
-                //if($updated_table)
-                    return response()->json($returnForm);
-                //else
-                    //return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
             }
+            $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
+            if (isset($updated_table['status']) && $updated_table['status'] == 0) {
+                return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
+            }
+            return response()->json($returnForm);
         }
-        return response()->json(['status' => 0, 'message' => 'Failed to save form']);
+        //return response()->json(['status' => 0, 'message' => 'Failed to save form']);
     }
 
     /**
@@ -231,17 +235,17 @@ class FormController extends Controller
                     $returnForm['content'] = json_decode($returnForm['content'], true);
                     // create the form table
                     $created_table = DataStoreHelper::createFormTable('forms_'.$form->id, $returnForm['content']['data']);
-                    if($created_table)
+                    if ($created_table) {
                         return response()->json($returnForm);
-                    else
+                    } else {
                         return response()->json(['status' => 0, 'message' => 'Created form but failed to create form table']);
+                    }
                 }
             }
-
             return response()->json(['status' => 0, 'message' => 'Failed to create form']);
         }
     }
-	
+
     /**
     * Creates a page preview of the form
     *
