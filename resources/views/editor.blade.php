@@ -29,32 +29,9 @@
 </script>
 
 
-		<div class="header">
-      <div class="header-container">
-  			<div class="logo">
-  				<a href="#" onclick="javascript:event.preventDefault(); confirmAction('exit','editor.php')">
-            <img src="/assets/images/SF_Digital_Services-logo.png" alt="SF Digital Services Logo" />
-          </a>
-        </div>
-  				Webform Builder
-          <a href="/home" class="header-sign-out btn btn-default">Sign Out</a>
-      </div>
-		</div>
+		@include('partials.header')
 
-		<div class="content" style="display:none">
-            <div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
-			<div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
-				<h1 class="welcomeBack text-center">Welcome back, <?php print $name; ?>!</h1>
-				<div class="welcomeBox">
-					<div>
-						<a href="javascript:void(0)" onclick="loadContent()" class="btn btn-info btn-lg btn-block">Create a New Form</a>
-					</div>
-                    <div class="text-muted">or load an existing form</div>
-					<div class="forms"><i class="fas fa-circle-notch fa-spin"></i></div>
-                </div>
-            </div>
-			<div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
-        </div>
+    @include('partials.welcome')
 
     <div style="display:none" class="container">
 		<div class="row clearfix">
@@ -347,29 +324,6 @@
                     'name_id' => true,
                     'partial' => 'partials.fields.hidden'
                   ])
-
-					<!-- hide for now
-                    <div class="form-group component" data-formtype="m12" data-type="text" rel="popover" title="Calculate" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>Default Value</label> <input class='form-control' type='text' name='value' id='value'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-                      <!-- calculation field-->
-					<!--
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Calculation</label>
-                      <div class="">
-                        <input type="text" class="form-control valtype" data-valtype="calculation" >
-                      </div>
-                    </div>
-					-->
 
 
                     <div class="form-group component" data-formtype="m13" data-type="file" data-name="file_upload" data-required="true" rel="popover" title="File Upload" trigger="manual"
