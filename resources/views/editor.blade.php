@@ -294,126 +294,59 @@
 
                 </div>
 
-                  <div class="tab-pane" id="SFDSWFB-5">
+                <div class="tab-pane" id="SFDSWFB-5">
 
-                    <div class="form-group component" data-formtype="m02" data-type="text" rel="popover" title="Name" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>H1 Text</label> <textarea class='form-control' name='textarea' id='textarea'></textarea>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- H1 --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm02',
+                    'type' => 'text',
+                    'title' => 'Name',
+                    'text' => 'H3',
+                    'partial' => 'partials.fields.h1'
+                  ])
 
-                      <!-- h1 input-->
-                      <div class="">
-						<h1 class="valtype" data-valtype="textarea">H1 Header Text</h1>
-                      </div>
-                    </div>
+                  {{-- H2 --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm04',
+                    'type' => 'text',
+                    'title' => 'Name',
+                    'text' => 'H2',
+                    'partial' => 'partials.fields.h2'
+                  ])
 
-                    <div class="form-group component" data-formtype="m04" data-type="text" rel="popover" title="Name" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>H2 Text</label> <textarea class='form-control' name='textarea' id='textarea'></textarea>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- H3 --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm06',
+                    'type' => 'text',
+                    'title' => 'Name',
+                    'text' => 'H3',
+                    'partial' => 'partials.fields.h3'
+                  ])
 
-                      <!-- h2 input-->
-                      <div class="">
-						<h2 class="valtype" data-valtype="textarea">H2 Header Text</h2>
-                      </div>
-                    </div>
+                  {{-- Paragraph --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm08',
+                    'title' => 'Paragraph_text',
+                    'text' => 'Paragraph',
+                    'partial' => 'partials.fields.paragraph'
+                  ])
 
-                    <div class="form-group component" data-formtype="m06" data-type="text" rel="popover" title="Name" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>H3 Text</label> <textarea class='form-control' name='textarea' id='textarea'></textarea>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- Paragraph HTML --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm10',
+                    'title' => 'Paragraph_html',
+                    'text' => 'Paragraph',
+                    'partial' => 'partials.fields.paragraph-html'
+                  ])
 
-                      <!-- h3 input-->
-                      <div class="">
-						<h3 class="valtype" data-valtype="textarea">H3 Header Text</h3>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="m08" rel="popover" title="Paragraph_text" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>Paragraph Text</label> <textarea class='form-control' name='textarea' id='textarea'></textarea>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-                      <!-- Textarea -->
-                      <div class="">
-                        <div class="paragraph">
-                              <p class="valtype" data-valtype="textarea">This is a block of text in a paragraph</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="m10" rel="popover" title="Paragraph_html" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>Paragraph Text</label> <textarea class='form-control' name='codearea' id='codearea'></textarea>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-                      <!-- Textarea -->
-                      <div class="">
-                        <div class="paragraph">
-                              <p class="valtype" data-valtype="codearea">This is a block of text with HTML content</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="m11" data-type="hidden" rel="popover" title="Hidden" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>Default Value</label> <input class='form-control' type='text' name='value' id='value'>
-						  <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-                      <!-- hidden input-->
-                      <label class=" control-label valtype" data-valtype='label'>[Hidden Form Element]</label>
-                      <div class="">
-                        <input type="hidden" class="form-control valtype" data-valtype="hidden" >
-                      </div>
-                    </div>
+                  {{-- Hidden --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm11',
+                    'type' => 'hidden',
+                    'title' => 'Hidden',
+                    'name_id' => true,
+                    'partial' => 'partials.fields.hidden'
+                  ])
 
 					<!-- hide for now
                     <div class="form-group component" data-formtype="m12" data-type="text" rel="popover" title="Calculate" trigger="manual"
