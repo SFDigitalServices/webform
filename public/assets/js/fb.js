@@ -1176,6 +1176,10 @@ function saveForm(previousFormSettings) {
 		$('.saveStatus').text('Form Saved!');
 		formId = data.id;
 		$('.saveSpinner').hide();
+		//handle response
+		if( (typeof data.status) !== 'undefined' && data.status == 0){
+			loadDialogModal("Warning", data.message);
+		}
 		isSaving = false; // saveForm is done, allow save again.
 	})
 	.fail(function() {
