@@ -25,7 +25,7 @@
 				} else {
 					goHome(true);
 				}
-			}		
+			}
 </script>
 
 
@@ -53,8 +53,8 @@
 					<div class="forms"><i class="fas fa-circle-notch fa-spin"></i></div>
                 </div>
             </div>
-			<div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div> 
-        </div>  
+			<div class="hidden-xs col-sm-1 col-md-2 col-lg-3">&nbsp;</div>
+        </div>
 
     <div style="display:none" class="container">
 		<div class="row clearfix">
@@ -76,7 +76,7 @@
                 <div class="tab-content">
 
                   <div class="tab-pane active" id="SFDSWFB-1">
-				  
+
                     <div class="form-group component" data-formtype="c02" data-type="text" data-name="name" data-required="true" rel="popover" title="Name" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -92,7 +92,7 @@
 							<hr/>
 							<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Name input-->
@@ -102,7 +102,7 @@
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="c04" data-type="email" data-name="email" data-required="true" rel="popover" title="Email" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -118,7 +118,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Email input-->
@@ -128,7 +128,7 @@
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="c06" data-type="tel" data-name="phone" data-minlength="10" data-required="true" rel="popover" title="Phone" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -144,7 +144,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Phone input-->
@@ -170,7 +170,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- Address input-->
@@ -180,7 +180,7 @@
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="c10" data-type="text" data-name="city" data-required="true" rel="popover" title="City" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -196,7 +196,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- City input-->
@@ -206,7 +206,7 @@
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="c14" data-type="text" data-name="zip" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -222,7 +222,7 @@
                            <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- Zip input-->
@@ -231,12 +231,12 @@
                         <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
-                    </div>					
-					
+                    </div>
+
 				  </div>
 
                   <div class="tab-pane" id="SFDSWFB-2">
-				  
+
                     <div class="form-group component" data-formtype="d02" data-type="date" data-required="true" rel="popover" title="Date" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -252,7 +252,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- Date input-->
@@ -278,9 +278,9 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
-					
+
 					  <!-- Time input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Time</label>
                       <div class="">
@@ -288,7 +288,7 @@
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
-					  
+
                     <div class="form-group component" data-formtype="d06" data-type="number" data-required="true" rel="popover" title="Numbers" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -304,9 +304,9 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
-					  
+
 					  <!-- Numbers input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Numbers</label>
                       <div class="">
@@ -330,7 +330,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- Price input-->
@@ -340,7 +340,7 @@
                         <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
-					  
+
                     <div class="form-group component" data-formtype="d10" data-type="url" data-required="true" rel="popover" title="URL" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -356,9 +356,9 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
-					  
+
 					  <!-- URL input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>URL</label>
                       <div class="">
@@ -368,7 +368,7 @@
                     </div>
 
 				  </div>
-				  
+
                   <div class="tab-pane" id="SFDSWFB-3">
 
                     <div class="form-group component" data-formtype="i02" data-type="text" data-required="true" rel="popover" title="Text Input" trigger="manual"
@@ -386,7 +386,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Text input-->
@@ -412,7 +412,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Textarea -->
@@ -439,7 +439,7 @@
 								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 								<label class='control-label'>Options: </label>
 								<textarea class='form-control' style='min-height: 200px' id='option'> </textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
@@ -468,7 +468,7 @@
 								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 							    <label class='control-label'>Options: </label>
 							    <textarea class='form-control' style='min-height: 200px' id='option'></textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
@@ -508,7 +508,7 @@
 								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 								<label class='control-label'>Options: </label>
 								<textarea class='form-control' style='min-height: 200px' id='checkboxes'> </textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
@@ -533,7 +533,7 @@
 							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 							  <label class='control-label'>Options: </label>
 							  <textarea class='form-control' style='min-height: 200px' id='radios'></textarea>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
@@ -632,15 +632,15 @@
 							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
 							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
-					
+
 
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
@@ -713,13 +713,13 @@
 							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
 							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- State input-->
@@ -793,13 +793,13 @@
 							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
 							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
 							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>								
+							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
 					  <!-- State input-->
@@ -809,7 +809,7 @@
 							    <option value="">Select</option>
 								<option value="AL">AL</option>
 								<option value="AK">AK</option>
-								<option value="AR">AR</option>	
+								<option value="AR">AR</option>
 								<option value="AZ">AZ</option>
 								<option value="CA">CA</option>
 								<option value="CO">CO</option>
@@ -819,7 +819,7 @@
 								<option value="FL">FL</option>
 								<option value="GA">GA</option>
 								<option value="HI">HI</option>
-								<option value="IA">IA</option>	
+								<option value="IA">IA</option>
 								<option value="ID">ID</option>
 								<option value="IL">IL</option>
 								<option value="IN">IN</option>
@@ -831,14 +831,14 @@
 								<option value="ME">ME</option>
 								<option value="MI">MI</option>
 								<option value="MN">MN</option>
-								<option value="MO">MO</option>	
+								<option value="MO">MO</option>
 								<option value="MS">MS</option>
 								<option value="MT">MT</option>
-								<option value="NC">NC</option>	
+								<option value="NC">NC</option>
 								<option value="NE">NE</option>
 								<option value="NH">NH</option>
 								<option value="NJ">NJ</option>
-								<option value="NM">NM</option>			
+								<option value="NM">NM</option>
 								<option value="NV">NV</option>
 								<option value="NY">NY</option>
 								<option value="ND">ND</option>
@@ -855,7 +855,7 @@
 								<option value="VT">VT</option>
 								<option value="VA">VA</option>
 								<option value="WA">WA</option>
-								<option value="WI">WI</option>	
+								<option value="WI">WI</option>
 								<option value="WV">WV</option>
 								<option value="WY">WY</option>
 							</select>
@@ -878,7 +878,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- h1 input-->
@@ -897,7 +897,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- h2 input-->
@@ -916,7 +916,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- h3 input-->
@@ -924,7 +924,7 @@
 						<h3 class="valtype" data-valtype="textarea">H3 Header Text</h3>
                       </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="m08" rel="popover" title="Paragraph_text" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -935,7 +935,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Textarea -->
@@ -956,7 +956,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Textarea -->
@@ -966,7 +966,7 @@
                         </div>
                       </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="m11" data-type="hidden" rel="popover" title="Hidden" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -977,7 +977,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- hidden input-->
@@ -998,7 +998,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- calculation field-->
@@ -1010,7 +1010,7 @@
                     </div>
 					-->
 
-					
+
                     <div class="form-group component" data-formtype="m13" data-type="file" data-name="file_upload" data-required="true" rel="popover" title="File Upload" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -1018,7 +1018,7 @@
                           <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
                           <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
                           <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>                                
+                          <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
 							</div>
 						  </div>
                           <hr/>
@@ -1065,7 +1065,7 @@
 						  </div>
 					  </div>
                     </div>
-					
+
                     <div class="form-group component" data-formtype="m16" data-type="text" rel="popover" title="Page Separator" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -1074,7 +1074,7 @@
                           <hr/>
                           <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
                         </div>
-                      </form>" data-html="true" 
+                      </form>" data-html="true"
                       >
 
                       <!-- Page Separator-->
@@ -1083,7 +1083,7 @@
                         <hr class="pb"/>
                       </div>
                     </div>
-					
+
                   </div>
                   <div class="tab-pane" id="SFDSWFB-6">
 					<h4>Embed Code</h4>
@@ -1148,7 +1148,7 @@
 							<input class="form-control" style="width:50%;display:inline-block" type="text"/> <a href="javascript:void(0)" onclick="share()" class="btn btn-info">Add</a>
 						</div>
 					</div>
-					
+
 					<div class='form-group col-md-12'>
 						<label class="control-label">First Section Label</label>
 						<input class="col-md-12 form-control" id="SFDSWFB-section1" name="section1" type="text"/>
@@ -1209,22 +1209,22 @@
 						<br/>
 						<a class="btn btn-success" onclick="loadForm()" href="javascript:void(0)">Load</a>
 					</div>
-				       
-					
+
+
 				  </div>
                 </div>
               </fieldset>
             </form>
 		  </div>
 	    </div>
-			
+
 		<div class="col-md-6">
 		  <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
 			<div>
 				<h2 style="display:block;float:left;width:auto;margin-bottom:0">Customize Form</h2>
 				<div class="clickMenu">
 					<ul>
-						<span class="saveStatus"></span> 
+						<span class="saveStatus"></span>
 						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('clone','doAction.php?action=clone')" onclick="javascript:confirmAction('clone','doAction.php?action=clone')" tabindex="0" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('delete','doAction.php?action=delete')" onclick="javascript:confirmAction('delete','doAction.php?action=delete')" tabindex="0" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
@@ -1254,14 +1254,14 @@
 		  </div>
 		</div>
 
-																																																	
+
       </div> <!-- row -->
       <div class="row clearfix">
         <div class="col-md-12"></div>
       </div>
     </div><!-- /container -->
-	
-	
+
+
 	<div class="hidden clonable addConditionalContainer">
 		<div class="addConditional" style="">
 			<a href="javascript:void(0)" onclick="javascript:addConditional()">+Add A Condition</a>
@@ -1372,7 +1372,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="hidden clonable accordion-webhooks">
 		<div class='accordion-section webhooks'>
 			<div class='accordion-header'>Webhooks</div>
@@ -1385,15 +1385,15 @@
 					<div>
 						<label class="control-label" save_image_to_download="true">Post Field Values</label>
 						<i data-toggle="tooltip" title="" data-original-title="Add another field and value to the POST" class="fas fa-plus-circle" onclick="javascript:addWebhook()"></i>
-					</div>				
+					</div>
 					<select data-toggle="tooltip" title="" data-original-title="Select the variables that will be posted to the endpoint by id = value" class="allIds webhookId form-control"></select>
 					<div data-toggle="tooltip" title="" data-original-title="The URL endpoint that will be called in the POST">
 						<label class="control-label" save_image_to_download="true">Endpoint URL</label>
-					</div>				
+					</div>
 					<input type="text" class="form-control webhookEndpoint" />
 					<div data-toggle="tooltip" title="" data-original-title="The data format that will be transmitted and will also dictate the expected format for the response">
 						<label class="control-label" save_image_to_download="true">Data Format</label>
-					</div>				
+					</div>
 					<select class="webhookMethod">
 						<option>json</option>
 						<option>xml</option>
@@ -1404,11 +1404,11 @@
 					</select>
 					<div data-toggle="tooltip" title="" data-original-title="The data index or path to retrieve from the response object, slashes / can be used for traversing hierarchies">
 						<label class="control-label" save_image_to_download="true">Response Index/Path</label>
-					</div>				
+					</div>
 					<input type="text" class="form-control webhookResponseIndex" />
 					<div data-toggle="tooltip" title="" data-original-title="The data response that is received. A single value option or an array of options">
 						<label class="control-label" save_image_to_download="true">Response Type</label>
-					</div>				
+					</div>
 					<select class="webhookOptionsArray" onchange="javascript:webhookOptions(this)">
 						<option>Single Response</option>
 						<option>Will Contain Many Options</option> <!--only valid if using checkbox, radio or select-->
@@ -1416,7 +1416,7 @@
 					<div class="webhookOptionsEditor" style="display:none">
 						<div data-toggle="tooltip" title="" data-original-title="When parsing an array of options to populate your question field, is it from a delimited string or data constructed as siblings of a parent">
 							<label class="control-label" save_image_to_download="true">Array Split Method</label>
-						</div>				
+						</div>
 						<select class="webhookResponseOptionType" onchange="javascript:webhookResponseOptionType(this)">
 							<option>Select</option>
 							<option>Delimiter</option>
@@ -1469,7 +1469,7 @@
 		</div>
 	  </div>
 	</div>
-	
+
 	<div class="modal" id="welcome" tabindex="-1" role="dialog">
 	  <div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -1527,5 +1527,5 @@
 		</div>
 	  </div>
 	</div>
-	
+
 @endsection
