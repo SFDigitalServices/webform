@@ -254,47 +254,6 @@
 
                     </div>
 
-					<!-- hide multi select for now
-                    <div class="form-group component" data-formtype="s04" data-choose="true" rel="popover" title="Multi Select" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							    <label class='control-label'>Options: </label>
-							    <textarea class='form-control' style='min-height: 200px' id='option'></textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-					  -->
-
-                      <!-- Select Multiple -->
-					  <!--
-                      <label class=" control-label valtype" data-valtype="label">Select - Multiple</label>
-                      <div class="">
-                        <select class="form-control input-md valtype" multiple="multiple" data-valtype="option">
-                          <option>Enter</option>
-                          <option>Your</option>
-                          <option>Options</option>
-                          <option>Here!</option>
-                        </select>
-                      </div>
-                    </div>
-					-->
-
-				<!--
-                  </div>
-
-                  <div class="tab-pane" id="4">
-				-->
-
                     <div class="form-group component" data-formtype="s06" rel="popover" title="Multiple Checkboxes" data-choose="true" trigger="manual"
                       data-content="
                       <form class='form'>
@@ -344,80 +303,6 @@
 <label class="radio"><input type="radio" value="Option two" name="group">Option two</label></div>
 
 					</div>
-
-					<!-- hiding these because they seem redundant
-                    <div class="form-group component" data-formtype="s10" rel="popover" title="Inline Checkboxes" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							</div>
-						  </div>
-                          <textarea class='form-control' style='min-height: 200px' id='inline-checkboxes'></textarea>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-                      <label class=" control-label valtype" data-valtype="label">Inline Checkboxes</label>
-						-->
-
-                      <!-- Multiple Checkboxes -->
-						<!--
-                      <div class="col-md-4 valtype" data-valtype="inline-checkboxes">
-                        <label class="checkbox inline">
-                          <input type="checkbox" value="1"> 1
-                        </label>
-                        <label class="checkbox inline">
-                          <input type="checkbox" value="2"> 2
-                        </label>
-                        <label class="checkbox inline">
-                          <input type="checkbox" value="3"> 3
-                        </label>
-                      </div>
-
-                    </div>
-
-                    <div class="form-group component" data-formtype="s12" rel="popover" data-required="true" title="Inline radioes" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <textarea class='form-control' style='min-height: 200px' id='inline-radios'></textarea>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-                      <label class=" control-label valtype" data-valtype="label">Inline radios</label>
-                      <div class="col-md-4 valtype" data-valtype="inline-radios">
-						-->
-
-                        <!-- Inline Radios -->
-						<!--
-                        <label class="radio inline">
-                          <input type="radio" value="1" checked="checked" name="group">
-                          1
-                        </label>
-                        <label class="radio inline">
-                          <input type="radio" value="2" name="group">
-                          2
-                        </label>
-                        <label class="radio inline">
-                          <input type="radio" value="3">
-                          3
-                        </label>
-                      </div>
-                    </div>
-					-->
 
                     <div class="form-group component" data-formtype="s14" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
                       data-content="
