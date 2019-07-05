@@ -1086,132 +1086,11 @@
 
                   </div>
                   <div class="tab-pane" id="SFDSWFB-6">
-					<h4>Embed Code</h4>
-					<p>Copy and paste the following code into your page.</p>
-					<pre id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</pre>&nbsp;
-					<br/>
-					<div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Show Debug Info</div>
-					<div class="btn btn-info" onclick="window.open('/form/preview?id='+formId, '_blank')">Preview Form</div>
-					<div id="SFDSWFB-debug" style="display:none">
-						<h4>Source Code</h4>
-						<textarea id="SFDSWFB-source" class="col-md-12"></textarea>
-						&nbsp;
-						<br/>
-						<h4>JSON Save Object</h4>
-						<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}</textarea>
-					</div>
+					           @include('partials.embed-code')
                   </div>
-				  <div class="tab-pane" id="SFDSWFB-7">
-					<h3>Settings</h3>
-					<div class='form-group col-md-12'>
-                        <label class="radio">
-                          <input type="radio" value="db" name="backend" checked="checked">
-                          I have a database and submission endpoint
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="csv" name="backend">
-                          I want to create a Webform Buider CSV database
-                        </label>
-						<!--<input type="hidden" name="hash"/>-->
-					</div>
-					<div class='form-group col-md-12 csvFile' style="display:none">
-						<a href="javascript:void(0)" class="btn btn-info">Open CSV File</a>
-					</div>
-					<div class='form-group col-md-12'>
-						<label class="control-label">Form Action</label>
-						<input class="col-md-12 form-control" type="text" name="action"/>
-					</div>
-					<div class='form-group col-md-12 confirmPage' style="display:none">
-						<label class="control-label">Confirmation Page</label>
-						<input class="col-md-12 form-control" type="text" name="confirmation"/>
-					</div>
-	     <!--<div class='form-group col-md-12'>
-	     <label class="control-label">Success URL</label>
-	     <input class="col-md-12 form-control" type="text" name="success"/>
-	     </div>-->
-					<div class='form-group col-md-12'>
-						<label class="control-label">Form Method</label>
-                        <label class="radio">
-                          <input type="radio" value="POST" name="method" checked="checked">
-                          POST
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="GET" name="method">
-                          GET (not recommended)
-                        </label>
-					</div>
-					<div class='form-group col-md-12'>
-						<label class="control-label">Co-Authors</label><br/>
-						<span id="SFDSWFB-existingAuthors"></span> <a href="javascript:void(0)" onclick="$('#SFDSWFB-authors').slideDown()">+Add Author</a>
-						<div id="SFDSWFB-authors" style="display:none">
-							<label class="control-label">Co-Author's Email</label><br/>
-							<input class="form-control" style="width:50%;display:inline-block" type="text"/> <a href="javascript:void(0)" onclick="share()" class="btn btn-info">Add</a>
-						</div>
-					</div>
-
-					<div class='form-group col-md-12'>
-						<label class="control-label">First Section Label</label>
-						<input class="col-md-12 form-control" id="SFDSWFB-section1" name="section1" type="text"/>
-					</div>
-	                                <div class='form-group col-md-12'>
-	                                        <label class="control-label">Autofill Name Attribute</label>
-	                                        <select class="col-md-12 form-control" id="SFDSWFB-names" name="names" onchange="loadNames(this)"><option value="0">Off</option><option value="permit-application">Salesforce Permit Application</option></select>
-	                                </div>
-					<!--
-					<div class='form-group col-md-12'>
-						<label class="control-label">Layout</label>
-                        <label class="radio">
-                          <input type="radio" value="form" name="layout" checked="checked">
-                          Just the form
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="horizontal" name="layout">
-                          Horizontal Nav
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="vertical" name="layout">
-                          Vertical Nav
-                        </label>
-					</div>
-					<div class='form-group col-md-12'>
-						<label class="control-label">Flow</label>
-                        <label class="radio">
-                          <input type="radio" value="nonlinear" name="flow" checked="checked">
-                          Non-linear, access to any section, any time
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="linear" name="flow">
-                          Linear, can only go forward and backwards by one
-                        </label>
-                        <label class="radio">
-                          <input type="radio" value="sectional" name="flow">
-                          Sectional, can only go forward once everything is validated
-                        </label>
-					</div>
-					<div class='form-group col-md-12'>
-						<label class="control-label">Autosave</label>
-                        <label class="checkbox inline">
-                          <input type="checkbox" value="sectional" name="autosave"/>Every Section
-                        </label>
-                        <label class="checkbox inline">
-                          <input type="checkbox" value="exit" name="autosave"/>Quit Button
-                        </label>
-					</div>
-					<div class='form-group col-md-12'>
-						<label class="control-label">Exit Confirmation</label>
-                        <label class="checkbox inline">
-                          <input type="checkbox" value="true" name="confirmation">Show Prompt
-                        </label>
-					</div>-->
-					<div class='form-group col-md-12' style="visibility:hidden">
-						<label class="control-label">Load Form</label>
-						<textarea class="form-control" id="SFDSWFB-load"></textarea>
-						<br/>
-						<a class="btn btn-success" onclick="loadForm()" href="javascript:void(0)">Load</a>
-					</div>
-
-
-				  </div>
+				          <div class="tab-pane" id="SFDSWFB-7">
+                    @include('partials.settings')
+                  </div>
                 </div>
               </fieldset>
             </form>
@@ -1222,14 +1101,7 @@
 		  <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
 			<div>
 				<h2 style="display:block;float:left;width:auto;margin-bottom:0">Customize Form</h2>
-				<div class="clickMenu">
-					<ul>
-						<span class="saveStatus"></span>
-						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
-						<li onkeydown="if(event.keyCode == 13) confirmAction('clone','doAction.php?action=clone')" onclick="javascript:confirmAction('clone','doAction.php?action=clone')" tabindex="0" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
-						<li onkeydown="if(event.keyCode == 13) confirmAction('delete','doAction.php?action=delete')" onclick="javascript:confirmAction('delete','doAction.php?action=delete')" tabindex="0" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
-					</ul>
-				</div>
+				@include('partials.form-actions')
 				<div class="clear"></div>
 			</div>
 			<hr>
@@ -1270,102 +1142,47 @@
 
   @include('partials.editor.webhooks')
 
+  <div class="hidden clonable accordion-conditionals">
+    <div class='accordion-section conditionals'>
+      <div class='accordion-header'>Conditionals</div>
+      <div class='accordion' style='display:none'>
+      </div>
+    </div>
+  </div>
 
-	<div class="modal" id="modal-dialog" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title"></h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p></p>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Okay</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
+	@component('modal', [
+    "id" => "modal-dialog",
+    "secondary" => "Okay"
+  ])
+  @endcomponent
 
-	<div class="modal" id="modal-confirm" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title"></h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p></p>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-dismiss="modal">Do It</button>
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
+  @component('modal', [
+    "id" => "modal-confirm",
+    "primary" => "Do It",
+    "secondary" => "Cancel"]
+  )
+  @endcomponent
 
-	<div class="modal" id="welcome" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title">Welcome to Webform Builder!</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p>Let us help you get started creating your new form.</p>
-			<p>Would you like to view the introduction tutorial?</p>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="$('#tutorial').modal()">Yes Please</button>
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">No Thanks</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
+  @component('modal', [
+    "id" => "welcome",
+    "primary" => "Yes Please",
+    "primaryattrs" => "onclick='$('#tutorial').modal()'",
+    "secondary" => "No Thanks"
+  ])
+    <p>Let us help you get started creating your new form.</p>
+    <p>Would you like to view the introduction tutorial?</p>
+  @endcomponent
 
-	<div class="modal" id="tutorial" tabindex="-1" role="dialog">
-	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h5 class="modal-title">How to get the most out of Webform Builder</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<p>Start by dragging components (name, email, phone, etc.) from the left side into the form box on the right.</p>
-			<ul>
-				<li>Click on the tabs (Contact, Data, etc.) to change the list of components.</li>
-				<li>Click the Rendered tab to get code to embed your form on your website.</li>
-				<li>Click the Settings tab to setup your database or share your form with others.</li>
-			</ul>
-			<br/>
-			<p>Modify your components by clicking them after dragging them into the form box.</p>
-			<ul>
-				<li>Be sure to rename your form by clicking "My Form" and typing in a new title.</li>
-				<li>Click each dragged component in the right to change the labeling, html attributes and more.</li>
-			</ul>
-			<br/>
-			<p>Perform advanced features like validation, conditionals, and calculations.</p>
-			<ul>
-				<li>Set form validation by clicking your component and mousing over "Validation".</li>
-				<li>Conditionals can show or hide components based on respondents' previous answers.</li>
-				<li>Totals can be tallied by choosing a "Numbers" component and adding a calculation.</li>
-			</ul>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Got It</button>
-		  </div>
-		</div>
-	  </div>
-	</div>
+  @component('modal', [
+    "id" => "tutorial",
+    "secondary" => "Got It"
+  ])
+
+    @slot('title')
+      How to get the most out of Webform Builder
+    @endslot
+
+    @include('partials.tutorial')
+  @endcomponent
 
 @endsection
