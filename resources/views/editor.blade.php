@@ -36,18 +36,33 @@
     <div style="display:none" class="container">
 		<div class="row clearfix">
         <div class="col-md-6">
-            <h2>Drag & Drop Components</h2>
-            <hr>
+          <h2>Drag & Drop Components</h2>
+          <hr>
           <div class="tabbable">
             <ul class="nav nav-tabs" id="SFDSWFB-navtab">
-              <li class="active"><a href="#SFDSWFB-1" data-toggle="tab">Contact</a></li>
-              <li class><a href="#SFDSWFB-2" data-toggle="tab">Data</a></li>
-              <li class><a href="#SFDSWFB-3" data-toggle="tab">Input</a></li>
-              <li class><a href="#SFDSWFB-4" data-toggle="tab">Select</a></li>
-              <li class><a href="#SFDSWFB-5" data-toggle="tab">Misc</a></li>
-              <li class><a id="SFDSWFB-sourcetab" href="#SFDSWFB-6" data-toggle="tab">Rendered</a></li>
-              <li class><a href="#SFDSWFB-7" data-toggle="tab">Settings</a></li>
+              <li class="active">
+                <a href="#SFDSWFB-1" data-toggle="tab">Contact</a>
+              </li>
+              <li class>
+                <a href="#SFDSWFB-2" data-toggle="tab">Data</a>
+              </li>
+              <li class>
+                <a href="#SFDSWFB-3" data-toggle="tab">Input</a>
+              </li>
+              <li class>
+                <a href="#SFDSWFB-4" data-toggle="tab">Select</a>
+              </li>
+              <li class>
+                <a href="#SFDSWFB-5" data-toggle="tab">Misc</a>
+              </li>
+              <li class>
+                <a id="SFDSWFB-sourcetab" href="#SFDSWFB-6" data-toggle="tab">Rendered</a>
+              </li>
+              <li class>
+                <a href="#SFDSWFB-7" data-toggle="tab">Settings</a>
+              </li>
             </ul>
+
             <form class="form-horizontal" id="SFDSWFB-components">
               <fieldset>
                 <div class="tab-content">
