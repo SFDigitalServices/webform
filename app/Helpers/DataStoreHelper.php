@@ -16,16 +16,16 @@ class DataStoreHelper extends Migration
      */
     public static function createFormTable($tablename, $definitions = null)
     {
-        if ($definitions) {
-            $class = new DataStoreHelper();
-            $object = null;
-            Schema::create($tablename, function ($table) use ($tablename, $definitions, $class, &$object) {
-                $table->increments('id');
+        $class = new DataStoreHelper();
+        $object = null;
+        Schema::create($tablename, function ($table) use ($tablename, $definitions, $class, &$object) {
+            $table->increments('id');
+            if ($definitions) {
                 $class->upsertFields($table, $definitions);
-                $object = $table;
-            });
-            return $object;
-        }
+            }
+            $object = $table;
+        });
+        return $object;
     }
 
     /**
@@ -76,7 +76,6 @@ class DataStoreHelper extends Migration
                 $ret = $class->upsertFields($table, $definitions);
                 if(!$ret)
                     $columns = $ret; // exception, return custom message
-                $columns = $table->getAddedColumns();
             });
             return $columns;
         }
@@ -224,6 +223,7 @@ class DataStoreHelper extends Migration
                     DB::statement($raw_statement);
                     //update the options lookup table
                     $this->updateLookupTable($definition, $form_id);
+                    $ret = array();
                 }
                 catch(\Illuminate\Database\QueryException $ex){
                     $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);

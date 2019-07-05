@@ -41,28 +41,29 @@ class ControllerHelper
     */
     public function getFormColumnsToUpdate($newFormData, $originalFormData){
         $updates = array();
-        $originalFormData = $this->parseOptionValues($originalFormData);
-        $originalFormData = $this->parseOptionValues($originalFormData, 'json');
         $newFormData = $this->parseOptionValues($newFormData, 'json');
-
-        foreach ($newFormData['data'] as $key => $value) {
-            foreach ($originalFormData['data'] as $originalKey => $originalValue) {
-                if( strcmp($value['name'], $originalValue['name']) == 0) {
-                    $diff = array_diff($value, $originalValue);
-                    if(count($diff) != 0){ // key and value matches
+        if (!empty($originalFormData['data'])) {
+            $originalFormData = $this->parseOptionValues($originalFormData);
+            $originalFormData = $this->parseOptionValues($originalFormData, 'json');
+            foreach ($newFormData['data'] as $key => $value) {
+                foreach ($originalFormData['data'] as $originalKey => $originalValue) {
+                    if (strcmp($value['name'], $originalValue['name']) == 0) {
+                        $diff = array_diff($value, $originalValue);
+                        if (count($diff) != 0) { // key and value matches
                         $updates['update'] = $value; // key found, value doesn't match, this is an update.
+                        }
+                        unset($originalFormData['data'][$originalKey]);
+                        unset($newFormData['data'][$key]);
+                        break;
                     }
-                    unset($originalFormData['data'][$originalKey]);
-                    unset($newFormData['data'][$key]);
-                    break;
                 }
             }
         }
         //TODO: upgrade to bulk delete/add
-        if(count($originalFormData['data']) > 0){
+        if( $originalFormData['data'] && count($originalFormData['data']) > 0){
             $updates['remove'] = reset($originalFormData['data']);
         }
-        if(count($newFormData['data']) > 0){
+        if($newFormData['data'] && count($newFormData['data']) > 0){
             $updates['add'] = reset($newFormData['data']);
         }
 
