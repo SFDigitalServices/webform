@@ -223,330 +223,76 @@
 
                 </div>
 
-                  <div class="tab-pane" id="SFDSWFB-4">
+                <div class="tab-pane" id="SFDSWFB-4">
 
-					<!-- must preserve whitespace formatting between options! -->
-                    <div class="form-group component" data-formtype="s02" rel="popover" data-required="true" data-choose="true" title="Select Dropdown" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-								<label class='control-label'>Options: </label>
-								<textarea class='form-control' style='min-height: 200px' id='option'> </textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+				          {{-- Select Basic --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 's02',
+                    'required' => true,
+                    'choose' => true,
+                    'title' => 'Select Dropdown',
+                    'partial' => 'partials.fields.select-basic',
+                    'options' => 'option'
+                  ])
 
-                      <!-- Select Basic -->
-                      <label class=" control-label valtype" data-valtype="label">Select - Basic</label>
-                      <div class=""><select class="form-control input-md valtype" data-valtype="option"><option>Enter</option>
-<option>Your</option>
-<option>Options</option>
-<option>Here!</option></select></div>
+                  {{-- Multiple checkboxes --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 's06',
+                    'required' => true,
+                    'choose' => true,
+                    'title' => 'Multiple checkboxes',
+                    'partial' => 'partials.fields.checkboxes',
+                    'options' => 'checkboxes'
+                  ])
 
-                    </div>
+                  {{-- Multiple radios --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 's08',
+                    'required' => true,
+                    'choose' => true,
+                    'name' => 'multiple_radios',
+                    'title' => 'multiple radios',
+                    'partial' => 'partials.fields.radios',
+                    'options' => 'radios'
+                  ])
 
-                    <div class="form-group component" data-formtype="s06" rel="popover" title="Multiple Checkboxes" data-choose="true" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-								<label class='control-label'>Options: </label>
-								<textarea class='form-control' style='min-height: 200px' id='checkboxes'> </textarea>
-								<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-                      <label class=" control-label valtype" data-valtype="label">Checkboxes</label>
-                      <div class=" valtype" data-valtype="checkboxes"><!-- Multiple Checkboxes --><label class="checkbox"><input type="checkbox" value="Option one"/>Option one</label>
-<label class="checkbox"><input type="checkbox" value="Option two"/>Option two</label></div>
+                  {{-- State full names --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 's14',
+                    'type' => 'text',
+                    'name' => 'state',
+                    'title' => 'State',
+                    'choose' => true,
+                    'required' => true,
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.state-full-names'
+                  ])
 
-                    </div>
+                  {{-- State full names, abbreviated values --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 's15',
+                    'type' => 'text',
+                    'name' => 'state',
+                    'title' => 'State',
+                    'choose' => true,
+                    'required' => true,
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.state-abbr-value'
+                  ])
 
-					<!-- must preserve whitespace formatting between options! -->
-                    <div class="form-group component" data-formtype="s08" rel="popover" data-required="true" data-choose="true" data-name="multiple_radios" title="multiple radios" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Options: </label>
-							  <textarea class='form-control' style='min-height: 200px' id='radios'></textarea>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- State abbreviated --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 's16',
+                    'type' => 'text',
+                    'name' => 'state',
+                    'title' => 'State',
+                    'choose' => true,
+                    'required' => true,
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.state-abbr-value'
+                  ])
 
-					<label class=" control-label valtype" data-valtype="label">Radio buttons</label>
-					<div class=" valtype" data-valtype="radios"><!-- Multiple Radios --><label class="radio"><input type="radio" value="Option one" name="group" checked="checked">Option one</label>
-<label class="radio"><input type="radio" value="Option two" name="group">Option two</label></div>
-
-					</div>
-
-                    <div class="form-group component" data-formtype="s14" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-
-					  <!-- State input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
-                      <div class="">
-							<select placeholder="" class="form-control input-md valtype" data-valtype="placeholder">
-							    <option value="">Select</option>
-								<option value="alabama">Alabama</option>
-								<option value="alaska">Alaska</option>
-								<option value="arizona">Arizona</option>
-								<option value="arkansas">Arkansas</option>
-								<option value="california">California</option>
-								<option value="colorado">Colorado</option>
-								<option value="connecticut">Connecticut</option>
-								<option value="delaware">Delaware</option>
-								<option value="district-of-columbia">District Of Columbia</option>
-								<option value="florida">Florida</option>
-								<option value="georgia">Georgia</option>
-								<option value="hawaii">Hawaii</option>
-								<option value="idaho">Idaho</option>
-								<option value="illinois">Illinois</option>
-								<option value="indiana">Indiana</option>
-								<option value="iowa">Iowa</option>
-								<option value="kansas">Kansas</option>
-								<option value="kentucky">Kentucky</option>
-								<option value="louisiana">Louisiana</option>
-								<option value="maine">Maine</option>
-								<option value="maryland">Maryland</option>
-								<option value="massachusetts">Massachusetts</option>
-								<option value="michigan">Michigan</option>
-								<option value="minnesota">Minnesota</option>
-								<option value="mississippi">Mississippi</option>
-								<option value="missouri">Missouri</option>
-								<option value="montana">Montana</option>
-								<option value="nebraska">Nebraska</option>
-								<option value="nevada">Nevada</option>
-								<option value="new-hampshire">New Hampshire</option>
-								<option value="new-jersey">New Jersey</option>
-								<option value="new-mexico">New Mexico</option>
-								<option value="new-york">New York</option>
-								<option value="north-carolina">North Carolina</option>
-								<option value="north-dakota">North Dakota</option>
-								<option value="ohio">Ohio</option>
-								<option value="oklahoma">Oklahoma</option>
-								<option value="oregon">Oregon</option>
-								<option value="pennsylvania">Pennsylvania</option>
-								<option value="rhode-island">Rhode Island</option>
-								<option value="south-carolina">South Carolina</option>
-								<option value="south-dakota">South Dakota</option>
-								<option value="tennessee">Tennessee</option>
-								<option value="texas">Texas</option>
-								<option value="utah">Utah</option>
-								<option value="vermont">Vermont</option>
-								<option value="virginia">Virginia</option>
-								<option value="washington">Washington</option>
-								<option value="west-virginia">West Virginia</option>
-								<option value="wisconsin">Wisconsin</option>
-								<option value="wyoming">Wyoming</option>
-							</select>
-                        <p class="help-block valtype" data-valtype='help'>Full names</p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="s15" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- State input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
-                      <div class="">
-							<select placeholder="" class="form-control input-md valtype" data-valtype="placeholder">
-							    <option value="">Select</option>
-								<option value="AL">Alabama</option>
-								<option value="AK">Alaska</option>
-								<option value="AZ">Arizona</option>
-								<option value="AR">Arkansas</option>
-								<option value="CA">California</option>
-								<option value="CO">Colorado</option>
-								<option value="CT">Connecticut</option>
-								<option value="DE">Delaware</option>
-								<option value="DC">District Of Columbia</option>
-								<option value="FL">Florida</option>
-								<option value="GA">Georgia</option>
-								<option value="HI">Hawaii</option>
-								<option value="ID">Idaho</option>
-								<option value="IL">Illinois</option>
-								<option value="IN">Indiana</option>
-								<option value="IA">Iowa</option>
-								<option value="KS">Kansas</option>
-								<option value="KY">Kentucky</option>
-								<option value="LA">Louisiana</option>
-								<option value="ME">Maine</option>
-								<option value="MD">Maryland</option>
-								<option value="MA">Massachusetts</option>
-								<option value="MI">Michigan</option>
-								<option value="MN">Minnesota</option>
-								<option value="MS">Mississippi</option>
-								<option value="MO">Missouri</option>
-								<option value="MT">Montana</option>
-								<option value="NE">Nebraska</option>
-								<option value="NV">Nevada</option>
-								<option value="NH">New Hampshire</option>
-								<option value="NJ">New Jersey</option>
-								<option value="NM">New Mexico</option>
-								<option value="NY">New York</option>
-								<option value="NC">North Carolina</option>
-								<option value="ND">North Dakota</option>
-								<option value="OH">Ohio</option>
-								<option value="OK">Oklahoma</option>
-								<option value="OR">Oregon</option>
-								<option value="PA">Pennsylvania</option>
-								<option value="RI">Rhode Island</option>
-								<option value="SC">South Carolina</option>
-								<option value="SD">South Dakota</option>
-								<option value="TN">Tennessee</option>
-								<option value="TX">Texas</option>
-								<option value="UT">Utah</option>
-								<option value="VT">Vermont</option>
-								<option value="VA">Virginia</option>
-								<option value="WA">Washington</option>
-								<option value="WV">West Virginia</option>
-								<option value="WI">Wisconsin</option>
-								<option value="WY">Wyoming</option>
-							</select>
-                        <p class="help-block valtype" data-valtype='help'>Full names, abbr value</p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="s16" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							  <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- State input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
-                      <div class="">
-							<select placeholder="" class="form-control input-md valtype" data-valtype="placeholder">
-							    <option value="">Select</option>
-								<option value="AL">AL</option>
-								<option value="AK">AK</option>
-								<option value="AR">AR</option>
-								<option value="AZ">AZ</option>
-								<option value="CA">CA</option>
-								<option value="CO">CO</option>
-								<option value="CT">CT</option>
-								<option value="DC">DC</option>
-								<option value="DE">DE</option>
-								<option value="FL">FL</option>
-								<option value="GA">GA</option>
-								<option value="HI">HI</option>
-								<option value="IA">IA</option>
-								<option value="ID">ID</option>
-								<option value="IL">IL</option>
-								<option value="IN">IN</option>
-								<option value="KS">KS</option>
-								<option value="KY">KY</option>
-								<option value="LA">LA</option>
-								<option value="MA">MA</option>
-								<option value="MD">MD</option>
-								<option value="ME">ME</option>
-								<option value="MI">MI</option>
-								<option value="MN">MN</option>
-								<option value="MO">MO</option>
-								<option value="MS">MS</option>
-								<option value="MT">MT</option>
-								<option value="NC">NC</option>
-								<option value="NE">NE</option>
-								<option value="NH">NH</option>
-								<option value="NJ">NJ</option>
-								<option value="NM">NM</option>
-								<option value="NV">NV</option>
-								<option value="NY">NY</option>
-								<option value="ND">ND</option>
-								<option value="OH">OH</option>
-								<option value="OK">OK</option>
-								<option value="OR">OR</option>
-								<option value="PA">PA</option>
-								<option value="RI">RI</option>
-								<option value="SC">SC</option>
-								<option value="SD">SD</option>
-								<option value="TN">TN</option>
-								<option value="TX">TX</option>
-								<option value="UT">UT</option>
-								<option value="VT">VT</option>
-								<option value="VA">VA</option>
-								<option value="WA">WA</option>
-								<option value="WI">WI</option>
-								<option value="WV">WV</option>
-								<option value="WY">WY</option>
-							</select>
-                        <p class="help-block valtype" data-valtype='help'>Abbreviated</p>
-                      </div>
-                    </div>
-
-
-                  </div>
+                </div>
 
                   <div class="tab-pane" id="SFDSWFB-5">
 
