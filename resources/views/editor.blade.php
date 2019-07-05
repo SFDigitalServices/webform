@@ -77,163 +77,74 @@
 
                   <div class="tab-pane active" id="SFDSWFB-1">
 
-                    <div class="form-group component" data-formtype="c02" data-type="text" data-name="name" data-required="true" rel="popover" title="Name" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-							<div class='accordion-section general'>
-								<div class='accordion-header'>General</div>
-								<div class='accordion'>
-									<label class='control-label'>Label Text</label> <input class='form-control' type='text' data-toggle='tooltip' title='This text will appear before the input field' name='label' id='label'>
-									<label class='control-label'>Placeholder</label> <input type='text' data-toggle='tooltip' title='This text will appear inside the input before a user types into it, we recommend leaving this blank' name='placeholder' id='placeholder' class='form-control'>
-									<label class='control-label'>Help Text</label> <input type='text' data-toggle='tooltip' title='This is helper text that will appear after the input field' name='help' id='help' class='form-control'>
-								</div>
-							</div>
-							<hr/>
-							<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                    {{-- Name field --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c02',
+                      'required' => true,
+                      'type' => 'text',
+                      'name' => 'name',
+                      'title' => 'Name',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.name'
+                    ])
 
-                      <!-- Name input-->
-                      <label class="control-label valtype" for="input01" data-valtype='label'>Name</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
+                    {{-- Email field --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c04',
+                      'required' => true,
+                      'type' => 'email',
+                      'name' => 'email',
+                      'title' => 'Email',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.email'
+                    ])
 
-                    <div class="form-group component" data-formtype="c04" data-type="email" data-name="email" data-required="true" rel="popover" title="Email" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                    {{-- Phone input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c06',
+                      'required' => true,
+                      'type' => 'tel',
+                      'name' => 'phone',
+                      'title' => 'Phone',
+                      'minlength' => '10',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.phone'
+                    ])
 
-                      <!-- Email input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Email</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
+                    {{-- Address input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c08',
+                      'required' => true,
+                      'type' => 'text',
+                      'name' => 'address',
+                      'title' => 'Address',
+                      'partial' => 'partials.fields.address'
+                    ])
 
-                    <div class="form-group component" data-formtype="c06" data-type="tel" data-name="phone" data-minlength="10" data-required="true" rel="popover" title="Phone" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
- 						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							 <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                    {{-- City input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c10',
+                      'required' => true,
+                      'type' => 'text',
+                      'name' => 'city',
+                      'title' => 'City',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.city'
+                    ])
 
-                      <!-- Phone input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Phone</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="c08" data-type="text" data-name="address" data-required="true" rel="popover" title="Address" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- Address input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Address</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="c10" data-type="text" data-name="city" data-required="true" rel="popover" title="City" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-                          <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                          <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-                          <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- City input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>City</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="c14" data-type="text" data-name="zip" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                           <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- Zip input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Zip</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-				  </div>
+                     {{-- ZIP Code input --}}
+                    @include('partials.editor.form-component', [
+                      'formtype' => 'c14',
+                      'required' => true,
+                      'type' => 'number',
+                      'name' => 'zip',
+                      'title' => 'Zip',
+                      'minlength' => '5',
+                      'maxlength' => '5',
+                      'placeholder' => true,
+                      'partial' => 'partials.fields.zip'
+                    ])
+      				  </div>
 
                   <div class="tab-pane" id="SFDSWFB-2">
 
