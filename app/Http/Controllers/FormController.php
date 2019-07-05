@@ -15,11 +15,14 @@ use App\Helpers\UserHelper;
 use App\Helpers\ListHelper;
 use App\Helpers\HTMLHelper;
 use App\Helpers\DataStoreHelper;
+use App\Helpers\ControllerHelper;
+
 
 use Illuminate\Http\Request;
 
 class FormController extends Controller
 {
+    protected $controllerHelper;
     /**
      * Create a new controller instance.
      *
@@ -40,6 +43,7 @@ class FormController extends Controller
             'getAuthors',
             'purgeCSV'
           ]]);
+          $this->controllerHelper = new ControllerHelper();
     }
 
     /**
@@ -86,28 +90,53 @@ class FormController extends Controller
     }
 
     /**
-    * Saves the edited form for the current logged in user.
+    * Saves the edited form for the current logged in user. Saves the form_table
     *
     * @return bool
     */
     public function save(Request $request)
     {
         $form_id = $request->input('id');
-
         if ($form_id == 0) {
             return $this->create($request);
         } else {
             $returnForm = Form::where('id', $form_id)->first();
             $returnForm['content'] = $this->scrubString($request->input('content'));
+            $previousContent = array();
+            $previousContent['data'] = ($request->input('previousContent'));
             $this->processCSV($returnForm, $request->getHttpHost());
+
             $returnForm->save();
+            //update form table
+            $definitions = json_decode($returnForm['content'], true);
+            //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
+            if (!empty($definitions['data'])) {
+                $count = count($definitions['data']);
+                for ($i = 0; $i < $count; $i++) {
+                    if (! isset($definitions['data'][$i]['name'])) {
+                        $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
+                    }
+                }
+            }
+            if (!empty($previousContent['data'])) {
+                $count = count($previousContent['data']);
+                for ($i = 0; $i < $count; $i++) {
+                    if (! isset($previousContent['data'][$i]['name'])) {
+                        $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
+                    }
+                }
+            }
+            $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
+            if (isset($updated_table['status']) && $updated_table['status'] == 0) {
+                return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
+            }
             return response()->json($returnForm);
         }
-        return response()->json(['status' => 0, 'message' => 'Failed to save form']);
+        //return response()->json(['status' => 0, 'message' => 'Failed to save form']);
     }
 
     /**
-    * Clone from an existing form.
+    * Clone from an existing form. Clones the form_table too?
     *
     * @return json object
     */
@@ -187,7 +216,7 @@ class FormController extends Controller
     }
 
     /**
-    * Creates a new form for the current logged in user.
+    * Creates a new form for the current logged in user. Creates the form_table
     *
     * @return json object
     */
@@ -196,7 +225,6 @@ class FormController extends Controller
         // validate form data
         if ($this->validateForm($request)) {
             $form = Form::create(['content' => $this->scrubString($request->input('content'))]);
-
             if ($form) {
                 $this->processCSV($form, $request->getHttpHost());
                 // create entry in user_form
@@ -205,13 +233,19 @@ class FormController extends Controller
                 if ($user_form) {
                     $returnForm = Form::where('id', $form->id)->first();
                     $returnForm['content'] = json_decode($returnForm['content'], true);
-                    return response()->json($returnForm);
+                    // create the form table
+                    $created_table = DataStoreHelper::createFormTable('forms_'.$form->id, $returnForm['content']['data']);
+                    if ($created_table) {
+                        return response()->json($returnForm);
+                    } else {
+                        return response()->json(['status' => 0, 'message' => 'Created form but failed to create form table']);
+                    }
                 }
             }
             return response()->json(['status' => 0, 'message' => 'Failed to create form']);
         }
     }
-	
+
     /**
     * Creates a page preview of the form
     *
@@ -228,7 +262,7 @@ class FormController extends Controller
 		'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
 		'<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
 		'<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
-		'<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script></body></html>';
+		'<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
     }
 
     /**
@@ -260,7 +294,7 @@ class FormController extends Controller
     }
 
     /**
-    * Deletes a form
+    * Deletes a form, removes the form_table
     *
     * @return json object
     */
@@ -277,7 +311,11 @@ class FormController extends Controller
             if (!$remaining_form_users) {
                 $form_delete = Form::where([['id', $form_id]])->delete();
                 if ($form_delete) {
-                    return response()->json(['status' => 1, 'message' => 'Deleted form from user']);
+                    $deleted = DataStoreHelper::deleteFormTable('forms_'.$form_id);
+                    if( $deleted )
+                        return response()->json(['status' => 1, 'message' => 'Deleted form from user']);
+                    else
+                        return response()->json(['status' => 0, 'message' => 'Deleted form but failed to delete form table']);
                 }
             }
         }
@@ -861,26 +899,8 @@ class FormController extends Controller
         $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
         $scrubbed = str_replace("'", "&apos;", $scrubbed);
         $scrubbed = str_replace('\"', "", $scrubbed);
-				$scrubbed = json_encode($this->parseOptionValues(json_decode($scrubbed, true)));
+		$scrubbed = json_encode($this->controllerHelper->parseOptionValues(json_decode($scrubbed, true)));
         return $scrubbed;
-    }
-
-    private function parseOptionValues($content)
-    {
-        $ret['settings'] = $content['settings'];
-        $ret['data'] = array();
-
-        foreach ($content['data'] as $field) {
-            if (array_key_exists('option', $field) && !is_array($field['option'])) {
-                $field['option'] = explode("\n", $field['option']);
-            } elseif (array_key_exists('checkboxes', $field) && !is_array($field['checkboxes'])) {
-                $field['checkboxes'] = explode("\n", $field['checkboxes']);
-            } elseif (array_key_exists('radios', $field) && !is_array($field['radios'])) {
-								$field['radios'] = explode("\n", $field['radios']);
-            }
-            $ret['data'][] = $field;
-				}
-        return $ret;
     }
 
     public function notifyUser(Request $request)

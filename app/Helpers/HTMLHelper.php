@@ -68,7 +68,8 @@ class HTMLHelper
     public static function formText($field)
     {
 		$attributes = self::setAttributes($field);
-        $html = "<input". $attributes . "/>";
+		$prepended = self::getPrepended($field);
+        $html = $prepended . "<input" . $attributes . "/>";
         return $html;
     }
     /**
@@ -107,6 +108,20 @@ class HTMLHelper
         return $html;
     }
 
+    /**
+     * Generate Prepeded element
+     *
+     * @returns html
+     */
+    public static function getPrepended($field)
+    {
+		$html = "";
+		if ($field['formtype'] == "d08") { //so far for price
+			$html = '<div class="prepended dollar">$</div>';
+		}
+        return $html;
+    }
+	
     /**
     * Generate Button element
     *
@@ -234,6 +249,11 @@ class HTMLHelper
      */
     private static function stripAttributesByFormType($field) {
 		switch ($field['formtype']) {
+			case 'c06': //phone
+			case 'd02': //date
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
 			case 'i14': //textarea
 				unset($field['type']);
 				break;

@@ -30,10 +30,15 @@
 
 
 		<div class="header">
-			<div>
-				<a href="/home"><img src="/assets/images/SF_Digital_Services-logo.png"/></a>
-				SAN FRANCISCO <b>DIGITAL SERVICES</b> WEBFORM BUILDER
-			</div>
+      <div class="header-container">
+  			<div class="logo">
+  				<a href="#" onclick="javascript:event.preventDefault(); confirmAction('exit','editor.php')">
+            <img src="/assets/images/SF_Digital_Services-logo.png" alt="SF Digital Services Logo" />
+          </a>
+        </div>
+  				Webform Builder
+          <a href="/home" class="header-sign-out btn btn-default">Sign Out</a>
+      </div>
 		</div>
 
 		<div class="content" style="display:none">
@@ -93,8 +98,8 @@
                       <!-- Name input-->
                       <label class="control-label valtype" for="input01" data-valtype='label'>Name</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 					
@@ -119,8 +124,8 @@
                       <!-- Email input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Email</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 					
@@ -145,8 +150,8 @@
                       <!-- Phone input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Phone</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 
@@ -171,8 +176,8 @@
 					  <!-- Address input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Address</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 					
@@ -197,8 +202,8 @@
 					  <!-- City input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>City</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 					
@@ -223,8 +228,8 @@
 					  <!-- Zip input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Zip</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>					
 					
@@ -253,8 +258,8 @@
 					  <!-- Date input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Date</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 
@@ -279,8 +284,8 @@
 					  <!-- Time input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Time</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 					  
@@ -305,8 +310,8 @@
 					  <!-- Numbers input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Numbers</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 
@@ -331,8 +336,8 @@
 					  <!-- Price input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Price</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <div class="prepended dollar">$</div><input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 					  
@@ -357,8 +362,8 @@
 					  <!-- URL input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>URL</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 
@@ -387,8 +392,8 @@
                       <!-- Text input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>Text input</label>
                       <div class="">
-                        <input type="text" placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'>Supporting help text</p>
+                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
+                        <p class="help-block valtype" data-valtype='help'></p>
                       </div>
                     </div>
 
@@ -640,7 +645,7 @@
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
                       <div class="">
-							<select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
+							<select placeholder="" class="form-control input-md valtype" data-valtype="placeholder">
 							    <option value="">Select</option>
 								<option value="alabama">Alabama</option>
 								<option value="alaska">Alaska</option>
@@ -720,7 +725,7 @@
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
                       <div class="">
-							<select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
+							<select placeholder="" class="form-control input-md valtype" data-valtype="placeholder">
 							    <option value="">Select</option>
 								<option value="AL">Alabama</option>
 								<option value="AK">Alaska</option>
@@ -800,7 +805,7 @@
 					  <!-- State input-->
                       <label class=" control-label valtype" for="input01" data-valtype='label'>State</label>
                       <div class="">
-							<select placeholder="placeholder" class="form-control input-md valtype" data-valtype="placeholder">
+							<select placeholder="" class="form-control input-md valtype" data-valtype="placeholder">
 							    <option value="">Select</option>
 								<option value="AL">AL</option>
 								<option value="AK">AK</option>
@@ -1223,7 +1228,6 @@
 						<i class="fas fa-circle-notch fa-spin saveSpinner" style="display:none;"></i>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('clone','doAction.php?action=clone')" onclick="javascript:confirmAction('clone','doAction.php?action=clone')" tabindex="0" data-toggle="tooltip" title="Clone"><i class="fas fa-clone"></i></li>
 						<li onkeydown="if(event.keyCode == 13) confirmAction('delete','doAction.php?action=delete')" onclick="javascript:confirmAction('delete','doAction.php?action=delete')" tabindex="0" data-toggle="tooltip" title="Delete"><i class="fas fa-trash"></i></li>
-						<li onkeydown="if(event.keyCode == 13) confirmAction('exit','editor.php')" onclick="javascript:confirmAction('exit','editor.php')" data-toggle="tooltip" tabindex="0" title="Exit"><i class="fas fa-sign-out-alt"></i></li>
 					</ul>
 				</div>
 				<div class="clear"></div>

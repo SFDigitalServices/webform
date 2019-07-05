@@ -32,9 +32,10 @@ $(document).ready(function(){
       form: 300
     }
     var type = $this.parent().parent().parent().parent().attr("id") === "SFDSWFB-components" ? "main" : "form";
-    var saved = $("#SFDSWFB-save").val();
+		var saved = $("#SFDSWFB-save").val();
 		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-		var previousFormSettings = saved;
+		var previousFormSettings = saved.data.slice();
+
 	if (saved.settings == undefined) saved.settings = new Object();
 	if (saved.data == undefined) saved.data = new Array();
 
@@ -42,14 +43,14 @@ $(document).ready(function(){
     var delayed = setTimeout(function(){
       if(type === "main"){
         $temp = $("<form class='form-horizontal col-md-6' id='SFDSWFB-temp'></form>").append($this.clone());
-		dragExisting = false;
-      } else {
+				dragExisting = false;
+			 } else {
         if($this.attr("id") !== "SFDSWFB-legend"){
-		  existingPos = $($this).prevAll(".form-group").length;
-		  existingCount = $($this).siblings(".form-group").length;
-		  saved.data.splice(existingPos, 1);
-          $temp = $("<form class='form-horizontal col-md-6' id='SFDSWFB-temp'></form>").append($this);
-		  dragExisting = true;
+					existingPos = $($this).prevAll(".form-group").length;
+					existingCount = $($this).siblings(".form-group").length;
+					saved.data.splice(existingPos, 1);
+					$temp = $("<form class='form-horizontal col-md-6' id='SFDSWFB-temp'></form>").append($this);
+					dragExisting = true;
         }
       }
 
@@ -86,7 +87,7 @@ $(document).ready(function(){
         $temp.css({
 			"top" : mm_mouseY - half_box_height + "px",
 			"left" : mm_mouseX - half_box_width  + "px"
-		});
+				});
 
 		//added 100 to center drag
 		if (
@@ -226,6 +227,7 @@ $(document).ready(function(){
 		//auto save
 		saveForm(previousFormSettings);
       });
+
     }, delays[type]); //end delayed
 
     $(document).mouseup(function () {
@@ -314,6 +316,12 @@ $(document).ready(function(){
 		$(".popover #type").val("match");
 		$('.popover .validate-match').show();
 		$(".popover #match").val(e.currentTarget.attributes['data-match'].value);
+	}
+	
+	//hide certain validations for certain field types
+	if (e.currentTarget.attributes['data-formtype'].value == 'c06' || e.currentTarget.attributes['data-formtype'].value == 'd02') {
+		$(".popover #minlength").parent().remove();
+		$(".popover #maxlength").parent().remove();
 	}
 
 	//add calculation
@@ -496,26 +504,36 @@ $(document).ready(function(){
 	$('.popover #type').on('change',function(){
 		showValidation($(this).val());
 	});
-	
+
 	showValidation($('.popover #type').val());
-	
+
 	function showValidation(str) {
 		if (str == "regex") {
 			$('.popover .validate-regex').show('slow');
 			$('.popover .validate-minmax').hide('slow');
 			$('.popover .validate-match').hide('slow');
+			$('#minlength').parent().show('slow');
+			$('#maxlength').parent().show('slow');
 		} else if (str == "number" || str == "date") {
 			$('.popover .validate-minmax').show('slow');
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-match').hide('slow');
+			$('#minlength').parent().show('slow');
+			$('#maxlength').parent().show('slow');
 		} else if (str == "match") {
 			$('.popover .validate-match').show('slow');
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-minmax').hide('slow');
+			$('#minlength').val('');
+			$('#minlength').parent().hide('slow');
+			$('#maxlength').val('');
+			$('#maxlength').parent().hide('slow');
 		} else {
 			$('.popover .validate-regex').hide();
 			$('.popover .validate-minmax').hide();
 			$('.popover .validate-match').hide();
+			$('#minlength').parent().show('slow');
+			$('#maxlength').parent().show('slow');
 		}
 	}
 
@@ -534,6 +552,8 @@ $(document).ready(function(){
 
 			var saved = $("#SFDSWFB-save").val();
 			saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+			var previousFormSettings = saved.data.slice();
+
 			//check id if in this form
 			if ($('.popover #id')[0] != undefined) {
 			if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
@@ -553,7 +573,7 @@ $(document).ready(function(){
 
 	  var saved = $("#SFDSWFB-save").val();
 		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-		var previousFormSettings = saved;
+		//var previousFormSettings = saved;
 
       var inputs = $(".popover input");
 			inputs.push($(".popover textarea")[0]);
@@ -753,7 +773,8 @@ function quickDelete(obj) {
 	$('#SFDSWFB-target .form-group').eq(existingPos).remove();
 	var saved = $("#SFDSWFB-save").val();
 	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-	var previousFormSettings = saved;
+	var previousFormSettings = saved.data.slice();
+
 	saved.data.splice(existingPos, 1);
 	$("#SFDSWFB-save").val(JSON.stringify(saved));
 	saveForm(previousFormSettings);
@@ -1147,7 +1168,7 @@ function isReferenced(myId) {
 function updateSettings() {
 	var saved = $("#SFDSWFB-save").val();
 	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-	var previousFormSettings = saved;
+	var previousFormSettings = saved.data.slice();
 
 	var newSettings = {};
 	var useCSV = false;
@@ -1268,8 +1289,6 @@ function saveForm(previousFormSettings) {
 	var form = {};
 	form.content = $("#SFDSWFB-save").val();
 	form.previousContent = previousFormSettings;
-	console.log(form.previousContent);
-	console.log(form.content);
 	form.id = formId;
 	form.user_id = user_id;
 	form.api_token = api_token;
@@ -1289,11 +1308,12 @@ function saveForm(previousFormSettings) {
 	$.ajax(settings).done(function (data) {
 		$('.saveStatus').text('Form Saved!');
 		formId = data.id;
-		//setTimeout(function(){
-			//$('.saveStatus').text('');
-			$('.saveSpinner').hide();
-			//}, 2000);
-			isSaving = false; // saveForm is done, allow save again.
+		$('.saveSpinner').hide();
+		//handle response
+		if( (typeof data.status) !== 'undefined' && data.status == 0){
+			loadDialogModal("Warning", data.message);
+		}
+		isSaving = false; // saveForm is done, allow save again.
 	})
 	.fail(function() {
 		$('.saveSpinner').hide();
@@ -1352,6 +1372,7 @@ function embedCode(id) {
 	"you would like the form to appear. -->"+
 	"\n"+
 	"<script src=\""+embedUrl+"?id="+id+"\"></script>\n"+
+	"<noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>\n"+
 	"<div id=\"SFDSWF-Container\"></div>";
 	return str;
 

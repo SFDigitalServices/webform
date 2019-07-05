@@ -259,8 +259,9 @@
 #SFDSWFB-target .form-group.component .fa-times-circle {display;block;position:absolute;top:0;right:0;font-size:1.5em;color:#ccc;cursor:pointer;z-index:99}
 
 /* specific to editor page (pulling out inline styles) */
-.header > div {display:block;max-width:1140px;text-align:right;margin:auto}
-.header > div > a {display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888}
+.header-container {display:block;max-width:1140px;text-align:right;margin:auto}
+.logo {display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888;cursor:pointer;}
+.header-sign-out { float:right;margin-left:2em;}
 .welcomeBack {margin-top:15vh}
 .welcomeBox {text-align:center;padding:4em;margin:2em;border:1px solid #ddd;border-radius:5px}
 .forms a.btn {margin-bottom:3px}
@@ -276,3 +277,5 @@ legend {padding: 2px 0}
 #SFDSWFB-components .form-group[data-formtype=m14] {visibility:hidden;height:0px}
 select.webhookId {display:inline}
 .webhookEditor .fa-minus-circle {position:absolute;margin:0.5em 0 0 0.5em}
+.form-group.component[data-formtype=d08] > div {position:relative}
+.prepended {position:absolute;top:0.5em;left:-1em}
