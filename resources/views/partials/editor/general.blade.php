@@ -33,18 +33,6 @@
         <textarea class='form-control' style='min-height: 200px' id='$options'></textarea>
       @endisset
 
-      @isset($type)
-        @if ($type == "prep-text")
-          <label class='control-label'>Prepend</label>
-          <input type='text' name='prepend' id='prepend' class='form-control'>
-        @endif
-
-        @if ($type == "app-text")
-          <label class='control-label'>Append</label>
-          <input type='text' name='append' id='append' class='form-control'>
-        @endif
-      @endisset
-
       @isset($placeholder)
         <label class='control-label'>Placeholder</label>
         <input type='text' name='placeholder' id='placeholder' class='form-control'>
