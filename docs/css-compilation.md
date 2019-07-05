@@ -35,6 +35,7 @@ Css linting is not supported as a PostCss plugin, therefore, we need to install 
 
 ```
 ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix
+./node_modules/stylelint/bin/stylelint.js public/assets/css/*.scss --fix # follow this command pattern for additional source file extensions.
 ```
 
 The command above will automatically lint all css files under the public/assets/css folder use the rules defined in `.stylelintrc.json`.  Take a look inside the json config file to make any adjustments. Learn more about [stylelint rules](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/about-rules.md).
