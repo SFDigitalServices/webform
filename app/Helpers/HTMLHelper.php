@@ -249,6 +249,11 @@ class HTMLHelper
      */
     private static function stripAttributesByFormType($field) {
 		switch ($field['formtype']) {
+			case 'c06': //phone
+			case 'd02': //date
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
 			case 'i14': //textarea
 				unset($field['type']);
 				break;

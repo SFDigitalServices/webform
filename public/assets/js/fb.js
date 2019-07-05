@@ -317,6 +317,12 @@ $(document).ready(function(){
 		$('.popover .validate-match').show();
 		$(".popover #match").val(e.currentTarget.attributes['data-match'].value);
 	}
+	
+	//hide certain validations for certain field types
+	if (e.currentTarget.attributes['data-formtype'].value == 'c06' || e.currentTarget.attributes['data-formtype'].value == 'd02') {
+		$(".popover #minlength").parent().remove();
+		$(".popover #maxlength").parent().remove();
+	}
 
 	//add calculation
 	if (e.currentTarget.dataset.formtype == "d06" || e.currentTarget.dataset.formtype == "d08") { //only show for numbers or prices
@@ -432,18 +438,28 @@ $(document).ready(function(){
 			$('.popover .validate-regex').show('slow');
 			$('.popover .validate-minmax').hide('slow');
 			$('.popover .validate-match').hide('slow');
+			$('#minlength').parent().show('slow');
+			$('#maxlength').parent().show('slow');
 		} else if (str == "number" || str == "date") {
 			$('.popover .validate-minmax').show('slow');
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-match').hide('slow');
+			$('#minlength').parent().show('slow');
+			$('#maxlength').parent().show('slow');
 		} else if (str == "match") {
 			$('.popover .validate-match').show('slow');
 			$('.popover .validate-regex').hide('slow');
 			$('.popover .validate-minmax').hide('slow');
+			$('#minlength').val('');
+			$('#minlength').parent().hide('slow');
+			$('#maxlength').val('');
+			$('#maxlength').parent().hide('slow');
 		} else {
 			$('.popover .validate-regex').hide();
 			$('.popover .validate-minmax').hide();
 			$('.popover .validate-match').hide();
+			$('#minlength').parent().show('slow');
+			$('#maxlength').parent().show('slow');
 		}
 	}
 
@@ -1223,6 +1239,7 @@ function embedCode(id) {
 	"you would like the form to appear. -->"+
 	"\n"+
 	"<script src=\""+embedUrl+"?id="+id+"\"></script>\n"+
+	"<noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>\n"+
 	"<div id=\"SFDSWF-Container\"></div>";
 	return str;
 
