@@ -200,62 +200,28 @@
 
         				</div>
 
-                  <div class="tab-pane" id="SFDSWFB-3">
+                <div class="tab-pane" id="SFDSWFB-3">
 
-                    <div class="form-group component" data-formtype="i02" data-type="text" data-required="true" rel="popover" title="Text Input" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- Text --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'i02',
+                    'required' => true,
+                    'type' => 'text',
+                    'title' => 'Text input',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.text'
+                  ])
 
-                      <!-- Text input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Text input</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
+                  {{-- Textarea --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'i14',
+                    'required' => true,
+                    'title' => 'Textarea',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.textarea'
+                  ])
 
-
-                    <div class="form-group component" data-formtype="i14" rel="popover" data-required="true" title="Textarea" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-								<label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-								<label class='control-label'>Default Value</label> <textarea class='form-control' name='textarea' id='textarea'></textarea>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-                      <!-- Textarea -->
-                      <label class=" control-label valtype" data-valtype="label">Textarea</label>
-                      <div class="">
-                        <div class="textarea">
-                              <textarea class="form-control valtype" data-valtype="textarea" /> </textarea>
-                        </div>
-                      </div>
-                    </div>
-
-                  </div>
+                </div>
 
                   <div class="tab-pane" id="SFDSWFB-4">
 
