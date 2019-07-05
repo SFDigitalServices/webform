@@ -132,7 +132,7 @@
                       'partial' => 'partials.fields.city'
                     ])
 
-                     {{-- ZIP Code input --}}
+                    {{-- ZIP Code input --}}
                     @include('partials.editor.form-component', [
                       'formtype' => 'c14',
                       'required' => true,
@@ -146,139 +146,59 @@
                     ])
       				  </div>
 
-                  <div class="tab-pane" id="SFDSWFB-2">
+                <div class="tab-pane" id="SFDSWFB-2">
 
-                    <div class="form-group component" data-formtype="d02" data-type="date" data-required="true" rel="popover" title="Date" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- Date input --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'd02',
+                    'required' => true,
+                    'type' => 'date',
+                    'title' => 'Date',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.date'
+                  ])
 
-					  <!-- Date input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Date</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
+                  {{-- Time input --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'd04',
+                    'required' => true,
+                    'type' => 'time',
+                    'title' => 'Time',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.time'
+                  ])
 
-                    <div class="form-group component" data-formtype="d04" data-type="time" data-required="true" rel="popover" title="Time" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                 {{-- Numbers input --}}
+                 @include('partials.editor.form-component', [
+                    'formtype' => 'd06',
+                    'required' => true,
+                    'type' => 'number',
+                    'title' => 'Numbers',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.numbers'
+                  ])
 
-					  <!-- Time input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Time</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
+                  {{-- Price --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'd08',
+                    'required' => true,
+                    'type' => 'number',
+                    'title' => 'Price',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.price'
+                  ])
 
-                    <div class="form-group component" data-formtype="d06" data-type="number" data-required="true" rel="popover" title="Numbers" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- URL input --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'd10',
+                    'required' => true,
+                    'type' => 'url',
+                    'title' => 'URL',
+                    'placeholder' => true,
+                    'partial' => 'partials.fields.url'
+                  ])
 
-					  <!-- Numbers input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Numbers</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="d08" data-type="number" data-required="true" rel="popover" title="Price" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- Price input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>Price</label>
-                      <div class="">
-                        <div class="prepended dollar">$</div><input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-                    <div class="form-group component" data-formtype="d10" data-type="url" data-required="true" rel="popover" title="URL" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-						  <div class='accordion-section general'>
-							<div class='accordion-header'>General</div>
-							<div class='accordion'>
-							  <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-							  <label class='control-label'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control'>
-							  <label class='control-label'>Help Text</label> <input type='text' name='help' id='help' class='form-control'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-					  <!-- URL input-->
-                      <label class=" control-label valtype" for="input01" data-valtype='label'>URL</label>
-                      <div class="">
-                        <input type="text" placeholder="" class="form-control input-md valtype" data-valtype="placeholder" >
-                        <p class="help-block valtype" data-valtype='help'></p>
-                      </div>
-                    </div>
-
-				  </div>
+        				</div>
 
                   <div class="tab-pane" id="SFDSWFB-3">
 
