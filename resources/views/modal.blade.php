@@ -1,4 +1,4 @@
-<div class="modal" id="$id" tabindex="-1" role="dialog">
+<div class="modal" id="{{$id}}" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
 	<div class="modal-content">
 	  <div class="modal-header">
@@ -12,18 +12,20 @@
 		</button>
 	  </div>
 	  <div class="modal-body">
-		{{$slot}}
+    @isset($slot)
+		  {{$slot}}
+    @endisset
 
-		@empty($slot)
+    @empty($slot)
 			<p></p>
 		@endempty
 	  </div>
 	  <div class="modal-footer">
 	  	@isset($secondary)
-			<button type="button" class="btn btn-secondary" data-dismiss="modal" $primaryAttrs>$secondary</button>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">{{$secondary}}</button>
 		@endisset
 		@isset($primary)
-			<button type="button" class="btn btn-primary" data-dismiss="modal">$primary</button>
+			<button type="button" class="btn btn-primary" data-dismiss="modal" @isset($primaryAttrs){{$primaryattrs}}@endisset>{{$primary}}</button>
 		@endisset
 	  </div>
 	</div>
