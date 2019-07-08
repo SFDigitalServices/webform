@@ -14,9 +14,12 @@
   @endisset
   @isset ($minlength)
     data-minlength="{{$minlength}}"
-  @endisset 
+  @endisset
   @isset ($maxlength)
     data-maxlength="{{$maxlength}}"
+  @endisset
+  @isset ($textonly)
+    data-textonly="true"
   @endisset
   @isset ($choose)
     data-choose="true"

@@ -76,6 +76,7 @@
                       'type' => 'text',
                       'name' => 'name',
                       'title' => 'Name',
+                      'defaultvalue' => true,
                       'placeholder' => true,
                       'partial' => 'partials.fields.name'
                     ])
@@ -87,6 +88,7 @@
                       'type' => 'email',
                       'name' => 'email',
                       'title' => 'Email',
+                      'defaultvalue' => true,
                       'placeholder' => true,
                       'partial' => 'partials.fields.email'
                     ])
@@ -99,6 +101,7 @@
                       'name' => 'phone',
                       'title' => 'Phone',
                       'minlength' => '10',
+                      'defaultvalue' => true,
                       'placeholder' => true,
                       'partial' => 'partials.fields.phone'
                     ])
@@ -120,6 +123,7 @@
                       'type' => 'text',
                       'name' => 'city',
                       'title' => 'City',
+                      'defaultvalue' => true,
                       'placeholder' => true,
                       'partial' => 'partials.fields.city'
                     ])
@@ -133,6 +137,7 @@
                       'title' => 'Zip',
                       'minlength' => '5',
                       'maxlength' => '5',
+                      'defaultvalue' => true,
                       'placeholder' => true,
                       'partial' => 'partials.fields.zip'
                     ])
@@ -146,6 +151,7 @@
                     'required' => true,
                     'type' => 'date',
                     'title' => 'Date',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.date'
                   ])
@@ -156,6 +162,7 @@
                     'required' => true,
                     'type' => 'time',
                     'title' => 'Time',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.time'
                   ])
@@ -166,6 +173,7 @@
                     'required' => true,
                     'type' => 'number',
                     'title' => 'Numbers',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.numbers'
                   ])
@@ -176,6 +184,7 @@
                     'required' => true,
                     'type' => 'number',
                     'title' => 'Price',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.price'
                   ])
@@ -186,6 +195,7 @@
                     'required' => true,
                     'type' => 'url',
                     'title' => 'URL',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.url'
                   ])
@@ -200,6 +210,7 @@
                     'required' => true,
                     'type' => 'text',
                     'title' => 'Text input',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.text'
                   ])
@@ -209,6 +220,7 @@
                     'formtype' => 'i14',
                     'required' => true,
                     'title' => 'Textarea',
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.textarea'
                   ])
@@ -223,6 +235,7 @@
                     'required' => true,
                     'choose' => true,
                     'title' => 'Select Dropdown',
+                    'defaultvalue' => true,
                     'partial' => 'partials.fields.select-basic',
                     'options' => 'option'
                   ])
@@ -233,6 +246,7 @@
                     'required' => true,
                     'choose' => true,
                     'title' => 'Multiple checkboxes',
+                    'defaultvalue' => true,
                     'partial' => 'partials.fields.checkboxes',
                     'options' => 'checkboxes'
                   ])
@@ -244,6 +258,7 @@
                     'choose' => true,
                     'name' => 'multiple_radios',
                     'title' => 'multiple radios',
+                    'defaultvalue' => true,
                     'partial' => 'partials.fields.radios',
                     'options' => 'radios'
                   ])
@@ -256,6 +271,7 @@
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.state-full-names'
                   ])
@@ -268,6 +284,7 @@
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.state-abbr-value'
                   ])
@@ -280,6 +297,7 @@
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
+                    'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.state-abbr-value'
                   ])
@@ -294,6 +312,7 @@
                     'type' => 'text',
                     'title' => 'Name',
                     'text' => 'H3',
+                    'textonly' => true,
                     'partial' => 'partials.fields.h1'
                   ])
 
@@ -303,6 +322,7 @@
                     'type' => 'text',
                     'title' => 'Name',
                     'text' => 'H2',
+                    'textonly' => true,
                     'partial' => 'partials.fields.h2'
                   ])
 
@@ -320,6 +340,7 @@
                     'formtype' => 'm08',
                     'title' => 'Paragraph_text',
                     'text' => 'Paragraph',
+                    'textonly' => true,
                     'partial' => 'partials.fields.paragraph'
                   ])
 
@@ -328,41 +349,28 @@
                     'formtype' => 'm10',
                     'title' => 'Paragraph_html',
                     'text' => 'Paragraph',
+                    'textonly' => true,
                     'partial' => 'partials.fields.paragraph-html'
                   ])
 
-                  {{-- Hidden --}}
+                  {{-- Hidden TK refactor --}}
                   @include('partials.editor.form-component', [
                     'formtype' => 'm11',
                     'type' => 'hidden',
                     'title' => 'Hidden',
-                    'name_id' => true,
                     'partial' => 'partials.fields.hidden'
                   ])
 
-
-                    <div class="form-group component" data-formtype="m13" data-type="file" data-name="file_upload" data-required="true" rel="popover" title="File Upload" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>Label Text</label> <input class='form-control' type='text' name='label' id='label'>
-                          <label class='control-label'>Name Attribute</label> <input class='form-control' type='text' name='name' id='name'>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' name='required' id='required'>
-							</div>
-						  </div>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-                      <label class="col-md-12 control-label valtype" data-valtype="label">File Button</label>
-
-                      <!-- File Upload -->
-                      <div class="">
-                        <input class="input-file" id="fileInput" type="file">
-                      </div>
-                    </div>
+                  {{-- File Upload --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm13',
+                    'type' => 'file',
+                    'title' => 'File Upload',
+                    'name' => 'file_upload',
+                    'required' => true,
+                    'defaultvalue' => true,
+                    'partial' => 'partials.fields.file-upload'
+                  ])
 
 					<!-- button group must remain here but stay invisible -->
                     <div class="form-group component" data-formtype="m14" rel="popover" title="Button" trigger="manual"
@@ -470,8 +478,6 @@
   @include('partials.editor.attributes')
   @include('partials.editor.validation')
 
-  @include('partials.editor.webhooks')
-
   <div class="hidden clonable accordion-conditionals">
     <div class='accordion-section conditionals'>
       <div class='accordion-header'>Conditionals</div>
@@ -480,18 +486,18 @@
     </div>
   </div>
 
-	@component('modal', [
+  @include('partials.editor.webhooks')
+
+	@include('modal', [
     "id" => "modal-dialog",
     "secondary" => "Okay"
   ])
-  @endcomponent
 
-  @component('modal', [
+  @include('modal', [
     "id" => "modal-confirm",
     "primary" => "Do It",
-    "secondary" => "Cancel"]
-  )
-  @endcomponent
+    "secondary" => "Cancel"
+  ])
 
   @component('modal', [
     "id" => "welcome",
@@ -499,6 +505,11 @@
     "primaryattrs" => "onclick='$('#tutorial').modal()'",
     "secondary" => "No Thanks"
   ])
+
+    @slot('title')
+      Welcome to Webform Builder!
+    @endslot
+
     <p>Let us help you get started creating your new form.</p>
     <p>Would you like to view the introduction tutorial?</p>
   @endcomponent
