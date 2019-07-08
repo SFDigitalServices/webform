@@ -40,27 +40,13 @@
           <hr>
           <div class="tabbable">
             <ul class="nav nav-tabs" id="SFDSWFB-navtab">
-              <li class="active">
-                <a href="#SFDSWFB-1" data-toggle="tab">Contact</a>
-              </li>
-              <li class>
-                <a href="#SFDSWFB-2" data-toggle="tab">Data</a>
-              </li>
-              <li class>
-                <a href="#SFDSWFB-3" data-toggle="tab">Input</a>
-              </li>
-              <li class>
-                <a href="#SFDSWFB-4" data-toggle="tab">Select</a>
-              </li>
-              <li class>
-                <a href="#SFDSWFB-5" data-toggle="tab">Misc</a>
-              </li>
-              <li class>
-                <a id="SFDSWFB-sourcetab" href="#SFDSWFB-6" data-toggle="tab">Rendered</a>
-              </li>
-              <li class>
-                <a href="#SFDSWFB-7" data-toggle="tab">Settings</a>
-              </li>
+              @include('partials.form-nav', ['href' => '1', 'title' => 'Contact', 'class' => 'active'])
+              @include('partials.form-nav', ['href' => '2', 'title' => 'Data'])
+              @include('partials.form-nav', ['href' => '3', 'title' => 'Input'])
+              @include('partials.form-nav', ['href' => '4', 'title' => 'Select'])
+              @include('partials.form-nav', ['href' => '5', 'title' => 'Misc'])
+              @include('partials.form-nav', ['href' => '6', 'title' => 'Rendered', 'id' => 'SFDSWFB-sourcetab'])
+              @include('partials.form-nav', ['href' => '7', 'title' => 'Settings'])
             </ul>
 
             <form class="form-horizontal" id="SFDSWFB-components">
