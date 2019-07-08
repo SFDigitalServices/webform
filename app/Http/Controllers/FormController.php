@@ -43,7 +43,7 @@ class FormController extends Controller
             'getAuthors',
             'purgeCSV'
           ]]);
-          $this->controllerHelper = new ControllerHelper();
+        $this->controllerHelper = new ControllerHelper();
     }
 
     /**
@@ -109,30 +109,32 @@ class FormController extends Controller
             $returnForm->save();
             //update form table
             $definitions = json_decode($returnForm['content'], true);
-            //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
-            if (!empty($definitions['data'])) {
-                $count = count($definitions['data']);
-                for ($i = 0; $i < $count; $i++) {
-                    if (! isset($definitions['data'][$i]['name'])) {
-                        $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
+
+            //if (isset($definitions['settings']['backend']) && $definitions['settings']['backend'] == "csv") {
+                //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
+                if (!empty($definitions['data'])) {
+                    $count = count($definitions['data']);
+                    for ($i = 0; $i < $count; $i++) {
+                        if (! isset($definitions['data'][$i]['name'])) {
+                            $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
+                        }
                     }
                 }
-            }
-            if (!empty($previousContent['data'])) {
-                $count = count($previousContent['data']);
-                for ($i = 0; $i < $count; $i++) {
-                    if (! isset($previousContent['data'][$i]['name'])) {
-                        $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
+                if (!empty($previousContent['data'])) {
+                    $count = count($previousContent['data']);
+                    for ($i = 0; $i < $count; $i++) {
+                        if (! isset($previousContent['data'][$i]['name'])) {
+                            $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
+                        }
                     }
                 }
-            }
-            $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
-            if (isset($updated_table['status']) && $updated_table['status'] == 0) {
-                return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
-            }
-            return response()->json($returnForm);
+                $updated_table = DataStoreHelper::saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
+                if (isset($updated_table['status']) && $updated_table['status'] == 0) {
+                    return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
+                }
+            //}
         }
-        //return response()->json(['status' => 0, 'message' => 'Failed to save form']);
+        return response()->json($returnForm);
     }
 
     /**
@@ -234,12 +236,15 @@ class FormController extends Controller
                     $returnForm = Form::where('id', $form->id)->first();
                     $returnForm['content'] = json_decode($returnForm['content'], true);
                     // create the form table
-                    $created_table = DataStoreHelper::createFormTable('forms_'.$form->id, $returnForm['content']['data']);
-                    if ($created_table) {
-                        return response()->json($returnForm);
-                    } else {
-                        return response()->json(['status' => 0, 'message' => 'Created form but failed to create form table']);
-                    }
+                    //if (isset($returnForm['content']['settings']['backend']) && $returnForm['content']['settings']['backend'] == "csv") {
+                        $created_table = DataStoreHelper::createFormTable('forms_'.$form->id, $returnForm['content']['data']);
+                        if ($created_table) {
+                            return response()->json($returnForm);
+                        } else {
+                            return response()->json(['status' => 0, 'message' => 'Created form but failed to create form table']);
+                        }
+                    //}
+                    //return response()->json($returnForm);
                 }
             }
             return response()->json(['status' => 0, 'message' => 'Failed to create form']);
@@ -254,15 +259,15 @@ class FormController extends Controller
     public function preview(Request $request)
     {
         $form_id = $request->input('id');
-		
-		$embedHTML = $this->embedJS($request);
+
+        $embedHTML = $this->embedJS($request);
         return '<!DOCTYPE html><html><head><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'.
-		'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js"></script>'.
-		'<script src="https://formbuilder-sf-staging.herokuapp.com/assets/js/error-msgs.js"></script>'.
-		'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
-		'<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
-		'<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
-		'<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
+        '<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js"></script>'.
+        '<script src="https://formbuilder-sf-staging.herokuapp.com/assets/js/error-msgs.js"></script>'.
+        '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
+        '<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
+        '<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
+        '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
     }
 
     /**
@@ -460,18 +465,18 @@ class FormController extends Controller
 
     public function wrapJS($form, $base_url = '')
     {
-		$str = $this->getHTML($form, $base_url);
-		$sectional = $this->isSectional($form['content']);
-		
-		$js = "var script = document.createElement('script');script.onload = function () {"; //start ready
-		
+        $str = $this->getHTML($form, $base_url);
+        $sectional = $this->isSectional($form['content']);
+
+        $js = "var script = document.createElement('script');script.onload = function () {"; //start ready
+
         $js .= "document.getElementById('SFDSWF-Container').innerHTML = '".$str."';";
-		$js .= "if (typeof SFDSerrorMsgs != 'undefined') { SFDSerrorMsgs(); } else { jQuery('#SFDSWF-Container form').validator(); }";
+        $js .= "if (typeof SFDSerrorMsgs != 'undefined') { SFDSerrorMsgs(); } else { jQuery('#SFDSWF-Container form').validator(); }";
 
         //check content for extra features
         $calculations = [];
         $conditions = [];
-		$webhooks = [];
+        $webhooks = [];
         $formtypes = [];
         if ($form['content']) {
             foreach ($form['content']['data'] as $field) {
@@ -483,8 +488,8 @@ class FormController extends Controller
                     } elseif ($key == "conditions") { //gather conditionals
                         $conditions[$fieldId] = $value;
                     } elseif ($key == "webhooks") {
-						$webhooks[$fieldId] = $value;
-					}
+                        $webhooks[$fieldId] = $value;
+                    }
                 }
             }
         }
@@ -520,7 +525,6 @@ class FormController extends Controller
                 }
                 $js = substr($js, 0, -2)."').on('keyup change',function(){";
 
-				
                 $calcFunc = "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
 
                 $count = 0;
@@ -532,12 +536,9 @@ class FormController extends Controller
                     $count++;
                 }
                 $calcFunc .= 	")";
-				
-				$js .= $calcFunc;
-				
+                $js .= $calcFunc;
                 $js .= "});";
-				
-				$js .= $calcFunc;
+                $js .= $calcFunc;
             }
         }
 
@@ -579,12 +580,11 @@ class FormController extends Controller
         }
 
         if ($sectional) { //additional controls for sectional forms
-			$js .= "initSectional();";
+            $js .= "initSectional();";
         }
-		
         if (!empty($webhooks)) { //add webhooks behavior
             foreach ($webhooks as $id => $fld) {
-				$webhookIds = [];
+                $webhookIds = [];
                 //loop through ids
                 foreach ($fld['ids'] as $index => $fieldId) {
                     if (!in_array($fieldId, $webhookIds)) {
@@ -597,29 +597,25 @@ class FormController extends Controller
                     $js .= $this->getInputSelector($whId, $formtypes, false).", ";
                 }
                 $js = substr($js, 0, -2)."').on('change',function(){";
-					//make function check all ids that need to post values have a value
-					$js .= "if (";
-						foreach ($webhookIds as $whId) {
-							$js .= "jQuery('" . $this->getInputSelector($whId, $formtypes, false) . "').val() != '' && ";
-						}
-						$delimiter = "";
-						$responseOptionsIndex = "";
-						if ($fld['optionsArray']) {
-							$delimiter = ", " . ($fld['delimiter'] != "" ? "'" . $fld['delimiter'] . "'" : "null");
-							$responseOptionsIndex = ", " . ($fld['responseOptionsIndex'] != "" ? "'" . $fld['responseOptionsIndex'] . "'" : "null");
-						}
-					$js = substr($js, 0, -4) . 	") ";
-					$js .= "callWebhook('" . $id . "', '" . $fld['endpoint'] . "', Array('" . implode(",",$webhookIds) . "'), '" . $fld['responseIndex'] . "', '" . $fld['method'] . "', " . $fld['optionsArray'] . $delimiter . $responseOptionsIndex . ");";
-				$js .= '});';
-				
+                //make function check all ids that need to post values have a value
+                $js .= "if (";
+                foreach ($webhookIds as $whId) {
+                    $js .= "jQuery('" . $this->getInputSelector($whId, $formtypes, false) . "').val() != '' && ";
+                }
+                $delimiter = "";
+                $responseOptionsIndex = "";
+                if ($fld['optionsArray']) {
+                    $delimiter = ", " . ($fld['delimiter'] != "" ? "'" . $fld['delimiter'] . "'" : "null");
+                    $responseOptionsIndex = ", " . ($fld['responseOptionsIndex'] != "" ? "'" . $fld['responseOptionsIndex'] . "'" : "null");
+                }
+                $js = substr($js, 0, -4) . 	") ";
+                $js .= "callWebhook('" . $id . "', '" . $fld['endpoint'] . "', Array('" . implode(",", $webhookIds) . "'), '" . $fld['responseIndex'] . "', '" . $fld['method'] . "', " . $fld['optionsArray'] . $delimiter . $responseOptionsIndex . ");";
+                $js .= '});';
             }
         }
-		
-		$js .= "};script.src = '/assets/js/embed.js';document.head.appendChild(script);"; //end ready
-		
+        $js .= "};script.src = '/assets/js/embed.js';document.head.appendChild(script);"; //end ready
         return $js;
     }
-	
     public function getOp($str)
     {
         $output = "";
@@ -677,7 +673,6 @@ class FormController extends Controller
             $multipleInputs = array("s02", "s04", "s06", "s08");
             if (in_array($field->formtype, $multipleInputs)) {
                 if ($field->formtype == "s02" || $field->formtype == "s04") {
-										//$options = explode("\n", $field->option);
 										$options = $field->option;
                 } elseif ($field->formtype == "s06") {
                     $options = $field->checkboxes;
@@ -693,7 +688,7 @@ class FormController extends Controller
                 $column++;
             }
         }
-        //file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+        // write data to csv file
         $this->writeCSV($filename, implode(",", $write)."\n");
     }
 
@@ -830,7 +825,7 @@ class FormController extends Controller
             'region'      => env('BUCKETEER_AWS_REGION'),
             'version'     => 'latest',
             'credentials' => CredentialProvider::env()
-    ]);
+        ]);
 
         $result = $s3->putObject([
             'Bucket' => env('BUCKETEER_BUCKET_NAME'),
@@ -847,7 +842,7 @@ class FormController extends Controller
             'region'      => env('BUCKETEER_AWS_REGION'),
             'version'     => 'latest',
             'credentials' => CredentialProvider::env()
-    ]);
+        ]);
 
         if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), 'public/'.$filename)) {
             $result = $s3->getObject([
@@ -899,7 +894,7 @@ class FormController extends Controller
         $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
         $scrubbed = str_replace("'", "&apos;", $scrubbed);
         $scrubbed = str_replace('\"', "", $scrubbed);
-		$scrubbed = json_encode($this->controllerHelper->parseOptionValues(json_decode($scrubbed, true)));
+        $scrubbed = json_encode($this->controllerHelper->parseOptionValues(json_decode($scrubbed, true)));
         return $scrubbed;
     }
 

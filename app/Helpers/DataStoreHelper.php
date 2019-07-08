@@ -72,13 +72,73 @@ class DataStoreHelper extends Migration
         if ($definitions) {
             $class = new DataStoreHelper();
             $columns = array();
-            Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
-                $ret = $class->upsertFields($table, $definitions);
-                if(!$ret)
-                    $columns = $ret; // exception, return custom message
-            });
-            return $columns;
+            if (! Schema::hasTable($tablename)) {
+              $class->createFormTable($tablename, $definitions);
+            }
+            else{
+                Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
+                    $ret = $class->upsertFields($table, $definitions);
+                    if (!$ret) {
+                        $columns = $ret;
+                    } // exception, return custom message
+                });
+                return $columns;
+            }
         }
+    }
+
+    public static function insertFormData($content, $formid){
+      $tablename = "forms_".$formid;
+      if (! Schema::hasTable($tablename)) {
+          DB::table($tablename)->insert([
+            ['email' => 'taylor@example.com', 'votes' => 0],
+            ['email' => 'dayle@example.com', 'votes' => 0]
+          ]);
+      }
+    }
+
+    private function santizeFormData($content, $formid){
+
+      if (! emtpy($content['content']['data'])) {
+          foreach ($form['content']['data'] as $field) {
+              if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m14" || $field['formtype'] == "m16") {
+                //do nothing for non inputs
+              }
+              elseif ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
+                    if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
+                        $options = $field['option'];
+                    } elseif ($field['formtype'] == "s06") {
+                        $options = $field['checkboxes'];
+                    } elseif ($field['formtype'] == "s08") {
+                        $options = $field['radios'];
+                    }
+                  foreach ($options as $option) {
+                      if (is_array($request->input($field['name']))) {
+                          $write[$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
+                      } else {
+                          $write[$column] = $request->input($field['name']) == $option ? 1 : 0;
+                      }
+                      $column++;
+                  }
+              }
+        elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
+          if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+              $file = $request->file($field['name']);
+              $newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
+              $this->writeS3($newFilename, file_get_contents($file));
+              $write[$column] = $this->getBucketPath().$newFilename;
+          }
+                  $column++;
+              } else {
+                  // fixed bug: if 'name' attribute was not set, exception is thrown here.
+                  if (isset($field['name'])) {
+                      $write[$column] = $request->input($field['name']);
+                  }
+                  //$write[$column] = $field['name']; //todo write first row
+                  $column++;
+              }
+          }
+      }
     }
 
     /*
