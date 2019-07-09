@@ -297,8 +297,7 @@
                     'formtype' => 'm02',
                     'type' => 'text',
                     'title' => 'Name',
-                    'text' => 'H3',
-                    'textonly' => true,
+                    'text' => 'H1',
                     'partial' => 'partials.fields.h1'
                   ])
 
@@ -308,7 +307,6 @@
                     'type' => 'text',
                     'title' => 'Name',
                     'text' => 'H2',
-                    'textonly' => true,
                     'partial' => 'partials.fields.h2'
                   ])
 
@@ -326,7 +324,6 @@
                     'formtype' => 'm08',
                     'title' => 'Paragraph_text',
                     'text' => 'Paragraph',
-                    'textonly' => true,
                     'partial' => 'partials.fields.paragraph'
                   ])
 
@@ -335,15 +332,15 @@
                     'formtype' => 'm10',
                     'title' => 'Paragraph_html',
                     'text' => 'Paragraph',
-                    'textonly' => true,
                     'partial' => 'partials.fields.paragraph-html'
                   ])
 
-                  {{-- Hidden TK refactor --}}
+                  {{-- Hidden --}}
                   @include('partials.editor.form-component', [
                     'formtype' => 'm11',
                     'type' => 'hidden',
                     'title' => 'Hidden',
+                    'defaultvalue' => true,
                     'partial' => 'partials.fields.hidden'
                   ])
 
@@ -358,67 +355,33 @@
                     'partial' => 'partials.fields.file-upload'
                   ])
 
-					<!-- button group must remain here but stay invisible -->
-                    <div class="form-group component" data-formtype="m14" rel="popover" title="Button" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>Button Text</label> <input class='form-control' type='text' name='label' id='button'>
-                          <label class='control-label' id=''>Type: </label>
-                          <select class='form-control input-md' id='color'>
-                            <option value='btn-default'>Default</option>
-                            <option value='btn-primary'>Primary</option>
-                            <option value='btn-info'>Info</option>
-                            <option value='btn-success'>Success</option>
-                            <option value='btn-warning'>Warning</option>
-                            <option value='btn-danger'>Danger</option>
-								<option value='btn-inverse'>Inverse</option>
-                          </select>
-                          <label class='control-label'>Unique ID</label> <input class='form-control' type='text' name='id' id='id'>
-                          <label class='control-label'>Class Attribute</label> <input class='form-control' type='text' name='class' id='class'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
+                  {{-- Button --}}
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm14',
+                    'title' => 'Button',
+                    'text' => 'Button',
+                    'partial' => 'partials.fields.button'
+                  ])
 
-                      <!-- Button -->
-					  <div class="">
-						  <div class="valtype" data-valtype="button">
-							<button class='btn btn-success'>Submit</button>
-						  </div>
-					  </div>
-                    </div>
+                  @include('partials.editor.form-component', [
+                    'formtype' => 'm16',
+                    'type' => 'text',
+                    'title' => 'Page Separator',
+                    'text' => 'New Section Title',
+                    'partial' => 'partials.fields.page-separator'
+                  ])
 
-                    <div class="form-group component" data-formtype="m16" data-type="text" rel="popover" title="Page Separator" trigger="manual"
-                      data-content="
-                      <form class='form'>
-                        <div class='form-group col-md-12'>
-                          <label class='control-label'>New Section Title</label> <input class='form-control' type='text' name='label' id='label'>
-                          <hr/>
-                          <button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-                        </div>
-                      </form>" data-html="true"
-                      >
-
-                      <!-- Page Separator-->
-                      <label class=" valtype" data-valtype='label'>Page Separator</label>
-                      <div class="">
-                        <hr class="pb"/>
-                      </div>
-                    </div>
-
-                  </div>
-                  <div class="tab-pane" id="SFDSWFB-6">
-					           @include('partials.embed-code')
-                  </div>
-				          <div class="tab-pane" id="SFDSWFB-7">
-                    @include('partials.settings')
-                  </div>
                 </div>
-              </fieldset>
-            </form>
-		  </div>
+                <div class="tab-pane" id="SFDSWFB-6">
+                  @include('partials.embed-code')
+                </div>
+                <div class="tab-pane" id="SFDSWFB-7">
+                  @include('partials.settings')
+                </div>
+              </div>
+            </fieldset>
+          </form>
+		    </div>
 	    </div>
 
 		<div class="col-md-6">
