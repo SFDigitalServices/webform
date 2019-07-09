@@ -312,13 +312,15 @@ $(document).ready(function(){
 		$(".popover #type").val("match");
 		$('.popover .validate-match').show();
 		$(".popover #match").val(e.currentTarget.attributes['data-match'].value);
-	}
+  }
 
-	//hide certain validations for certain field types
-	if (e.currentTarget.attributes['data-formtype'].value == 'c06' || e.currentTarget.attributes['data-formtype'].value == 'd02') {
-		$(".popover #minlength").parent().remove();
-		$(".popover #maxlength").parent().remove();
-	}
+  if((typeof e.currentTarget.attributes['data-formtype'] !== 'undefined') && (typeof e.currentTarget.attributes['data-formtype'] !== 'undefined') ){
+	  //hide certain validations for certain field types
+	  if (e.currentTarget.attributes['data-formtype'].value == 'c06' || e.currentTarget.attributes['data-formtype'].value == 'd02') {
+		  $(".popover #minlength").parent().remove();
+		  $(".popover #maxlength").parent().remove();
+    }
+  }
 
 	//add calculation
 	if (e.currentTarget.dataset.formtype == "d06" || e.currentTarget.dataset.formtype == "d08") { //only show for numbers or prices
