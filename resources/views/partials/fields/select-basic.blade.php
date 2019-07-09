@@ -6,4 +6,5 @@
     <option>Options</option>
     <option>Here!</option>
   </select>
+  <p class="help-block valtype" data-valtype='help'></p>
 </div>

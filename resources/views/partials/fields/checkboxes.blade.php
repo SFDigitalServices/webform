@@ -6,4 +6,5 @@
   <label class="checkbox">
     <input type="checkbox" value="Option two"/>Option two
   </label>
+  <p class="help-block valtype" data-valtype='help'></p>
 </div>
