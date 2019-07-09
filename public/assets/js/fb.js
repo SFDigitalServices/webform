@@ -256,9 +256,6 @@ $(document).ready(function(){
 		$('.popover').offset({top:posOffset.top-50});
 	}
 
-	//copy over attributes section
-	$(".popover .accordion-section.general").after($('.accordion-attributes').html());
-
 	//populate attributes
 	if (e.currentTarget.attributes['data-value']) $(".popover #value").val(e.currentTarget.attributes['data-value'].value);
 	if (e.currentTarget.attributes['data-name']) $(".popover #name").val(e.currentTarget.attributes['data-name'].value);
@@ -282,7 +279,7 @@ $(document).ready(function(){
 	if ($('#id')[0] != undefined && e.currentTarget.attributes['data-id'] != undefined) $('#id').val(e.currentTarget.attributes['data-id'].value);
 
 	//if not a "static text" or "choose one / many" field type, load validation accordion section
-	if (!e.currentTarget.attributes['data-textonly'] && !e.currentTarget.attributes['data-choose']) {
+	if (!e.currentTarget.attributes['data-textonly'] && !e.currentTarget.attributes['data-choose'] && e.currentTarget.attributes['data-formtype'].value != 'm11') {
     $(".popover .accordion-section.attributes").after($('.accordion-validation').html());
 	}
 

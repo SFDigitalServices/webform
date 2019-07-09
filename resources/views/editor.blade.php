@@ -420,11 +420,8 @@
       </div>
     </div> {{--  /.container --}}
 
-
   @include('partials.editor.conditionals')
   @include('partials.editor.calculations')
-
-  @include('partials.editor.attributes')
   @include('partials.editor.validation')
 
   <div class="hidden clonable accordion-conditionals">
