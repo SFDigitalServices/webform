@@ -4,6 +4,21 @@
       @if (@isset($text))
         <label class='control-label'>{{$text}} Text</label>
         <textarea class='form-control' name='textarea' id='textarea'></textarea>
+
+        {{-- Show button type dropdown for Button input --}}
+        @if ($formtype == 'm14')
+          <label class='control-label' id=''>Type: </label>
+          <select class='form-control input-md' id='color'>
+            <option value='btn-default'>Default</option>
+            <option value='btn-primary'>Primary</option>
+            <option value='btn-info'>Info</option>
+            <option value='btn-success'>Success</option>
+            <option value='btn-warning'>Warning</option>
+            <option value='btn-danger'>Danger</option>
+            <option value='btn-inverse'>Inverse</option>
+          </select>
+        @endif
+
       @else
         <label class='control-label'>Label Text</label>
         <input class='form-control' type='text' name='label' id='label'>
@@ -26,6 +41,6 @@
           &nbsp;
           <input class='' type='checkbox' name='required' id='required'>
         @endisset
-      @endisset
+      @endif
   </div>
 </div>
