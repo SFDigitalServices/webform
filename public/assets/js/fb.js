@@ -316,13 +316,15 @@ $(document).ready(function(){
 		$(".popover #type").val("match");
 		$('.popover .validate-match').show();
 		$(".popover #match").val(e.currentTarget.attributes['data-match'].value);
-	}
-	
-	//hide certain validations for certain field types
-	if (e.currentTarget.attributes['data-formtype'].value == 'c06' || e.currentTarget.attributes['data-formtype'].value == 'd02') {
-		$(".popover #minlength").parent().remove();
-		$(".popover #maxlength").parent().remove();
-	}
+  }
+
+  if((typeof e.currentTarget.attributes['data-formtype'] !== 'undefined') && (typeof e.currentTarget.attributes['data-formtype'] !== 'undefined') ){
+	  //hide certain validations for certain field types
+	  if (e.currentTarget.attributes['data-formtype'].value == 'c06' || e.currentTarget.attributes['data-formtype'].value == 'd02') {
+		  $(".popover #minlength").parent().remove();
+		  $(".popover #maxlength").parent().remove();
+    }
+  }
 
 	//add calculation
 	if (e.currentTarget.dataset.formtype == "d06" || e.currentTarget.dataset.formtype == "d08") { //only show for numbers or prices
@@ -363,18 +365,18 @@ $(document).ready(function(){
 			if (fieldConditions.allAny) $(".popover .allAny").val(fieldConditions.allAny);
 		}
 	}
-	
+
 	//add webhooks
 	var notWebhookCompatible = Array("s14", "s15", "s16", "m02", "m04", "m06", "m13", "m14", "m16");
 	if (!notWebhookCompatible.includes(e.currentTarget.dataset.formtype)) { //hide for unusual formtypes
 
 		//append accordion html section
 		$(".popover .popover-content .form-group > hr").before($(".accordion-webhooks").html());
-		
+
 		//show options only for checkboxes radios and selects
 		var webhookOptionsCompatible = Array("s02", "s06", "s08");
 		if (webhookOptionsCompatible.includes(e.currentTarget.dataset.formtype)) $(".popover-content .webhookOptionsArray").show();
-		
+
 		//get all ids and populate select
 		var ids = getIds();
 		$(".popover-content .webhookId").each(function() {
@@ -388,13 +390,13 @@ $(document).ready(function(){
 				});
 			}
 		});
-		
+
 		//populate values if there is already a webhook
 		if (e.currentTarget.attributes['data-webhooks']) {
 			var fieldWebhook = JSON.parse(e.currentTarget.attributes['data-webhooks'].value);
 			$(".popover-content .webhookSelect").val('Use a Webhook');
 			$(".popover-content .webhookEditor").show();
-			
+
 			//populate post fields
 			var allIdClone = $(".popover-content .webhookId")[0].outerHTML;
 			var counter = 0;
@@ -409,21 +411,21 @@ $(document).ready(function(){
 				$(".popover-content .webhookId").eq(counter).val(fieldWebhook.ids[counter]);
 				counter++;
 			}
-			
+
 			//populate endpoint
 			$(".popover-content .webhookEndpoint").val(fieldWebhook.endpoint);
-			
+
 			//populate method
 			$(".popover-content .webhookMethod").val(fieldWebhook.method);
 
 			//populate responseIndex
 			$(".popover-content .webhookResponseIndex").val(fieldWebhook.responseIndex);
-			
+
 			//set options array and display
 			if (fieldWebhook.optionsArray == "true") {
 				$(".popover-content .webhookOptionsArray").val('Will Contain Many Options');
 				$(".popover-content .webhookOptionsEditor").show();
-				
+
 				//populate split method
 				if (fieldWebhook.delimiter != "") { //delimiter overrides path
 					$(".popover-content .webhookResponseOptionType").val("Delimiter");
@@ -436,7 +438,7 @@ $(document).ready(function(){
 				}
 			}
 		}
-	}	
+	}
 
     var valtypes = $active_component.find(".valtype");
     $.each(valtypes, function(i,e){
@@ -671,7 +673,7 @@ $(document).ready(function(){
       });
 
 	  var currentIndex = $(".popover").prevAll(".form-group").length-1;
-	  
+
 	  //save calculations
 	  if ($(".popover .calculation").length) {
 		  var calculations = [];
@@ -709,7 +711,7 @@ $(document).ready(function(){
 			  $('#SFDSWFB-target .form-group.component:eq('+currentIndex+')').removeAttr("data-conditions");
 		  }
 	  }
-	  
+
 	  //save webhooks
 	  if ($(".popover .webhookSelect").val() == "Use a Webhook") {
 		  var webhooks = {};
