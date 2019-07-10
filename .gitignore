@@ -6,4 +6,6 @@ database/seeds
 public/formbuilder/env.inc
 public/assets/css/app.css
 vendor/
+tests/_support/_generated
 node_modules/
+
