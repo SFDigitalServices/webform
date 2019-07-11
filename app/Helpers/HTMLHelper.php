@@ -107,6 +107,18 @@ class HTMLHelper
         $html .= "</select>";
         return $html;
     }
+    /**
+     * Generate File Upload element
+     *
+     * @returns html
+     */
+    public static function formFile($field)
+    {
+		$attributes = self::setAttributes($field);
+		$prepended = self::getPrepended($field);
+        $html = $prepended . '<input' . $attributes . '/><label for="' . $field['id'] . '">' . $field['label'] . '</label>';
+        return $html;
+    }
 
     /**
      * Generate Prepeded element
@@ -283,6 +295,9 @@ class HTMLHelper
 				unset($field['required']);
 				unset($field['class']);
 				break;
+			case 'm13': //file uploads
+				unset($field['minlength']);
+				unset($field['maxlength']);
 			case 'm14': //button
 				unset($field['button']);
 				unset($field['type']);

@@ -911,6 +911,48 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $expected = '<select id="foo" name="states" formtype="s14" required class="large rounded"><option value="">Select</option><option value="alabama">Alabama</option><option value="alaska">Alaska</option><option value="arizona">Arizona</option><option value="arkansas">Arkansas</option><option value="california">California</option><option value="colorado">Colorado</option><option value="connecticut">Connecticut</option><option value="delaware">Delaware</option><option value="district-of-columbia">District Of Columbia</option><option value="florida">Florida</option><option value="georgia">Georgia</option><option value="hawaii">Hawaii</option><option value="idaho">Idaho</option><option value="illinois">Illinois</option><option value="indiana">Indiana</option><option value="iowa">Iowa</option><option value="kansas">Kansas</option><option value="kentucky">Kentucky</option><option value="louisiana">Louisiana</option><option value="maine">Maine</option><option value="maryland">Maryland</option><option value="massachusetts">Massachusetts</option><option value="michigan">Michigan</option><option value="minnesota">Minnesota</option><option value="mississippi">Mississippi</option><option value="missouri">Missouri</option><option value="montana">Montana</option><option value="nebraska">Nebraska</option><option value="nevada">Nevada</option><option value="new-hampshire">New Hampshire</option><option value="new-jersey">New Jersey</option><option value="new-mexico">New Mexico</option><option value="new-york">New York</option><option value="north-carolina">North Carolina</option><option value="north-dakota">North Dakota</option><option value="ohio">Ohio</option><option value="oklahoma">Oklahoma</option><option value="oregon">Oregon</option><option value="pennsylvania">Pennsylvania</option><option value="rhode-island">Rhode Island</option><option value="south-carolina">South Carolina</option><option value="south-dakota">South Dakota</option><option value="tennessee">Tennessee</option><option value="texas">Texas</option><option value="utah">Utah</option><option value="vermont">Vermont</option><option value="virginia">Virginia</option><option value="washington">Washington</option><option value="west-virginia">West Virginia</option><option value="wisconsin">Wisconsin</option><option value="wyoming">Wyoming</option></select>';
         $this->assertEquals($expected, $notEmptySelect);
     }
+    public function testFormFile(){
+        // test file uploads
+        $emptyFile = HTMLHelper::formFile($this->attributes);
+        $expected = '<input/><label for=""></label>';
+        $this->assertSame($expected, $emptyFile);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = '';
+        $this->attributes['id'] = 'test';
+        $this->attributes['name'] = '';
+        $this->attributes['class'] = '';
+        $this->attributes['type'] = 'file';
+        $this->attributes['required'] = '';
+		$this->attributes['regex'] = '';
+		$this->attributes['match'] = '';
+		$this->attributes['minlength'] = '';
+		$this->attributes['maxlength'] = '';
+		$this->attributes['min'] = '';
+		$this->attributes['max'] = '';
+        $this->attributes['formtype'] = 'm13';
+        $notEmptyFile = HTMLHelper::formFile($this->attributes);
+        $expected = '<input id="test" formtype="m13" name="" type="file" /><label for="test">test</label>';
+        $this->assertEquals($expected, $notEmptyFile);
+		
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'invalid';
+        $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'file';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = 'invalid';
+		$this->attributes['maxlength'] = 'invalid';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'm13';
+        $notEmptyFile = HTMLHelper::formFile($this->attributes);
+        $expected = '<input id="foo" formtype="m13" name="bar" type="file" required class="large rounded"/><label for="foo">test</label>';
+        $this->assertEquals($expected, $notEmptyFile);
+    }
     public function testFormButton(){
         $this->attributes['button'] = '';
         $emptyButton = HTMLHelper::formButton($this->attributes);
