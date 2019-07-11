@@ -69,7 +69,6 @@ $(document).ready(function(){
 
 	  var dataFormType = $($this).attr("data-formtype");
 	  var dataValue = $($this).attr("data-value");
-	  var dataName = $($this).attr("data-name");
 	  var dataClass = $($this).attr("data-class");
 	  var dataType = $($this).attr("data-type");
 	  var dataRequired = $($this).attr("data-required");
@@ -125,13 +124,14 @@ $(document).ready(function(){
 		function cancelDrag() {
 			//populate id field, almost all fields have id
 			var componentId = setComponentId($temp);
+			var componentName = setComponentName($temp);
 			//put them in original place
 			if (existingPos < existingCount) {
 			  $($temp.html()).insertBefore($($target_component[existingPos+1]));
-			  saved.data.splice(existingPos ,0, addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax))
+			  saved.data.splice(existingPos ,0, addAttr($temp.html(), componentId, dataFormType, dataValue, componentName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax))
 			} else {
               $("#SFDSWFB-target fieldset").append($temp.html());
-			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax))
+			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, componentName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax))
 			}
 			$("#SFDSWFB-save").val(JSON.stringify(saved));
 
@@ -168,16 +168,17 @@ $(document).ready(function(){
 
 			//populate id field, almost all fields have id
 			var componentId = setComponentId($temp);
+			var componentName = setComponentName($temp);
 
             // where to add
             if(tops.length > 0){
               $($temp.html()).insertBefore(tops[0]);
 			  //figure out which form-group tops[0] and push new object into proper array index
 			  //console.log($temp.html());
-			  saved.data.splice($(tops[0]).prevAll(".form-group").length-1, 0, addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
+			  saved.data.splice($(tops[0]).prevAll(".form-group").length-1, 0, addAttr($temp.html(), componentId, dataFormType, dataValue, componentName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
             } else {
               $("#SFDSWFB-target fieldset").append($temp.append("\n\n\ \ \ \ ").html());
-			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
+			  saved.data.push(addAttr($temp.html(), componentId, dataFormType, dataValue, componentName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax));
             }
 
 			//add submit button if there is only one entry
@@ -194,6 +195,7 @@ $(document).ready(function(){
 
         } else {
 			var componentId = setComponentId($temp);
+			setComponentName($temp);
 
 			if (isReferenced(componentId)) { // check if section getting dragged out has dependencies
 				loadDialogModal("Oops!", "This field cannot be removed while it is being referenced in a calculation or conditional. Remove those dependencies first before attempting to remove this field.");
@@ -261,7 +263,6 @@ $(document).ready(function(){
 
 	//populate attributes
 	if (e.currentTarget.attributes['data-value']) $(".popover #value").val(e.currentTarget.attributes['data-value'].value);
-	if (e.currentTarget.attributes['data-name']) $(".popover #name").val(e.currentTarget.attributes['data-name'].value);
 	if (e.currentTarget.attributes['data-class']) $(".popover #class").val(e.currentTarget.attributes['data-class'].value);
 
 	//autofill name if available
@@ -280,6 +281,9 @@ $(document).ready(function(){
 
 	//populate ID
 	if ($('#id')[0] != undefined && e.currentTarget.attributes['data-id'] != undefined) $('#id').val(e.currentTarget.attributes['data-id'].value);
+	
+	//populate name
+	if ($('#name')[0] != undefined && e.currentTarget.attributes['data-name'] != undefined) $('#name').val(e.currentTarget.attributes['data-name'].value);
 
 	//if not a select, checkbox, or radio, load validation accordion section, otherwise, required field is in general
 	if (!e.currentTarget.attributes['data-choose']) {
@@ -550,14 +554,14 @@ $(document).ready(function(){
 
 	//click save on popover menu
     $(".popover").delegate(".btn-info", "click", function(e){
-      e.preventDefault();
+		e.preventDefault();
 
-			var saved = $("#SFDSWFB-save").val();
-			saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
-			var previousFormSettings = saved.data.slice();
+		var saved = $("#SFDSWFB-save").val();
+		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+		var previousFormSettings = saved.data.slice();
 
-			//check id if in this form
-			if ($('.popover #id')[0] != undefined) {
+		//check id if in this form
+		if ($('.popover #id')[0] != undefined) {
 			if (!checkId($('#id').val(),$(".popover").prevAll(".form-group").length-1)) { //check if ID is not unique
 				var errorMsg = setTimeout(function() {
 					loadDialogModal('Oops!', 'ID is not unique, please use a different ID');
@@ -571,105 +575,116 @@ $(document).ready(function(){
 			if (oldId != newId) {
 				saved = changeIds(oldId, newId, saved);
 			}
-	  }
+		}
+		
+		//check name if in this form
+		if ($('.popover #name')[0] != undefined) {
+			if (!checkName($('#name').val(),$(".popover").prevAll(".form-group").length-1)) { //check if name is not unique
+				var errorMsg = setTimeout(function() {
+					loadDialogModal('Oops!', 'Name is not unique, please use a different name');
+				},100);
+				return;
+			}
+			var oldName = saved.data[curIndex].name;
+			var newName = $('#name').val();
+		}
 
-	  var saved = $("#SFDSWFB-save").val();
+		var saved = $("#SFDSWFB-save").val();
 		saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 		//var previousFormSettings = saved;
 
-      var inputs = $(".popover input");
-			inputs.push($(".popover textarea")[0]);
-			inputs.push($(".popover select"));
+		var inputs = $(".popover input");
+		inputs.push($(".popover textarea")[0]);
+		inputs.push($(".popover select"));
 
-    $.each(inputs, function(i,e){
-				var vartype = $(e).attr("id");
+	  $.each(inputs, function(i,e){
+		var vartype = $(e).attr("id");
 
-				var value = $active_component.find('[data-valtype="'+vartype+'"]')
+		var value = $active_component.find('[data-valtype="'+vartype+'"]')
 
-				if(vartype==="placeholder"){
-					$(value).attr("placeholder", $(e).val());
-				}else if (vartype==="href"){
-					$($active_component.find('a')).attr("href", $(e).val());
-				}else if (vartype==="src"){
-					$(value).attr("src", $(e).val());
-				}else if (vartype==="textarea") {
-					$(value).text($(e).val());
-				}else if (vartype==="codearea") {
-					$(value).html($(e).val());
-				} else if (vartype==="checkbox"){
-					if($(e).is(":checked")){
-						$(value).attr("checked", true);
-					}
-					else{
-						$(value).attr("checked", false);
-					}
-		  } else if (vartype==="option"){
-					var options = $(e).val().split("\n");
-					$(value).html("");
-					$.each(options, function(i,e){
-						br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
-						$(value).append("<option>"+e+"</option>"+br);
-					});
-		  } else if (vartype==="checkboxes"){
-					var checkboxes = $(e).val().split("\n");
-					$(value).html("<!-- Multiple Checkboxes -->");
-					$.each(checkboxes, function(i,e){
-						if(e.length > 0){
-							br = i < checkboxes.length - 1 ? "\n" : ""; //add line breaks for each option but the last
-							$(value).append('<label class="checkbox"><input type="checkbox" value="'+e+'">'+e+'</label>'+br);
-						}
-					});
-		  } else if (vartype==="radios"){
-				var group_name = $(".popover #name").val();
-				var radios = $(e).val().split("\n");
-				$(value).html("<!-- Multiple Radios -->");
-				$.each(radios, function(i,e){
+		if(vartype==="placeholder"){
+			$(value).attr("placeholder", $(e).val());
+		}else if (vartype==="href"){
+			$($active_component.find('a')).attr("href", $(e).val());
+		}else if (vartype==="src"){
+			$(value).attr("src", $(e).val());
+		}else if (vartype==="textarea") {
+			$(value).text($(e).val());
+		}else if (vartype==="codearea") {
+			$(value).html($(e).val());
+		} else if (vartype==="checkbox"){
+				if($(e).is(":checked")){
+					$(value).attr("checked", true);
+				} else {
+					$(value).attr("checked", false);
+				}
+		} else if (vartype==="option"){
+				var options = $(e).val().split("\n");
+				$(value).html("");
+				$.each(options, function(i,e){
+					br = i < options.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+					$(value).append("<option>"+e+"</option>"+br);
+				});
+		} else if (vartype==="checkboxes"){
+				var checkboxes = $(e).val().split("\n");
+				$(value).html("<!-- Multiple Checkboxes -->");
+				$.each(checkboxes, function(i,e){
 					if(e.length > 0){
-					br = i < radios.length - 1 ? "\n" : ""; //add line breaks for each option but the last
-					$(value).append('<label class="radio"><input type="radio" value="'+e+'" name="'+group_name+'">'+e+'</label>'+br);
+						br = i < checkboxes.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+						$(value).append('<label class="checkbox"><input type="checkbox" value="'+e+'">'+e+'</label>'+br);
 					}
 				});
-			  $($(value).find("input")[0]).attr("checked", true)
-		  } else if (vartype === "button"){
+		} else if (vartype==="radios"){
+			var group_name = $(".popover #name").val();
+			var radios = $(e).val().split("\n");
+			$(value).html("<!-- Multiple Radios -->");
+			$.each(radios, function(i,e){
+				if(e.length > 0){
+				br = i < radios.length - 1 ? "\n" : ""; //add line breaks for each option but the last
+				$(value).append('<label class="radio"><input type="radio" value="'+e+'" name="'+group_name+'">'+e+'</label>'+br);
+				}
+			});
+			$($(value).find("input")[0]).attr("checked", true)
+		} else if (vartype === "button"){
 			var type =  $(".popover #color option:selected").val();
 			$(value).find("button").text($(e).val()).attr("class", "btn "+type);
-		  } else if (vartype === "required") {
-			  if($(e).is(":checked")) {
+		} else if (vartype === "required") {
+			if($(e).is(":checked")) {
 				$active_component.attr("data-required","true");
 				$(e).val("true");
-			  } else {
+			} else {
 				$active_component.removeAttr("data-required");
 				$(e).val("false");
-			  }
-		  } else if (vartype === "value" || vartype === "name" || vartype === "id" || vartype === "class" || vartype === "regex" || vartype === "min" || vartype === "max" || vartype === "minlength" || vartype === "maxlength") {
+			}
+		} else if (vartype === "value" || vartype === "name" || vartype === "id" || vartype === "class" || vartype === "regex" || vartype === "min" || vartype === "max" || vartype === "minlength" || vartype === "maxlength") {
 			$active_component.attr("data-"+vartype,$(e).val());
-		  } else if (vartype === ("type" || "match")) { //selects
+		} else if (vartype === ("type" || "match")) { //selects
 			if (vartype == "type" && $(e).val() == "match") { //for match type validation
 				$active_component.attr("data-match", $('#match').val());
 			} else {
 				$active_component.attr("data-"+vartype,$(e).val());
 			}
-		  } else {
+		} else {
 			$(value).text($(e).val());
 			//alert("not caught: "+vartype); //label, help, undefined
-		  }
+		}
 
-		  if (vartype != null) {
-			  if ($(e).attr('name') == "title") {
+		if (vartype != null) {
+			if ($(e).attr('name') == "title") {
 				//save form title to json
 				saved.settings.name = $(e).val();
-			  } else {
-			      if (vartype == "label" || vartype == "help" || vartype == "placeholder") {
-				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
-				  } else if (vartype == "type" && $(e).val() == "match") { //for match type validation
-				saved.data[$(".popover").prevAll(".form-group").length-1]["match"] = $('#match').val();
-				  } else if (vartype == "value" && $(e).val() == "") {
-				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = undefined;
-			      } else if ($(e).val() != "") {
-				saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
-			      }
-			  }
-		  }
+			} else {
+				if (vartype == "label" || vartype == "help" || vartype == "placeholder") {
+					saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
+				} else if (vartype == "type" && $(e).val() == "match") { //for match type validation
+					saved.data[$(".popover").prevAll(".form-group").length-1]["match"] = $('#match').val();
+				} else if (vartype == "value" && $(e).val() == "") {
+					saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = undefined;
+				} else if ($(e).val() != "") {
+					saved.data[$(".popover").prevAll(".form-group").length-1][vartype] = $(e).val();
+				}
+			}
+		}
       });
 
 	  var currentIndex = $(".popover").prevAll(".form-group").length-1;
@@ -798,7 +813,7 @@ function genSource() {
 
 function setComponentId($temp) {
 	if ($temp.find(".component").attr("data-id") == undefined) {
-		var componentId = createId($temp.find(".component").attr("title"));
+		var componentId = createUnique($temp.find(".component").attr("title"),"id");
 		$temp.find(".component").attr("data-id", componentId);
 		return componentId;
 	} else {
@@ -806,28 +821,44 @@ function setComponentId($temp) {
 	}
 }
 
-function createId(title) {
+function setComponentName($temp) {
+	if ($temp.find(".component").attr("data-name") == undefined) {
+		var componentName = createUnique($temp.find(".component").attr("title"),"name");
+		$temp.find(".component").attr("data-name", componentName);
+		return componentName;
+	} else {
+		return $temp.find(".component").attr("data-name");
+	}
+}
+
+function createUnique(title,type) {
 	var count = 1;
-	var newName = title.toLowerCase()
+	var newName = title.toLowerCase();
 	newName = newName.replace(/ /g,"_");
 	countName = newName;
-	while (doesIdExist(countName) == true) {
+	while (doesItExist(countName,type) == true) {
 		countName = newName+"_"+count;
 		count++;
 	}
 	return countName;
 }
 
-function doesIdExist(str) {
-	return $('#SFDSWFB-build').find("[data-id="+str+"]")[0] ? true : false;
+function doesItExist(str,type) {
+	var bool;
+	if (type == "id") {
+		bool = $('#SFDSWFB-build').find("[data-id="+str+"]")[0] ? true : false;
+	} else if (type == "name") {
+		bool = $('#SFDSWFB-build').find("[data-name="+str+"]")[0] ? true : false;
+	}
+	return bool;
 }
 
-function addAttr(str, componentId, dataFormType, dataValue, dataName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax) { //todo cleanup form params
+function addAttr(str, componentId, dataFormType, dataValue, componentName, dataClass, dataType, dataRequired, dataMinLength, dataMaxLength, dataRegex, dataMin, dataMax) { //todo cleanup form params
 	var obj = getEditables(str);
 	if (componentId != undefined) obj['id'] = componentId; //warning, adding as a number not a string
 	obj['formtype'] = dataFormType;
 	if (dataValue != "") obj['value'] = dataValue;
-	if (dataName != "") obj['name'] = dataName;
+	if (componentName != undefined) obj['name'] = componentName;
 	if (dataClass != "") obj['class'] = dataClass;
 	if (dataType != "") obj['type'] = dataType;
 	if (dataRequired != "") obj['required'] = dataRequired;
@@ -968,15 +999,15 @@ function addSubmitButton(saved) {
 	saved.data.push({"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"});
 	return saved;
 }
-function isUnique(cid,index) {
+function isUnique(value,index,type) {
 	var saved = $("#SFDSWFB-save").val();
 	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
 
 	for (i in saved.data) {
 		if (i != index) {
 			for (key in saved.data[i]) {
-				if (key == "id") {
-					if (saved.data[i][key] == cid) {
+				if (key == type) {
+					if (saved.data[i][key] == value) {
 						return false;
 					}
 				}
@@ -986,7 +1017,7 @@ function isUnique(cid,index) {
 	return true;
 }
 function checkId(cid,i) {
-	if (isUnique(cid,i)) {
+	if (isUnique(cid,i,"id")) {
 		return true;
 	} else {
 		return false;
@@ -1006,6 +1037,13 @@ function changeIds(oldId, newId, saved) {
 		}
 	}
 	return saved;
+}
+function checkName(cname,n) {
+	if (isUnique(cname,n,"name")) {
+		return true;
+	} else {
+		return false;
+	}
 }
 function addCalculation(str) {
 	//check if first conditional or not

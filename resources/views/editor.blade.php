@@ -77,7 +77,7 @@
 
                   <div class="tab-pane active" id="SFDSWFB-1">
 				  
-                    <div class="form-group component" data-formtype="c02" data-type="text" data-name="name" data-required="true" rel="popover" title="Name" trigger="manual"
+                    <div class="form-group component" data-formtype="c02" data-type="text" data-required="true" rel="popover" title="Name" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -103,7 +103,7 @@
                       </div>
                     </div>
 					
-                    <div class="form-group component" data-formtype="c04" data-type="email" data-name="email" data-required="true" rel="popover" title="Email" trigger="manual"
+                    <div class="form-group component" data-formtype="c04" data-type="email" data-required="true" rel="popover" title="Email" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -129,7 +129,7 @@
                       </div>
                     </div>
 					
-                    <div class="form-group component" data-formtype="c06" data-type="tel" data-name="phone" data-minlength="10" data-required="true" rel="popover" title="Phone" trigger="manual"
+                    <div class="form-group component" data-formtype="c06" data-type="tel" data-minlength="10" data-required="true" rel="popover" title="Phone" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -155,7 +155,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group component" data-formtype="c08" data-type="text" data-name="address" data-required="true" rel="popover" title="Address" trigger="manual"
+                    <div class="form-group component" data-formtype="c08" data-type="text" data-required="true" rel="popover" title="Address" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -181,7 +181,7 @@
                       </div>
                     </div>
 					
-                    <div class="form-group component" data-formtype="c10" data-type="text" data-name="city" data-required="true" rel="popover" title="City" trigger="manual"
+                    <div class="form-group component" data-formtype="c10" data-type="text" data-required="true" rel="popover" title="City" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -207,7 +207,7 @@
                       </div>
                     </div>
 					
-                    <div class="form-group component" data-formtype="c14" data-type="text" data-name="zip" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
+                    <div class="form-group component" data-formtype="c14" data-type="text" data-minlength="5" data-maxlength="5" data-required="true" rel="popover" title="Zip" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -523,7 +523,7 @@
                     </div>
 
 					<!-- must preserve whitespace formatting between options! -->
-                    <div class="form-group component" data-formtype="s08" rel="popover" data-required="true" data-choose="true" data-name="multiple_radios" title="multiple radios" trigger="manual"
+                    <div class="form-group component" data-formtype="s08" rel="popover" data-required="true" data-choose="true" title="multiple radios" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -622,7 +622,7 @@
                     </div>
 					-->
 
-                    <div class="form-group component" data-formtype="s14" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
+                    <div class="form-group component" data-formtype="s14" data-type="text" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -703,7 +703,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group component" data-formtype="s15" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
+                    <div class="form-group component" data-formtype="s15" data-type="text" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -783,7 +783,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group component" data-formtype="s16" data-type="text" data-name="state" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
+                    <div class="form-group component" data-formtype="s16" data-type="text" data-required="true" data-choose="true" rel="popover" title="State" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
@@ -1011,7 +1011,7 @@
 					-->
 
 					
-                    <div class="form-group component" data-formtype="m13" data-type="file" data-name="file_upload" data-required="true" rel="popover" title="File Upload" trigger="manual"
+                    <div class="form-group component" data-formtype="m13" data-type="file" data-required="true" rel="popover" title="File Upload" trigger="manual"
                       data-content="
                       <form class='form'>
                         <div class='form-group col-md-12'>
