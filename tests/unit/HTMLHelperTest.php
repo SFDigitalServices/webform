@@ -932,7 +932,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '';
         $this->attributes['formtype'] = 'm13';
         $notEmptyFile = HTMLHelper::formFile($this->attributes);
-        $expected = '<input id="test" formtype="m13" name="" type="file" /><label for="test">test</label>';
+        $expected = '<input id="test" formtype="m13" type="file" /><label for="test">test</label>';
         $this->assertEquals($expected, $notEmptyFile);
 		
         $this->attributes['label'] = 'test';

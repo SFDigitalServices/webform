@@ -298,6 +298,7 @@ class HTMLHelper
 			case 'm13': //file uploads
 				unset($field['minlength']);
 				unset($field['maxlength']);
+				break;
 			case 'm14': //button
 				unset($field['button']);
 				unset($field['type']);
