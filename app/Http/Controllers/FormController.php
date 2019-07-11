@@ -2,9 +2,6 @@
 namespace App\Http\Controllers;
 
 //putenv('HOME=/var/www/html');
-use Aws\S3\S3Client;
-use Aws\Credentials\CredentialProvider;
-
 use App\Form;
 use Auth;
 use Log;
@@ -23,6 +20,7 @@ use Illuminate\Http\Request;
 class FormController extends Controller
 {
     protected $controllerHelper;
+    protected $dataStoreHelper;
     /**
      * Create a new controller instance.
      *
@@ -44,6 +42,7 @@ class FormController extends Controller
             'purgeCSV'
           ]]);
         $this->controllerHelper = new ControllerHelper();
+        $this->dataStoreHelper = new DataStoreHelper();
     }
 
     /**
@@ -69,7 +68,7 @@ class FormController extends Controller
         $forms = array();
         foreach ($user_forms as $form_arr) {
             $form = Form::where('id', $form_arr['form_id'])->get()->first();
-            $form['content'] = $this->scrubString($form['content']);
+            $form['content'] = $this->controllerHelper->scrubString($form['content']);
             $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
             array_push($forms, $form);
         }
@@ -84,7 +83,7 @@ class FormController extends Controller
     {
         $form_id = $request->input('form_id');
         $form = Form::where('id', $form_id)->first();
-        $form['content'] = $this->scrubString($form['content']);
+        $form['content'] = $this->controllerHelper->scrubString($form['content']);
 
         return $form ? response()->json($form) : response()->json(['status' => 'failed']);
     }
@@ -101,7 +100,7 @@ class FormController extends Controller
             return $this->create($request);
         } else {
             $returnForm = Form::where('id', $form_id)->first();
-            $returnForm['content'] = $this->scrubString($request->input('content'));
+            $returnForm['content'] = $this->controllerHelper->scrubString($request->input('content'));
             $previousContent = array();
             $previousContent['data'] = ($request->input('previousContent'));
             $this->processCSV($returnForm, $request->getHttpHost());
@@ -226,7 +225,7 @@ class FormController extends Controller
     {
         // validate form data
         if ($this->validateForm($request)) {
-            $form = Form::create(['content' => $this->scrubString($request->input('content'))]);
+            $form = Form::create(['content' => $this->controllerHelper->scrubString($request->input('content'))]);
             if ($form) {
                 $this->processCSV($form, $request->getHttpHost());
                 // create entry in user_form
@@ -279,9 +278,9 @@ class FormController extends Controller
     {
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
-				$form['content'] = $this->scrubString($form['content']);
+				$form['content'] = $this->controllerHelper->scrubString($form['content']);
         $form['content'] = json_decode($form['content'], true);
-        return $this->wrapJS($form, $request->getHttpHost());
+        return $this->wrapJS($form, $request->getSchemeAndHttpHost());
     }
 
     /**
@@ -293,7 +292,7 @@ class FormController extends Controller
     {
         $form_id = $request->input('id');
 				$form = Form::where('id', $form_id)->first();
-				$form['content'] = $this->scrubString($form['content']);
+				$form['content'] = $this->controllerHelper->scrubString($form['content']);
 				$form['content'] = json_decode($form['content'], true);
         return $this->getHTML($form, $request->getHttpHost());
     }
@@ -327,21 +326,30 @@ class FormController extends Controller
         return response()->json(['status' => 0, 'message' => 'Failed to delete form']);
     }
 
-    function hasFileUpload($data) {
-        foreach ($data as $field) {
-            if ($field['formtype'] == "m13") {
-                return true;
-            }
-        }
-        return false;
-    }
+    /**
+    * Submits form data
+    *
+    * @return redirect page
+    */
+    public function submitCSV(Request $request){
+      //Log:info($request->input('form_id'));
+      $form_id = $request->input('form_id');
+      if (!$form_id) {
+          return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
+      }
+      $form = Form::where('id', $form_id)->first();
+      $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+      //todo backend validation
 
+      if($this->dataStoreHelper->submitCSV($form,$request)){
+          return redirect($form['content']['settings']['confirmation']);
+      }
+    }
     // EMBED FUNCTIONS
-    public function getHTML($form, $base_url = '')
-    {
+    public function getHTML($form, $base_url = ''){
         $content = $form['content'];
         // form setting (json)
-        $formEncoding = $this->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
+        $formEncoding = $this->controllerHelper->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
 
         $form_div = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 
@@ -415,8 +423,7 @@ class FormController extends Controller
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
 
-    public function isSectional($content)
-    {
+    public function isSectional($content){
         foreach ($content['data'] as $field) {
             if ($field['formtype'] == "m16") {
                 return true;
@@ -425,10 +432,11 @@ class FormController extends Controller
         return false;
     }
 
-    public function getInputSelector($id, $arr, $checked)
-    {
+    public function getInputSelector($id, $arr, $checked){
         $output = "";
-		if (!$id) return $output;
+        if (!$id) {
+            return $output;
+        }
         switch ($arr[$id]) {
             case "s06":
                 if ($checked) {
@@ -450,9 +458,10 @@ class FormController extends Controller
         return $output;
     }
 
-    public function getConditionalStatement($value1, $op, $value2)
-    {
-		if (!$op) return "";
+    public function getConditionalStatement($value1, $op, $value2){
+        if (!$op) {
+            return "";
+        }
         if ($op == "contains") {
             $output = "(".$value1.").search(/".$value2."/i) != -1";
         } elseif ($op == "doesn't contain") {
@@ -560,11 +569,11 @@ class FormController extends Controller
                     if (!in_array($condition['id'], $conditionIds)) {
                         $conditionIds[] = $condition['id'];
                     }
-                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->getOp($condition['op']), $condition['val']);
+                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
                 }
                 if ($fld['allAny']) {
                     //group multiple conditions
-                    $allConditionSts = implode(" ".$this->getOp($fld['allAny'])." ", $conditionSts);
+                    $allConditionSts = implode(" ".$this->controllerHelper->getOp($fld['allAny'])." ", $conditionSts);
                 } else {
                     //or just assign single statement
                     $allConditionSts = $conditionSts[0];
@@ -613,45 +622,8 @@ class FormController extends Controller
                 $js .= '});';
             }
         }
-        $js .= "};script.src = '/assets/js/embed.js';document.head.appendChild(script);"; //end ready
+        $js .= "};script.src = '".$base_url."/assets/js/embed.js';document.head.appendChild(script);"; //end ready
         return $js;
-    }
-    public function getOp($str)
-    {
-        $output = "";
-        switch ($str) {
-            case "Any":
-                $output = "||";
-                break;
-            case "All":
-                $output = "&&";
-                break;
-            case "matches":
-                $output = "==";
-                break;
-            case "doesn't match":
-                $output = "!=";
-                break;
-            case "is less than":
-                $output = "<";
-                break;
-            case "is more than":
-                $output = ">";
-                break;
-            case "contains anything":
-                $output = "!=";
-                break;
-            case "is blank":
-                $output = "==";
-                break;
-            case "contains":
-                $output = "contains";
-                break;
-            case "doesn't contain":
-                $output = "doesn't contain";
-                break;
-        }
-        return $output;
     }
 
     /**
@@ -664,41 +636,13 @@ class FormController extends Controller
         return response()->json(['status' => 0, 'message' => 'Failed to delete form']);
     }
 
-    public function rewriteCSV($content, $filename)
-    {
-        $column = 0;
-        $write = array();
-        foreach ($content->data as $field) {
-            $nonInputs = array("m02", "m04", "m06", "m08", "m10", "m13", "m14", "m16");
-            $multipleInputs = array("s02", "s04", "s06", "s08");
-            if (in_array($field->formtype, $multipleInputs)) {
-                if ($field->formtype == "s02" || $field->formtype == "s04") {
-										$options = $field->option;
-                } elseif ($field->formtype == "s06") {
-                    $options = $field->checkboxes;
-                } elseif ($field->formtype == "s08") {
-                    $options = $field->radios;
-                }
-                foreach ($options as $option) {
-                    $write[$column] = isset($field->name) ? $field->name." ".$option : $option;
-                    $column++;
-                }
-            } elseif (!in_array($field->formtype, $nonInputs)) { // catch all for everything except multiple and non-inputs
-                $write[$column] = isset($field->name) ? $field->name : '';
-                $column++;
-            }
-        }
-        // write data to csv file
-        $this->writeCSV($filename, implode(",", $write)."\n");
-    }
-
     public function purgeCSV(Request $request)
     {
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
         $content = json_decode($form->content);
-        $filename = $this->generateFilename($form_id);
-        $this->rewriteCSV($content, $filename);
+        $filename = $this->controllerHelper->generateFilename($form_id);
+        $this->dataStoreHelper->rewriteCSV($content, $filename);
         return response()->json(['status' => 1, 'message' => 'Purged CSV']);
     }
 
@@ -707,151 +651,11 @@ class FormController extends Controller
         //read content and settings
         $content = json_decode($form->content);
         if( isset($content->settings->backend) && $content->settings->backend == "csv"){
-            $filename = $this->generateFilename($form->id);
+            $filename = $this->controllerHelper->generateFilename($form->id);
             //rewrite header row if CSV is not published (only header row or less exists)
-            if (!$this->isCSVPublished($filename)) {
-                $this->rewriteCSV($content, $filename);
+            if (!$this->dataStoreHelper->isCSVPublished($filename)) {
+                $this->dataStoreHelper->rewriteCSV($content, $filename);
             }
-        }
-    }
-
-    public function isCSVDatabase($formAction, $base_url = '')
-    {
-        $path = '//'. $base_url.'/form/submit';
-        //if form action matches a csv transaction
-        return substr($formAction, 0 - strlen($path)) == $path ? true : false;
-    }
-
-    /**
-    *   Called from fb.js
-    */
-    public function CSVPublished(Request $request)
-    {
-        return $this->isCSVPublished($this->getFilename($request)) ? 1 : 0;
-    }
-
-    public function isCSVPublished($filename)
-    {
-        $csv = $this->readCSV($filename);
-        return count($csv) > 1 ? true : false;
-    }
-
-    public function readCSV($filename)
-    {
-        //$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
-        $csv = array();
-        $read = $this->readS3($filename);
-        if ($read) {
-            $rows = str_getcsv($read, "\n");
-            foreach ($rows as $row) {
-                $csv[] = str_getcsv($row);
-            }
-        }
-        return $csv;
-    }
-
-    public function writeCSV($filename, $body)
-    {
-        //file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
-        return $this->writeS3($filename, $body);
-    }
-
-    public function appendCSV($filename, $arr)
-    {
-        $csv = $this->readCSV($filename);
-        array_push($csv, $arr);
-        $output = "";
-        foreach ($csv as $row) {
-            $output .= implode(",", $row)."\n";
-        }
-        $this->writeCSV($filename, $output);
-    }
-
-    public function submitCSV(Request $request)
-    {
-        $form_id = $request->input('form_id');
-        if (!$form_id) {
-            return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
-        }
-        $form = Form::where('id', $form_id)->first();
-        $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-        //todo backend validation
-        $column = 0;
-        $write = array();
-
-       foreach ($form['content']['data'] as $field) {
-            if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m14" || $field['formtype'] == "m16") { //do nothing for non inputs
-            } elseif ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
-                if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
-                    $options = $field['option'];
-                } elseif ($field['formtype'] == "s06") {
-                    $options = $field['checkboxes'];
-                } elseif ($field['formtype'] == "s08") {
-                    $options = $field['radios'];
-                }
-                foreach ($options as $option) {
-                    if (is_array($request->input($field['name']))) {
-                        $write[$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
-                    } else {
-                        $write[$column] = $request->input($field['name']) == $option ? 1 : 0;
-                    }
-                    $column++;
-                }
-            } else if ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-					if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
-						$file = $request->file($field['name']);
-						$newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
-						$this->writeS3($newFilename, file_get_contents($file));
-						$write[$column] = $this->getBucketPath().$newFilename;
-					}
-                    $column++;
-            } else {
-                // fixed bug: if 'name' attribute was not set, exception is thrown here.
-                if( isset( $field['name']) )
-                    $write[$column] = $request->input($field['name']);
-                //$write[$column] = $field['name']; //todo write first row
-                $column++;
-            }
-        }
-
-        $this->appendCSV($this->generateFilename($form_id), $write);
-
-        return redirect($form['content']['settings']['confirmation']);
-    }
-
-    public function writeS3($filename, $body)
-    {
-        $s3 = new S3Client([
-            'region'      => env('BUCKETEER_AWS_REGION'),
-            'version'     => 'latest',
-            'credentials' => CredentialProvider::env()
-        ]);
-
-        $result = $s3->putObject([
-            'Bucket' => env('BUCKETEER_BUCKET_NAME'),
-            'Key' => 'public/'.$filename,
-            'Body' => $body,
-        ]);
-
-        return $result;
-    }
-
-    public function readS3($filename)
-    {
-        $s3 = new S3Client([
-            'region'      => env('BUCKETEER_AWS_REGION'),
-            'version'     => 'latest',
-            'credentials' => CredentialProvider::env()
-        ]);
-
-        if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), 'public/'.$filename)) {
-            $result = $s3->getObject([
-                'Bucket' => env('BUCKETEER_BUCKET_NAME'),
-                'Key' => 'public/'.$filename
-            ]);
-            return $result['Body'];
-        } else {
-            return false;
         }
     }
 
@@ -861,91 +665,14 @@ class FormController extends Controller
         //todo make sure user has access to this form id
         $path = $request->input('path');
         if ($path) {
-            return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$this->generateFilename($id);
+            return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$this->controllerHelper->generateFilename($id);
         } else {
-            return $this->generateFilename($id);
+            return $this->controllerHelper->generateFilename($id);
         }
     }
 
-    public function getBucketPath() {
-        return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
-    }
-
-    private function generateFilename($id)
+    public function CSVPublished(Request $request)
     {
-        $hash = substr(sha1($id.env('FILE_SALT')), 0, 8);
-        return $id.'-'.$hash.'.csv';
-    }
-
-    private function generateUploadedFilename($formId, $name, $filename) { //todo use responseId instead of time
-        $time = time();
-        $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        $hash = substr(sha1($formId.$time.env('FILE_SALT')),0,8);
-        //return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
-        return $formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
-    }
-
-    private function scrubString($str)
-    {
-        if (empty($str)) {
-            return $str;
-        }
-
-        $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
-        $scrubbed = str_replace("'", "&apos;", $scrubbed);
-        $scrubbed = str_replace('\"', "", $scrubbed);
-        $scrubbed = json_encode($this->controllerHelper->parseOptionValues(json_decode($scrubbed, true)));
-        return $scrubbed;
-    }
-
-    public function notifyUser(Request $request)
-    {
-        $form_id = $request->input('form_id');
-        $started = false;
-        $num = 0;
-
-        header("Content-Type: text/event-stream");
-        header("Cache-Control: no-store");
-        header("Access-Control-Allow-Origin: *");
-
-        while (1) {
-            // 1 is always true, so repeat the while loop forever (aka event-loop)
-            $num++;
-
-            //todo make sure user has access to this form id
-            $form = $this->getForm($request);
-            if (!$form) {
-                echo "Error, form does not exist.";
-                return;
-            }
-
-            if (!$started) {
-                $last_updated = $form->original['updated_at'];
-                $started = true;
-            } else {
-                if ($form->original['updated_at'] > $last_updated) {
-                    $formData = json_encode($form->original);
-                    echo "data: {$formData}\n\n";
-                    $last_updated = $form->original['updated_at'];
-                }
-            }
-
-            // flush the output buffer and send echoed messages to the browser
-
-            while (ob_get_level() > 0) {
-                ob_end_flush();
-            }
-            flush();
-
-            // break the loop if the client aborted the connection (closed the page)
-
-            if (connection_aborted()) {
-                break;
-            }
-
-            // sleep for 10 second before running the loop again
-
-            sleep(10);
-        }
+        return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
     }
 }

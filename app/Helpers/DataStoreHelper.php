@@ -6,9 +6,20 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
 use Log;
 use DB;
+use App\Helpers\ControllerHelper;
 
 class DataStoreHelper extends Migration
 {
+  protected $controllerHelper;
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+      $this->controllerHelper = new ControllerHelper();
+    }
     /**
      * Creates database table for created form
      *
@@ -87,58 +98,142 @@ class DataStoreHelper extends Migration
         }
     }
 
-    public static function insertFormData($content, $formid){
-      $tablename = "forms_".$formid;
-      if (! Schema::hasTable($tablename)) {
-          DB::table($tablename)->insert([
-            ['email' => 'taylor@example.com', 'votes' => 0],
-            ['email' => 'dayle@example.com', 'votes' => 0]
-          ]);
-      }
+    public function readCSV($filename)
+    {
+        //$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
+        $csv = array();
+        $read = $this->controllerHelper->readS3($filename);
+        if ($read) {
+            $rows = str_getcsv($read, "\n");
+            foreach ($rows as $row) {
+                $csv[] = str_getcsv($row);
+            }
+        }
+        return $csv;
     }
 
-    private function santizeFormData($content, $formid){
+    public function writeCSV($filename, $body)
+    {
+        //file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
+        return $this->controllerHelper->writeS3($filename, $body);
+    }
 
-      if (! emtpy($content['content']['data'])) {
-          foreach ($form['content']['data'] as $field) {
-              if ($field['formtype'] == "m02" || $field['formtype'] == "m04" || $field['formtype'] == "m06" || $field['formtype'] == "m08" || $field['formtype'] == "m10" || $field['formtype'] == "m14" || $field['formtype'] == "m16") {
-                //do nothing for non inputs
+    public function rewriteCSV($content, $filename)
+    {
+        $column = 0;
+        $write = array();
+        foreach ($content->data as $field) {
+            $nonInputs = array("m02", "m04", "m06", "m08", "m10", "m13", "m14", "m16");
+            $multipleInputs = array("s02", "s04", "s06", "s08");
+            if (in_array($field->formtype, $multipleInputs)) {
+                if ($field->formtype == "s02" || $field->formtype == "s04") {
+										$options = $field->option;
+                } elseif ($field->formtype == "s06") {
+                    $options = $field->checkboxes;
+                } elseif ($field->formtype == "s08") {
+                    $options = $field->radios;
+                }
+                foreach ($options as $option) {
+                    $write[$column] = isset($field->name) ? $field->name." ".$option : $option;
+                    $column++;
+                }
+            } elseif (!in_array($field->formtype, $nonInputs)) { // catch all for everything except multiple and non-inputs
+                $write[$column] = isset($field->name) ? $field->name : '';
+                $column++;
+            }
+        }
+        // write data to csv file
+        $this->writeCSV($filename, implode(",", $write)."\n");
+    }
+    public function appendCSV($filename, $arr)
+    {
+        $csv = $this->readCSV($filename);
+        array_push($csv, $arr);
+        $output = "";
+        foreach ($csv as $row) {
+            $output .= implode(",", $row)."\n";
+        }
+        $this->writeCSV($filename, $output);
+    }
+
+    public function isCSVPublished($filename)
+    {
+        $csv = $this->readCSV($filename);
+        return count($csv) > 1 ? true : false;
+    }
+    public function submitCSV($form, $request)
+    {
+        $write = $this->parseSubmittedFormData($form, $request);
+        if ($write) {
+            $this->appendCSV($this->controllerHelper->generateFilename($form['id']), $write['csv']);
+            $this->insertFormData($write['db'], $form['id']);
+            return true;
+        }
+        return false;
+    }
+
+    public static function insertFormData($content, $formid){
+        $tablename = "forms_".$formid;
+        if (Schema::hasTable($tablename)) {
+            Log::info(print_r($content,1));
+            //checkboxes, radio buttons, dropdowns are stored in the lookup table
+            foreach($content as $key => $value){
+              if( ! Schema::hasColumn($tablename, $key)){
+                unset($content[$key]);
               }
-              elseif ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
-                    if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
-                        $options = $field['option'];
-                    } elseif ($field['formtype'] == "s06") {
-                        $options = $field['checkboxes'];
-                    } elseif ($field['formtype'] == "s08") {
-                        $options = $field['radios'];
-                    }
-                  foreach ($options as $option) {
-                      if (is_array($request->input($field['name']))) {
-                          $write[$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
-                      } else {
-                          $write[$column] = $request->input($field['name']) == $option ? 1 : 0;
-                      }
-                      $column++;
+            }
+            DB::table($tablename)->insert($content);
+        }
+    }
+
+    private function parseSubmittedFormData($content, $request){
+      $write = array();
+      $column = 0;
+      //Log::info(print_r($request->all(),1));
+      if (! empty($content['content']['data'])) {
+          foreach ($content['content']['data'] as $field) {
+            if ($this->controllerHelper->isNonInputField($field['formtype'])){
+              continue;
+            }
+            if ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
+                if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
+                    $options = $field['option'];
+                } elseif ($field['formtype'] == "s06") {
+                    $options = $field['checkboxes'];
+                } elseif ($field['formtype'] == "s08") {
+                    $options = $field['radios'];
+                }
+                foreach ($options as $option) {
+                  $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
+                  if (is_array($request->input($field['name']))) {
+                      $write['csv'][$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
+                      //$write['db'][$field['name']] = $write['csv'][$column];
+                  } else {
+                      $write['csv'][$column] = $request->input($field['name']) == $option ? 1 : 0;
+                      //$write['db'][$field['name']] = $write['csv'][$column];
                   }
-              }
-        elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-          if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
-              $file = $request->file($field['name']);
-              $newFilename = $this->generateUploadedFilename($form_id, $field['name'], $file->getClientOriginalName());
-              $this->writeS3($newFilename, file_get_contents($file));
-              $write[$column] = $this->getBucketPath().$newFilename;
-          }
                   $column++;
-              } else {
+                }
+            }
+            elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
+              if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                  $file = $request->file($field['name']);
+                  $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                  $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
+                  $write['db'][$field['name']] = $write['csv'][$column] = $this->controllerHelper->getBucketPath().$newFilename;
+                }
+                $column++;
+              }
+            else {
                   // fixed bug: if 'name' attribute was not set, exception is thrown here.
                   if (isset($field['name'])) {
-                      $write[$column] = $request->input($field['name']);
+                    $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
                   }
-                  //$write[$column] = $field['name']; //todo write first row
                   $column++;
               }
           }
       }
+      return $write;
     }
 
     /*
