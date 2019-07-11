@@ -788,6 +788,13 @@ function genSource() {
 		$("#SFDSWFB-source").val("Please save your form before generating HTML.");
 		return;
 	}
+	
+	var saved = $("#SFDSWFB-save").val();
+	saved = JSON.parse(saved.replace(/[\x00-\x1F\x7F-\x9F]/g,"\\n"));
+	if (saved.settings.action == "") {
+		$("#SFDSWFB-snippet").text("Please set the Form Action (in Settings) before embedding your form.");
+		return;
+	}
 
 	$("#SFDSWFB-snippet").text(embedCode(formId));
 
