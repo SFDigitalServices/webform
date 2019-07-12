@@ -1,6 +1,6 @@
 const mix = require('laravel-mix');
 
-mix.sass('public/assets/sass/app.scss', 'public/assets/css') // you can "chain" more source source files.
+mix.sass('public/assets/sass/app.scss', 'public/assets/css'). // you can "chain" more source source files.
    options({
       includePaths: [
         path.resolve(__dirname, 'public/assets/sass/')
