@@ -118,7 +118,7 @@
                     @include('partials.editor.form-component', [
                       'formtype' => 'c14',
                       'required' => true,
-                      'type' => 'number',
+                      'type' => 'text',
                       'name' => 'zip',
                       'title' => 'Zip',
                       'minlength' => '5',
