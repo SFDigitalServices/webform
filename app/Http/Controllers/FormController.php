@@ -315,7 +315,7 @@ class FormController extends Controller
             if (!$remaining_form_users) {
                 $form_delete = Form::where([['id', $form_id]])->delete();
                 if ($form_delete) {
-                    $deleted = DataStoreHelper::deleteFormTable('forms_'.$form_id);
+                    $deleted = DataStoreHelper::deleteFormTable($form_id);
                     if( $deleted )
                         return response()->json(['status' => 1, 'message' => 'Deleted form from user']);
                     else
