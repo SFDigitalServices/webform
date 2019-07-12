@@ -2,7 +2,13 @@
     <div class='accordion-header'>General</div>
     <div class='accordion'>
       @if (@isset($text))
-        <label class='control-label'>{{$text}} Text</label>
+        <label class='control-label'>
+          @if ($text == "New Section Title")
+            New Section Title
+          @else
+            {{$text}} Text
+          @endif
+        </label>
         <textarea class='form-control' name='textarea' id='textarea'></textarea>
 
         {{-- Show button type dropdown for Button input --}}
