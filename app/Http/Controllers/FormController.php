@@ -675,4 +675,55 @@ class FormController extends Controller
     {
         return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
     }
+
+    public function notifyUser(Request $request)
+    {
+        $form_id = $request->input('form_id');
+        $started = false;
+        $num = 0;
+
+        header("Content-Type: text/event-stream");
+        header("Cache-Control: no-store");
+        header("Access-Control-Allow-Origin: *");
+
+        while (1) {
+            // 1 is always true, so repeat the while loop forever (aka event-loop)
+            $num++;
+
+            //todo make sure user has access to this form id
+            $form = $this->getForm($request);
+            if (!$form) {
+                echo "Error, form does not exist.";
+                return;
+            }
+
+            if (!$started) {
+                $last_updated = $form->original['updated_at'];
+                $started = true;
+            } else {
+                if ($form->original['updated_at'] > $last_updated) {
+                    $formData = json_encode($form->original);
+                    echo "data: {$formData}\n\n";
+                    $last_updated = $form->original['updated_at'];
+                }
+            }
+
+            // flush the output buffer and send echoed messages to the browser
+
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            flush();
+
+            // break the loop if the client aborted the connection (closed the page)
+
+            if (connection_aborted()) {
+                break;
+            }
+
+            // sleep for 10 second before running the loop again
+
+            sleep(10);
+        }
+    }
 }
