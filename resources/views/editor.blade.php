@@ -285,7 +285,7 @@
                     'required' => true,
                     'defaultvalue' => true,
                     'placeholder' => true,
-                    'partial' => 'partials.fields.state-abbr-value'
+                    'partial' => 'partials.fields.state-abbr'
                   ])
 
                 </div>
