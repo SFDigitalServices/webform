@@ -279,7 +279,10 @@ $(document).ready(function(){
 	if ($('#id')[0] != undefined && e.currentTarget.attributes['data-id'] != undefined) $('#id').val(e.currentTarget.attributes['data-id'].value);
 
 	//if not a "static text" or "choose one / many" field type, load validation accordion section
-	if (!e.currentTarget.attributes['data-textonly'] && !e.currentTarget.attributes['data-choose'] && e.currentTarget.attributes['data-formtype'].value != 'm11') {
+	if (!e.currentTarget.attributes['data-textonly']
+      && !e.currentTarget.attributes['data-choose']
+      && e.currentTarget.attributes['data-formtype'].value != 'm11'
+      && e.currentTarget.attributes['data-formtype'].value != 'm13') {
     $(".popover .accordion-section.attributes").after($('.accordion-validation').html());
 	}
 
