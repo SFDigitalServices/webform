@@ -30,6 +30,7 @@ $router->group(['prefix' => 'form'], function($router) {
     //$app->post('createUser', ['as' => 'createUser', 'uses' =>'FormController@createUser']);
     $router->post('getForm', ['as' => 'getForm', 'uses' => 'FormController@getForm']);
     $router->get('embed', ['as' => 'embed', 'uses' => 'FormController@embedJS']);
+    $router->get('preview', ['as' => 'preview', 'uses' => 'FormController@preview']);
     $router->get('generate', ['as' => 'generate', 'uses' => 'FormController@generate']);
     $router->get('push', ['as' => 'push', 'uses' => 'FormController@notifyUser']);
     $router->post('save', ['as' => 'save', 'uses' => 'FormController@save']);

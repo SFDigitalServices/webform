@@ -41,16 +41,16 @@ class HTMLHelper
     public static function formCheckbox($field)
     {
         $html = "";
-		//name needs to be an array
-		$field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
-		//id is set per option
-		$field_id = isset($field['id']) ? $field['id'] : "";
-		unset($field['id']);
-		//convert checkboxes to options and remove them from fields
-		$options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
-		unset($field['checkboxes']);
+        //name needs to be an array
+        $field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
+        //id is set per option
+        $field_id = isset($field['id']) ? $field['id'] : "";
+        unset($field['id']);
+        //convert checkboxes to options and remove them from fields
+        $options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
+        unset($field['checkboxes']);
         //get attributes
-		$attributes = self::setAttributes($field);
+        $attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
         if (!empty($options)) {
             foreach ($options as $option) {
@@ -68,7 +68,8 @@ class HTMLHelper
     public static function formText($field)
     {
 		$attributes = self::setAttributes($field);
-        $html = "<input". $attributes . "/>";
+		$prepended = self::getPrepended($field);
+        $html = $prepended . "<input" . $attributes . "/>";
         return $html;
     }
     /**
@@ -96,14 +97,28 @@ class HTMLHelper
 
         // need to check for formtypes: s02, s04, s14, s15, s16
         if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16") {
-            $html .= ListHelper::getStates($field['formtype']);
+            $html .= self::getStates($field['formtype']);
         } elseif (isset($field['option'])) {
             foreach ($field['option'] as $option) {
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
-		
+
         $html .= "</select>";
+        return $html;
+    }
+
+    /**
+     * Generate Prepeded element
+     *
+     * @returns html
+     */
+    public static function getPrepended($field)
+    {
+		$html = "";
+		if ($field['formtype'] == "d08") { //so far for price
+			$html = '<div class="prepended dollar">$</div>';
+		}
         return $html;
     }
 
@@ -137,7 +152,7 @@ class HTMLHelper
 		} else {
 			$field_value = ''; //should not happen
 		}
-		
+
         $html = '<p'. $attributes .'>'.$field_value.'</p>';
         return $html;
     }
@@ -226,7 +241,7 @@ class HTMLHelper
         return $str;
     }
 
-	
+
     /**
      * Strips field attributes by formType
      *
@@ -234,6 +249,11 @@ class HTMLHelper
      */
     private static function stripAttributesByFormType($field) {
 		switch ($field['formtype']) {
+			case 'c06': //phone
+			case 'd02': //date
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
 			case 'i14': //textarea
 				unset($field['type']);
 				break;
@@ -275,16 +295,20 @@ class HTMLHelper
 		}
 		return $field;
 	}
-	
+
     /**
-     * Strips field attributes by type
+     * Process fields by type, adds steps to numbers, and strips invalid validators
      *
      * @returns field array
      */
-    private static function stripAttributesByType($field) {
+    private static function processFieldsByType($field) {
 		if (isset($field['type'])) {
 			if (in_array($field['type'], array("number", "date", "price"))) {
-				$field['step'] = 'any';
+				if ($field['formtype'] == "d08") {
+					$field['step'] = '0.01';
+				} else {
+					$field['step'] = 'any';
+				}
 			} else {
 				unset($field['min']);
 				unset($field['max']);
@@ -299,7 +323,7 @@ class HTMLHelper
 		}
 		return $field;
 	}
-	
+
     /**
      * Constructs field attributes
      *
@@ -307,41 +331,74 @@ class HTMLHelper
      */
     private static function setAttributes($field)
     {
-		$html = '';
-		
+        $html = '';
+
         //unset unused attributes
         unset($field['label'], $field['help']);
-        unset($field['conditions'], $field['calculations']);
+        unset($field['conditions'], $field['calculations'], $field['webhooks']);
         unset($field['codearea'], $field['textarea'], $field['option'], $field['checkboxes'], $field['radios']); //content, not attributes
-		unset($field['value']); //deprecated
-		
-		//strip attributes for specific formTypes, this is for handling extraneous/bad data
-		$field = isset($field['formtype']) ? self::stripAttributesByFormType($field) : $field;
-		
-		//strip attributes for specific types, this is for handling extraneous/bad data
-		$field = self::stripAttributesByType($field);		
+        unset($field['value']); //deprecated
 
-		//add color to the class in the case of buttons
-		$color = isset($field['color']) ? ' ' . $field['color'] : "";
+        //strip attributes for specific formTypes, this is for handling extraneous/bad data
+        $field = isset($field['formtype']) ? self::stripAttributesByFormType($field) : $field;
+
+        //strip attributes for specific types, this is for handling extraneous/bad data
+        $field = self::processFieldsByType($field);
+
+        //add color to the class in the case of buttons
+        $color = isset($field['color']) ? ' ' . $field['color'] : "";
         $field['class'] = isset($field['class']) ? $field['class'] . $color : $color;
-		unset($field['color']);
-		
+        unset($field['color']);
+
         foreach ($field as $key => $value) {
             if ($value == '') {
-				//fields with empty values are skipped
-            } else if ($key == 'type' && ($value == 'regex' || $value == 'match')) {
+                //fields with empty values are skipped
+            } elseif ($key == 'type' && ($value == 'regex' || $value == 'match')) {
                 $html .= ' type="text"';
-            } else if ($key == 'regex') {
+            } elseif ($key == 'regex') {
                 $html .= ' pattern="'.$value.'"';
-            } else if ($key == "match") {
-              $html .= ' data-match="#'.$value.'"';
-            } else if ($key == "required") {
-				if ($value == "true") $html .= ' required';
+            } elseif ($key == "match") {
+                $html .= ' data-match="#'.$value.'"';
+            } elseif ($key == "required") {
+                if ($value == "true") {
+                    $html .= ' required';
+                }
             } else {
                 $html .= ' '. $key .'="'. $value . '"';
             }
         }
-		
-		return $html;
+        return $html;
     }
+
+     /**
+     * Gets a list of states
+     *
+     * @returns html
+     */
+	private static function getStates($formType) {
+        if ($formType == "s14") {
+            $str = '<option value="">Select</option><option value="alabama">Alabama</option><option value="alaska">Alaska</option><option value="arizona">Arizona</option><option value="arkansas">Arkansas</option><option value="california">California</option><option value="colorado">Colorado</option><option value="connecticut">Connecticut</option><option value="delaware">Delaware</option><option value="district-of-columbia">District Of Columbia</option><option value="florida">Florida</option><option value="georgia">Georgia</option><option value="hawaii">Hawaii</option><option value="idaho">Idaho</option><option value="illinois">Illinois</option><option value="indiana">Indiana</option><option value="iowa">Iowa</option><option value="kansas">Kansas</option><option value="kentucky">Kentucky</option><option value="louisiana">Louisiana</option><option value="maine">Maine</option><option value="maryland">Maryland</option><option value="massachusetts">Massachusetts</option><option value="michigan">Michigan</option><option value="minnesota">Minnesota</option><option value="mississippi">Mississippi</option><option value="missouri">Missouri</option><option value="montana">Montana</option><option value="nebraska">Nebraska</option><option value="nevada">Nevada</option><option value="new-hampshire">New Hampshire</option><option value="new-jersey">New Jersey</option><option value="new-mexico">New Mexico</option><option value="new-york">New York</option><option value="north-carolina">North Carolina</option><option value="north-dakota">North Dakota</option><option value="ohio">Ohio</option><option value="oklahoma">Oklahoma</option><option value="oregon">Oregon</option><option value="pennsylvania">Pennsylvania</option><option value="rhode-island">Rhode Island</option><option value="south-carolina">South Carolina</option><option value="south-dakota">South Dakota</option><option value="tennessee">Tennessee</option><option value="texas">Texas</option><option value="utah">Utah</option><option value="vermont">Vermont</option><option value="virginia">Virginia</option><option value="washington">Washington</option><option value="west-virginia">West Virginia</option><option value="wisconsin">Wisconsin</option><option value="wyoming">Wyoming</option>';
+        } elseif ($formType == "s15") {
+            $str = '<option value="">Select</option><option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="DC">District Of Columbia</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA">Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>';
+        } elseif ($formType == "s16") {
+            $str = '<option value="">Select</option><option value="AL">AL</option><option value="AK">AK</option><option value="AR">AR</option>	<option value="AZ">AZ</option><option value="CA">CA</option><option value="CO">CO</option><option value="CT">CT</option><option value="DC">DC</option><option value="DE">DE</option><option value="FL">FL</option><option value="GA">GA</option><option value="HI">HI</option><option value="IA">IA</option><option value="ID">ID</option><option value="IL">IL</option><option value="IN">IN</option><option value="KS">KS</option><option value="KY">KY</option><option value="LA">LA</option><option value="MA">MA</option><option value="MD">MD</option><option value="ME">ME</option><option value="MI">MI</option><option value="MN">MN</option><option value="MO">MO</option><option value="MS">MS</option><option value="MT">MT</option><option value="NC">NC</option><option value="NE">NE</option><option value="NH">NH</option><option value="NJ">NJ</option><option value="NM">NM</option><option value="NV">NV</option><option value="NY">NY</option><option value="ND">ND</option><option value="OH">OH</option><option value="OK">OK</option><option value="OR">OR</option><option value="PA">PA</option><option value="RI">RI</option><option value="SC">SC</option><option value="SD">SD</option><option value="TN">TN</option><option value="TX">TX</option><option value="UT">UT</option><option value="VT">VT</option><option value="VA">VA</option><option value="WA">WA</option><option value="WI">WI</option><option value="WV">WV</option><option value="WY">WY</option>';
+        }
+        return $str;
+    }
+     /**
+     * Gets a list of months
+     *
+     * @returns html
+     */
+	private static function getMonths($formType) {
+		if ($formType == "a") {
+		  $str = '<option value="">Select</option><option value="january">January</option><option value="february">February</option><option value="march">March</option><option value="april">April</option><option value="may">May</option><option value="june">June</option><option value="july">July</option><option value="august">August</option><option value="september">September</option><option value="october">October</option><option value="november">November</option><option value="december">December</option>';
+		} else if ($formType == "b") {
+		  $str = '<option value="">Select</option><option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option><option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option><option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>';
+		} else if ($formType == "c") {
+		  $str = '<option value="">Select</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>';
+		}
+		return $str;
+  }
+
 }

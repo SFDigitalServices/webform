@@ -403,7 +403,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = 'invalid';
         $this->attributes['formtype'] = 'c06';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="foo" name="bar" type="tel" formtype="c06" required minlength="3" maxlength="9" class="large rounded"/>';
+        $expected = '<input id="foo" name="bar" type="tel" formtype="c06" required class="large rounded"/>';
         $this->assertEquals($expected, $notEmptyText);
 		
         // Address fields
@@ -551,7 +551,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '20191231';
         $this->attributes['formtype'] = 'd02';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="foo" name="bar" type="date" formtype="d02" required minlength="3" maxlength="9" min="19500101" max="20191231" class="large rounded" step="any"/>';
+        $expected = '<input id="foo" name="bar" type="date" formtype="d02" required min="19500101" max="20191231" class="large rounded" step="any"/>';
         $this->assertEquals($expected, $notEmptyText);
 		
         // Time fields
@@ -680,7 +680,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '';
         $this->attributes['formtype'] = 'd08';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="test" type="number" formtype="d08" step="any"/>';
+        $expected = '<div class="prepended dollar">$</div><input id="test" type="number" formtype="d08" step="0.01"/>';
         $this->assertEquals($expected, $notEmptyText);
 
         $this->attributes['label'] = 'test';
@@ -698,7 +698,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '20';
         $this->attributes['formtype'] = 'd08';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="foo" name="bar" type="number" formtype="d08" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="any"/>';
+        $expected = '<div class="prepended dollar">$</div><input id="foo" name="bar" type="number" formtype="d08" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="0.01"/>';
         $this->assertEquals($expected, $notEmptyText);
 		
         // URL fields

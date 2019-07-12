@@ -1,15 +1,37 @@
-		  body {
-			//padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-			padding-bottom: 10px;
-		  }
-			.hero-header {
-				background: url(/assets/images/bg4.jpg) no-repeat center center / auto 100%;
-			}
-			@media only screen and (min-width: 64.063em) {
-				.hero-header {
-					background: url(/assets/images/bg4.jpg) no-repeat center center / 100% auto;
-				}
-			}
+	html,
+	body {
+		height: 100%;
+	}
+
+	body {
+		padding-bottom: 10px;
+	}
+
+	.login {
+		background:#222 url(/assets/images/bg4.jpg) no-repeat center center;
+		background-size: 100% 100%;
+		min-height: 100%;
+	}
+
+	.login .row {
+		margin-top: 6em;
+	}
+
+	.login header,
+	.login h1 {
+		font-size: 2em;
+		color: #fff;
+		text-shadow: 0 0 18px #000;
+	}
+
+	.login h2 {
+		margin-top: 0;
+	}
+
+	.login .panel {
+		padding: 2em;
+	}
+
 			h1 {
 				color:#333;
 			}
@@ -30,6 +52,14 @@
 		  .clear {
 			clear:both;
 		  }
+	  .fa-circle-notch {
+      	color: #ddd;
+      }
+
+      .forms .fa-circle-notch {
+      	font-size: 2em;
+      }
+      
       #SFDSWFB-components{
         min-height: 600px;
         margin-top: 5px;
@@ -221,12 +251,17 @@
 		right:15px;
 	}
 
+	.accordion-section {
+		cursor: pointer;
+	}
+
 #SFDSWFB-target .form-group {position:relative}
 #SFDSWFB-target .form-group.component .fa-times-circle {display;block;position:absolute;top:0;right:0;font-size:1.5em;color:#ccc;cursor:pointer;z-index:99}
 
 /* specific to editor page (pulling out inline styles) */
-.header > div {display:block;max-width:1140px;text-align:right;margin:auto}
-.header > div > a {display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888}
+.header-container {display:block;max-width:1140px;text-align:right;margin:auto}
+.logo {display:block;background:#fff;width:232px;float:left;position:absolute;top:0px;box-shadow:0 0 10px #888;cursor:pointer;}
+.header-sign-out { float:right;margin-left:2em;}
 .welcomeBack {margin-top:15vh}
 .welcomeBox {text-align:center;padding:4em;margin:2em;border:1px solid #ddd;border-radius:5px}
 .forms a.btn {margin-bottom:3px}
@@ -240,3 +275,7 @@ legend {padding: 2px 0}
 #SFDSWFB-target .form-group[data-formtype=m11] > label:after {content:""}
 #SFDSWFB-target .popover .form-group > label:after {content:""}
 #SFDSWFB-components .form-group[data-formtype=m14] {visibility:hidden;height:0px}
+select.webhookId {display:inline}
+.webhookEditor .fa-minus-circle {position:absolute;margin:0.5em 0 0 0.5em}
+.form-group.component[data-formtype=d08] > div {position:relative}
+.prepended {position:absolute;top:0.5em;left:-1em}

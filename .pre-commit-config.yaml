@@ -18,10 +18,7 @@ repos:
     sha: 1.3.0
     hooks:
       - id: php-lint
-      - id: php-cs
-        exclude: \.(blade)
-        files: \.(php)$
-        args: [--standard=PSR1 -p]
+
       - id: php-cs-fixer
         exclude: \.(blade)
         files: \.(php)$
