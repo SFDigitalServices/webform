@@ -81,6 +81,7 @@ jobs: # a collection of steps
             git config credential.helper 'cache --timeout=120'
             git config user.email "ds-build@sfgov.org"
             git config user.name "Deployment Bot"
+            git add public/assets/css # we should probably script this if more files need to be deployed.
             git commit --allow-empty -m "Trigger deployment [ci skip]"
             # Push quietly to prevent showing the token in log
             git push --set-upstream origin ${CIRCLE_BRANCH}
