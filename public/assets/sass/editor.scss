@@ -1,0 +1,409 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  padding-bottom: 10px;
+}
+
+.login {
+  background: #222 url(/assets/images/bg4.jpg) no-repeat center center;
+  background-size: 100% 100%;
+  min-height: 100%;
+
+  .row {
+    margin-top: 6em;
+  }
+
+  header,
+  h1 {
+    font-size: 2em;
+    color: #fff;
+    text-shadow: 0 0 18px #000;
+  }
+
+  h2 {
+    margin-top: 0;
+  }
+
+  .panel {
+    padding: 2em;
+  }
+}
+
+/* Utility classes */
+
+.floatleft {
+  float: left;
+}
+
+.floatright {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+/* Basic elements */
+
+h1 {
+  color: #333;
+}
+
+h2 {
+  margin-top: 1em;
+  margin-bottom: 32px;
+}
+
+h5 {
+  font-weight: bold;
+}
+
+legend {
+  padding: 2px 0;
+}
+
+/* Forms */
+
+.form-horizontal {
+  .component {
+    padding: 0 17px;
+  }
+
+  .control-label {
+    text-align: left;
+    padding-bottom: 5px;
+  }
+}
+
+.form-section {
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #aaa;
+}
+
+/* Modals */
+
+.modal .close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+/* App header */
+
+.header {
+  background: #428bca;
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  padding: 1em 0;
+  margin-bottom: 1em;
+}
+
+.header-container {
+  display: block;
+  max-width: 1140px;
+  text-align: right;
+  margin: auto;
+}
+
+.logo {
+  display: block;
+  background: #fff;
+  width: 232px;
+  float: left;
+  position: absolute;
+  top: 0px;
+  box-shadow: 0 0 10px #888;
+  cursor: pointer;
+}
+
+.header-sign-out {
+  float: right;
+  margin-left: 2em;
+}
+
+/* Welcome page */
+
+.welcomeBack {
+  margin-top: 15vh;
+}
+
+.welcomeBox {
+  text-align: center;
+  padding: 4em;
+  margin: 2em;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.forms a.btn {
+  margin-bottom: 3px;
+}
+
+.text-muted {
+  padding: 2em 0;
+}
+
+.fa-circle-notch {
+  color: #ddd;
+
+  .forms & {
+    font-size: 2em;
+  }
+}
+
+/* Lefthand pane */
+
+.tabbable li.active a:focus {
+  outline: none;
+}
+
+#SFDSWFB-components {
+  min-height: 600px;
+  margin-top: 5px;
+
+  .form-group[data-formtype=m14] {
+    visibility: hidden;
+    height: 0px;
+  }
+}
+
+#SFDSWFB-snippet {
+  /* Embed code */
+  min-height: 250px;
+}
+
+#SFDSWFB-source {
+  /* Under "Debug Info" */
+  min-height: 100px;
+}
+
+/* Preview pane */
+
+#SFDSWFB-target {
+  min-height: 200px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  transition: height .3s;
+  overflow: hidden;
+
+  .form-group {
+    width: 100%;
+    margin-left: 0;
+    position: relative;
+
+    > label:after {
+      padding-left: 1em;
+      font-size: .8em;
+      content: "(optional)";
+    }
+  }
+
+  .form-group[data-required=true],
+  .form-group[data-formtype=m11],
+  .popover .form-group {
+    > label:after {
+      content: "";
+    }
+  }
+
+  .form-group.component .fa-times-circle {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 1.5em;
+    color: #ccc;
+    cursor: pointer;
+    z-index: 99
+  }
+
+  .component {
+    border: 1px solid #fff;
+  }
+
+  .floatleft,
+  .floatright {
+    width: 45%;
+  }
+}
+
+/* "Ghost" field when dragging inputs */
+#SFDSWFB-temp {
+  width: 500px;
+  background: white;
+  border: 1px dotted #ccc;
+  border-radius: 10px;
+}
+
+
+/* "Edit field" popovers */
+
+.accordion-header {
+  font-size: 1.5em;
+  border-bottom: 1px solid #eee;
+  margin: 1em 0;
+}
+
+.accordion-section {
+  cursor: pointer;
+}
+
+.popover {
+  min-width: 245px;
+}
+
+.popover-content {
+  form {
+    margin: 0 auto;
+    width: 213px;
+
+    .btn {
+      margin-right: 10px;
+    }
+  }
+
+  select {
+    border: 1px solid #ccc;
+    height: 34px;
+    padding: 6px 12px;
+    width: 100%;
+    border-radius: 3px;
+    margin-bottom: 1em;
+
+    &.showHide {
+      width: 50%;
+    }
+  }
+}
+
+.fa-minus-circle.conditionIcon {
+  position: absolute;
+  right: -1.2em;
+  font-size: 1.5em;
+  color: #eee;
+  cursor: pointer;
+
+  &:hover {
+    color: #aaa;
+  }
+}
+
+.condition,
+.calculation {
+  position: relative;
+  border-bottom: 1px solid transparent;
+
+  &:hover {
+    border-bottom: 1px solid #000;
+  }
+}
+
+.addConditional {
+  padding-top: 1em;
+}
+
+.addCalculation {
+  padding-top: 1em;
+}
+
+hr.and::before {
+  content: "&";
+  position: relative;
+  left: calc(45%);
+  top: -12px;
+  background: #fff;
+  width: 24px;
+  color: #bbb;
+  display: block;
+  text-align: center;
+}
+
+
+/* Form-wide action menu (clone, delete, etc.) */
+
+.clickMenu {
+  display: block;
+  float: right;
+  width: auto;
+  text-align: left;
+  margin-top: 1.5em;
+  position: relative;
+  color: #aaa;
+
+  > ul {
+    margin-top: 10px;
+  }
+
+  li {
+    display: inline-block;
+    padding: .5em 1em;
+    color: #428bca;
+    cursor: pointer;
+
+    &:hover {
+      background: #eee;
+      color: #2a6496;
+    }
+  }
+}
+
+/* Typeahead styles (for autofilling name attributes) */
+
+.tt-query,
+.tt-hint {
+  /* UPDATE: newer versions use tt-input instead of tt-query */
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 24px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.tt-query {
+  /* UPDATE: newer versions use tt-input instead of tt-query */
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999;
+}
+
+.tt-menu {
+  /* UPDATE: newer versions use tt-menu instead of tt-dropdown-menu */
+  width: 422px;
+  margin-top: 12px;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 18px;
+  line-height: 24px;
+
+  &.tt-cursor,
+  &:hover {
+    /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
+    color: #fff;
+    background-color: #0097cf;
+    cursor: pointer;
+  }
+
+  p {
+    margin: 0;
+  }
+
+
+}

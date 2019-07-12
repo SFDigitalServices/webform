@@ -9,7 +9,7 @@
     "indentation": ["tab", {
       "except": ["value"]
     }],
-    "max-empty-lines": 2,
+    "max-empty-lines": 5,
     "rule-empty-line-before": [ "always", {
       "except": ["first-nested"],
       "ignore": ["after-comment"]
