@@ -137,6 +137,7 @@
                     'required' => true,
                     'type' => 'date',
                     'title' => 'Date',
+                    'name' => 'date',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.date'
@@ -148,6 +149,7 @@
                     'required' => true,
                     'type' => 'time',
                     'title' => 'Time',
+                    'name' => 'time',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.time'
@@ -159,6 +161,7 @@
                     'required' => true,
                     'type' => 'number',
                     'title' => 'Numbers',
+                    'name' => 'number',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.numbers'
@@ -170,6 +173,7 @@
                     'required' => true,
                     'type' => 'number',
                     'title' => 'Price',
+                    'name' => 'price',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.price'
@@ -181,6 +185,7 @@
                     'required' => true,
                     'type' => 'url',
                     'title' => 'URL',
+                    'name' => 'url',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.url'
@@ -196,6 +201,7 @@
                     'required' => true,
                     'type' => 'text',
                     'title' => 'Text input',
+                    'name' => 'text',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.text'
@@ -206,6 +212,7 @@
                     'formtype' => 'i14',
                     'required' => true,
                     'title' => 'Textarea',
+                    'name' => 'textarea',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.textarea'
@@ -221,6 +228,7 @@
                     'required' => true,
                     'choose' => true,
                     'title' => 'Select Dropdown',
+                    'name' => 'select_dropdown',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.select-basic',
                     'options' => 'option'
@@ -232,6 +240,7 @@
                     'required' => true,
                     'choose' => true,
                     'title' => 'Multiple checkboxes',
+                    'name' => 'multiple_checkboxes',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.checkboxes',
                     'options' => 'checkboxes'
@@ -253,7 +262,7 @@
                   @include('partials.editor.form-component', [
                     'formtype' => 's14',
                     'type' => 'text',
-                    'name' => 'state',
+                    'name' => 'state_full_names',
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
@@ -266,7 +275,7 @@
                   @include('partials.editor.form-component', [
                     'formtype' => 's15',
                     'type' => 'text',
-                    'name' => 'state',
+                    'name' => 'state_abbr_value',
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
@@ -279,7 +288,7 @@
                   @include('partials.editor.form-component', [
                     'formtype' => 's16',
                     'type' => 'text',
-                    'name' => 'state',
+                    'name' => 'state_abbr',
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
@@ -340,6 +349,7 @@
                     'formtype' => 'm11',
                     'type' => 'hidden',
                     'title' => 'Hidden',
+                    'name' => 'hidden',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.hidden'
                   ])
