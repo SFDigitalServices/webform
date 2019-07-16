@@ -403,6 +403,9 @@ class FormController extends Controller
                         case "m10":
                             $form_container .= $field_header . HTMLHelper::formParagraph($field) .HTMLHelper::helpBlock($field);
                             break;
+						case "m13":
+							$form_container .= '<div class="form-group" data-id="'.$field['id'].'">' . HTMLHelper::formFile($field) . HTMLHelper::helpBlock($field);
+							break;
                         case "m14":
 							if (empty($sections)) $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
                             break;
