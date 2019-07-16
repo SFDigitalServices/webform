@@ -197,7 +197,7 @@ class DataStoreHelper extends Migration
       ])->get();
       foreach ($options as $option) {
         if( in_array($option->value, $value) )
-          $selected[] = $option->value;
+          $selected[] = $option->id;
       }
       return implode(',',$selected);
     }
@@ -372,13 +372,13 @@ class DataStoreHelper extends Migration
                     'value' => $value,
                 ]);
             }
-            $table->Integer($definition['name'])->default($inserted_id);
+            $table->string($definition['name'],25)->default($inserted_id);
         }
         else{
             //check column, rename not allowed
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
-                    " MODIFY ". $definition['name'] . " int(11) ";
+                    " MODIFY ". $definition['name'] . " varchar(25) ";
                 if (isset($definition['value'])) { // need to get reference id from lookup table.
                     $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
                 }
