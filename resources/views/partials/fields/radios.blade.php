@@ -6,4 +6,5 @@
   <label class="radio">
     <input type="radio" value="Option two" name="group">Option two
   </label>
+   <p class="help-block valtype" data-valtype='help'></p>
 </div>
