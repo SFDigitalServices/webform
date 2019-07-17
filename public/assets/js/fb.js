@@ -258,9 +258,6 @@ $(document).ready(function(){
 		$('.popover').offset({top:posOffset.top-50});
 	}
 
-	//copy over attributes section
-	$(".popover .accordion-section.general").after($('.accordion-attributes').html());
-
 	//populate attributes
 	if (e.currentTarget.attributes['data-value']) $(".popover #value").val(e.currentTarget.attributes['data-value'].value);
 	if (e.currentTarget.attributes['data-class']) $(".popover #class").val(e.currentTarget.attributes['data-class'].value);
@@ -285,12 +282,14 @@ $(document).ready(function(){
 	//populate name
 	if ($('#name')[0] != undefined && e.currentTarget.attributes['data-name'] != undefined) $('#name').val(e.currentTarget.attributes['data-name'].value);
 
-	//if not a select, checkbox, or radio, load validation accordion section, otherwise, required field is in general
-	if (!e.currentTarget.attributes['data-choose']) {
-
-		//copy over validation section
-		$(".popover .accordion-section.attributes").after($('.accordion-validation').html());
+	//if not a "static text" or "choose one / many" field type, load validation accordion section
+	if (!e.currentTarget.attributes['data-textonly']
+      && !e.currentTarget.attributes['data-choose']
+      && e.currentTarget.attributes['data-formtype'].value != 'm11'
+      && e.currentTarget.attributes['data-formtype'].value != 'm13') {
+    $(".popover .accordion-section.attributes").after($('.accordion-validation').html());
 	}
+
 	//hide value and validate type for textarea
 	if ($active_component.find("textarea")[0]) {
 		$(".popover .accordion-section.attributes .accordion label:first-child()").remove(); //hacky, if value gets moved this will have to change
