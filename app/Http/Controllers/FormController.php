@@ -270,6 +270,22 @@ class FormController extends Controller
     }
 
     /**
+    * Creates a page preview of the submitted form
+    *
+    * @return HTML
+    */
+    public function previewSubmitted(Request $request)
+    {
+		print "<div style='padding:3em 4.5em'>";
+			print "<h2>Please set a Form Action before trying to embed your form.</h2>";
+			print "<h3>Below is a summary of what you just submitted:</h3>";
+			foreach ($_POST as $key => $value) {
+				print $key . " = " . $value . "<br/>";
+			}
+		print "</div>";
+    }
+	
+    /**
     * Creates an embed JS for the form
     *
     * @return HTML
@@ -387,6 +403,9 @@ class FormController extends Controller
                         case "m10":
                             $form_container .= $field_header . HTMLHelper::formParagraph($field) .HTMLHelper::helpBlock($field);
                             break;
+						case "m13":
+							$form_container .= '<div class="form-group" data-id="'.$field['id'].'">' . HTMLHelper::formFile($field) . HTMLHelper::helpBlock($field);
+							break;
                         case "m14":
 							if (empty($sections)) $form_container .= $field_header . HTMLHelper::formButton($field) . HTMLHelper::helpBlock($field);
                             break;
