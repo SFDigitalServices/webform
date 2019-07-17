@@ -23,7 +23,10 @@ class DataStoreHelper extends Migration
     /**
      * Creates database table for created form
      *
-     * @returns the created table
+     * @param $tablename
+     * @param $definitions
+     *
+     * @return Blueprint
      */
     public static function createFormTable($tablename, $definitions = null)
     {
@@ -42,7 +45,9 @@ class DataStoreHelper extends Migration
     /**
     * Deletes database table for deleted form
     *
-    * @returns name of the deleted table
+    * @param $tablename
+    *
+    * @return string
     */
     public static function deleteFormTable($tablename)
     {
@@ -57,7 +62,10 @@ class DataStoreHelper extends Migration
      /**
      * Dropping form table columns
      *
-     * @returns bool
+     * @param $tablename
+     * @param $definitions
+     *
+     * @return bool
      */
     public static function dropFormTableColumn($tablename, $definitions) {
         if($definitions){
@@ -76,7 +84,10 @@ class DataStoreHelper extends Migration
     /**
      * Adding form table columns
      *
-     * @returns bool
+     * @param @tablename
+     * @param $definitions
+     *
+     * @return bool
      */
     public static function saveFormTableColumn($tablename, $definitions)
     {
@@ -98,6 +109,14 @@ class DataStoreHelper extends Migration
         }
     }
 
+    /**
+    * Reads CSV file from S3
+    *
+    * @param $filename
+    * @param $arr
+    *
+    * @return void
+    */
     public function readCSV($filename)
     {
         //$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
@@ -111,13 +130,28 @@ class DataStoreHelper extends Migration
         }
         return $csv;
     }
-
+    /**
+    * Writes data to CSV file on S3
+    *
+    * @param $filename
+    * @param $body
+    *
+    * @return void
+    */
     public function writeCSV($filename, $body)
     {
         //file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
         return $this->controllerHelper->writeS3($filename, $body);
     }
 
+    /**
+    * Prepare write data
+    *
+    * @param $content
+    * @param $filename
+    *
+    * @return void
+    */
     public function rewriteCSV($content, $filename)
     {
         $column = 0;
@@ -145,6 +179,14 @@ class DataStoreHelper extends Migration
         // write data to csv file
         $this->writeCSV($filename, implode(",", $write)."\n");
     }
+    /**
+    * Add submitted form data to CSV file on S3
+    *
+    * @param $filename
+    * @param $arr
+    *
+    * @return void
+    */
     public function appendCSV($filename, $arr)
     {
         $csv = $this->readCSV($filename);
@@ -156,11 +198,27 @@ class DataStoreHelper extends Migration
         $this->writeCSV($filename, $output);
     }
 
+    /**
+    * Determine a form is published or not.
+    *
+    * @param $filename
+    *
+    * @return boolean
+    */
     public function isCSVPublished($filename)
     {
         $csv = $this->readCSV($filename);
         return count($csv) > 1 ? true : false;
     }
+
+    /**
+    * Handles form submission
+    *
+    * @param $form
+    * @param $request
+    *
+    * @return boolean
+    */
     public function submitCSV($form, $request)
     {
         $write = $this->parseSubmittedFormData($form, $request);
@@ -172,6 +230,14 @@ class DataStoreHelper extends Migration
         return false;
     }
 
+    /**
+    * Inserts submitted form data into the form table
+    *
+    * @param $content
+    * @param $formid
+    *
+    * @return void
+    */
     public static function insertFormData($content, $formid){
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
@@ -186,6 +252,14 @@ class DataStoreHelper extends Migration
         }
     }
 
+    /**
+    * Parses submitted form data
+    *
+    * @param $content
+    * @param $request
+    *
+    * @return array
+    */
     private function parseSubmittedFormData($content, $request){
       $write = array();
       $column = 0;
@@ -236,9 +310,13 @@ class DataStoreHelper extends Migration
       return $write;
     }
 
-    /*
+    /**
     * Insert or update table definition.
-    * Each case may need a mapper function. Reference: https://laravel.com/docs/5.8/migrations#creating-columns
+    *
+    * @param $table
+    * @param definitions
+    *
+    * @return array
     */
     private function upsertFields(&$table, $definitions)
     {
@@ -292,9 +370,14 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
-    /*
+    /**
     * Mapping functions for form fields to database columns.
     *
+    * @param $table
+    * @param definition
+    * @param $fieldType
+    *
+    * @return array
     */
     private function createDatabaseFields(&$table, $definition, $fieldType = 'string')
     {
@@ -336,10 +419,14 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
-    /*
+    /**
     * Map Radio buttons and Checkboxes to Database column.
     * Opted to use a lookup table instead of the data type enum due to DBAL's defect.
     *
+    * @param $table
+    * @param $definition
+    *
+    * @return array
     */
 
     private function createDatabaseEnumFields(&$table, $definition)
@@ -388,9 +475,13 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
-    /*
+    /**
     * Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
     *
+    * @param $definition
+    * @param $form_id
+    *
+    * @return void
     */
     private function updateLookupTable($definition, $form_id){
         if($form_id && $definition){
