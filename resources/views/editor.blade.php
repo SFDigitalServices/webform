@@ -34,7 +34,6 @@
                       'formtype' => 'c02',
                       'required' => true,
                       'type' => 'text',
-                      'name' => 'name',
                       'title' => 'Name',
                       'defaultvalue' => true,
                       'placeholder' => true,
@@ -46,7 +45,6 @@
                       'formtype' => 'c04',
                       'required' => true,
                       'type' => 'email',
-                      'name' => 'email',
                       'title' => 'Email',
                       'defaultvalue' => true,
                       'placeholder' => true,
@@ -58,7 +56,6 @@
                       'formtype' => 'c06',
                       'required' => true,
                       'type' => 'tel',
-                      'name' => 'phone',
                       'title' => 'Phone',
                       'minlength' => '10',
                       'defaultvalue' => true,
@@ -71,7 +68,6 @@
                       'formtype' => 'c08',
                       'required' => true,
                       'type' => 'text',
-                      'name' => 'address',
                       'title' => 'Address',
                       'partial' => 'partials.fields.address'
                     ])
@@ -81,7 +77,6 @@
                       'formtype' => 'c10',
                       'required' => true,
                       'type' => 'text',
-                      'name' => 'city',
                       'title' => 'City',
                       'defaultvalue' => true,
                       'placeholder' => true,
@@ -93,7 +88,6 @@
                       'formtype' => 'c14',
                       'required' => true,
                       'type' => 'text',
-                      'name' => 'zip',
                       'title' => 'Zip',
                       'minlength' => '5',
                       'maxlength' => '5',
@@ -111,7 +105,6 @@
                     'required' => true,
                     'type' => 'date',
                     'title' => 'Date',
-                    'name' => 'date',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.date'
@@ -123,7 +116,6 @@
                     'required' => true,
                     'type' => 'time',
                     'title' => 'Time',
-                    'name' => 'time',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.time'
@@ -135,7 +127,6 @@
                     'required' => true,
                     'type' => 'number',
                     'title' => 'Numbers',
-                    'name' => 'number',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.numbers'
@@ -147,7 +138,6 @@
                     'required' => true,
                     'type' => 'number',
                     'title' => 'Price',
-                    'name' => 'price',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.price'
@@ -159,7 +149,6 @@
                     'required' => true,
                     'type' => 'url',
                     'title' => 'URL',
-                    'name' => 'url',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.url'
@@ -175,7 +164,6 @@
                     'required' => true,
                     'type' => 'text',
                     'title' => 'Text input',
-                    'name' => 'text',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.text'
@@ -186,7 +174,6 @@
                     'formtype' => 'i14',
                     'required' => true,
                     'title' => 'Textarea',
-                    'name' => 'textarea',
                     'defaultvalue' => true,
                     'placeholder' => true,
                     'partial' => 'partials.fields.textarea'
@@ -202,7 +189,6 @@
                     'required' => true,
                     'choose' => true,
                     'title' => 'Select Dropdown',
-                    'name' => 'select_dropdown',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.select-basic',
                     'options' => 'option'
@@ -214,7 +200,6 @@
                     'required' => true,
                     'choose' => true,
                     'title' => 'Multiple checkboxes',
-                    'name' => 'multiple_checkboxes',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.checkboxes',
                     'options' => 'checkboxes'
@@ -225,7 +210,6 @@
                     'formtype' => 's08',
                     'required' => true,
                     'choose' => true,
-                    'name' => 'multiple_radios',
                     'title' => 'multiple radios',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.radios',
@@ -236,7 +220,6 @@
                   @include('partials.editor.form-component', [
                     'formtype' => 's14',
                     'type' => 'text',
-                    'name' => 'state_full_names',
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
@@ -249,7 +232,6 @@
                   @include('partials.editor.form-component', [
                     'formtype' => 's15',
                     'type' => 'text',
-                    'name' => 'state_abbr_value',
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
@@ -262,7 +244,6 @@
                   @include('partials.editor.form-component', [
                     'formtype' => 's16',
                     'type' => 'text',
-                    'name' => 'state_abbr',
                     'title' => 'State',
                     'choose' => true,
                     'required' => true,
@@ -323,7 +304,6 @@
                     'formtype' => 'm11',
                     'type' => 'hidden',
                     'title' => 'Hidden',
-                    'name' => 'hidden',
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.hidden'
                   ])
@@ -333,7 +313,6 @@
                     'formtype' => 'm13',
                     'type' => 'file',
                     'title' => 'File Upload',
-                    'name' => 'file_upload',
                     'required' => true,
                     'defaultvalue' => true,
                     'partial' => 'partials.fields.file-upload'
