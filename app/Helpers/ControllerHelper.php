@@ -7,8 +7,8 @@ use Log;
 // All helper functions should belong here, the controller should not contain any helper/utilty functions
 class ControllerHelper
 {
-   /**
-    * Parse checkboxe and radio options into array
+
+  /** Parse checkboxe and radio options into array
     *
     * @param $content
     * @param $op
@@ -43,23 +43,24 @@ class ControllerHelper
         return $ret;
     }
 
-    /**
-    * Determines submitted form fields are actually inputs.
+
+   /** Determines submitted form fields are actually inputs.
     *
     * @param $formtype
     *
     * @return bool
     */
 
-    public function isNonInputField($formtype){
+    public function isNonInputField($formtype)
+    {
       $nonInputes = array('m02', 'm04', 'm06', 'm08','m10', 'm14','m16');
       if ( in_array($formtype, $nonInputes) ) {
         return true;
       }
       return false;
     }
-    /**
-    * Generates a unique csv file name
+
+  /** Generates a unique csv file name
     *
     * @param $id
     *
@@ -72,14 +73,15 @@ class ControllerHelper
         return $id.'-'.$hash.'.csv';
     }
 
-    /**
-    * For all the file fields, determine if any has file uploaded
+
+   /** For all the file fields, determine if any has file uploaded
     *
     * @param $data
     *
     * @return bool
     */
-    public function hasFileUpload($data) {
+    public function hasFileUpload($data)
+    {
         foreach ($data as $field) {
             if ($field['formtype'] == "m13") {
                 return true;
@@ -88,8 +90,8 @@ class ControllerHelper
         return false;
     }
 
-    /**
-    * Alert the logged in user if shared form has updated
+
+   /** Alert the logged in user if shared form has updated
     *
     * @param $request
     *
@@ -146,8 +148,8 @@ class ControllerHelper
         }
     }
 
-    /**
-    * Map keyword to machine operators
+
+  /** Map keyword to machine operators
     *
     * @param $str
     *
@@ -191,8 +193,8 @@ class ControllerHelper
         return $output;
     }
 
-    /**
-    * Format form setting into workable array.
+
+   /** Format form setting into workable array.
     *
     * @param $str
     *
@@ -211,8 +213,8 @@ class ControllerHelper
         return $scrubbed;
     }
 
-    /**
-    * Determine if external form endpoint is defined.
+
+  /** Determine if external form endpoint is defined.
     *
     * @param $formAction
     * @param $base_url
@@ -226,8 +228,8 @@ class ControllerHelper
         return substr($formAction, 0 - strlen($path)) == $path ? true : false;
     }
 
-    /**
-    * Write submitted form data to CSV
+
+    /** Write submitted form data to CSV
     *
     * @param $filename
     * @param $body
@@ -251,8 +253,8 @@ class ControllerHelper
         return $result;
     }
 
-    /**
-    * Read data from S3
+
+  /** Read data from S3
     *
     * @param $filename
     *
@@ -277,17 +279,18 @@ class ControllerHelper
         }
     }
 
-    /**
-    * Get S3 bucketname
+
+   /** Get S3 bucketname
     *
     * @return string
     */
-    public function getBucketPath() {
+    public function getBucketPath()
+    {
         return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
     }
 
-    /**
-    * Generates unique file name on S3
+
+   /** Generates unique file name on S3
     *
     * @param $formId
     * @param $name
@@ -295,7 +298,8 @@ class ControllerHelper
     *
     * @return string
     */
-    public function generateUploadedFilename($formId, $name, $filename) { //todo use responseId instead of time
+    public function generateUploadedFilename($formId, $name, $filename)
+    { //todo use responseId instead of time
         $time = time();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         $hash = substr(sha1($formId.$time.env('FILE_SALT')),0,8);
@@ -303,15 +307,16 @@ class ControllerHelper
         return $formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
     }
 
-    /**
-    * Parse form setting json for database CRUD operations
+
+   /** Parse form setting json for database CRUD operations
     *
-    * @param $newFormData - form content data being submitted through saveForm
-    * @param $originalFormData - form's original content data, passed through saveForm
+    * @param $newFormData
+    * @param $originalFormData
     *
     * @return array
     */
-    public function getFormColumnsToUpdate($newFormData, $originalFormData){
+    public function getFormColumnsToUpdate($newFormData, $originalFormData)
+    {
         $updates = array();
         $newFormData = $this->parseOptionValues($newFormData, 'json');
         if (!empty($originalFormData['data'])) {
