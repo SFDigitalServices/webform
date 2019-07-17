@@ -9,9 +9,6 @@
   @isset ($type)
     data-type="{{$type}}"
   @endisset
-  @isset ($name)
-    data-name="{{$name}}"
-  @endisset
   @isset ($minlength)
     data-minlength="{{$minlength}}"
   @endisset
