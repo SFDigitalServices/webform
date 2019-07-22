@@ -284,7 +284,7 @@ class FormController extends Controller
 			}
 		print "</div>";
     }
-	
+
     /**
     * Creates an embed JS for the form
     *
@@ -310,7 +310,7 @@ class FormController extends Controller
 				$form = Form::where('id', $form_id)->first();
 				$form['content'] = $this->controllerHelper->scrubString($form['content']);
 				$form['content'] = json_decode($form['content'], true);
-        return $this->getHTML($form, $request->getHttpHost());
+        return $this->getHTML($form, $request->getSchemeAndHttpHost());
     }
 
     /**
@@ -371,12 +371,11 @@ class FormController extends Controller
 
         $form_container = '';
         $sections = [];
-
         //if this form is a csv transaction, add form_id.
-        $csvPath = '//'.$base_url.'/form/submit';
-        if (substr($content['settings']['action'], 0 - strlen($csvPath)) == $csvPath) {
+        if( isset($content['settings']['backend']) ) {
             $form_container .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
         }
+
         // looping through all form fields.
         foreach ($content['data'] as $field) {
             $field_header = '<div class="form-group" data-id="'.$field['id'].'">' . HTMLHelper::fieldLabel($field);
