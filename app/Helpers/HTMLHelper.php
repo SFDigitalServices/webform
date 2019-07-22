@@ -36,8 +36,7 @@ class HTMLHelper
         $sections = [];
 
         //if this form is a csv transaction, add form_id.
-        $csvPath = '//'.$base_url.'/form/submit';
-        if (substr($content['settings']['action'], 0 - strlen($csvPath)) == $csvPath) {
+        if( isset($content['settings']['backend']) ) {
             $form_container .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
         }
         // looping through all form fields.

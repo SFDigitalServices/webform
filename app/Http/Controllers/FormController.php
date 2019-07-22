@@ -311,7 +311,7 @@ class FormController extends Controller
 				$form = Form::where('id', $form_id)->first();
 				$form['content'] = $this->controllerHelper->scrubString($form['content']);
 				$form['content'] = json_decode($form['content'], true);
-        return $this->htmlHelper->getHTML($form, $request->getHttpHost());
+        return $this->htmlHelper->getHTML($form, $request->getSchemeAndHttpHost());
     }
 
     /** Deletes a form, removes the form_table
