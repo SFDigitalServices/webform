@@ -286,6 +286,24 @@ class FormController extends Controller
     /** Creates an embed JS for the form
     *
     * @param $request
+    /**
+    * Creates a page preview of the submitted form
+    *
+    * @return HTML
+    */
+    public function previewSubmitted(Request $request)
+    {
+		print "<div style='padding:3em 4.5em'>";
+			print "<h2>Please set a Form Action before trying to embed your form.</h2>";
+			print "<h3>Below is a summary of what you just submitted:</h3>";
+			foreach ($_POST as $key => $value) {
+				print $key . " = " . $value . "<br/>";
+			}
+		print "</div>";
+    }
+
+    /**
+    * Creates an embed JS for the form
     *
     * @return HTML
     */
@@ -333,7 +351,7 @@ class FormController extends Controller
             if (!$remaining_form_users) {
                 $form_delete = Form::where([['id', $form_id]])->delete();
                 if ($form_delete) {
-                    $deleted = $this->dataStoreHelper->deleteFormTable('forms_'.$form_id);
+                    $deleted = DataStoreHelper::deleteFormTable($form_id);
                     if( $deleted )
                         return response()->json(['status' => 1, 'message' => 'Deleted form from user']);
                     else
@@ -468,5 +486,4 @@ class FormController extends Controller
             sleep(10);
         }
     }
-
 }

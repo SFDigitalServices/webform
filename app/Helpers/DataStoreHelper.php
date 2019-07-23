@@ -49,10 +49,14 @@ class DataStoreHelper extends Migration
     *
     * @return string
     */
-    public function deleteFormTable($tablename)
+
+    public static function deleteFormTable($formId)
     {
+        $tablename = "forms_".$formId;
         Schema::dropIfExists($tablename);
         if (! Schema::hasTable($tablename)) {
+          // remove entries in enum_mappings
+            DB::table('enum_mappings')->where('form_table_id', '=', $formId)->delete();
             return $tablename;
         } else {
             return '';
@@ -71,11 +75,16 @@ class DataStoreHelper extends Migration
     {
         if($definitions){
             $_fluent = '';
-            Schema::table($tablename, function($table) use ($definitions, &$_fluent)
+            Schema::table($tablename, function($table) use ($definitions, &$_fluent, $tablename)
             {
-                if (Schema::hasColumns($table->getTable(), $definitions)) {
+                if (Schema::hasColumns($tablename, $definitions)) {
                     $_fluent = $table->dropColumn($definitions);
-                    return $_fluent;
+                    // remove lookup table entries
+                    if ($_fluent) {
+                        $formId= str_replace('forms_', '', $tablename);
+                        DB::table('enum_mappings')->where('form_table_id', '=', $formId)->where('form_field_name', '=', $_fluent['columns'][0])->delete();
+                        return $_fluent;
+                    }
                 }
             });
         }

@@ -373,6 +373,18 @@ class HTMLHelper
         $html .= "</select>";
         return $html;
     }
+    /**
+     * Generate File Upload element
+     *
+     * @returns html
+     */
+    public static function formFile($field)
+    {
+		$attributes = self::setAttributes($field);
+		$prepended = self::getPrepended($field);
+        $html = $prepended . '<input' . $attributes . '/><label for="' . $field['id'] . '">' . $field['label'] . '</label>';
+        return $html;
+    }
 
     /** Generate Prepeded element
      *
@@ -525,55 +537,58 @@ class HTMLHelper
      *
      * @return field array
      */
-    private static function stripAttributesByFormType($field)
-    {
-        switch ($field['formtype']) {
-            case 'c06': //phone
-            case 'd02': //date
-                unset($field['minlength']);
-                unset($field['maxlength']);
-                break;
-            case 'i14': //textarea
-                unset($field['type']);
-                break;
-            case 's02': //dropdown
-            case 's06': //checkboxes
-            case 's08': //radios
-            case 's14': //dropdown
-            case 's15': //dropdown
-            case 's16': //dropdown
-                unset($field['type']);
-                unset($field['minlength']);
-                unset($field['maxlength']);
-                break;
-            case 'm02': //h1
-            case 'm04': //h2
-            case 'm06': //h3
-            case 'm08': //p
-            case 'm10': //p html
-                unset($field['type']);
-                unset($field['minlength']);
-                unset($field['maxlength']);
-                unset($field['required']);
-                break;
-            case 'm11': //hidden
-                unset($field['minlength']);
-                unset($field['maxlength']);
-                unset($field['required']);
-                unset($field['class']);
-                break;
-            case 'm14': //button
-                unset($field['button']);
-                unset($field['type']);
-                unset($field['minlength']);
-                unset($field['maxlength']);
-                unset($field['required']);
-                break;
-            default:
-                break;
-        }
-        return $field;
-    }
+    private static function stripAttributesByFormType($field) {
+		switch ($field['formtype']) {
+			case 'c06': //phone
+			case 'd02': //date
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
+			case 'i14': //textarea
+				unset($field['type']);
+				break;
+			case 's02': //dropdown
+			case 's06': //checkboxes
+			case 's08': //radios
+			case 's14': //dropdown
+			case 's15': //dropdown
+			case 's16': //dropdown
+				unset($field['type']);
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
+			case 'm02': //h1
+			case 'm04': //h2
+			case 'm06': //h3
+			case 'm08': //p
+			case 'm10': //p html
+				unset($field['type']);
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				unset($field['required']);
+				break;
+			case 'm11': //hidden
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				unset($field['required']);
+				unset($field['class']);
+				break;
+			case 'm13': //file uploads
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				break;
+			case 'm14': //button
+				unset($field['button']);
+				unset($field['type']);
+				unset($field['minlength']);
+				unset($field['maxlength']);
+				unset($field['required']);
+				break;
+			default:
+				break;
+		}
+		return $field;
+	}
 
    /** Process fields by type, adds steps to numbers, and strips invalid validators
      *
