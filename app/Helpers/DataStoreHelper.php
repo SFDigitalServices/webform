@@ -129,7 +129,6 @@ class DataStoreHelper extends Migration
     */
     public function readCSV($filename)
     {
-        //$csv = array_map('str_getcsv', file('/var/www/html/public/csv/'.$filename , FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES));
         $csv = array();
         $read = $this->controllerHelper->readS3($filename);
         if ($read) {
@@ -150,7 +149,6 @@ class DataStoreHelper extends Migration
     */
     public function writeCSV($filename, $body)
     {
-        //file_put_contents('/var/www/html/public/csv/'.$filename, implode(",",$write)."\n");
         return $this->controllerHelper->writeS3($filename, $body);
     }
 
@@ -269,7 +267,6 @@ class DataStoreHelper extends Migration
         return false;
     }
 
-
    /** Inserts submitted form data into the form table
     *
     * @param $content
@@ -282,16 +279,34 @@ class DataStoreHelper extends Migration
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
             Log::info(print_r($content,1));
-            //checkboxes, radio buttons, dropdowns are stored in the lookup table
             foreach($content as $key => $value){
               if( ! Schema::hasColumn($tablename, $key)){
+                // if submitted data doesn't have a corresponding table column, don't insert.
                 unset($content[$key]);
+                continue;
+              }
+              //checkboxes, radio buttons, dropdowns are stored in the lookup table
+              if (is_array($value)) {
+                  $content[$key] = $this->findLookupID($key, $formid, $value);
               }
             }
             DB::table($tablename)->insert($content);
         }
     }
 
+    private function findLookupID($key, $formid, $value){
+      $selected = array();
+      $options = DB::table('enum_mappings')
+      ->where([
+          ['form_field_name', '=', "$key"],
+          ['form_table_id', '=', "$formid"]
+      ])->get();
+      foreach ($options as $option) {
+        if( in_array($option->value, $value) )
+          $selected[] = $option->id;
+      }
+      return implode(',',$selected);
+}
 
    /** Parses submitted form data
     *
@@ -304,7 +319,6 @@ class DataStoreHelper extends Migration
     {
       $write = array();
       $column = 0;
-      //Log::info(print_r($request->all(),1));
       if (! empty($content['content']['data'])) {
           foreach ($content['content']['data'] as $field) {
             if ($this->controllerHelper->isNonInputField($field['formtype'])){
@@ -322,10 +336,11 @@ class DataStoreHelper extends Migration
                   $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
                   if (is_array($request->input($field['name']))) {
                       $write['csv'][$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
-                      //$write['db'][$field['name']] = $write['csv'][$column];
+                      $write['db'][$field['name']] = $request->input($field['name']);
                   } else {
                       $write['csv'][$column] = $request->input($field['name']) == $option ? 1 : 0;
-                      //$write['db'][$field['name']] = $write['csv'][$column];
+                      $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
+                        array($request->input($field['name'])) : $request->input($field['name']);
                   }
                   $column++;
                 }
@@ -484,13 +499,13 @@ class DataStoreHelper extends Migration
                     'value' => $value,
                 ]);
             }
-            $table->Integer($definition['name'])->default($inserted_id);
+            $table->string($definition['name'],25)->default($inserted_id);
         }
         else{
             //check column, rename not allowed
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
-                    " MODIFY ". $definition['name'] . " int(11) ";
+                    " MODIFY ". $definition['name'] . " varchar(25) ";
                 if (isset($definition['value'])) { // need to get reference id from lookup table.
                     $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
                 }
