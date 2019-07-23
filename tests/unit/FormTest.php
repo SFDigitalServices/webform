@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\FormController;
 use App\Helpers\ControllerHelper;
+use App\Helpers\HTMLHelper;
 class FormTest extends \Codeception\Test\Unit
 {
     /**
@@ -8,12 +9,14 @@ class FormTest extends \Codeception\Test\Unit
      */
     protected $formTester;
     protected $controllerHelper;
+    protected $htmlHelper;
     protected $attributes;
 
     protected function _before()
     {
         $this->formTester = new FormController();
         $this->controllerHelper = new ControllerHelper();
+        $this->htmlHelper = new HTMLHelper();
 
 		$this->emptyFormAttributes = array(
             "id" => "",
@@ -39,19 +42,19 @@ class FormTest extends \Codeception\Test\Unit
 
 	public function testFormIsSectional()
     {
-        $emptyIsSectional = $this->formTester->isSectional($this->emptyFormAttributes['content']);
+        $emptyIsSectional = $this->htmlHelper->isSectional($this->emptyFormAttributes['content']);
         $expected = false;
         $this->assertSame($expected, $emptyIsSectional);
 
-        $simpleIsSectional = $this->formTester->isSectional($this->simpleFormAttributes['content']);
+        $simpleIsSectional = $this->htmlHelper->isSectional($this->simpleFormAttributes['content']);
         $expected = false;
         $this->assertEquals($expected, $simpleIsSectional);
 
-        $complexIsSectional = $this->formTester->isSectional($this->complexFormAttributes['content']);
+        $complexIsSectional = $this->htmlHelper->isSectional($this->complexFormAttributes['content']);
         $expected = false;
         $this->assertEquals($expected, $complexIsSectional);
 
-        $sectionalIsSectional = $this->formTester->isSectional($this->sectionalFormAttributes['content']);
+        $sectionalIsSectional = $this->htmlHelper->isSectional($this->sectionalFormAttributes['content']);
         $expected = true;
         $this->assertEquals($expected, $sectionalIsSectional);
 	}
@@ -62,7 +65,7 @@ class FormTest extends \Codeception\Test\Unit
 		$this->attributes = array();
 		$checked = false;
 
-        $emptyGetInputSelector = $this->formTester->getInputSelector($testId, $this->attributes, $checked);
+        $emptyGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = '';
         $this->assertSame($expected, $emptyGetInputSelector);
 
@@ -73,7 +76,7 @@ class FormTest extends \Codeception\Test\Unit
 							);
 		$checked = false;
 
-        $simpleGetInputSelector = $this->formTester->getInputSelector($testId, $this->attributes, $checked);
+        $simpleGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = '#name';
         $this->assertEquals($expected, $simpleGetInputSelector);
 
@@ -85,7 +88,7 @@ class FormTest extends \Codeception\Test\Unit
 							);
 		$checked = false;
 
-        $checkboxGetInputSelector = $this->formTester->getInputSelector($testId, $this->attributes, $checked);
+        $checkboxGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = 'input[name="address[]"]';
         $this->assertEquals($expected, $checkboxGetInputSelector);
 
@@ -97,7 +100,7 @@ class FormTest extends \Codeception\Test\Unit
 							);
 		$checked = true;
 
-        $checkedRadioGetInputSelector = $this->formTester->getInputSelector($testId, $this->attributes, $checked);
+        $checkedRadioGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = 'input[name=address]:checked';
         $this->assertEquals($expected, $checkedRadioGetInputSelector);
 	}
@@ -153,85 +156,85 @@ class FormTest extends \Codeception\Test\Unit
     {
 		$foo = "foo";
 
-        $emptyGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "", "bar");
+        $emptyGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "", "bar");
         $expected = "";
         $this->assertSame($expected, $emptyGetConditionalStatement);
 
-        $anyGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "||", "bar");
+        $anyGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "||", "bar");
         $expected = "foo || 'bar'";
         $this->assertEquals($expected, $anyGetConditionalStatement);
 
-        $allGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "&&", "bar");
+        $allGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "&&", "bar");
         $expected = "foo && 'bar'";
         $this->assertEquals($expected, $allGetConditionalStatement);
 
-        $matchesGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "==", "bar");
+        $matchesGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "==", "bar");
         $expected = "foo == 'bar'";
         $this->assertEquals($expected, $matchesGetConditionalStatement);
 
-        $notMatchGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "!=", "bar");
+        $notMatchGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "!=", "bar");
         $expected = "foo != 'bar'";
         $this->assertEquals($expected, $notMatchGetConditionalStatement);
 
-        $lessThanGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "<", "bar");
+        $lessThanGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "<", "bar");
         $expected = "foo < 'bar'";
         $this->assertEquals($expected, $lessThanGetConditionalStatement);
 
-        $moreThanGetConditionalStatement = $this->formTester->getConditionalStatement($foo, ">", "bar");
+        $moreThanGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, ">", "bar");
         $expected = "foo > 'bar'";
         $this->assertEquals($expected, $moreThanGetConditionalStatement);
 
-        $anythingGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "!=", "");
+        $anythingGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "!=", "");
         $expected = "foo != ''";
         $this->assertEquals($expected, $anythingGetConditionalStatement);
 
-        $blankGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "==", "");
+        $blankGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "==", "");
         $expected = "foo == ''";
         $this->assertEquals($expected, $blankGetConditionalStatement);
 
-        $containsGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "contains", "bar");
+        $containsGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "contains", "bar");
         $expected = "(foo).search(/bar/i) != -1";
         $this->assertEquals($expected, $containsGetConditionalStatement);
 
-        $notContainGetConditionalStatement = $this->formTester->getConditionalStatement($foo, "doesn't contain", "bar");
+        $notContainGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "doesn't contain", "bar");
         $expected = "(foo).search(/bar/i) == -1";
         $this->assertEquals($expected, $notContainGetConditionalStatement);
 	}
 
 	public function testFormGetHTML()
     {
-        $emptyGetHTML = $this->formTester->getHTML($this->emptyFormAttributes);
+        $emptyGetHTML = $this->htmlHelper->getHTML($this->emptyFormAttributes);
         $expected = '<form class="form-horizontal" action="" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend></legend></div></fieldset></form>';
         $this->assertSame($expected, $emptyGetHTML);
 
-        $simpleGetHTML = $this->formTester->getHTML($this->simpleFormAttributes);
+        $simpleGetHTML = $this->htmlHelper->getHTML($this->simpleFormAttributes);
         $expected = '<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>';
         $this->assertEquals($expected, $simpleGetHTML);
 
-        $complexGetHTML = $this->formTester->getHTML($this->complexFormAttributes);
+        $complexGetHTML = $this->htmlHelper->getHTML($this->complexFormAttributes);
         $expected = '<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="select_dropdown"><label for="select_dropdown" class="control-label">Select - Basic</label><div class="field-wrapper"><select id="select_dropdown" formtype="s02" required><option value="Enter">Enter</option><option value="Your">Your</option><option value="Options">Options</option><option value="Here!">Here!</option></select><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="checkboxId[]"><legend class="control-label">Checkboxes</legend><div class="field-legend"><div class="cb-input-group"><input type="checkbox" id="checkboxId[]_Option_one" value="Option one" formtype="s06" name="checkboxName[]"/><label for="checkboxId[]_Option_one" class="checkbox">Option one</label></div><div class="cb-input-group"><input type="checkbox" id="checkboxId[]_Option_two" value="Option two" formtype="s06" name="checkboxName[]"/><label for="checkboxId[]_Option_two" class="checkbox">Option two</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="multiple_radios"><label for="multiple_radios" class="control-label">Radio buttons</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="multiple_radios_Option_one" value="Option one" formtype="s08" name="multiple_radios" required/><label for="multiple_radios_Option_one" class="radio">Option one</label></div><div class="rb-input-group"><input type="radio" id="multiple_radios_Option_two" value="Option two" formtype="s08" name="multiple_radios" required/><label for="multiple_radios_Option_two" class="radio">Option two</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>';
         $this->assertEquals($expected, $complexGetHTML);
 
-        $sectionalGetHTML = $this->formTester->getHTML($this->sectionalFormAttributes);
+        $sectionalGetHTML = $this->htmlHelper->getHTML($this->sectionalFormAttributes);
         $expected = '<ul class="form-section-nav"><li class="active">Test Form</li><li>Page Separator</li></ul><form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="sections-container"><div class="form-section-header active">Test Form</div><div class="form-section active"><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="page_separator">Page Separator</div><div class="form-section" data-id="page_separator"><div class="form-group" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="address_test" value="test" formtype="s08" name="address" required/><label for="address_test" class="radio">test</label></div><p class="help-block with-errors"></p></div></div><div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div></fieldset></form>';
         $this->assertEquals($expected, $sectionalGetHTML);
 	}
 
 	public function testFormWrapJS()
     {
-        $emptyWrapJS = $this->formTester->wrapJS($this->emptyFormAttributes);
+        $emptyWrapJS = $this->htmlHelper->wrapJS($this->emptyFormAttributes);
 		$expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend></legend></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertSame($expected, $emptyWrapJS);
 
-        $simpleWrapJS = $this->formTester->wrapJS($this->simpleFormAttributes);
+        $simpleWrapJS = $this->htmlHelper->wrapJS($this->simpleFormAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $simpleWrapJS);
 
-        $complexWrapJS = $this->formTester->wrapJS($this->complexFormAttributes);
+        $complexWrapJS = $this->htmlHelper->wrapJS($this->complexFormAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="select_dropdown"><label for="select_dropdown" class="control-label">Select - Basic</label><div class="field-wrapper"><select id="select_dropdown" formtype="s02" required><option value="Enter">Enter</option><option value="Your">Your</option><option value="Options">Options</option><option value="Here!">Here!</option></select><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="checkboxId[]"><legend class="control-label">Checkboxes</legend><div class="field-legend"><div class="cb-input-group"><input type="checkbox" id="checkboxId[]_Option_one" value="Option one" formtype="s06" name="checkboxName[]"/><label for="checkboxId[]_Option_one" class="checkbox">Option one</label></div><div class="cb-input-group"><input type="checkbox" id="checkboxId[]_Option_two" value="Option two" formtype="s06" name="checkboxName[]"/><label for="checkboxId[]_Option_two" class="checkbox">Option two</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="multiple_radios"><label for="multiple_radios" class="control-label">Radio buttons</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="multiple_radios_Option_one" value="Option one" formtype="s08" name="multiple_radios" required/><label for="multiple_radios_Option_one" class="radio">Option one</label></div><div class="rb-input-group"><input type="radio" id="multiple_radios_Option_two" value="Option two" formtype="s08" name="multiple_radios" required/><label for="multiple_radios_Option_two" class="radio">Option two</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $complexWrapJS);
 
-        $sectionalWrapJS = $this->formTester->wrapJS($this->sectionalFormAttributes);
+        $sectionalWrapJS = $this->htmlHelper->wrapJS($this->sectionalFormAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<ul class="form-section-nav"><li class="active">Test Form</li><li>Page Separator</li></ul><form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="sections-container"><div class="form-section-header active">Test Form</div><div class="form-section active"><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="page_separator">Page Separator</div><div class="form-section" data-id="page_separator"><div class="form-group" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="address_test" value="test" formtype="s08" name="address" required/><label for="address_test" class="radio">test</label></div><p class="help-block with-errors"></p></div></div><div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }initSectional();};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $sectionalWrapJS);
 
@@ -242,7 +245,7 @@ class FormTest extends \Codeception\Test\Unit
 			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"false","delimiter":"","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
-        $webhookSingleWrapJS = $this->formTester->wrapJS($this->webhookSingleAttributes);
+        $webhookSingleWrapJS = $this->htmlHelper->wrapJS($this->webhookSingleAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="BAN"><label for="BAN" class="control-label">BAN Number</label><div class="field-wrapper"><input id="BAN" formtype="d06" type="number" required name="BAN" step="any"/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="address_test" value="test" formtype="s08" name="address" required/><label for="address_test" class="radio">test</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }jQuery(\'#BAN\').on(\'change\',function(){if (jQuery(\'#BAN\').val() != \'\') callWebhook(\'address\', \'http://apps.sfgov.org/bpdev/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC\', Array(\'BAN\'), \'StreetAddress\', \'json\', false, null, null);});};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $webhookSingleWrapJS);
 
@@ -251,7 +254,7 @@ class FormTest extends \Codeception\Test\Unit
 			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":"","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
-        $webhookOptionsWrapJS = $this->formTester->wrapJS($this->webhookOptionsAttributes);
+        $webhookOptionsWrapJS = $this->htmlHelper->wrapJS($this->webhookOptionsAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="BAN"><label for="BAN" class="control-label">BAN Number</label><div class="field-wrapper"><input id="BAN" formtype="d06" type="number" required name="BAN" step="any"/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="address_test" value="test" formtype="s08" name="address" required/><label for="address_test" class="radio">test</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }jQuery(\'#BAN\').on(\'change\',function(){if (jQuery(\'#BAN\').val() != \'\') callWebhook(\'address\', \'http://apps.sfgov.org/bpdev/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC\', Array(\'BAN\'), \'StreetAddress\', \'json\', true, null, null);});};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $webhookOptionsWrapJS);
 
@@ -260,7 +263,7 @@ class FormTest extends \Codeception\Test\Unit
 			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":",","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
-        $webhookDelimiterWrapJS = $this->formTester->wrapJS($this->webhookDelimiterAttributes);
+        $webhookDelimiterWrapJS = $this->htmlHelper->wrapJS($this->webhookDelimiterAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="BAN"><label for="BAN" class="control-label">BAN Number</label><div class="field-wrapper"><input id="BAN" formtype="d06" type="number" required name="BAN" step="any"/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="address_test" value="test" formtype="s08" name="address" required/><label for="address_test" class="radio">test</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }jQuery(\'#BAN\').on(\'change\',function(){if (jQuery(\'#BAN\').val() != \'\') callWebhook(\'address\', \'http://apps.sfgov.org/bpdev/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC\', Array(\'BAN\'), \'StreetAddress\', \'json\', true, \',\', null);});};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $webhookDelimiterWrapJS);
 
@@ -269,7 +272,7 @@ class FormTest extends \Codeception\Test\Unit
 			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":"","responseOptionsIndex":"data"}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
-        $webhookFullWrapJS = $this->formTester->wrapJS($this->webhookFullAttributes);
+        $webhookFullWrapJS = $this->htmlHelper->wrapJS($this->webhookFullAttributes);
         $expected = 'var script = document.createElement(\'script\');script.onload = function () {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form class="form-horizontal" action="http://somewhere.com/post" method="POST" ><fieldset><div id="SFDSWFB-legend"><legend>Test Form</legend></div><div class="form-group" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" formtype="c02" name="name" type="text" required/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="BAN"><label for="BAN" class="control-label">BAN Number</label><div class="field-wrapper"><input id="BAN" formtype="d06" type="number" required name="BAN" step="any"/><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><div class="rb-input-group"><input type="radio" id="address_test" value="test" formtype="s08" name="address" required/><label for="address_test" class="radio">test</label></div><p class="help-block with-errors"></p></div></div><div class="form-group" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" formtype="m14" class=" btn-primary">Submit</button><p class="help-block with-errors"></p></div></div></fieldset></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }jQuery(\'#BAN\').on(\'change\',function(){if (jQuery(\'#BAN\').val() != \'\') callWebhook(\'address\', \'http://apps.sfgov.org/bpdev/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC\', Array(\'BAN\'), \'StreetAddress\', \'json\', true, null, \'data\');});};script.src = \'/assets/js/embed.js\';document.head.appendChild(script);';
         $this->assertEquals($expected, $webhookFullWrapJS);
 	}
