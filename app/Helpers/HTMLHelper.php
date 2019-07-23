@@ -74,7 +74,7 @@ class HTMLHelper
                             break;
                         default: $form_container .= $field_header . $this->formText($field) . $this->helpBlock($field);
                             break;
-              }
+            }
             // append help block
             //$form_container .= $this->helpBlock($field);
         } //end of foreach

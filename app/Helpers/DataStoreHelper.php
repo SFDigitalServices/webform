@@ -219,17 +219,6 @@ class DataStoreHelper extends Migration
         return count($csv) > 1 ? true : false;
     }
 
-  /** Determine form has been published
-    *
-    * @param $request
-    *
-    * @return bool
-    */
-    public function CSVPublished(Request $request)
-    {
-        return $this->isCSVPublished($this->getFilename($request)) ? 1 : 0;
-    }
-
     /** Process saved form setting
       *
       * @param $request
@@ -278,7 +267,6 @@ class DataStoreHelper extends Migration
     {
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
-            Log::info(print_r($content,1));
             foreach($content as $key => $value){
               if( ! Schema::hasColumn($tablename, $key)){
                 // if submitted data doesn't have a corresponding table column, don't insert.
@@ -383,7 +371,10 @@ class DataStoreHelper extends Migration
                 if ( strcmp($key, 'remove') == 0 ) {
                     $ret[] = $class->dropFormTableColumn($table->getTable(), array($definition['name']));
                 } else {
-                    $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+                    if(isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08') )
+                      $type = $definition['formtype'];
+                    else
+                      $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
                     $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
                     switch ($type) {
                     case 'text':

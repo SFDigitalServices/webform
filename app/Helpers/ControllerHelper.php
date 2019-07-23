@@ -20,21 +20,29 @@ class ControllerHelper
         if(isset($content['settings']))
             $ret['settings'] = $content['settings'];
         $ret['data'] = array();
-
         foreach ($content['data'] as $field) {
             if (array_key_exists('option', $field)) {
-                if(!is_array($field['option']))
+                if (!is_array($field['option'])) {
                     $field['option'] = explode("\n", $field['option']);
+                    $field['option'] = array_map('trim', $field['option']);
+                    $field['option'] = array_values(array_filter($field['option'], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
+                }
                 if(strcmp($op, 'json') == 0)
                     $field['option'] = json_encode($field['option']);
             } elseif (array_key_exists('checkboxes', $field) ) {
-                if(!is_array($field['checkboxes']))
+                if (!is_array($field['checkboxes'])) {
                     $field['checkboxes'] = explode("\n", $field['checkboxes']);
+                    $field['checkboxes'] = array_map('trim', $field['checkboxes']);
+                    $field['checkboxes'] = array_values(array_filter($field['checkboxes'], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
+                  }
                 if(strcmp($op, 'json') == 0)
                     $field['checkboxes'] = json_encode($field['checkboxes']);
             } elseif (array_key_exists('radios', $field) ) {
-                if(!is_array($field['radios']))
+                if (!is_array($field['radios'])) {
                     $field['radios'] = explode("\n", $field['radios']);
+                    $field['radios'] = array_map('trim', $field['radios']);
+                    $field['radios'] = array_values(array_filter($field['radios'], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
+                }
                 if(strcmp($op, 'json') == 0)
                     $field['radios'] = json_encode($field['radios']);
             }
@@ -230,7 +238,6 @@ class ControllerHelper
         return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
     }
 
-
    /** Generates unique file name on S3
     *
     * @param $formId
@@ -268,7 +275,7 @@ class ControllerHelper
                     if (strcmp($value['name'], $originalValue['name']) == 0) {
                         $diff = array_diff($value, $originalValue);
                         if (count($diff) != 0) { // key and value matches
-                        $updates['update'] = $value; // key found, value doesn't match, this is an update.
+                          $updates['update'] = $value; // key found, value doesn't match, this is an update.
                         }
                         unset($originalFormData['data'][$originalKey]);
                         unset($newFormData['data'][$key]);
@@ -284,8 +291,6 @@ class ControllerHelper
         if($newFormData['data'] && count($newFormData['data']) > 0){
             $updates['add'] = reset($newFormData['data']);
         }
-
-        //Log::info(print_r($updates,1));
         return $updates;
     }
 }

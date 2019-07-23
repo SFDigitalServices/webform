@@ -114,7 +114,6 @@ class FormController extends Controller
             $returnForm->save();
             //update form table
             $definitions = json_decode($returnForm['content'], true);
-
             //if (isset($definitions['settings']['backend']) && $definitions['settings']['backend'] == "csv") {
                 //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
                 if (!empty($definitions['data'])) {
@@ -371,7 +370,6 @@ class FormController extends Controller
     */
     public function submitCSV(Request $request)
     {
-      //Log:info($request->input('form_id'));
       $form_id = $request->input('form_id');
       if (!$form_id) {
           return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
@@ -384,6 +382,18 @@ class FormController extends Controller
           return redirect($form['content']['settings']['confirmation']);
       }
     }
+
+    /** Determine form has been published
+    *
+    * @param $request
+    *
+    * @return bool
+    */
+    public function CSVPublished(Request $request)
+    {
+        return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
+    }
+
 
     /** validates form data
     *
