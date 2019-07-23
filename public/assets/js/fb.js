@@ -277,11 +277,8 @@ $(document).ready(function () {
     if ($('#name')[0] != undefined && e.currentTarget.attributes['data-name'] != undefined) $('#name').val(e.currentTarget.attributes['data-name'].value)
 
     // if not a "static text" or "choose one / many" field type, load validation accordion section
-    if (!e.currentTarget.attributes['data-textonly'] &&
-      !e.currentTarget.attributes['data-choose'] &&
-      e.currentTarget.attributes['data-formtype'].value != 'm11' &&
-      e.currentTarget.attributes['data-formtype'].value != 'm13') {
-      $('.popover .accordion-section.attributes').after($('.accordion-validation').html())
+    if ((!checkCurrentTargetAttributes(e, { 'data-textonly': '', 'data-choose': '' })) && checkCurrentTargetAttributes(e, { 'data-formtype': 'checkValue' })) {
+      if (!['m11', 'm13'].includes(e.currentTarget.attributes['data-formtype'].value)) { $('.popover .accordion-section.attributes').after($('.accordion-validation').html()) }
     }
 
     // hide value and validate type for textarea
@@ -297,7 +294,7 @@ $(document).ready(function () {
     $.each(ids, function (i, item) {
       $('.popover-content #match').append($('<option>', {
         value: item,
-        text:	item
+        text: item
       }))
     })
 
@@ -757,17 +754,27 @@ $(document).ready(function () {
   $('#SFDSWFB-7 input').change(function () {
     updateSettings()
   })
-
-  /*
-  $('#SFDSWFB-authors').tagsinput({
-	confirmKeys: [13, 44, 32]
-  });
-  */
-
   $('[data-toggle="tooltip"]').tooltip()
 
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display', 'block')
 }) // end document ready
+
+/**
+ * Determine form field html attributes existence.
+ * @method checkCurrentTargetAttributes
+ * @param {} event
+ * @param {} attributeNames
+ * @return Boolean
+ */
+function checkCurrentTargetAttributes (event, attributeNames) {
+  for (var index in attributeNames) {
+    if (event.currentTarget.attributes[index] === undefined) { return false }
+    if (attributeNames[index] === 'checkValue') {
+      if (event.currentTarget.attributes[index].value === undefined) { return false }
+    }
+  }
+  return true
+}
 
 function bindQuickDelete () {
   $('#SFDSWFB-target .form-group.component:not("[data-formtype=m14]")').unbind('mouseenter mouseleave')
@@ -1308,7 +1315,7 @@ function goHome (back) {
   /* if (back != undefined) {
     window.history.back()
     return
-  }*/
+  } */
   $('.container').hide()
   callAPI('/form/getForms', {}, loadHome)
   $('.forms').html('<i class="fas fa-circle-notch fa-spin"></i>')
@@ -1433,6 +1440,7 @@ function callAPI (url, dataObj, callback) {
     callback(response)
   })
 }
+
 function loadHome (response) {
   $('.forms').html('')
   allForms = {}

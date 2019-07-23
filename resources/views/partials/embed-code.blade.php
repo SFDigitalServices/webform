@@ -3,6 +3,7 @@
 <pre id="SFDSWFB-snippet" class="col-md-12">Save your form to get embed code</pre>&nbsp;
 <br/>
 <div class="btn btn-info" onclick="$(this).hide();$('#SFDSWFB-debug').slideDown()">Show Debug Info</div>
+<div class="btn btn-info" onclick="window.open('/form/preview?id='+formId, '_blank')">Preview Form</div>
 <div id="SFDSWFB-debug" style="display:none">
   <h4>Source Code</h4>
   <textarea id="SFDSWFB-source" class="col-md-12"></textarea>
