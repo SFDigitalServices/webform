@@ -109,6 +109,49 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         $this->assertNotTrue(Schema::hasColumns($tablename, array('firstname')));
         $this->assertTrue(Schema::hasColumns($tablename, array('lastname')));
     }
+
+    public function testInsertFormData(){
+      $tablename= 'field_inserts';
+      $mapping_definitions = array(
+          array('type' => 'text', 'id' => 'name'),
+          array('type' => 'email', 'id' => 'email', 'maxlength' => '25', 'required' => 'true'),
+          array('type' => 'password', 'id'=> 'password'),
+          array('type' => 'tel', 'id' => 'phonenumber', 'required' => 'false'),
+          array('type' => 'date', 'id' => 'date_created'),
+          array('type' => 'url', 'id' => 'my_url'),
+          array('type' => 'url', 'id' => 'my_address'),
+          array('type' => 'url', 'id' => 'my_city'),
+          array('type' => 'url', 'id' => 'my_zipcode'),
+          array('formtype' => 'd04', 'id' => 'my_time', 'value' => '00:00:00'),
+          array('type' => 'file', 'id' => 'my_file', 'required' => 'false'),
+          array('formtype' => 'i14', 'id' => 'my_textarea'),
+          array('type' => 'number', 'id' => 'my_number', 'value' => '10'),
+          array('type' => 'number', 'id' => 'my_price', 'value' => '10.00'),
+          array('formtype' => 's08', 'id' => 'my_radio', 'radios' => '["Option one","Option two","three","four"]'),
+          array('formtype' => 's06', 'id' => 'my_cb', 'checkboxes' => '["CB one","CB two","CB three","four"]'),
+      );
+      $mytable = $this->dataStoreHelperTester->createFormTable($tablename, $mapping_definitions);
+      $this->assertTrue(Schema::hasTable($tablename));
+Log::info(print_r($mytable,1));
+
+      $content = Array(
+          'email'=> 'henry.jiang@sfgov.org',
+          'name' => 'test',
+          'password' => 'test',
+          'tel' => '4155824055',
+          'date' => ' 2019-07-23 00:00:00',
+          'url' => 'http://google.com',
+          'my_time' => '12:00:00',
+          'my_file' => 'path_to_file',
+          'my_number' => '20',
+          'my_price' => '20.99',
+          'my_radio' => '12',
+          'my_cb' => '11,12',
+      );
+      $this->dataStoreHelperTester->insertFormData($content, $formid);
+
+
+    }
     protected function _after()
     {
         Schema::dropIfExists('forms_form1');
@@ -117,6 +160,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         Schema::dropIfExists('forms_form4');
         Schema::dropIfExists('forms_form5');
         Schema::dropIfExists('field_mapping');
+        Schema::dropIfExists('field_inserts');
     }
 
 }

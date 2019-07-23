@@ -278,7 +278,6 @@ class DataStoreHelper extends Migration
     {
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
-            Log::info(print_r($content,1));
             foreach($content as $key => $value){
               if( ! Schema::hasColumn($tablename, $key)){
                 // if submitted data doesn't have a corresponding table column, don't insert.
