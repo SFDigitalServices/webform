@@ -35,7 +35,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
     public function testCreateFormTable()
     {
         $tablename= 'forms_form1';
-        $this->dataStoreHelperTester::createFormTable($tablename, $this->definitions);
+        $this->dataStoreHelperTester->createFormTable($tablename, $this->definitions);
         $this->assertTrue(Schema::hasTable($tablename));
         $columns = array();
         foreach($this->definitions as $definition){
@@ -60,7 +60,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             array('formtype' => 's08', 'id' => 'my_radio', 'radios' => '["Option one","Option two","three","four"]'),
             array('formtype' => 's06', 'id' => 'my_cb', 'checkboxes' => '["CB one","CB two","CB three","four"]'),
         );
-        $mytable = $this->dataStoreHelperTester::createFormTable($tablename, $mapping_definitions);
+        $mytable = $this->dataStoreHelperTester->createFormTable($tablename, $mapping_definitions);
         $this->assertTrue(Schema::hasTable($tablename));
 
         foreach($mytable->getColumns() as $column){
@@ -101,10 +101,10 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
     }
     public function testDropFormTableColumn() {
         $tablename= 'forms_form5';
-        $this->dataStoreHelperTester::createFormTable($tablename, $this->definitions);
+        $this->dataStoreHelperTester->createFormTable($tablename, $this->definitions);
         $this->assertTrue(Schema::hasTable($tablename));
         $definition = array('email', 'firstname');
-        $_fluent = $this->dataStoreHelperTester::dropFormTableColumn($tablename, $definition);
+        $_fluent = $this->dataStoreHelperTester->dropFormTableColumn($tablename, $definition);
         $this->assertNotTrue(Schema::hasColumns($tablename, array('email')));
         $this->assertNotTrue(Schema::hasColumns($tablename, array('firstname')));
         $this->assertTrue(Schema::hasColumns($tablename, array('lastname')));
