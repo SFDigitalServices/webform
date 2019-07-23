@@ -754,7 +754,6 @@ $(document).ready(function () {
   $('#SFDSWFB-7 input').change(function () {
     updateSettings()
   })
-
   $('[data-toggle="tooltip"]').tooltip()
 
   $('#SFDSWFB-7 .bootstrap-tagsinput').css('display', 'block')
@@ -1441,6 +1440,7 @@ function callAPI (url, dataObj, callback) {
     callback(response)
   })
 }
+
 function loadHome (response) {
   $('.forms').html('')
   allForms = {}
