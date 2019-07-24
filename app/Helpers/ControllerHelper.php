@@ -8,7 +8,7 @@ use Log;
 class ControllerHelper
 {
 
-  /** Parse checkboxe and radio options into array
+  /** Parse checkboxes and radio options into array
     *
     * @param $content
     * @param $op
@@ -23,25 +23,19 @@ class ControllerHelper
         foreach ($content['data'] as $field) {
             if (array_key_exists('option', $field)) {
                 if (!is_array($field['option'])) {
-                    $field['option'] = explode("\n", $field['option']);
-                    $field['option'] = array_map('trim', $field['option']);
-                    $field['option'] = array_values(array_filter($field['option'], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
+                    $field['option'] = $this->sanitizeOptions($field, 'option');
                 }
                 if(strcmp($op, 'json') == 0)
                     $field['option'] = json_encode($field['option']);
             } elseif (array_key_exists('checkboxes', $field) ) {
                 if (!is_array($field['checkboxes'])) {
-                    $field['checkboxes'] = explode("\n", $field['checkboxes']);
-                    $field['checkboxes'] = array_map('trim', $field['checkboxes']);
-                    $field['checkboxes'] = array_values(array_filter($field['checkboxes'], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
-                  }
+                    $field['checkboxes'] = $this->sanitizeOptions($field, 'checkboxes');
+                }
                 if(strcmp($op, 'json') == 0)
                     $field['checkboxes'] = json_encode($field['checkboxes']);
             } elseif (array_key_exists('radios', $field) ) {
                 if (!is_array($field['radios'])) {
-                    $field['radios'] = explode("\n", $field['radios']);
-                    $field['radios'] = array_map('trim', $field['radios']);
-                    $field['radios'] = array_values(array_filter($field['radios'], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
+                    $field['radios'] = $this->sanitizeOptions($field, 'radios');
                 }
                 if(strcmp($op, 'json') == 0)
                     $field['radios'] = json_encode($field['radios']);
@@ -51,6 +45,19 @@ class ControllerHelper
         return $ret;
     }
 
+    /** Helper function for parseOptionValues()
+    *
+    * @param $field
+    * @param $option
+    *
+    * @return array
+    */
+    private function sanitizeOptions($field, $option)
+    {
+      $field[$option] = explode("\n", $field[$option]);
+      $field[$option] = array_map('trim', $field[$option]);
+      return $field[$option] = array_values(array_filter($field[$option], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
+    }
 
    /** Determines submitted form fields are actually inputs.
     *
