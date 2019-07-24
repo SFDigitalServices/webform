@@ -48,4 +48,5 @@ $router->group(['prefix' => 'form'], function($router) {
 
 $router->group(['prefix' => 'api'], function($router) {
     $router->post('getFormData', ['as' => 'getFormData', 'uses' => 'APIController@getFormData']);
+    $router->post('getFormSchema', ['as' => 'getFormSchema', 'uses' => 'APIController@getFormSchema']);
 });
