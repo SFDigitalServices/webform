@@ -45,3 +45,7 @@ $router->group(['prefix' => 'form'], function($router) {
 	$router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
 	$router->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
 });
+
+$router->group(['prefix' => 'api'], function($router) {
+    $router->post('getFormData', ['as' => 'getFormData', 'uses' => 'APIController@getFormData']);
+});
