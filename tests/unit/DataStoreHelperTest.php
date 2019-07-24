@@ -5,7 +5,7 @@ namespace tests;
 use Illuminate\Support\Facades\Schema;
 use App\Helpers\DataStoreHelper;
 use Log;
-
+use DB;
 class DataStoreHelperTest extends \Codeception\Test\Unit
 {
     /**
@@ -111,7 +111,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
     }
 
     public function testInsertFormData(){
-      $tablename= 'field_inserts';
+      $tablename= 'forms_999999';
       $mapping_definitions = array(
           array('type' => 'text', 'id' => 'name'),
           array('type' => 'email', 'id' => 'email', 'maxlength' => '25', 'required' => 'true'),
@@ -119,9 +119,9 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
           array('type' => 'tel', 'id' => 'phonenumber', 'required' => 'false'),
           array('type' => 'date', 'id' => 'date_created'),
           array('type' => 'url', 'id' => 'my_url'),
-          array('type' => 'url', 'id' => 'my_address'),
-          array('type' => 'url', 'id' => 'my_city'),
-          array('type' => 'url', 'id' => 'my_zipcode'),
+          array('type' => 'text', 'id' => 'my_address'),
+          array('type' => 'text', 'id' => 'my_city'),
+          array('type' => 'text', 'id' => 'my_zipcode'),
           array('formtype' => 'd04', 'id' => 'my_time', 'value' => '00:00:00'),
           array('type' => 'file', 'id' => 'my_file', 'required' => 'false'),
           array('formtype' => 'i14', 'id' => 'my_textarea'),
@@ -132,15 +132,17 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       );
       $mytable = $this->dataStoreHelperTester->createFormTable($tablename, $mapping_definitions);
       $this->assertTrue(Schema::hasTable($tablename));
-Log::info(print_r($mytable,1));
 
       $content = Array(
           'email'=> 'henry.jiang@sfgov.org',
           'name' => 'test',
           'password' => 'test',
-          'tel' => '4155824055',
+          'phonenumber' => '4155824055',
           'date' => ' 2019-07-23 00:00:00',
           'url' => 'http://google.com',
+          'my_address' => '123 sample st',
+          'my_city' => 'sf',
+          'my_zipcode' => '12345',
           'my_time' => '12:00:00',
           'my_file' => 'path_to_file',
           'my_number' => '20',
@@ -148,9 +150,15 @@ Log::info(print_r($mytable,1));
           'my_radio' => '12',
           'my_cb' => '11,12',
       );
-      $this->dataStoreHelperTester->insertFormData($content, $formid);
+      $this->dataStoreHelperTester->insertFormData($content, '999999');
 
-
+      $results = DB::table('forms_999999')->get();
+      foreach ($results as $result) {
+        foreach($result as $key => $value){
+          if(! in_array($key, $content)) continue;
+            $this->assertEquals($content[$key], $result->$key);
+        }
+      }
     }
     protected function _after()
     {
@@ -160,7 +168,7 @@ Log::info(print_r($mytable,1));
         Schema::dropIfExists('forms_form4');
         Schema::dropIfExists('forms_form5');
         Schema::dropIfExists('field_mapping');
-        Schema::dropIfExists('field_inserts');
+        Schema::dropIfExists('forms_999999');
     }
 
 }
