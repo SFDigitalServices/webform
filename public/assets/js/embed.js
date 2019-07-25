@@ -122,3 +122,51 @@ function initSectional() {
 		jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
 	}
 }
+
+function phoneIsValid(num) {
+	if (num === '') return false;
+	var phoneNumber = libphonenumber.parsePhoneNumberFromString(num, 'US');
+	return phoneNumber.isValid() === true ? true : false;
+}
+
+function fieldInvalid(id) {
+	if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-error')) jQuery('.form-group[data-id=' + id + ']').addClass('has-error');
+	if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-danger')) jQuery('.form-group[data-id=' + id + ']').addClass('has-danger');
+	jQuery('.form-group[data-id=' + id + '] .with-errors').html('<ul class="list-unstyled"><li>' + jQuery('#' + id).data('required-error') + '</li></ul>');
+}
+
+function fieldValid(id) {
+	jQuery('.form-group[data-id=' + id + ']').removeClass('has-error has-danger');
+	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
+}
+
+jQuery(window).on('load', function(){
+	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
+			if (phoneIsValid($(this).val())) {
+				fieldValid($(this).attr('id'));
+			} else {
+				fieldInvalid($(this).attr('id'));
+			}
+		var key = event.keyCode || event.charCode;
+		if (key === 8 || key === 46) {
+			return;
+		} else {
+			jQuery(this).val(new libphonenumber.AsYouType('US').input(jQuery(this).val()));
+		}			
+	});
+	jQuery('#SFDSWF-Container form').submit(function(e) {
+		var formValid = true;
+		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {
+			if (phoneIsValid($(this).val())) {
+				fieldValid($(this).attr('id'));
+			} else {
+				formValid = false;
+				fieldInvalid($(this).attr('id'));
+			}
+		});
+		if (!formValid) {
+			e.preventDefault();
+		}
+	});
+
+});
