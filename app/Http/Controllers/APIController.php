@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Form;
 use DB;
 use Log;
 
@@ -23,7 +24,6 @@ class APIController extends Controller
             'getFormData',
             'getFormSchema'
           ]]);
-
     }
 
     /**
@@ -35,20 +35,61 @@ class APIController extends Controller
      */
     public function getFormData(Request $request)
     {
-      $formid = $request->input('formid');
-      if ($formid) {
-          $tablename = "forms_" . $formid;
-          $results = DB::table($tablename)
-          ->orderBy($tablename.'.id', 'asc')
-          ->get();
-
-          foreach ($results as $result) {
-            //Log::info(print_r($result,1));
-          }
-          return response()->json($results);
-      }
+        $formid = $request->input('formid');
+        if ($formid) {
+            try {
+                $tablename = "forms_" . $formid;
+                $results = DB::table($tablename)
+                              ->orderBy($tablename.'.id', 'asc')
+                              ->get();
+            } catch (\Illuminate\Database\QueryException $ex) {
+                $results = ['status' => 0, 'message' => $ex->getMessage()];
+            }
+        }
+        else{
+          $results = ['status' => 0, 'message' => 'Form ID is missing'];
+        }
+        return response()->json($results);
     }
 
+     /**
+     * Get lookup values for the given form table.
+     *
+     * @param $request
+     *
+     * @return JSON response
+     */
+    public function getLookupTable(Request $request)
+    {
+        $formid = $request->input('formid');
+        if ($formid) {
+            $form = Form::where('id', $formid)->first();
+            $form['content'] = json_decode($form['content'], true);
+            $results = array();
+            try {
+                foreach ($form['content']['data'] as $field) {
+                    if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
+                        $options = DB::table('enum_mappings')
+                                  ->where([
+                                    ['form_table_id', '=', $formid],
+                                    ['form_field_name', '=', $field['name'] ]
+                                    ])
+                                  ->get();
+                        foreach ($options as $op) {
+                            array_push($results, (array)$op);
+                        }
+                    }
+                }
+            }
+          catch(\Illuminate\Database\QueryException $ex){
+            $results = ['status' => 0, 'message' => $ex->getMessage()];
+          }
+        }
+        else{
+          $results = ['status' => 0, 'message' => 'Form ID is missing'];
+        }
+        return response()->json($results);
+    }
     /**
      * Prints form table schema.
      *
@@ -61,11 +102,18 @@ class APIController extends Controller
       $formid = $request->input('formid');
       if ($formid) {
           $tablename = "forms_" . $formid;
-          $results = DB::select('SHOW COLUMNS FROM '. $tablename);
-
-          $columns = $this->transformColumns($results);
-          return response()->json($columns);
+          try {
+              $results = DB::select('SHOW COLUMNS FROM '. $tablename);
+              $columns = $this->transformColumns($results);
+          }
+          catch(\Illuminate\Database\QueryException $ex){
+            $results = ['status' => 0, 'message' => $ex->getMessage()];
+          }
       }
+      else{
+        $results = ['status' => 0, 'message' => 'Form ID is missing'];
+      }
+      return response()->json($results);
     }
 
     /**
