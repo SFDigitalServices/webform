@@ -37,6 +37,7 @@ class APIController extends Controller
     public function getFormData(Request $request)
     {
         $formid = $request->input('formid');
+        $results = array();
         if ($formid) {
             try {
                 $tablename = "forms_" . $formid;
@@ -63,10 +64,10 @@ class APIController extends Controller
     public function getLookupTable(Request $request)
     {
         $formid = $request->input('formid');
+        $results = array();
         if ($formid) {
             $form = Form::where('id', $formid)->first();
             $form['content'] = json_decode($form['content'], true);
-            $results = array();
             try {
                 foreach ($form['content']['data'] as $field) {
                     if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
@@ -101,6 +102,7 @@ class APIController extends Controller
     public function getFormSchema(Request $request)
     {
       $formid = $request->input('formid');
+      $results = array();
       if ($formid) {
           $tablename = "forms_" . $formid;
           try {
