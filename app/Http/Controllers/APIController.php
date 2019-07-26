@@ -22,7 +22,8 @@ class APIController extends Controller
         $this->middleware('auth', ['only' =>
           [
             'getFormData',
-            'getFormSchema'
+            'getFormSchema',
+            'getLookupTable'
           ]]);
     }
 
