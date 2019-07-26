@@ -67,25 +67,26 @@ class APIController extends Controller
         $results = array();
         if ($formid) {
             $form = Form::where('id', $formid)->first();
-            $form['content'] = json_decode($form['content'], true);
-            try {
-                foreach ($form['content']['data'] as $field) {
-                    if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
-                        $options = DB::table('enum_mappings')
+            if ($form) {
+                $form['content'] = json_decode($form['content'], true);
+                try {
+                    foreach ($form['content']['data'] as $field) {
+                        if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
+                            $options = DB::table('enum_mappings')
                                   ->where([
                                     ['form_table_id', '=', $formid],
                                     ['form_field_name', '=', $field['name'] ]
                                     ])
                                   ->get();
-                        foreach ($options as $op) {
-                            array_push($results, (array)$op);
+                            foreach ($options as $op) {
+                                array_push($results, (array)$op);
+                            }
                         }
                     }
+                } catch (\Illuminate\Database\QueryException $ex) {
+                    $results = ['status' => 0, 'message' => $ex->getMessage()];
                 }
             }
-          catch(\Illuminate\Database\QueryException $ex){
-            $results = ['status' => 0, 'message' => $ex->getMessage()];
-          }
         }
         else{
           $results = ['status' => 0, 'message' => 'Form ID is missing'];
