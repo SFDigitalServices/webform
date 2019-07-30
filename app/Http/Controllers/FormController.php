@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-//putenv('HOME=/var/www/html');
 use App\Form;
 use Auth;
 use Log;
@@ -16,6 +15,7 @@ use App\Helpers\ControllerHelper;
 
 
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation;
 
 class FormController extends Controller
 {
@@ -40,7 +40,8 @@ class FormController extends Controller
             'getFilename',
             'share',
             'getAuthors',
-            'purgeCSV'
+            'purgeCSV',
+            'exportFormData'
           ]]);
         $this->controllerHelper = new ControllerHelper();
         $this->dataStoreHelper = new DataStoreHelper();
@@ -54,7 +55,6 @@ class FormController extends Controller
     {
         return UserHelper::getApiToken($request->input('email'), $request->input('password'));
     }
-
 
     /** Gets all the forms for the current logged in user.
     *
@@ -285,7 +285,7 @@ class FormController extends Controller
     /** Creates an embed JS for the form
     *
     * @param $request
-    /**
+    *
     * Creates a page preview of the submitted form
     *
     * @return HTML
@@ -368,7 +368,7 @@ class FormController extends Controller
     *
     * @return redirect page
     */
-    public function submitCSV(Request $request)
+    public function submitForm(Request $request)
     {
       $form_id = $request->input('form_id');
       if (!$form_id) {
@@ -378,7 +378,7 @@ class FormController extends Controller
       $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
       //todo backend validation
 
-      if($this->dataStoreHelper->submitCSV($form,$request)){
+      if($this->dataStoreHelper->submitForm($form,$request)){
           return redirect($form['content']['settings']['confirmation']);
       }
     }
@@ -391,7 +391,8 @@ class FormController extends Controller
     */
     public function CSVPublished(Request $request)
     {
-        return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
+        return false;
+        //return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
     }
 
 
@@ -414,15 +415,17 @@ class FormController extends Controller
      */
     public function purgeCSV(Request $request)
     {
-        $form_id = $request->input('id');
+        return true;
+        /*$form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
         $content = json_decode($form->content);
         $filename = $this->controllerHelper->generateFilename($form_id);
         $this->dataStoreHelper->rewriteCSV($content, $filename);
         return response()->json(['status' => 1, 'message' => 'Purged CSV']);
+        */
     }
 
-    /** Gets S3 unique filename
+  /** Gets S3 unique filename
     *
     * @param $request
     *
@@ -440,7 +443,45 @@ class FormController extends Controller
       }
   }
 
-  /** Alert the logged in user if shared form has updated
+
+    /** Gets submitted form data as CSV/Excel
+    *
+    * @param $request
+    *
+    * @return Response object
+    */
+    public function exportFormData(Request $request)
+    {
+        $id = $request->input('formid');
+        if ($id) {
+            $filename = 'form-' .$id .'_'. date('d-m-Y-H:i:s').'.csv';
+            $headers = array(
+                "Content-type" => "text/csv",
+                "Content-Disposition" => "attachment; filename=$filename",
+                "Pragma" => "no-cache",
+                "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+                "Expires" => "0"
+            );
+            $data = $this->dataStoreHelper->getSubmittedFormData($id);
+            if (sizeof($data) > 0) {
+                // extract columns from $data
+                $columns = array_keys((array)$data[0]);
+                $callback = function () use ($data, $columns) {
+                    $file = fopen('php://output', 'w');
+                    fputcsv($file, $columns);
+
+                    foreach ($data as $row) {
+                        fputcsv($file, array_values((array)$row));
+                    }
+                    fclose($file);
+                };
+                return (new \Symfony\Component\HttpFoundation\StreamedResponse($callback, 200, $headers))->sendContent();
+            }
+        }
+        return null;
+    }
+
+    /** Alert the logged in user if shared form has updated
     *
     * @param $request
     *

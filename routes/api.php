@@ -24,10 +24,8 @@ $router->get('/user/delete', 'UserController@delete');
 $router->get('/user/debug', 'UserController@debug');
 
 $router->group(['prefix' => 'form'], function($router) {
-    //$app->get('getIndex', ['as' => 'getIndex', 'uses' => 'FormController@getIndex']);
     $router->post('getForms', ['as' => 'getForms', 'uses' => 'FormController@getUserForms']);
     $router->post('getApiToken', ['as' => 'getApiToken', 'uses' =>'FormController@getApiToken']);
-    //$app->post('createUser', ['as' => 'createUser', 'uses' =>'FormController@createUser']);
     $router->post('getForm', ['as' => 'getForm', 'uses' => 'FormController@getForm']);
     $router->get('embed', ['as' => 'embed', 'uses' => 'FormController@embedJS']);
     $router->get('preview', ['as' => 'preview', 'uses' => 'FormController@preview']);
@@ -38,12 +36,13 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('create',['as' => 'create', 'uses' =>'FormController@create']);
     $router->post('clone', ['as' => 'clone', 'uses' => 'FormController@clone']);
     $router->post('delete',['as' => 'delete', 'uses' => 'FormController@delete']);
-	$router->post('share', ['as' => 'share', 'uses' => 'FormController@share']);
-    $router->post('submit',['as' => 'submit', 'uses' => 'FormController@submitCSV']);
-	$router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
+	  $router->post('share', ['as' => 'share', 'uses' => 'FormController@share']);
+    $router->post('submit',['as' => 'submit', 'uses' => 'FormController@submitForm']);
+	  $router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
     $router->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
-	$router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
-	$router->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
+	  $router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
+    $router->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
+    $router->post('export-csv', ['as' => 'export-csv', 'uses' => 'FormController@exportFormData']);
 });
 
 $router->group(['prefix' => 'api'], function($router) {
