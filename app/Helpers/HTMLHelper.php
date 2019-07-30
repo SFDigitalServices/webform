@@ -83,12 +83,12 @@ class HTMLHelper
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $nav = '<ul class="form-section-nav"><li class="active">'.$section1.'</li>';
+            $nav = '<div class="form-section-nav"><a class="active" href="javascript:void(0)">'.$section1.'</a>';
             foreach ($sections as $idx => $section) {
                 $active = $idx === "0" ? ' class="active"' : '';
-                $nav .= '<li'.$active.'>'.$section['label'].'</li>';
+                $nav .= '<a'.$active.' href="javascript:void(0)">'.$section['label'].'</a>';
             }
-            $nav .= '</ul>';
+            $nav .= '</div>';
             $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
             $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div>';
             $form_container = $nav. $form_div. $form_wraper_top. $form_container. $form_wrapper_bottom;
