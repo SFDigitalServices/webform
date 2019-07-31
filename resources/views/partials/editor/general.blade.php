@@ -9,7 +9,11 @@
             {{$text}} Text
           @endif
         </label>
-        <textarea class='form-control' name='textarea' id='textarea'></textarea>
+        @if ($formtype == 'm10')
+			<textarea class='form-control' name='codearea' id='codearea'></textarea>
+		@else
+			<textarea class='form-control' name='textarea' id='textarea'></textarea>
+		@endif
 
         {{-- Show button type dropdown for Button input --}}
         @if ($formtype == 'm14')
