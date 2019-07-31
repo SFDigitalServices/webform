@@ -97,24 +97,24 @@ function getDataInPath(obj, path) {
 }
 
 function initSectional() {
-	jQuery('#SFDSWF-Container .form-section-nav li').click(function(e){
+	jQuery('#SFDSWF-Container .form-section-nav a').click(function(e){
 		var i = jQuery(e.target).prevAll().length;
 		SFDSWF_goto(i);
 	});
 
 	jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
-		var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;
+		var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
 		SFDSWF_goto(i < 1 ? 0 : i-1);
 	});
 
 	jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
-		var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;
+		var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
 		SFDSWF_goto(i+1);
 	});
 
 	var SFDSWF_goto = function(i) {
-		jQuery('#SFDSWF-Container .form-section-nav li').removeClass('active');
-		jQuery('#SFDSWF-Container .form-section-nav li').eq(i).addClass('active');
+		jQuery('#SFDSWF-Container .form-section-nav a').removeClass('active');
+		jQuery('#SFDSWF-Container .form-section-nav a').eq(i).addClass('active');
 		jQuery('#SFDSWF-Container .form-section').removeClass('active');
 		jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');
 		jQuery('#SFDSWF-Container .form-section-header').removeClass('active');
