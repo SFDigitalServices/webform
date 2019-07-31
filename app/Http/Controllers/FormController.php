@@ -109,7 +109,6 @@ class FormController extends Controller
             $returnForm['content'] = $this->controllerHelper->scrubString($request->input('content'));
             $previousContent = array();
             $previousContent['data'] = ($request->input('previousContent'));
-            //$this->dataStoreHelper->processCSV($returnForm, $request->getHttpHost());
 
             $returnForm->save();
             //update form table
@@ -238,7 +237,6 @@ class FormController extends Controller
         if ($this->validateForm($request)) {
             $form = Form::create(['content' => $this->controllerHelper->scrubString($request->input('content'))]);
             if ($form) {
-                $this->dataStoreHelper->processCSV($form, $request->getHttpHost());
                 // create entry in user_form
                 $user_id = $request->input('user_id');
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
