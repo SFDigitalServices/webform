@@ -274,6 +274,7 @@ class FormController extends Controller
         return '<!DOCTYPE html><html><head><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'.
         '<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js"></script>'.
         '<script src="https://formbuilder-sf-staging.herokuapp.com/assets/js/error-msgs.js"></script>'.
+		'<script src="https://unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js"></script>'.
         '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
         '<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
         '<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
