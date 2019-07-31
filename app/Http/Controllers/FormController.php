@@ -109,7 +109,7 @@ class FormController extends Controller
             $returnForm['content'] = $this->controllerHelper->scrubString($request->input('content'));
             $previousContent = array();
             $previousContent['data'] = ($request->input('previousContent'));
-            $this->dataStoreHelper->processCSV($returnForm, $request->getHttpHost());
+            //$this->dataStoreHelper->processCSV($returnForm, $request->getHttpHost());
 
             $returnForm->save();
             //update form table
