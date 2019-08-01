@@ -76,7 +76,7 @@ class CORSMiddleware
           }
       }
       catch (Exception $e){
-        dd($e);
+        return $response;
       }
     }
 }
