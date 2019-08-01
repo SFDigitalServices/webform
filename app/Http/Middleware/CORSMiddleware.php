@@ -57,12 +57,11 @@ class CORSMiddleware
      */
     protected function addCorsHeaders($request, $response)
     {
-      if ($response instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
-        Log::info(print_r($response,1));
-        return $response;
-      }
-      else{
-          foreach ([
+      try {
+          if ($response instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+              return $response;
+          } else {
+              foreach ([
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Max-Age' => (60 * 60 * 24),
             'Access-Control-Allow-Headers' => $request->header('Access-Control-Request-Headers'),
@@ -70,10 +69,14 @@ class CORSMiddleware
                 ?: 'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS',
             'Access-Control-Allow-Credentials' => 'true',
         ] as $header => $value) {
-              $response->header($header, $value);
-          }
+                  $response->header($header, $value);
+              }
 
-          return $response;
+              return $response;
+          }
+      }
+      catch (Exception $e){
+        dd($e);
       }
     }
 }
