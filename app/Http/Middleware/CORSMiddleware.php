@@ -58,6 +58,7 @@ class CORSMiddleware
     protected function addCorsHeaders($request, $response)
     {
       if ($response instanceof \Symfony\Component\HttpFoundation\StreamedResponse) {
+        Log::info(print_r($response,1));
         return $response;
       }
       else{
