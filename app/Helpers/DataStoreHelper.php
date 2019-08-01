@@ -323,7 +323,6 @@ class DataStoreHelper extends Migration
       return $write;
     }
 
-
   /** Insert or update table definition.
     *
     * @param $table
@@ -337,50 +336,57 @@ class DataStoreHelper extends Migration
         if ($definitions) {
             $class = new DataStoreHelper();
             foreach ($definitions as $key => $definition) {
-                if ( strcmp($key, 'remove') == 0 ) {
+                if( strcmp($key, 'rename') == 0){
+                  Schema::table($table->getTable(), function (Blueprint $table1) use ($definition) {
+                      $table1->renameColumn($definition['from'], $definition['to']);
+                    });
+                    $definition = (array) $definition['add'];
+                }
+                elseif ( strcmp($key, 'remove') == 0 ) {
                     $ret[] = $class->dropFormTableColumn($table->getTable(), array($definition['name']));
-                } else {
+                    continue;
+                }
                     if(isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08') )
                       $type = $definition['formtype'];
                     else
                       $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
                     $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
                     switch ($type) {
-                    case 'text':
-                    case 'email':
-                    case 'password':
-                    case 'search':
-                    case 'url':
-                    case 'tel':
-                    case 's02':  //state dropdown
-                    case 's14':  //state dropdown
-                    case 's15':  //state dropdown
-                    case 's16':  //state dropdown
-                    case 'file': //store file path only
-                        $ret[] = $class->createDatabaseFields($table, $definition);
-                        break;
-                    case 'file':
-                    case 's08': //radios
-                    case 's06': //checkbox
-                        $ret[] = $class->createDatabaseEnumFields($table, $definition);
-                        break;
-                    case 'number':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'decimal');
-                        break;
-                    case 'date':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'date');
-                        break;
-                    case 'i14':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'longText');
-                        break;
-                    case 'd04': // Time
-                    case 'time':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'time');
-                        break;
-                    default:
-                        break;
-                }
-                }
+                      case 'text':
+                      case 'email':
+                      case 'password':
+                      case 'search':
+                      case 'url':
+                      case 'tel':
+                      case 's02':  //state dropdown
+                      case 's14':  //state dropdown
+                      case 's15':  //state dropdown
+                      case 's16':  //state dropdown
+                      case 'file': //store file path only
+                          $ret[] = $class->createDatabaseFields($table, $definition);
+                          break;
+                      case 'file':
+                      case 's08': //radios
+                      case 's06': //checkbox
+                          $ret[] = $class->createDatabaseEnumFields($table, $definition);
+                          break;
+                      case 'number':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'decimal');
+                          break;
+                      case 'date':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'date');
+                          break;
+                      case 'i14':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'longText');
+                          break;
+                      case 'd04': // Time
+                      case 'time':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'time');
+                          break;
+                      default:
+                          break;
+                    }
+
             }
         }
         return $ret;
