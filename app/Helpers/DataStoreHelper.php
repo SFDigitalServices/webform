@@ -213,7 +213,7 @@ class DataStoreHelper extends Migration
      *
      * @return bool
      */
-    private function dropFormTableColumn($tablename, $definitions)
+    public function dropFormTableColumn($tablename, $definitions)
     {
         if($definitions){
             $_fluent = '';
