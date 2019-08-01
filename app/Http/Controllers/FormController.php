@@ -390,7 +390,7 @@ class FormController extends Controller
     */
     public function CSVPublished(Request $request)
     {
-        return false;
+        return 0;
         //return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
     }
 
