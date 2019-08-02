@@ -40,9 +40,15 @@ class DataStoreHelper extends Migration
             }
             $object = $table;
         });
+        // create archive table
+        if (Schema::hasTable($tablename)) {
+            Schema::create($tablename.'_archive', function ($table) {
+                $table->increments('id');
+            });
+        }
+
         return $object;
     }
-
 
    /** Deletes database table for deleted form
     *
@@ -67,21 +73,23 @@ class DataStoreHelper extends Migration
     /** Dropping form table columns
      *
      * @param $tablename
-     * @param $definitions
+     * @param $columns
      *
      * @return bool
      */
-    public function dropFormTableColumn($tablename, $definitions)
+    public function dropFormTableColumn($tablename, $columns)
     {
-        if($definitions){
+        if($columns){
             $_fluent = '';
-            Schema::table($tablename, function($table) use ($definitions, &$_fluent, $tablename)
+            Schema::table($tablename, function($table) use ($columns, &$_fluent, $tablename)
             {
-                if (Schema::hasColumns($tablename, $definitions)) {
-                    $_fluent = $table->dropColumn($definitions);
+                if (Schema::hasColumns($tablename, $columns)) {
+                    $formId= str_replace('forms_', '', $tablename);
+                    //move deleted column and data to archive
+                    $this->archiveFormTableColumn($formId, $columns);
+                    $_fluent = $table->dropColumn($columns);
                     // remove lookup table entries
                     if ($_fluent) {
-                        $formId= str_replace('forms_', '', $tablename);
                         DB::table('enum_mappings')->where('form_table_id', '=', $formId)->where('form_field_name', '=', $_fluent['columns'][0])->delete();
                         return $_fluent;
                     }
@@ -247,6 +255,45 @@ class DataStoreHelper extends Migration
       return $results;
 
     }
+
+     /** Archive a form table column
+     *
+     * @param @formId
+     * @param $columns
+     *
+     * @return bool
+     */
+    private function archiveFormTableColumn($formId, $columns)
+    {
+        $tableName = "forms_".$formId;
+        $archiveTableName = $tableName."_archive";
+        // if archive form table exist.
+        if (! Schema::hasTable($archiveTableName)) {
+            // create archive table
+            if (Schema::hasTable($tableName)) {
+                Schema::create($tableName.'_archive', function ($table, $formId) {
+                    $table->increments('id');
+                    $table->integer($formId);
+                });
+            }
+        }
+        foreach ($columns as $column) {
+            $columnType = DB::getSchemaBuilder()->getColumnType($tableName, $column);
+            if (! Schema::hasColumn($archiveTableName, $column)) {
+                Schema::table($archiveTableName, function ($table) use ($column, $columnType) {
+                    $table->$columnType($column);
+                });
+            }
+            try {
+                //get data from forms_$formId
+                $statement = 'INSERT INTO '. $archiveTableName .' ('.$column.') SELECT '. $column .' FROM '.$tableName;
+                $data = DB::statement($statement);
+            } catch (\Illuminate\Database\QueryException $ex) {
+                Log::info(print_r($ex, 1));
+            }
+        }
+    }
+
     /** Transform columns
      *
      * @param $columns
@@ -323,7 +370,6 @@ class DataStoreHelper extends Migration
       return $write;
     }
 
-
   /** Insert or update table definition.
     *
     * @param $table
@@ -386,8 +432,7 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
-
-  /** Mapping functions for form fields to database columns.
+    /** Mapping functions for form fields to database columns.
     *
     * @param $table
     * @param definition
@@ -489,7 +534,6 @@ class DataStoreHelper extends Migration
         }
         return $ret;
     }
-
 
    /** Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
     *
