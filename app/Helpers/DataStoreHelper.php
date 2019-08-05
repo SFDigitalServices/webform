@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
 use Log;
 use DB;
+use App\Form;
 use App\Helpers\ControllerHelper;
 
 class DataStoreHelper extends Migration
@@ -55,14 +56,13 @@ class DataStoreHelper extends Migration
         $tablename = "forms_".$formId;
         Schema::dropIfExists($tablename);
         if (! Schema::hasTable($tablename)) {
-          // remove entries in enum_mappings
+            // remove entries in enum_mappings
             DB::table('enum_mappings')->where('form_table_id', '=', $formId)->delete();
             return $tablename;
         } else {
             return '';
         }
     }
-
 
     /** Dropping form table columns
      *
@@ -119,125 +119,6 @@ class DataStoreHelper extends Migration
         }
     }
 
-
-  /** Reads CSV file from S3
-    *
-    * @param $filename
-    * @param $arr
-    *
-    * @return void
-    */
-    public function readCSV($filename)
-    {
-        $csv = array();
-        $read = $this->controllerHelper->readS3($filename);
-        if ($read) {
-            $rows = str_getcsv($read, "\n");
-            foreach ($rows as $row) {
-                $csv[] = str_getcsv($row);
-            }
-        }
-        return $csv;
-    }
-
-  /** Writes data to CSV file on S3
-    *
-    * @param $filename
-    * @param $body
-    *
-    * @return void
-    */
-    public function writeCSV($filename, $body)
-    {
-        return $this->controllerHelper->writeS3($filename, $body);
-    }
-
-
-   /** Prepare write data
-    *
-    * @param $content
-    * @param $filename
-    *
-    * @return void
-    */
-    public function rewriteCSV($content, $filename)
-    {
-        $column = 0;
-        $write = array();
-        foreach ($content->data as $field) {
-            $nonInputs = array("m02", "m04", "m06", "m08", "m10", "m13", "m14", "m16");
-            $multipleInputs = array("s02", "s04", "s06", "s08");
-            if (in_array($field->formtype, $multipleInputs)) {
-                if ($field->formtype == "s02" || $field->formtype == "s04") {
-										$options = $field->option;
-                } elseif ($field->formtype == "s06") {
-                    $options = $field->checkboxes;
-                } elseif ($field->formtype == "s08") {
-                    $options = $field->radios;
-                }
-                foreach ($options as $option) {
-                    $write[$column] = isset($field->name) ? $field->name." ".$option : $option;
-                    $column++;
-                }
-            } elseif (!in_array($field->formtype, $nonInputs)) { // catch all for everything except multiple and non-inputs
-                $write[$column] = isset($field->name) ? $field->name : '';
-                $column++;
-            }
-        }
-        // write data to csv file
-        $this->writeCSV($filename, implode(",", $write)."\n");
-    }
-
-  /** Add submitted form data to CSV file on S3
-    *
-    * @param $filename
-    * @param $arr
-    *
-    * @return void
-    */
-    public function appendCSV($filename, $arr)
-    {
-        $csv = $this->readCSV($filename);
-        array_push($csv, $arr);
-        $output = "";
-        foreach ($csv as $row) {
-            $output .= implode(",", $row)."\n";
-        }
-        $this->writeCSV($filename, $output);
-    }
-
-
-   /** Determine a form is published or not.
-    *
-    * @param $filename
-    *
-    * @return boolean
-    */
-    public function isCSVPublished($filename)
-    {
-        $csv = $this->readCSV($filename);
-        return count($csv) > 1 ? true : false;
-    }
-
-    /** Process saved form setting
-      *
-      * @param $request
-      * @param $base_url
-      *
-      * @return void
-      */
-    public function processCSV($form, $base_url = '')
-    {
-        //read content and settings
-        $content = json_decode($form->content);
-        if( isset($content->settings->backend) && $content->settings->backend == "csv"){
-            $filename = $this->controllerHelper->generateFilename($form->id);
-            //rewrite header row if CSV is not published (only header row or less exists)
-            if (!$this->isCSVPublished($filename)) {
-                $this->rewriteCSV($content, $filename);
-            }
-        }
-    }
    /** Handles form submission
     *
     * @param $form
@@ -245,11 +126,10 @@ class DataStoreHelper extends Migration
     *
     * @return boolean
     */
-    public function submitCSV($form, $request)
+    public function submitForm($form, $request)
     {
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
-            $this->appendCSV($this->controllerHelper->generateFilename($form['id']), $write['csv']);
             $this->insertFormData($write['db'], $form['id']);
             return true;
         }
@@ -296,6 +176,95 @@ class DataStoreHelper extends Migration
       return implode(',',$selected);
 }
 
+  /** get submitted form data
+    *
+    * @param $formid
+    *
+    * @return array
+    */
+    public function getSubmittedFormData($formid)
+    {
+      try {
+          $tablename = "forms_" . $formid;
+          $results = DB::table($tablename)
+                      ->orderBy($tablename.'.id', 'asc')
+                      ->get();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        $results = ['status' => 0, 'message' => $ex->getMessage()];
+      }
+      return $results;
+    }
+  /** get submitted form column names
+    *
+    * @param $formid
+    *
+    * @return array
+    */
+    public function getFormTableColumns($formid)
+    {
+      $tablename = "forms_" . $formid;
+      try {
+          $results = DB::select('SHOW COLUMNS FROM '. $tablename);
+          $columns = $this->transformColumns($results);
+      }
+      catch(\Illuminate\Database\QueryException $ex){
+        $results = ['status' => 0, 'message' => $ex->getMessage()];
+      }
+      return $results;
+    }
+
+    /** get submitted form column names
+    *
+    * @param $formid
+    *
+    * @return array
+    */
+
+    public function getLookupTable($formid)
+    {
+      $results = array();
+      $form = Form::where('id', $formid)->first();
+      if ($form) {
+          $form['content'] = json_decode($form['content'], true);
+          try {
+              foreach ($form['content']['data'] as $field) {
+                  if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
+                      $options = DB::table('enum_mappings')
+                            ->where([
+                              ['form_table_id', '=', $formid],
+                              ['form_field_name', '=', $field['name'] ]
+                              ])
+                            ->get();
+                      foreach ($options as $op) {
+                          array_push($results, (array)$op);
+                      }
+                  }
+              }
+          } catch (\Illuminate\Database\QueryException $ex) {
+              $results = ['status' => 0, 'message' => $ex->getMessage()];
+          }
+      }
+      return $results;
+
+    }
+    /** Transform columns
+     *
+     * @param $columns
+     * @return array
+     */
+    private function transformColumns($columns)
+    {
+        return array_map(function ($column) {
+            return [
+                'Field' => $column->Field,
+                'Type' => $column->Type,
+                'Null' => $column->Null,
+                'Key' => $column->Key,
+                'Default' => $column->Default,
+                'Extra' => $column->Extra
+            ];
+        }, $columns);
+    }
    /** Parses submitted form data
     *
     * @param $content
@@ -323,10 +292,10 @@ class DataStoreHelper extends Migration
                 foreach ($options as $option) {
                   $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
                   if (is_array($request->input($field['name']))) {
-                      $write['csv'][$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
+                      //$write['csv'][$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
                       $write['db'][$field['name']] = $request->input($field['name']);
                   } else {
-                      $write['csv'][$column] = $request->input($field['name']) == $option ? 1 : 0;
+                      //$write['csv'][$column] = $request->input($field['name']) == $option ? 1 : 0;
                       $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
                         array($request->input($field['name'])) : $request->input($field['name']);
                   }
@@ -338,7 +307,7 @@ class DataStoreHelper extends Migration
                   $file = $request->file($field['name']);
                   $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
                   $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
-                  $write['db'][$field['name']] = $write['csv'][$column] = $this->controllerHelper->getBucketPath().$newFilename;
+                  $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
                 }
                 $column++;
               }

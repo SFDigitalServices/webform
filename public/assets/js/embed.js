@@ -97,24 +97,24 @@ function getDataInPath(obj, path) {
 }
 
 function initSectional() {
-	jQuery('#SFDSWF-Container .form-section-nav li').click(function(e){
+	jQuery('#SFDSWF-Container .form-section-nav a').click(function(e){
 		var i = jQuery(e.target).prevAll().length;
 		SFDSWF_goto(i);
 	});
 
 	jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
-		var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;
+		var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
 		SFDSWF_goto(i < 1 ? 0 : i-1);
 	});
 
 	jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
-		var i = jQuery('.form-section-nav li.active').prevAll('.form-section-nav li').length;
+		var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
 		SFDSWF_goto(i+1);
 	});
 
 	var SFDSWF_goto = function(i) {
-		jQuery('#SFDSWF-Container .form-section-nav li').removeClass('active');
-		jQuery('#SFDSWF-Container .form-section-nav li').eq(i).addClass('active');
+		jQuery('#SFDSWF-Container .form-section-nav a').removeClass('active');
+		jQuery('#SFDSWF-Container .form-section-nav a').eq(i).addClass('active');
 		jQuery('#SFDSWF-Container .form-section').removeClass('active');
 		jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');
 		jQuery('#SFDSWF-Container .form-section-header').removeClass('active');
@@ -122,3 +122,51 @@ function initSectional() {
 		jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
 	}
 }
+
+function phoneIsValid(num) {
+	if (num === '') return false;
+	var phoneNumber = libphonenumber.parsePhoneNumberFromString(num, 'US');
+	return phoneNumber.isValid() === true ? true : false;
+}
+
+function fieldInvalid(id) {
+	if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-error')) jQuery('.form-group[data-id=' + id + ']').addClass('has-error');
+	if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-danger')) jQuery('.form-group[data-id=' + id + ']').addClass('has-danger');
+	jQuery('.form-group[data-id=' + id + '] .with-errors').html('<ul class="list-unstyled"><li>' + jQuery('#' + id).data('required-error') + '</li></ul>');
+}
+
+function fieldValid(id) {
+	jQuery('.form-group[data-id=' + id + ']').removeClass('has-error has-danger');
+	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
+}
+
+jQuery(window).on('load', function(){
+	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
+			if (phoneIsValid($(this).val())) {
+				fieldValid($(this).attr('id'));
+			} else {
+				fieldInvalid($(this).attr('id'));
+			}
+		var key = event.keyCode || event.charCode;
+		if (key === 8 || key === 46) {
+			return;
+		} else {
+			jQuery(this).val(new libphonenumber.AsYouType('US').input(jQuery(this).val()));
+		}			
+	});
+	jQuery('#SFDSWF-Container form').submit(function(e) {
+		var formValid = true;
+		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {
+			if (phoneIsValid($(this).val())) {
+				fieldValid($(this).attr('id'));
+			} else {
+				formValid = false;
+				fieldInvalid($(this).attr('id'));
+			}
+		});
+		if (!formValid) {
+			e.preventDefault();
+		}
+	});
+
+});
