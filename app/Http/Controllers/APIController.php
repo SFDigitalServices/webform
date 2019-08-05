@@ -49,6 +49,26 @@ class APIController extends Controller
         return response()->json($results);
     }
 
+    /**
+     * Get all archived data from form.
+     *
+     * @param $request
+     *
+     * @return JSON response
+     */
+    public function getArchivedFormData(Request $request)
+    {
+        $formid = $request->input('formid');
+        $results = array();
+        if ($formid) {
+            $results = $this->dataStoreHelper->getArchivedFormData($formid);
+        }
+        else{
+          $results = ['status' => 0, 'message' => 'Form ID is missing'];
+        }
+        return response()->json($results);
+    }
+
      /**
      * Get lookup values for the given form table.
      *
