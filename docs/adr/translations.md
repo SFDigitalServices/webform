@@ -58,6 +58,7 @@ LanguageLine::create([
    'text' => ['en' => 'Name', 'es' => 'Nombre'],
 ]); 
 ```
+
 * To retrieve name for form 351: trans('351.name.label');
 
 ## Additional Considerations
