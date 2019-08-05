@@ -378,7 +378,17 @@ class FormController extends Controller
       //todo backend validation
 
       if($this->dataStoreHelper->submitForm($form,$request)){
-          return redirect($form['content']['settings']['confirmation']);
+  		  if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
+	    		redirect($form['content']['settings']['confirmation']);
+		    } else {
+			    print "<div style='padding:3em 4.5em'>";
+				  print "<h2>Please set a Confirmation Page before trying to embed your form.</h2>";
+				  print "<h3>Below is a summary of what you just submitted:</h3>";
+				  foreach ($_POST as $key => $value) {
+					  print $key . " = " . $value . "<br/>";
+				  }
+    			print "</div>";
+		    }
       }
     }
 
