@@ -298,6 +298,14 @@ class ControllerHelper
         if($newFormData['data'] && count($newFormData['data']) > 0){
             $updates['add'] = reset($newFormData['data']);
         }
+        // Look for "name" update
+        if(isset($updates['add']) && isset($updates['remove'])){
+          $updates['rename']['from'] = $updates['remove']['name'];
+          $updates['rename']['to'] = $updates['add']['name'];
+          $updates['rename']['add'] = $updates['add'];
+          unset($updates['remove']);
+          unset($updates['add']);
+        }
         return $updates;
     }
 }
