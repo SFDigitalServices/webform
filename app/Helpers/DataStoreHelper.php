@@ -316,8 +316,7 @@ class DataStoreHelper extends Migration
       }
     }
 
-  /** Insert or update table definition.
-    *
+    /** Insert or update table definition.
     *
     * @param $table
     * @param definitions
