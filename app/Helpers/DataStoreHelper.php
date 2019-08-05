@@ -38,6 +38,8 @@ class DataStoreHelper extends Migration
             if ($definitions) {
                 $class->upsertFields($table, $definitions);
             }
+            // add timestamps
+            $table->timestamps();
             $object = $table;
         });
         // create archive table
@@ -45,6 +47,7 @@ class DataStoreHelper extends Migration
             Schema::create($tablename.'_archive', function ($table) {
                 $table->increments('id');
                 $table->integer('record_id');
+                $table->timestamps();
             });
         }
 

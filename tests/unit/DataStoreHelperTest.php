@@ -37,6 +37,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         $tablename= 'forms_form1';
         $this->dataStoreHelperTester->createFormTable($tablename, $this->definitions);
         $this->assertTrue(Schema::hasTable($tablename));
+        $this->assertTrue(Schema::hasTable($tablename."_archive"));
         $columns = array();
         foreach($this->definitions as $definition){
             array_push($columns, $definition['id']);
@@ -106,7 +107,9 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         $definition = array('email', 'firstname');
         $_fluent = $this->dataStoreHelperTester->dropFormTableColumn($tablename, $definition);
         $this->assertNotTrue(Schema::hasColumns($tablename, array('email')));
+        $this->assertTrue(Schema::hasColumns($tablename."_archive", array('email')));
         $this->assertNotTrue(Schema::hasColumns($tablename, array('firstname')));
+        $this->assertTrue(Schema::hasColumns($tablename."_archive", array('firstname')));
         $this->assertTrue(Schema::hasColumns($tablename, array('lastname')));
     }
 
@@ -163,12 +166,18 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
     protected function _after()
     {
         Schema::dropIfExists('forms_form1');
+        Schema::dropIfExists('forms_form1_archive');
         Schema::dropIfExists('forms_form2');
+        Schema::dropIfExists('forms_form2_archive');
         Schema::dropIfExists('forms_form3');
+        Schema::dropIfExists('forms_form3_archive');
         Schema::dropIfExists('forms_form4');
+        Schema::dropIfExists('forms_form4_archive');
         Schema::dropIfExists('forms_form5');
+        Schema::dropIfExists('forms_form5_archive');
         Schema::dropIfExists('field_mapping');
+        Schema::dropIfExists('field_mapping_archive');
         Schema::dropIfExists('forms_999999');
+        Schema::dropIfExists('forms_999999_archive');
     }
-
-}
+  }
