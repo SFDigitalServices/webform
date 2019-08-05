@@ -61,7 +61,7 @@ LanguageLine::create([
 * To retrieve name for form 351: trans('351.name.label');
 
 ## Additional Considerations
-* Anytime a new field is added or removed from a form, the language_lines should be synced.
-* We will also need to create a string export and add a localization toggle for preview.
+* Anytime a new field is added or removed from a form, or an id is changed, the language_lines should be synced.
+* We will also need to create a full form string export and add a localization toggle for preview.
 * Lumen has a translator package to generate and translate data: https://github.com/jcarrizalez/translator
 * Google translate looks feasible initially but other translation API services may fit better.
