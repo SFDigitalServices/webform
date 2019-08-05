@@ -11,11 +11,13 @@ The Form Builder must be able to present itself in different languages. There mu
 * The easiest solution would leverage Lumen/Laravel localization features out of the box: https://laravel.com/docs/5.8/localization
 * However, because form authors will need a way to input translations through the app, additional work must be done to accomodate more than the template files in laravel
 * Using the Lumen/Laravel default file system with a file uploader might be the easiest solution but instantly becomes more complicated when editing files which also must be formatted in PHP syntax:
-`<?php
+```php
+<?php
 
 return [
     'welcome' => 'Welcome to our application'
-];`
+];
+```
 * A package exists to load and override file translations from the database: https://github.com/spatie/laravel-translation-loader
 
 ## Preliminary Decision Outcome
@@ -25,19 +27,19 @@ return [
 * MVP will only require human translated and pre-translated layers.
 
 ## File Structure
-`
+```
 /resources
     /lang
         /en
             template-name.php
         /es
             template-name.php
-`
+```
 * Template-name would be determined by formType-version, ie: s14-fullName
 
 ## Database
 * Generate a new table named language_lines
-`
+```php
         Schema::create('language_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->string('group');
@@ -46,20 +48,21 @@ return [
             $table->text('text');
             $table->timestamps();
        });
-`
+```
 * Group column will be used as form_id.
 * Key should be field_id and attribute, ie: phone.label.
-`
+```php
 LanguageLine::create([
    'group' => '351',
    'key' => 'name.label',
    'text' => ['en' => 'Name', 'es' => 'Nombre'],
-]);
-`
+]); 
+```
+
 * To retrieve name for form 351: trans('351.name.label');
 
 ## Additional Considerations
-* Anytime a new field is added or removed from a form, the language_lines should be synced.
-* We will also need to create a string export and add a localization toggle for preview.
+* Anytime a new field is added or removed from a form, or an id is changed, the language_lines should be synced.
+* We will also need to create a full form string export and add a localization toggle for preview.
 * Lumen has a translator package to generate and translate data: https://github.com/jcarrizalez/translator
 * Google translate looks feasible initially but other translation API services may fit better.
