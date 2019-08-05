@@ -51,7 +51,7 @@ class DataStoreHelper extends Migration
     * @return string
     */
 
-    public static function deleteFormTable($formId)
+    public function deleteFormTable($formId)
     {
         $tablename = "forms_".$formId;
         Schema::dropIfExists($tablename);
@@ -63,34 +63,6 @@ class DataStoreHelper extends Migration
             return '';
         }
     }
-
-    /** Dropping form table columns
-     *
-     * @param $tablename
-     * @param $definitions
-     *
-     * @return bool
-     */
-    public function dropFormTableColumn($tablename, $definitions)
-    {
-        if($definitions){
-            $_fluent = '';
-            Schema::table($tablename, function($table) use ($definitions, &$_fluent, $tablename)
-            {
-                if (Schema::hasColumns($tablename, $definitions)) {
-                    $_fluent = $table->dropColumn($definitions);
-                    // remove lookup table entries
-                    if ($_fluent) {
-                        $formId= str_replace('forms_', '', $tablename);
-                        DB::table('enum_mappings')->where('form_table_id', '=', $formId)->where('form_field_name', '=', $_fluent['columns'][0])->delete();
-                        return $_fluent;
-                    }
-                }
-            });
-        }
-        return null;
-    }
-
 
    /** Adding form table columns
      *
@@ -162,20 +134,6 @@ class DataStoreHelper extends Migration
         }
     }
 
-    private function findLookupID($key, $formid, $value){
-      $selected = array();
-      $options = DB::table('enum_mappings')
-      ->where([
-          ['form_field_name', '=', "$key"],
-          ['form_table_id', '=', "$formid"]
-      ])->get();
-      foreach ($options as $option) {
-        if( in_array($option->value, $value) )
-          $selected[] = $option->id;
-      }
-      return implode(',',$selected);
-}
-
   /** get submitted form data
     *
     * @param $formid
@@ -246,6 +204,306 @@ class DataStoreHelper extends Migration
       }
       return $results;
 
+    }
+
+    /** Dropping form table columns
+     *
+     * @param $tablename
+     * @param $definitions
+     *
+     * @return bool
+     */
+    public function dropFormTableColumn($tablename, $definitions)
+    {
+        if($definitions){
+            $_fluent = '';
+            Schema::table($tablename, function($table) use ($definitions, &$_fluent, $tablename)
+            {
+                if (Schema::hasColumns($tablename, $definitions)) {
+                    $_fluent = $table->dropColumn($definitions);
+                    // remove lookup table entries
+                    if ($_fluent) {
+                        $formId= str_replace('forms_', '', $tablename);
+                        DB::table('enum_mappings')->where('form_table_id', '=', $formId)->where('form_field_name', '=', $_fluent['columns'][0])->delete();
+                        return $_fluent;
+                    }
+                }
+            });
+        }
+        return null;
+    }
+
+     /** Rename a form table column and lookup table field name
+     *
+     * @param $tablename
+     * @param $definition
+     *
+     * @return array
+     */
+    private function renameFormTableColumn($tablename, $definition)
+    {
+      $form_id = str_replace('forms_','', $tablename);
+      try {
+          Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
+              $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+              // update form field name in lookup table
+              if ($_fluent) {
+                  try {
+                    DB::table('enum_mappings')
+                    ->where([
+                      ['form_table_id', $form_id],
+                      ['form_field_name', $definition['from']]
+                    ])
+                    ->update(['form_field_name' => $definition['to']]);
+
+                  } catch (\Illuminate\Database\QueryException $ex) {
+                      //$ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                      return null;
+                  }
+              }
+          });
+          return (array) $definition['add'];
+      }
+      catch(\Doctrine\DBAL\Schema\SchemaException $ex){
+          return null;
+      }
+    }
+
+    /** Insert or update table definition.
+    *
+    * @param $table
+    * @param definitions
+    *
+    * @return array
+    */
+    private function upsertFields(&$table, $definitions)
+    {
+        $ret = array();
+        if ($definitions) {
+            $class = new DataStoreHelper();
+            foreach ($definitions as $key => $definition) {
+                if (strcmp($key, 'rename') == 0) { //rename the column, $definition holds any additional updates
+                    $definition = $class->renameFormTableColumn($table->getTable(), $definition);
+                } elseif (strcmp($key, 'remove') == 0) {
+                    $ret[] = $class->dropFormTableColumn($table->getTable(), array($definition['name']));
+                    continue;
+                }
+                // if $definition is alter because of renaming the column
+                if ($definition) {
+                    if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
+                        $type = $definition['formtype'];
+                    } else {
+                        $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+                    }
+                    $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+                    switch ($type) {
+                      case 'text':
+                      case 'email':
+                      case 'password':
+                      case 'search':
+                      case 'url':
+                      case 'tel':
+                      case 's02':  //state dropdown
+                      case 's14':  //state dropdown
+                      case 's15':  //state dropdown
+                      case 's16':  //state dropdown
+                      case 'file': //store file path only
+                          $ret[] = $class->createDatabaseFields($table, $definition);
+                          break;
+                      case 'file':
+                      case 's08': //radios
+                      case 's06': //checkbox
+                          $ret[] = $class->createDatabaseEnumFields($table, $definition);
+                          break;
+                      case 'number':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'decimal');
+                          break;
+                      case 'date':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'date');
+                          break;
+                      case 'i14':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'longText');
+                          break;
+                      case 'd04': // Time
+                      case 'time':
+                          $ret[] = $class->createDatabaseFields($table, $definition, 'time');
+                          break;
+                      default:
+                          break;
+                    }
+                }
+            }
+        }
+        return $ret;
+    }
+
+    /** Mapping functions for form fields to database columns.
+    *
+    * @param $table
+    * @param definition
+    * @param $fieldType
+    *
+    * @return array
+    */
+    private function createDatabaseFields(&$table, $definition, $fieldType = 'string')
+    {
+        $ret = array();
+        $tablename = $table->getTable();
+        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
+            $table->$fieldType($definition['name']);
+        }
+        else{
+            if (Schema::hasColumn($tablename, $definition['name'])) {
+                switch($fieldType){
+                    case 'string': $dataType = "varchar(255)"; break;
+                    case 'number': $dataType = "Decimal(10,2)"; break;
+                    case 'longText': $dataType = "LongText"; break;
+                    case 'time': $dataType = "Time"; break;
+                    case 'date': $dataType = "Date"; break;
+                    default: $dataType = "varchar(255)"; break;
+                }
+                $raw_statement = "ALTER TABLE ". $tablename .
+                    " MODIFY ". $definition['name'] . " $dataType ";
+                if (isset($definition['value'])) {
+                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
+                }
+                if (isset($definition['required'])) {
+                    if ($definition['required'] == 'true') {
+                        $raw_statement .= " NOT NULL";
+                    } else {
+                        $raw_statement .= " NULL";
+                    }
+                }
+                try {
+                    DB::statement($raw_statement);
+                }
+                catch(\Illuminate\Database\QueryException $ex){
+                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                }
+            }
+        }
+        return $ret;
+    }
+
+   /** Map Radio buttons and Checkboxes to Database column.
+    * Opted to use a lookup table instead of the data type enum due to DBAL's defect.
+    *
+    * @param $table
+    * @param $definition
+    *
+    * @return array
+    */
+    private function createDatabaseEnumFields(&$table, $definition)
+    {
+        $ret = array();
+        $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
+        $definition['options'] = json_decode($definition['options'], true);
+        $form_id = str_replace('forms_','', $table->getTable());
+        $tablename = $table->getTable();
+        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
+           foreach ($definition['options'] as $key => $value) {
+                $inserted_id = DB::table('enum_mappings')->insertGetId([
+                    'form_table_id' => $form_id,
+                    'form_field_name' => $definition['name'],
+                    'value' => $value,
+                ]);
+            }
+            $table->string($definition['name'],25)->default($inserted_id);
+        }
+        else{
+            //check column, rename not allowed
+            if (Schema::hasColumn($tablename, $definition['name'])) {
+                $raw_statement = "ALTER TABLE ". $tablename .
+                    " MODIFY ". $definition['name'] . " varchar(25) ";
+                if (isset($definition['value'])) { // need to get reference id from lookup table.
+                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
+                }
+                if (isset($definition['required'])) {
+                    if ($definition['required'] == 'true') {
+                        $raw_statement .= " NOT NULL";
+                    } else {
+                        $raw_statement .= " NULL";
+                    }
+                }
+                try {
+                    DB::statement($raw_statement);
+                    //update the options lookup table
+                    $ret = $this->updateLookupTable($definition, $form_id);
+                }
+                catch(\Illuminate\Database\QueryException $ex){
+                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                }
+            }
+        }
+        return $ret;
+    }
+
+
+   /** Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
+    *
+    * @param $definition
+    * @param $form_id
+    *
+    * @return array
+    */
+    private function updateLookupTable($definition, $form_id)
+    {
+        $ret = array();
+        if($form_id && $definition){
+            $results = DB::select('select * from enum_mappings where form_table_id = ? AND form_field_name = ? ', array($form_id, $definition['name']));
+            foreach($results as $result){
+                if(!in_array($result->value, $definition['options'])){
+                  try {
+                      DB::delete('delete from enum_mappings where id = ?', array($result->id));
+                  }
+                  catch(\Illuminate\Database\QueryException $ex){
+                      $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                  }
+                }
+                else{ //if enum_mapping records is in $definitions['options], remove from $definition['option']
+                    if (($key = array_search($result->value, $definition['options'])) !== false) {
+                        unset($definition['options'][$key]);
+                    }
+                }
+            }
+           if (! empty($definition['options'])) {
+                // add record to enum_mappings one at a time, can we batch this?
+                try {
+                    foreach ($definition['options'] as $option) {
+                        if (trim($option) != '') {
+                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                        }
+                    }
+                }
+                catch(\Illuminate\Database\QueryException $ex){
+                  $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+              }
+            }
+        }
+    }
+
+    /** Find a list of lookup table IDs for a given form
+    *
+    * @param $key
+    * @param $formid
+    * @param $value
+    *
+    * @return string
+    */
+    private function findLookupID($key, $formid, $value)
+    {
+        $selected = array();
+        $options = DB::table('enum_mappings')
+      ->where([
+          ['form_field_name', '=', "$key"],
+          ['form_table_id', '=', "$formid"]
+      ])->get();
+        foreach ($options as $option) {
+            if (in_array($option->value, $value)) {
+                $selected[] = $option->id;
+            }
+        }
+        return implode(',', $selected);
     }
     /** Transform columns
      *
@@ -321,204 +579,5 @@ class DataStoreHelper extends Migration
           }
       }
       return $write;
-    }
-
-
-  /** Insert or update table definition.
-    *
-    * @param $table
-    * @param definitions
-    *
-    * @return array
-    */
-    private function upsertFields(&$table, $definitions)
-    {
-        $ret = array();
-        if ($definitions) {
-            $class = new DataStoreHelper();
-            foreach ($definitions as $key => $definition) {
-                if ( strcmp($key, 'remove') == 0 ) {
-                    $ret[] = $class->dropFormTableColumn($table->getTable(), array($definition['name']));
-                } else {
-                    if(isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08') )
-                      $type = $definition['formtype'];
-                    else
-                      $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
-                    $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                    switch ($type) {
-                    case 'text':
-                    case 'email':
-                    case 'password':
-                    case 'search':
-                    case 'url':
-                    case 'tel':
-                    case 's02':  //state dropdown
-                    case 's14':  //state dropdown
-                    case 's15':  //state dropdown
-                    case 's16':  //state dropdown
-                    case 'file': //store file path only
-                        $ret[] = $class->createDatabaseFields($table, $definition);
-                        break;
-                    case 'file':
-                    case 's08': //radios
-                    case 's06': //checkbox
-                        $ret[] = $class->createDatabaseEnumFields($table, $definition);
-                        break;
-                    case 'number':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'decimal');
-                        break;
-                    case 'date':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'date');
-                        break;
-                    case 'i14':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'longText');
-                        break;
-                    case 'd04': // Time
-                    case 'time':
-                        $ret[] = $class->createDatabaseFields($table, $definition, 'time');
-                        break;
-                    default:
-                        break;
-                }
-                }
-            }
-        }
-        return $ret;
-    }
-
-
-  /** Mapping functions for form fields to database columns.
-    *
-    * @param $table
-    * @param definition
-    * @param $fieldType
-    *
-    * @return array
-    */
-    private function createDatabaseFields(&$table, $definition, $fieldType = 'string')
-    {
-        $ret = array();
-        $tablename = $table->getTable();
-        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
-            $table->$fieldType($definition['name']);
-        }
-        else{
-            if (Schema::hasColumn($tablename, $definition['name'])) {
-                switch($fieldType){
-                    case 'string': $dataType = "varchar(255)"; break;
-                    case 'number': $dataType = "Decimal(10,2)"; break;
-                    case 'longText': $dataType = "LongText"; break;
-                    case 'time': $dataType = "Time"; break;
-                    case 'date': $dataType = "Date"; break;
-                    default: $dataType = "varchar(255)"; break;
-                }
-                $raw_statement = "ALTER TABLE ". $tablename .
-                    " MODIFY ". $definition['name'] . " $dataType ";
-                if (isset($definition['value'])) {
-                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
-                }
-                if (isset($definition['required'])) {
-                    if ($definition['required'] == 'true') {
-                        $raw_statement .= " NOT NULL";
-                    } else {
-                        $raw_statement .= " NULL";
-                    }
-                }
-                try {
-                    DB::statement($raw_statement);
-                }
-                catch(\Illuminate\Database\QueryException $ex){
-                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
-                }
-            }
-        }
-        return $ret;
-    }
-
-   /** Map Radio buttons and Checkboxes to Database column.
-    * Opted to use a lookup table instead of the data type enum due to DBAL's defect.
-    *
-    * @param $table
-    * @param $definition
-    *
-    * @return array
-    */
-
-    private function createDatabaseEnumFields(&$table, $definition)
-    {
-        $ret = array();
-        $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
-        $definition['options'] = json_decode($definition['options'], true);
-        $form_id = str_replace('forms_','', $table->getTable());
-        $tablename = $table->getTable();
-        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
-           foreach ($definition['options'] as $key => $value) {
-                $inserted_id = DB::table('enum_mappings')->insertGetId([
-                    'form_table_id' => $form_id,
-                    'form_field_name' => $definition['name'],
-                    'value' => $value,
-                ]);
-            }
-            $table->string($definition['name'],25)->default($inserted_id);
-        }
-        else{
-            //check column, rename not allowed
-            if (Schema::hasColumn($tablename, $definition['name'])) {
-                $raw_statement = "ALTER TABLE ". $tablename .
-                    " MODIFY ". $definition['name'] . " varchar(25) ";
-                if (isset($definition['value'])) { // need to get reference id from lookup table.
-                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
-                }
-                if (isset($definition['required'])) {
-                    if ($definition['required'] == 'true') {
-                        $raw_statement .= " NOT NULL";
-                    } else {
-                        $raw_statement .= " NULL";
-                    }
-                }
-                try {
-                    DB::statement($raw_statement);
-                    //update the options lookup table
-                    $this->updateLookupTable($definition, $form_id);
-                    $ret = array();
-                }
-                catch(\Illuminate\Database\QueryException $ex){
-                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
-                }
-            }
-        }
-        return $ret;
-    }
-
-
-   /** Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
-    *
-    * @param $definition
-    * @param $form_id
-    *
-    * @return void
-    */
-    private function updateLookupTable($definition, $form_id)
-    {
-        if($form_id && $definition){
-            $results = DB::select('select * from enum_mappings where form_table_id = ? AND form_field_name = ? ', array($form_id, $definition['name']));
-            foreach($results as $result){
-                if(!in_array($result->value, $definition['options'])){
-                    DB::delete('delete from enum_mappings where id = ?', array($result->id));
-                }
-                else{ //if enum_mapping records is in $definitions['options], remove from $definition['option']
-                    if (($key = array_search($result->value, $definition['options'])) !== false) {
-                        unset($definition['options'][$key]);
-                    }
-                }
-            }
-           if (! empty($definition['options'])) {
-                // add record to enum_mappings one at a time, can we batch this?
-                foreach ($definition['options'] as $option) {
-                    if(trim($option) != '')
-                        DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
-                }
-            }
-        }
     }
 }
