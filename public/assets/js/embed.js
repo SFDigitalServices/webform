@@ -126,6 +126,7 @@ function initSectional() {
 function phoneIsValid(num) {
 	if (num === '') return false;
 	var phoneNumber = libphonenumber.parsePhoneNumberFromString(num, 'US');
+	if (phoneNumber === undefined) return false;
 	return phoneNumber.isValid() === true ? true : false;
 }
 
