@@ -379,7 +379,8 @@ class FormController extends Controller
 
       if($this->dataStoreHelper->submitForm($form,$request)){
         if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
-          redirect($form['content']['settings']['confirmation']);
+          return redirect()->to($form['content']['settings']['confirmation']);
+          //redirect($form['content']['settings']['confirmation']);
 		    } else {
 			    print "<div style='padding:3em 4.5em'>";
 				  print "<h2>Please set a Confirmation Page before trying to embed your form.</h2>";
