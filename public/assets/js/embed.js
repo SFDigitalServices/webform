@@ -1,4 +1,44 @@
-var lastCalled = {};
+if (typeof libphonenumber === "object") SFDSWFB.postRenderScripts.shift();
+if (typeof jQuery === "function") {
+	if (typeof jQuery().validator === "function") SFDSWFB.preRenderScripts.splice(1, 1);
+	SFDSWFB.preRenderScripts.shift();
+}
+
+SFDSWFB.loadRemainingScripts = function() {
+	if (SFDSWFB.preRenderScripts.length) {
+		SFDSWFB.loadScript('pre', SFDSWFB.loadRemainingScripts);
+	} else {
+		if (SFDSWFB.postRenderScripts.length) {
+			SFDSWFB.loadScript('post', SFDSWFB.loadRemainingScripts);
+		} else {
+			SFDSWFB.lastScript();
+		}
+	}
+}
+
+SFDSWFB.loadScript = function(type, callback) {
+	var scriptArray;
+	if (type == "pre") {
+		scriptArray = SFDSWFB.preRenderScripts;
+	} else if (type == "post") {
+		scriptArray = SFDSWFB.postRenderScripts;
+	}
+	var path = scriptArray[0];
+	var script = document.createElement('script');
+	script.onload = function () {
+		scriptArray.shift();
+		if (type == "pre" && !scriptArray.length) {
+			SFDSWFB.formRender();
+		}
+		callback();
+	};
+	script.src = path;
+	document.head.appendChild(script);
+}
+
+SFDSWFB.loadRemainingScripts();
+SFDSWFB.lastCalled = {};
+
 function callWebhook(populateField, endPoint, ids, responseIndex, method, optionsArray, delimiter, responseOptionsIndex) {
 	//validate endPoint and populateField
 	if (endPoint == "" || populateField == "") {
@@ -19,9 +59,9 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 	}
 	
 	//only call if it's a new endpoint and post combination
-	if (typeof lastCalled[endPoint] == "undefined" || lastCalled[endPoint] != data) {
+	if (typeof SFDSWFB.lastCalled[endPoint] == "undefined" || SFDSWFB.lastCalled[endPoint] != data) {
 		jQuery.post(endPoint, data, function(response) {
-			lastCalled[endPoint] = data;
+			SFDSWFB.lastCalled[endPoint] = data;
 			if (optionsArray) {
 				var options = [];
 				if (delimiter != null && delimiter != "") {
@@ -140,7 +180,7 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
-jQuery(window).on('load', function(){
+SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid($(this).val())) {
 				fieldValid($(this).attr('id'));
@@ -169,4 +209,4 @@ jQuery(window).on('load', function(){
 		}
 	});
 
-});
+}
