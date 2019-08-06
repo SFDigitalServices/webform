@@ -56,7 +56,7 @@ class DataStoreHelper extends Migration
 
    /** Deletes database table for deleted form
     *
-    * @param $tablename
+    * @param $formId
     *
     * @return string
     */
@@ -447,7 +447,9 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
-        $definition['options'] = json_decode($definition['options'], true);
+        if( !is_array($definition['options']) )
+          $definition['options'] = json_decode($definition['options'], true);
+
         $form_id = str_replace('forms_','', $table->getTable());
         $tablename = $table->getTable();
         if ( ! Schema::hasColumn($tablename, $definition['name'])) {
