@@ -20,11 +20,10 @@ class HTMLHelper
      /** Generates form field HTML
      *
      * @param $form
-     * @param $base_url
      *
      * @return HTML
      */
-    public function getHTML($form, $base_url = '')
+    public function getHTML($form)
     {
         $content = $form['content'];
         // form setting (json)
@@ -109,15 +108,15 @@ class HTMLHelper
     *
     * @return string
     */
-  public function wrapJS($form, $base_url = '')
+  public function wrapJS($form, $host = '')
   {
-      $str = $this->getHTML($form, $base_url);
+      $str = $this->getHTML($form, $host);
       $sectional = $this->isSectional($form['content']);
 
       $js = "var SFDSWFB = {};SFDSWFB.preRenderScripts = [" .
 		"'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js', " .
 		"'//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js', " .
-		"'" . $base_url . "/assets/js/error-msgs.js'" .
+		"'//" . $host . "/assets/js/error-msgs.js'" .
 	  "];SFDSWFB.postRenderScripts = [" .
 		"'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js'" .
 	  "];var script = document.createElement('script'); SFDSWFB.formRender = function() {"; //start ready
@@ -265,7 +264,7 @@ class HTMLHelper
               $js .= '});';
           }
       }
-      $js .= "};script.src = '".$base_url."/assets/js/embed.js';document.head.appendChild(script);"; //end ready
+      $js .= "};script.src = '//".$host."/assets/js/embed.js';document.head.appendChild(script);"; //end ready
       return $js;
   }
 
