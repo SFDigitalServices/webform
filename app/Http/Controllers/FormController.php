@@ -308,7 +308,7 @@ class FormController extends Controller
         $form = Form::where('id', $form_id)->first();
 				$form['content'] = $this->controllerHelper->scrubString($form['content']);
         $form['content'] = json_decode($form['content'], true);
-        return $this->htmlHelper->wrapJS($form, $request->getSchemeAndHttpHost());
+        return $this->htmlHelper->wrapJS($form, $request->getHttpHost());
     }
 
 
@@ -324,7 +324,7 @@ class FormController extends Controller
 				$form = Form::where('id', $form_id)->first();
 				$form['content'] = $this->controllerHelper->scrubString($form['content']);
 				$form['content'] = json_decode($form['content'], true);
-        return $this->htmlHelper->getHTML($form, $request->getSchemeAndHttpHost());
+        return $this->htmlHelper->getHTML($form);
     }
 
     /** Deletes a form, removes the form_table
