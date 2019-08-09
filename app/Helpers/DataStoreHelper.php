@@ -38,11 +38,21 @@ class DataStoreHelper extends Migration
             if ($definitions) {
                 $class->upsertFields($table, $definitions);
             }
+            // add timestamps
+            $table->timestamps();
             $object = $table;
         });
+        // create archive table
+        if (Schema::hasTable($tablename)) {
+            Schema::create($tablename.'_archive', function ($table) {
+                $table->increments('id');
+                $table->integer('record_id');
+                $table->timestamps();
+            });
+        }
+
         return $object;
     }
-
 
    /** Deletes database table for deleted form
     *
@@ -62,6 +72,35 @@ class DataStoreHelper extends Migration
         } else {
             return '';
         }
+    }
+
+    /** Dropping form table columns
+     *
+     * @param $tablename
+     * @param $columns
+     *
+     * @return bool
+     */
+    public function dropFormTableColumn($tablename, $columns)
+    {
+        if($columns){
+            $_fluent = '';
+            Schema::table($tablename, function($table) use ($columns, &$_fluent, $tablename)
+            {
+                if (Schema::hasColumns($tablename, $columns)) {
+                    $formId= str_replace('forms_', '', $tablename);
+                    //move deleted column and data to archive
+                    $this->archiveFormTableColumn($formId, $columns);
+                    $_fluent = $table->dropColumn($columns);
+                    // remove lookup table entries
+                    if ($_fluent) {
+                        DB::table('enum_mappings')->where('form_table_id', '=', $formId)->where('form_field_name', '=', $_fluent['columns'][0])->delete();
+                        return $_fluent;
+                    }
+                }
+            });
+        }
+        return null;
     }
 
    /** Adding form table columns
@@ -226,31 +265,42 @@ class DataStoreHelper extends Migration
 
     }
 
-    /** Dropping form table columns
+     /** Archive a form table column
      *
-     * @param $tablename
-     * @param $definitions
+     * @param @formId
+     * @param $columns
      *
      * @return bool
      */
-    public function dropFormTableColumn($tablename, $definitions)
+    private function archiveFormTableColumn($formId, $columns)
     {
-        if($definitions){
-            $_fluent = '';
-            Schema::table($tablename, function($table) use ($definitions, &$_fluent, $tablename)
-            {
-                if (Schema::hasColumns($tablename, $definitions)) {
-                    $_fluent = $table->dropColumn($definitions);
-                    // remove lookup table entries
-                    if ($_fluent) {
-                        $formId= str_replace('forms_', '', $tablename);
-                        DB::table('enum_mappings')->where('form_table_id', '=', $formId)->where('form_field_name', '=', $_fluent['columns'][0])->delete();
-                        return $_fluent;
-                    }
-                }
-            });
+        $tableName = "forms_".$formId;
+        $archiveTableName = $tableName."_archive";
+        // if archive form table exist.
+        if (! Schema::hasTable($archiveTableName)) {
+            // create archive table
+            if (Schema::hasTable($tableName)) {
+                Schema::create($tableName.'_archive', function ($table, $formId) {
+                    $table->increments('id');
+                    $table->integer('record_id');
+                });
+            }
         }
-        return null;
+        foreach ($columns as $column) {
+            $columnType = DB::getSchemaBuilder()->getColumnType($tableName, $column);
+            if (! Schema::hasColumn($archiveTableName, $column)) {
+                Schema::table($archiveTableName, function ($table) use ($column, $columnType) {
+                    $table->$columnType($column);
+                });
+            }
+            try {
+                //get data from forms_$formId
+                $statement = 'INSERT INTO '. $archiveTableName .' ('.$column.', record_id) SELECT '. $column .', id FROM '.$tableName;
+                $data = DB::statement($statement);
+            } catch (\Illuminate\Database\QueryException $ex) {
+                Log::info(print_r($ex, 1));
+            }
+        }
     }
 
      /** Rename a form table column and lookup table field name
@@ -456,7 +506,6 @@ class DataStoreHelper extends Migration
         }
         return $ret;
     }
-
 
    /** Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
     *

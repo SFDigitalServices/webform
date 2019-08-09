@@ -271,12 +271,9 @@ class FormController extends Controller
         $form_id = $request->input('id');
 
         $embedHTML = $this->embedJS($request);
-        return '<!DOCTYPE html><html><head><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>'.
-        '<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js"></script>'.
-        '<script src="https://formbuilder-sf-staging.herokuapp.com/assets/js/error-msgs.js"></script>'.
-		'<script src="https://unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js"></script>'.
-        '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
-        '<link rel="stylesheet" href="https://formbuilder-sf-staging.herokuapp.com/assets/css/form-base.css" />'.
+        return '<!DOCTYPE html><html><head>'.
+        '<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
+        '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-base.css" />'.
         '<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
         '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
     }
@@ -378,16 +375,17 @@ class FormController extends Controller
       //todo backend validation
 
       if($this->dataStoreHelper->submitForm($form,$request)){
-  		  if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
-	    		redirect($form['content']['settings']['confirmation']);
+        if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
+          return redirect()->to($form['content']['settings']['confirmation']);
+          //redirect($form['content']['settings']['confirmation']);
 		    } else {
 			    print "<div style='padding:3em 4.5em'>";
 				  print "<h2>Please set a Confirmation Page before trying to embed your form.</h2>";
 				  print "<h3>Below is a summary of what you just submitted:</h3>";
 				  foreach ($_POST as $key => $value) {
 					  print $key . " = " . $value . "<br/>";
-				  }
-    			print "</div>";
+          }
+          print "</div>";
 		    }
       }
     }
