@@ -47,6 +47,7 @@ $router->group(['prefix' => 'form'], function($router) {
 
 $router->group(['prefix' => 'api'], function($router) {
     $router->post('getFormData', ['as' => 'getFormData', 'uses' => 'APIController@getFormData']);
+    $router->post('getArchivedFormData', ['as' => 'getArchivedFormData', 'uses' => 'APIController@getArchivedFormData']);
     $router->post('getFormSchema', ['as' => 'getFormSchema', 'uses' => 'APIController@getFormSchema']);
     $router->post('getLookupTable', ['as' => 'getLookupTable', 'uses' => 'APIController@getLookupTable']);
 });
