@@ -39,7 +39,8 @@ class DataStoreHelper extends Migration
                 $class->upsertFields($table, $definitions);
             }
             // add timestamps
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
             $object = $table;
         });
         // create archive table
@@ -47,7 +48,8 @@ class DataStoreHelper extends Migration
             Schema::create($tablename.'_archive', function ($table) {
                 $table->increments('id');
                 $table->integer('record_id');
-                $table->timestamps();
+                $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
+                $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
             });
         }
 
