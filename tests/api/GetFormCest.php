@@ -97,4 +97,17 @@ class GetFormCest
 
       $response = json_decode($I->grabResponse());
     }
+
+    public function testGetArchivedFormData(\ApiTester $I){
+      $params = [
+        'formid' => $this->formid,
+      ];
+      $I->haveHttpHeader('authorization', 'Bearer '. $this->apikey);
+      $I->haveHttpHeader('Content-Type', 'application/x-www-form-urlencoded');
+      $I->sendPOST('/api/getArchivedFormData', $params);
+      $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK); // 200
+      $I->seeResponseIsJson();
+
+      $response = json_decode($I->grabResponse());
+    }
 }

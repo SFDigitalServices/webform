@@ -191,7 +191,27 @@ class DataStoreHelper extends Migration
       }
       return $results;
     }
-  /** get submitted form column names
+
+    /** get archived form data
+    *
+    * @param $formid
+    *
+    * @return array
+    */
+    public function getArchivedFormData($formid)
+    {
+      try {
+          $tablename = "forms_" . $formid. "_archive";
+          $results = DB::table($tablename)
+                      ->orderBy($tablename.'.id', 'asc')
+                      ->get();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        $results = ['status' => 0, 'message' => $ex->getMessage()];
+      }
+      return $results;
+    }
+
+    /** get submitted form column names
     *
     * @param $formid
     *
@@ -305,7 +325,6 @@ class DataStoreHelper extends Migration
                       ['form_field_name', $definition['from']]
                     ])
                     ->update(['form_field_name' => $definition['to']]);
-
                   } catch (\Illuminate\Database\QueryException $ex) {
                       //$ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
                       return null;

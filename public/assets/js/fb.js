@@ -1402,11 +1402,6 @@ function embedCode (id) {
 
   var str = '<!-- If possible, place the following in your <head> tag. -->' +
 	'\n' +
-	'<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>\n' +
-	'<script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js"></script>\n' +
-	'<script src="' + assetsUrl + 'js/error-msgs.js"></script>' +
-	'<script src="https://unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js"></script>\n' +
-	'\n' +
 	'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />\n' +
 	'<link rel="stylesheet" href="' + assetsUrl + 'css/form-base.css" />\n' +
 	'\n' +
