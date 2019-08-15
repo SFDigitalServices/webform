@@ -112,29 +112,11 @@ class FormController extends Controller
             $returnForm->save();
             //update form table
             $definitions = json_decode($returnForm['content'], true);
-            //if (isset($definitions['settings']['backend']) && $definitions['settings']['backend'] == "csv") {
-                //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
-                /*if (!empty($definitions['data'])) {
-                    $count = count($definitions['data']);
-                    for ($i = 0; $i < $count; $i++) {
-                        if (! isset($definitions['data'][$i]['name'])) {
-                            $definitions['data'][$i]['name'] = $definitions['data'][$i]['id'];
-                        }
-                    }
-                }
-                if (!empty($previousContent['data'])) {
-                    $count = count($previousContent['data']);
-                    for ($i = 0; $i < $count; $i++) {
-                        if (! isset($previousContent['data'][$i]['name'])) {
-                            $previousContent['data'][$i]['name'] = $previousContent['data'][$i]['id'];
-                        }
-                    }
-                }*/
-                $updated_table = $this->dataStoreHelper->saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
-                if (isset($updated_table['status']) && $updated_table['status'] == 0) {
-                    return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
-                }
-            //}
+
+            $updated_table = $this->dataStoreHelper->saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
+            if (isset($updated_table['status']) && $updated_table['status'] == 0) {
+                return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
+            }
         }
         return response()->json($returnForm);
     }
