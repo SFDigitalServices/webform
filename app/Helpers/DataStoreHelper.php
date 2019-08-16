@@ -66,13 +66,14 @@ class DataStoreHelper extends Migration
     public function deleteFormTable($formId)
     {
         $tablename = "forms_".$formId;
-        Schema::dropIfExists($tablename);
-        if (! Schema::hasTable($tablename)) {
-            // remove entries in enum_mappings
-            DB::table('enum_mappings')->where('form_table_id', '=', $formId)->delete();
-            return $tablename;
-        } else {
-            return '';
+        if ($this->archiveFormTable($formId)) {
+            Schema::dropIfExists($tablename);
+            if (! Schema::hasTable($tablename)) {
+                // remove entries in enum_mappings
+                return $tablename;
+            } else {
+                return '';
+            }
         }
     }
 
@@ -267,6 +268,21 @@ class DataStoreHelper extends Migration
 
     }
 
+    /** Archive a form table
+     *
+     * @param @formId
+     *
+     * @return bool
+     */
+    private function archiveFormTable($formId)
+    {
+      // archive array of column names
+      $columns = Schema::getColumnListing("forms_".$formId);
+      if (count($columns) > 2 ) {
+          return $this->archiveFormTableColumn($formId, $columns);
+      }
+      return false;
+    }
      /** Archive a form table column
      *
      * @param @formId
@@ -285,24 +301,40 @@ class DataStoreHelper extends Migration
                 Schema::create($tableName.'_archive', function ($table, $formId) {
                     $table->increments('id');
                     $table->integer('record_id');
+                    $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
+                    $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
                 });
             }
         }
+        $archiveColumns = array();
         foreach ($columns as $column) {
+            // skip id and timestamps
+            if (in_array($column, array('id', 'created_at', 'updated_at'))) {
+                continue;
+            }
             $columnType = DB::getSchemaBuilder()->getColumnType($tableName, $column);
             if (! Schema::hasColumn($archiveTableName, $column)) {
                 Schema::table($archiveTableName, function ($table) use ($column, $columnType) {
                     $table->$columnType($column);
                 });
             }
-            try {
-                //get data from forms_$formId
-                $statement = 'INSERT INTO '. $archiveTableName .' ('.$column.', record_id) SELECT '. $column .', id FROM '.$tableName;
-                $data = DB::statement($statement);
-            } catch (\Illuminate\Database\QueryException $ex) {
-                Log::info(print_r($ex, 1));
-            }
+            $archiveColumns[] = $column;
         }
+        try {
+            //get data from forms_$formId
+            $statement = 'INSERT INTO '. $archiveTableName .' ('.implode(',', $archiveColumns) .', record_id) SELECT '. implode(',', $archiveColumns) .', id FROM '.$tableName;
+            $where = ' WHERE ';
+            foreach ($archiveColumns as $w) {
+                $where .= $w . " != '' AND ";
+            }
+            $where = preg_replace('/AND\s$/', '', $where);
+            $statement .= $where;
+            $data = DB::statement($statement);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            Log::info(print_r($ex->getSql(), 1));
+            return false;
+        }
+        return true;
     }
 
      /** Rename a form table column and lookup table field name
