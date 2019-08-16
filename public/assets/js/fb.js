@@ -1000,7 +1000,7 @@ function timeToAddSubmitButton (saved) {
   return saved.data.length == 1
 }
 function addSubmitButton (saved) {
-  saved.data.push({ 'button': 'Submit', 'id': 'submit', 'formtype': 'm14', 'color': 'btn-primary' })
+  saved.data.push({ 'button': 'Submit', 'id': 'submit', 'formtype': 'm14', 'name': 'submit', 'color': 'btn-primary' })
   return saved
 }
 function isUnique (value, index, type) {
