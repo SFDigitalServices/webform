@@ -13,11 +13,6 @@ exports.config = {
       }
     }
   },
-  multiple: {
-    parallel: {
-      chunks: 2
-    }
-  },
   include: {
     I: './steps_file.js',
     loginPage: './pages/login.js'
