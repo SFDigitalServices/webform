@@ -1,12 +1,13 @@
+
 exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
       url: process.env.CODECEPT_URL || 'http://localhost',
-      "show": false,
-      "chrome": {
-        "headless": true,
-        "args":[
+      'show': false,
+      'chrome': {
+        'headless': true,
+        'args': [
           '--no-sandbox'
         ]
       }
@@ -30,5 +31,5 @@ exports.config = {
     }
   },
   tests: './*_test.js',
-  name: 'tests',
+  name: 'tests'
 }
