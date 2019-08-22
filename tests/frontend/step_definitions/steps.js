@@ -1,9 +1,7 @@
-//const CONFIG = require('my.config.js').myConfig;
 
+const assert = require('assert');
 const loginPage = require('../pages/login');
 const I = actor();
-
-// Add in your custom step files
 
 // you can provide RegEx to match corresponding steps
   Given(/I have a formbuilder account/, () => {
@@ -12,7 +10,7 @@ const I = actor();
 
 // or a simple string
 When('I logged into the my account', () => {
-  loginPage.sendForm('johndoe@example.com','johndoe');
+  loginPage.login('johndoe@example.com','johndoe');
 });
 
 // parameters are passed in via Cucumber expressions
