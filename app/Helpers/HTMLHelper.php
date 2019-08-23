@@ -798,28 +798,39 @@ class HTMLHelper
   */
   public function getCheckboxConditionalStatement($value1, $op, $value2)
   {
-     if (!$op) {
-          return "";
-      }
-	  if ($op == "matches") {
-		  $output = "jQuery('".$value1."[value=".$value2."]').length";
-	  } elseif ($op == "doesn&amp;apos;t match") {
-		  $output = "jQuery('".$value1."[value=".$value2."]').length === 0";
-	  } elseif ($op == "is less than") { // will only check the first match, not sure how it would work with multiple
-		  $output = "jQuery('".$value1."').val() < ".$value2;
-	  } elseif ($op == "is more than") { // will only check the first match, not sure how it would work with mutiple
-		  $output = "jQuery('".$value1."').val() > ".$value2;
-	  } elseif ($op == "contains anything") {
-		  $output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) != ''";
-	  } elseif ($op == "is blank") {
-		  $output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) == ''";
-	  } elseif ($op == "contains") {
-		  $output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) != -1";
-      } elseif ($op == "doesn&amp;apos;t contain") {
-		  $output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) == -1";
-      } else {
-          $output = $value1." ".$op." '".$value2."'";
-      }
-      return $output;
+		$op = str_replace("&amp;apos;", "'", $op); //just in case apostrophe is encoded
+		switch ($op) {
+			case "":
+				$output = "";
+				break;
+			case "matches":
+				$output = "jQuery('".$value1."[value=".$value2."]').length";
+				break;
+			case "doesn't match":
+				$output = "jQuery('".$value1."[value=".$value2."]').length === 0";
+				break;
+			case "is less than": // will only check the first match, not sure how it would work with multiple
+				$output = "jQuery('".$value1."').val() < ".$value2;
+				break;
+			case "is more than": // will only check the first match, not sure how it would work with mutiple
+				$output = "jQuery('".$value1."').val() > ".$value2;
+				break;
+			case "contains anything":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) != ''";
+				break;
+			case "is blank":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) == ''";
+				break;
+			case "contains":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) != -1";
+				break;
+			case "doesn't contain":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) == -1";
+				break;
+			default:
+				$output = $value1." ".$op." '".$value2."'";
+				break;
+		}
+		return $output;
   }
 }
