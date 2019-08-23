@@ -13,10 +13,9 @@ When('I logged into the my account', () => {
   loginPage.login('johndoe@example.com','johndoe');
 });
 
-// parameters are passed in via Cucumber expressions
 Then('I should see all my forms', () => {
-  I.see("Welcome back");
-});
+  I.see('Welcome back')
+})
 Then('I should be able to create new forms', () => {
   I.see('Create a New Form');
 });
