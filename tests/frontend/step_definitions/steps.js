@@ -8,14 +8,21 @@ const I = actor();
   I.amOnPage(process.env.CODECEPT_URL || 'http://localhost');
 });
 
-// or a simple string
+// Basic Feature
 When('I logged into the my account', () => {
   loginPage.login('johndoe@example.com','johndoe');
+  I.wait(3);
 });
 
 Then('I should see all my forms', () => {
   I.see('Welcome back')
+  I.wait(2)
 })
 Then('I should be able to create new forms', () => {
   I.see('Create a New Form');
 });
+Then('I should be able to logout', () => {
+  I.click('Sign Out')
+  I.wait(2)
+  I.seeElement('#login-form')
+})

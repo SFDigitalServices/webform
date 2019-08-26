@@ -3,12 +3,10 @@ Feature: delete form
   As a formbuilder user
   I need an existing form
 
- Background:
-    Given I am logged in as formbuilder user
-    And I open dashboard page
-
   Scenario:
     Given I clicked into an existing form
     When I click the delete icon
+    Then I should see confirmation popup
+    When I click Do It
     Then I should be redirected back to the dashboard
     And I should not see the deleted form

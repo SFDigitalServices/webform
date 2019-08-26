@@ -4,7 +4,6 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: process.env.CODECEPT_URL || 'http://localhost',
-      'show': false,
       'chrome': {
         'headless': true,
         'args': [
@@ -14,6 +13,7 @@ exports.config = {
       restart: false,
       windowSize: '1600x1200',
       show: false,
+      keepBrowserState: true
     },
     REST: {},
   },
@@ -27,6 +27,7 @@ exports.config = {
     Smth: './pages/Smth.js',
     loginPage: './pages/Login.js',
     signinFragment: './fragments/Signin.js',
+    fieldContent: './pages/fieldContent.js',
   },
   mocha: {},
   bootstrap: './bootstrap.js',
@@ -36,6 +37,7 @@ exports.config = {
     features: './features/*.feature',
     steps: [
       './step_definitions/steps.js',
+      './step_definitions/all_steps.js',
     ],
   },
   plugins: {
