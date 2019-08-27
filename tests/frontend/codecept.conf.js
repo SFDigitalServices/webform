@@ -15,11 +15,6 @@ exports.config = {
     },
     REST: {},
   },
-  multiple: {
-    parallel: {
-      chunks: 2
-    }
-  },
   include: {
     I: './custom_steps.js',
     Smth: './pages/Smth.js',

@@ -1,23 +1,11 @@
-'use strict';
-
-let I;
+const I = actor();
 
 module.exports = {
-
-  // insert your locators and methods here
-  _init() {
-    I = actor();
+  login(email, password) {
+    I.fillField('email', 'johndoe@example.com');
+    I.fillField('password', 'johndoe');
+    I.click('Continue');
   },
+};
 
-  fields: {
-    email: 'email',
-    password: 'password'
-  },
-  submitButton: 'Continue',
-
-  sendForm(email, password) {
-    I.fillField(this.fields.email, email);
-    I.fillField(this.fields.password, password);
-    I.click(this.submitButton);
-  }
-}
+Object.setPrototypeOf(module.exports, class Login {}.prototype);

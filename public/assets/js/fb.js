@@ -919,30 +919,31 @@ function loadForm () {
         $(newSection).attr('data-match', saved.data[i][key])
       } else if (key != 'formtype') {
         if (key == 'checkboxes') {
-          var checkboxes = saved.data[i][key]
-          var value = '\n<!-- Multiple Checkboxes -->'
+          var checkboxes = saved.data[i][key].split("\n");;
+          var value = '<!-- Multiple Checkboxes -->'
           $.each(checkboxes, function (i, e) {
-					  if (e.length > 0) {
-              value += '\n<label class="checkbox">\n<input type="checkbox" value="' + e + '">\n' + e + '\n</label>'
+					  if (e.trim().length > 0) {
+              value += '<label class="checkbox">\n<input type="checkbox" value="' + e + '">' + e + '</label>'
 					  }
           })
+		  //value += checkboxes
           value += '\n  '
           $(newSection).find("[data-valtype='" + key + "']").html(value)
         } else if (key == 'radios') {
-          var radios = saved.data[i][key]
+          var radios = saved.data[i][key].split("\n");
 				    var value = '<!--  Multiple Radios -->'
 				    $.each(radios, function (i, e) {
-					    if (e.length > 0) {
+					    if (e.trim().length > 0) {
               value += '<label class="radio"><input type="radio" value="' + e + '">' + e + '</label>'
 					    }
           })
           $(newSection).find("[data-valtype='" + key + "']").html(value)
         } else if (key == 'option') {
           // console.log(saved.data[i][key]);
-				    var options = saved.data[i][key]
+				    var options = saved.data[i][key].split("\n");
 				    var value = '\n<!-- Select Basic -->'
 				    $.each(options, function (i, e) {
-					    if (e.length > 0) {
+					    if (e.trim().length > 0) {
               value += '\n<option value="' + e + '">' + e + '</option>'
 					    }
           })
