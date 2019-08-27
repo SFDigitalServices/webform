@@ -2,8 +2,8 @@
 exports.config = {
   output: './output',
   helpers: {
-    Puppeteer: {
-      url: process.env.CODECEPT_URL || 'http://localhost',
+    /*Puppeteer: {
+      url: process.env.CODECEPT_URL || 'https://webform.test',
       'chrome': {
         'headless': true,
         'args': [
@@ -14,6 +14,18 @@ exports.config = {
       windowSize: '1600x1200',
       show: false,
       keepBrowserState: true
+    },*/
+    Puppeteer: {
+      url: process.env.CODECEPT_URL || 'https://webform.test',
+      browser: 'chrome',
+      restart: false,
+      defaultViewport: {
+        width: 1600,
+        height: 1200,
+      },
+      slowMo: 1000,
+      windowSize: '1600x1200',
+      show: true,
     },
     REST: {},
   },

@@ -41,7 +41,7 @@ Then('I should see my form on the dashboard', () => {
   I.click('SF Digital Services Logo')
   I.wait(1)
   I.see('TESTING FORM CREATION')
-  I.wait(2)
+  I.wait(10)
 })
 
 // Modify Form Feature
@@ -65,7 +65,9 @@ Then('I should be able modify the attributes', () => {
   I.click('OK')
   I.wait(1)
   I.see('Form Saved')
+  I.wait(10)
 })
+
 // Clone Form Feature
 Given(/I clicked into an existing form/, () => {
   I.click('.forms > a')
@@ -82,6 +84,7 @@ Then('I should be redirected back to the dashboard', () => {
 })
 Then('I should see the cloned form', () => {
   I.see('Clone of TESTING FORM CREATION')
+  I.wait(10)
 })
 
 // Preview Form Feature
@@ -102,6 +105,7 @@ Then('I should see a new window with rendered html', () => {
   I.seeElement('#SFDSWFB-legend')
   I.wait(3)
   I.closeCurrentTab()
+  I.wait(10)
 })
 
 // Submit Form Feature
@@ -131,6 +135,7 @@ Then('I should be redirected to a confirmation page', () => {
   I.seeInCurrentUrl('/thank-you');
   I.wait(2)
   I.closeCurrentTab();
+  I.wait(10)
 })
 
 // Delete Form Feature
@@ -155,4 +160,5 @@ Then('I should be redirected back to the dashboard', () => {
 })
 Then('I should not see the deleted form', () => {
   I.dontSee('TESTING FORM CREATION')
+  I.wait(10)
 })
