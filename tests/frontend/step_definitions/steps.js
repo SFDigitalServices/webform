@@ -1,18 +1,21 @@
-// const CONFIG = require('my.config.js').myConfig;
+const assert = require('assert');
+const loginPage = require('../pages/login');
+const I = actor();
 
-const loginPage = require('../pages/login')
-const I = actor()
+// you can provide RegEx to match corresponding steps
+  Given(/I have a formbuilder account/, () => {
+  I.amOnPage(process.env.CODECEPT_URL || 'http://localhost');
+});
 
-// Basic Feature, you can provide RegEx to match corresponding steps
-Given(/I have a formbuilder account/, () => {
-  I.amOnPage(process.env.CODECEPT_URL || 'http://localhost')
-})
+// or a simple string
 When('I logged into the my account', () => {
-  loginPage.sendForm('johndoe@example.com', 'johndoe')
-})
+  loginPage.login('johndoe@example.com','johndoe');
+});
+
+// parameters are passed in via Cucumber expressions
 Then('I should see all my forms', () => {
   I.see('Welcome back')
 })
 Then('I should be able to create new forms', () => {
-  I.see('Create a New Form')
-})
+  I.see('Create a New Form');
+});
