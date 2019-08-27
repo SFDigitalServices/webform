@@ -81,7 +81,56 @@ Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should see the cloned form', () => {
-  I.see('Clone of My Form')
+  I.see('Clone of TESTING FORM CREATION')
+})
+
+// Preview Form Feature
+Given(/I have an existing form/, () => {
+  I.click('.forms > a')
+  I.wait(1)
+})
+When('I click on the Preview button', () => {
+  I.click('#SFDSWFB-sourcetab')
+  I.see('Preview Form')
+  I.wait(1)
+  I.click( locate('#SFDSWFB-6 div').at(2) );
+  I.wait(3)
+  I.switchToNextTab(1)
+})
+Then('I should see a new window with rendered html', () => {
+  I.seeElement('#SFDSWF-Container')
+  I.seeElement('#SFDSWFB-legend')
+  I.wait(3)
+  I.closeCurrentTab()
+})
+
+// Submit Form Feature
+Given(/I navigate to a published form/, () => {
+  I.click('.forms > a')
+  I.wait(1)
+  I.click('Settings')
+  I.checkOption('I want to create a Webform Buider CSV database')
+  I.wait(1)
+  I.fillField('confirmation', 'https://digitalservices.sfgov.org/thank-you')
+  I.wait(2)
+  I.click('#SFDSWFB-sourcetab')
+  I.see('Preview Form')
+  I.wait(1)
+  I.click( locate('#SFDSWFB-6 div').at(2) );
+  I.wait(3)
+  I.switchToNextTab(1)
+})
+When('I filled out all required fields and click submit', () => {
+  I.fillField('name', 'TEST NAME')
+  I.fillField('email', 'TESTEMAIL@sf.gov')
+  I.wait(2)
+  I.click('#submit')
+})
+Then('I should be redirected to a confirmation page', () => {
+  I.wait(2)
+  I.seeInCurrentUrl('/thank-you');
+  I.wait(2)
+  I.closeCurrentTab();
 })
 
 // Delete Form Feature
@@ -105,53 +154,5 @@ Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should not see the deleted form', () => {
-  I.see('My Form')
-})
-
-// Preview Form Feature
-Given(/I have an existing form/, () => {
-  I.click('.forms > a')
-  I.wait(1)
-})
-When('I click on the Preview button', () => {
-  I.click('#SFDSWFB-sourcetab')
-  I.see('Preview Form')
-  I.wait(1)
-  I.click( locate('#SFDSWFB-6 div').at(2) );
-  I.wait(5)
-  I.switchToNextTab(1)
-})
-Then('I should see a new window with rendered html', () => {
-  I.seeElement('#SFDSWF-Container')
-  I.seeElement('#SFDSWFB-legend')
-  I.wait(3)
-  I.closeCurrentTab()
-})
-
-// Submit Form Feature
-Given(/I navigate to a published form/, () => {
-  I.click('.forms > a')
-  I.wait(1)
-  I.click('Settings')
-  I.checkOption('I want to create a Webform Buider CSV database')
-  I.wait(1)
-  I.fillField('confirmation', 'https://digitalservices.sfgov.org/thank-you')
-  I.wait(2)
-  I.click('#SFDSWFB-sourcetab')
-  I.see('Preview Form')
-  I.wait(1)
-  I.click( locate('#SFDSWFB-6 div').at(2) );
-  I.wait(5)
-  I.switchToNextTab(1)
-})
-When('I filled out all required fields and click submit', () => {
-  I.fillField('name', 'TEST NAME')
-  I.fillField('email', 'TESTEMAIL@sf.gov')
-  I.wait(2)
-  I.click('#submit')
-})
-Then('I should be redirected to a confirmation page', () => {
-  I.wait(2)
-  I.seeInCurrentUrl('/thank-you');
-  I.wait(2)
+  I.dontSee('TESTING FORM CREATION')
 })
