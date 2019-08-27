@@ -1463,7 +1463,7 @@ function loadContent (id) {
       $('#welcome').modal()
     } else {
       // return content
-      $('#SFDSWFB-load').html(JSON.stringify(allForms[id].content))
+      $('#SFDSWFB-load').val(JSON.stringify(allForms[id].content))
       formId = id
       if (history.state == undefined) history.pushState({ formId: id }, null, '/home?id=' + id)
       var submitUrl = new URL('/form/submit', window.location.href)
