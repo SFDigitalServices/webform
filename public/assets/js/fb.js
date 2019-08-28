@@ -1452,7 +1452,7 @@ function loadContent (id) {
     if (id == undefined) {
       if (history.state == undefined) history.pushState({ formId: 0 }, null, '/home?new')
       formId = 0
-      $('#SFDSWFB-load').html('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}')
+      $('#SFDSWFB-load').val('{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}')
       $('#SFDSWFB-snippet').text('Save your form to get embed code')
       $('#SFDSWFB-source').val('')
       $('#SFDSWFB-7 input:not([type=radio])').val('')
@@ -1463,7 +1463,7 @@ function loadContent (id) {
       $('#welcome').modal()
     } else {
       // return content
-      $('#SFDSWFB-load').html(JSON.stringify(allForms[id].content))
+      $('#SFDSWFB-load').val(JSON.stringify(allForms[id].content))
       formId = id
       if (history.state == undefined) history.pushState({ formId: id }, null, '/home?id=' + id)
       var submitUrl = new URL('/form/submit', window.location.href)
