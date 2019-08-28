@@ -3,10 +3,6 @@ Feature: preview form
   As a formbuilder user
   I want to be able preview a form
 
-  Background:
-    Given I am logged in as formbuilder user
-    And I open dashboard page
-
   Scenario:
     Given I have an existing form
     When I click on the Preview button

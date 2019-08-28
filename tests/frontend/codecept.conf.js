@@ -1,25 +1,31 @@
+
 exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
       url: process.env.CODECEPT_URL || 'http://localhost',
-      "chrome": {
-        "headless": true,
-        "args":[
+      'chrome': {
+        'headless': true,
+        'args': [
           '--no-sandbox'
         ]
       },
       restart: false,
       windowSize: '1600x1200',
       show: false,
+      keepBrowserState: true
     },
     REST: {},
   },
+  multiple: {
+    parallel: {
+      chunks: 2
+    }
+  },
   include: {
     I: './custom_steps.js',
-    Smth: './pages/Smth.js',
     loginPage: './pages/Login.js',
-    signinFragment: './fragments/Signin.js',
+    fieldContent: './pages/fieldContent.js',
   },
   mocha: {},
   bootstrap: './bootstrap.js',
@@ -29,6 +35,7 @@ exports.config = {
     features: './features/*.feature',
     steps: [
       './step_definitions/steps.js',
+      './step_definitions/all_steps.js',
     ],
   },
   plugins: {
