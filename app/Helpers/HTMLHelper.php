@@ -211,7 +211,11 @@ class HTMLHelper
                   if (!in_array($condition['id'], $conditionIds)) {
                       $conditionIds[] = $condition['id'];
                   }
-                  $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
+				  if ($formtypes[$condition['id']] == "s06") { //exception case for checkboxes because they have multiple inputs per name
+					$conditionSts[] = $this->getCheckboxConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val']);
+				  } else {
+					$conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
+				  }
               }
               if ($fld['allAny']) {
                   //group multiple conditions
@@ -782,5 +786,51 @@ class HTMLHelper
           $output = $value1." ".$op." '".$value2."'";
       }
       return $output;
+  }
+  
+    /** Formats checkbox conditionals
+    *
+    * @param $value1
+    * @param $op
+    * @param $value2
+    *
+    * @return strings
+  */
+  public function getCheckboxConditionalStatement($value1, $op, $value2)
+  {
+		$op = str_replace("&amp;apos;", "'", $op); //just in case apostrophe is encoded
+		switch ($op) {
+			case "":
+				$output = "";
+				break;
+			case "matches":
+				$output = "jQuery('".$value1."[value=".$value2."]').length";
+				break;
+			case "doesn't match":
+				$output = "jQuery('".$value1."[value=".$value2."]').length === 0";
+				break;
+			case "is less than": // will only check the first match, not sure how it would work with multiple
+				$output = "jQuery('".$value1."').val() < ".$value2;
+				break;
+			case "is more than": // will only check the first match, not sure how it would work with mutiple
+				$output = "jQuery('".$value1."').val() > ".$value2;
+				break;
+			case "contains anything":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) != ''";
+				break;
+			case "is blank":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) == ''";
+				break;
+			case "contains":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) != -1";
+				break;
+			case "doesn't contain":
+				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) == -1";
+				break;
+			default:
+				$output = $value1." ".$op." '".$value2."'";
+				break;
+		}
+		return $output;
   }
 }
