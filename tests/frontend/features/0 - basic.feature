@@ -8,3 +8,4 @@ Feature: Business rules
     When I logged into the my account
     Then I should see all my forms
     And I should be able to create new forms
+    And I should be able to logout
