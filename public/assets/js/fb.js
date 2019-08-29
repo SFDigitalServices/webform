@@ -930,7 +930,7 @@ function loadForm () {
           value += '\n  '
           $(newSection).find("[data-valtype='" + key + "']").html(value)
         } else if (key == 'radios') {
-          var radios = saved.data[i][key].split("\n");
+		  var radios = typeof saved.data[i][key] === "string" ? saved.data[i][key].split("\n") : saved.data[i][key]
 				    var value = '<!--  Multiple Radios -->'
 				    $.each(radios, function (i, e) {
 					    if (e.trim().length > 0) {
@@ -940,7 +940,7 @@ function loadForm () {
           $(newSection).find("[data-valtype='" + key + "']").html(value)
         } else if (key == 'option') {
           // console.log(saved.data[i][key]);
-				    var options = saved.data[i][key].split("\n");
+		  var options = typeof saved.data[i][key] === "string" ? saved.data[i][key].split("\n") : saved.data[i][key]
 				    var value = '\n<!-- Select Basic -->'
 				    $.each(options, function (i, e) {
 					    if (e.trim().length > 0) {
