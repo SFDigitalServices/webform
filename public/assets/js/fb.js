@@ -919,7 +919,7 @@ function loadForm () {
         $(newSection).attr('data-match', saved.data[i][key])
       } else if (key != 'formtype') {
         if (key == 'checkboxes') {
-		  var checkboxes = typeof saved.data[i][key] === "string" ? saved.data[i][key].split("\n") : saved.data[i][key
+		  var checkboxes = typeof saved.data[i][key] === "string" ? saved.data[i][key].split("\n") : saved.data[i][key]
           var value = '<!-- Multiple Checkboxes -->'
           $.each(checkboxes, function (i, e) {
 					  if (e.trim().length > 0) {
