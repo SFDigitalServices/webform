@@ -3,6 +3,7 @@ namespace App\Helpers;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Migrations\Migration;
 use Log;
 use DB;
@@ -35,6 +36,8 @@ class DataStoreHelper extends Migration
         $object = null;
         Schema::create($tablename, function ($table) use ($tablename, $definitions, $class, &$object) {
             $table->increments('id');
+            $table->string('status')->default('completed');
+            $table->string('magiclink');
             if ($definitions) {
                 $class->upsertFields($table, $definitions);
             }
@@ -137,17 +140,51 @@ class DataStoreHelper extends Migration
     *
     * @param $form
     * @param $request
+    * @param $type
     *
-    * @return boolean
+    * @return string
     */
-    public function submitForm($form, $request)
+    public function submitForm($form, $request, $type = 'complete')
     {
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
-            $this->insertFormData($write['db'], $form['id']);
-            return true;
+            // if the magic link is clicked for the partially completed form, remove the record first.
+            if ($request->input('magiclink') ) {
+                DB::table('forms_'.$form['id'])->where('magiclink', '=', $request->input('magiclink'))->delete();
+            }
+            $id = $this->insertFormData($write['db'], $form['id']);
+            // update status if form is partially completed
+            if ($id) {
+              if ($type === 'partial') {
+                  if ($request->input('secretPassword')) {
+                      $magiclink = Hash::make($request->input('secretPassword'));
+                  } else {
+                      $magiclink = Hash::make(time());
+                  }
+                  try {
+                      DB::table('forms_'.$form['id'])
+                        ->where('id', $id)
+                        ->update(['status' => 'partial', 'magiclink' => $magiclink]);
+                  } catch (\Illuminate\Database\QueryException $ex) {
+                      $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
+                      return "";
+                  }
+              }
+              else{
+                try {
+                  DB::table('forms_'.$form['id'])
+                    ->where('id', $id)
+                    ->update(['status' => 'complete']);
+                } catch (\Illuminate\Database\QueryException $ex) {
+                  $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
+                  return "";
+                }
+                $magiclink = "true";
+              }
+            }
+            return $magiclink;
         }
-        return false;
+        return "";
     }
 
    /** Inserts submitted form data into the form table
@@ -155,10 +192,11 @@ class DataStoreHelper extends Migration
     * @param $content
     * @param $formid
     *
-    * @return void
+    * @return integer
     */
     public function insertFormData($content, $formid)
     {
+        $id = 0;
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
             foreach($content as $key => $value){
@@ -172,8 +210,14 @@ class DataStoreHelper extends Migration
                   $content[$key] = $this->findLookupID($key, $formid, $value);
               }
             }
-            DB::table($tablename)->insert($content);
+            try {
+                $id = DB::table($tablename)->insertGetId($content);
+            } catch (\Illuminate\Database\QueryException $ex) {
+              $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
+              return 0;
+          }
         }
+        return $id;
     }
 
   /** get submitted form data
