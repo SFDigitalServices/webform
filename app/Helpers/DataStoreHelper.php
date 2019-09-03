@@ -140,49 +140,32 @@ class DataStoreHelper extends Migration
     *
     * @param $form
     * @param $request
-    * @param $type
+    * @param $status
     *
     * @return string
     */
-    public function submitForm($form, $request, $type = 'complete')
+    public function submitForm($form, $request, $status = 'complete')
     {
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
-            if ($request->input('magiclink') ) {
+            if ($request->input('magiclink')) {
                 DB::table('forms_'.$form['id'])->where('magiclink', '=', $request->input('magiclink'))->delete();
             }
             $id = $this->insertFormData($write['db'], $form['id']);
             // update status if form is partially completed
             if ($id) {
-              if ($type === 'partial') {
-                  if ($request->input('secretPassword')) {
-                      $magiclink = Hash::make($request->input('secretPassword'));
-                  } else {
-                      $magiclink = Hash::make(time());
-                  }
-                  try {
-                      DB::table('forms_'.$form['id'])
-                        ->where('id', $id)
-                        ->update(['status' => 'partial', 'magiclink' => $magiclink]);
-                  } catch (\Illuminate\Database\QueryException $ex) {
-                      $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                      return "";
-                  }
-              }
-              else{
+                $magiclink = Hash::make(time());
                 try {
-                  DB::table('forms_'.$form['id'])
-                    ->where('id', $id)
-                    ->update(['status' => 'complete']);
+                    DB::table('forms_'.$form['id'])
+                        ->where('id', $id)
+                        ->update(['status' => $status, 'magiclink' => $magiclink]);
                 } catch (\Illuminate\Database\QueryException $ex) {
-                  $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                  return "";
+                    $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
+                    return "";
                 }
-                $magiclink = "true";
-              }
+                return $magiclink;
             }
-            return $magiclink;
         }
         return "";
     }
