@@ -487,10 +487,10 @@ class DataStoreHelper extends Migration
                 switch($fieldType){
                     case 'string': $dataType = "varchar(255)"; break;
                     case 'number': $dataType = "Decimal(10,2)"; break;
-                    case 'longText': $dataType = "LongText"; break;
+                    case 'longText': $dataType = "Text"; break;
                     case 'time': $dataType = "Time"; break;
                     case 'date': $dataType = "Date"; break;
-                    default: $dataType = "varchar(255)"; break;
+                    default: $dataType = "varchar(100)"; break;
                 }
                 $raw_statement = "ALTER TABLE ". $tablename .
                     " MODIFY ". $definition['name'] . " $dataType ";
