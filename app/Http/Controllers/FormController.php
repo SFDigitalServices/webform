@@ -112,7 +112,7 @@ class FormController extends Controller
             $returnForm->save();
             //update form table
             $definitions = json_decode($returnForm['content'], true);
-            //if (isset($definitions['settings']['backend']) && $definitions['settings']['backend'] == "csv") {
+            if (isset($definitions['settings']['backend']) && $definitions['settings']['backend'] == "csv") {
                 //sanitize form data, "name" is missing from some fields. This isn't necessary if DFB-374 gets fixed.
                 if (!empty($definitions['data'])) {
                   $count = count($definitions['data']);
@@ -134,11 +134,7 @@ class FormController extends Controller
               if (isset($updated_table['status']) && $updated_table['status'] == 0) {
                   return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
               }
-          //}
-            $updated_table = $this->dataStoreHelper->saveFormTableColumn('forms_'.$returnForm->id, $this->controllerHelper->getFormColumnsToUpdate($definitions, $previousContent));
-            if (isset($updated_table['status']) && $updated_table['status'] == 0) {
-                return response()->json(['status' => 0, 'message' => 'Failed to update form table']);
-            }
+          }
         }
         return response()->json($returnForm);
     }
