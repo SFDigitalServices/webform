@@ -278,16 +278,18 @@ class ControllerHelper
             $originalFormData = $this->parseOptionValues($originalFormData);
             $originalFormData = $this->parseOptionValues($originalFormData, 'json');
             foreach ($newFormData['data'] as $key => $value) {
+              // filter non input fields
+              if( isset($value['formtype']) && $this->isNonInputField($value['formtype']) ) continue;
+
                 foreach ($originalFormData['data'] as $originalKey => $originalValue) {
                     if (strcmp($value['name'], $originalValue['name']) === 0) {
-
-						//unset multi-dimensional array values because their existence does not change the database structure
-						unset($value['conditions']);
-						unset($originalValue['conditions']);
-						unset($value['calculations']);
-						unset($originalValue['calculations']);
-						unset($value['webhooks']);
-						unset($originalValue['webhooks']);
+                        //unset multi-dimensional array values because their existence does not change the database structure
+                        unset($value['conditions']);
+                        unset($originalValue['conditions']);
+                        unset($value['calculations']);
+                        unset($originalValue['calculations']);
+                        unset($value['webhooks']);
+                        unset($originalValue['webhooks']);
 
                         $diff = array_diff($value, $originalValue);
                         if (count($diff) != 0) { // key and value matches
