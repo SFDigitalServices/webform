@@ -142,6 +142,12 @@ Then('I should be redirected to a confirmation page', () => {
 Given(/I clicked into an existing form/, () => {
   I.click('.forms > a')
   I.wait(1)
+  I.click('#SFDSWFB-legend')
+  I.wait(2)
+  I.fillField('title', 'TESTING FORM DELETION')
+  I.wait(2)
+  I.click('OK')
+  I.wait(1)
 })
 When('I click the delete icon', () => {
   I.seeElement('#SFDSWFB-legend')
@@ -159,6 +165,6 @@ Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should not see the deleted form', () => {
-  I.dontSee('TESTING FORM CREATION')
+  I.dontSee('TESTING FORM DELETION')
   I.wait(10)
 })
