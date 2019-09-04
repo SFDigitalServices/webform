@@ -44,7 +44,18 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         }
         $this->assertTrue(Schema::hasColumns($tablename, $columns));
     }
+    public function testCloneFormTable()
+    {
+        $tablename= 'forms_cloneme';
+        $this->dataStoreHelperTester->createFormTable($tablename, $this->definitions);
+        $this->assertTrue(Schema::hasTable($tablename));
+        $this->assertTrue(Schema::hasTable($tablename."_archive"));
 
+        $cloned = "forms_cloneme_clone";
+        $this->dataStoreHelperTester->cloneFormTable($tablename, $cloned);
+        $this->assertTrue(Schema::hasTable($cloned));
+        $this->assertTrue(Schema::hasTable($cloned."_archive"));
+    }
     public function testFieldMapping(){
         $tablename= 'field_mapping';
         $mapping_definitions = array(
@@ -179,5 +190,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         Schema::dropIfExists('field_mapping_archive');
         Schema::dropIfExists('forms_999999');
         Schema::dropIfExists('forms_999999_archive');
+        Schema::dropIfExists('forms_clone');
+        Schema::dropIfExists('forms_clone_archive');
     }
   }

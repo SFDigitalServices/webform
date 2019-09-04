@@ -154,8 +154,6 @@ class FormController extends Controller
 
         if ($form) {
             $content = json_decode($form['content'], true);
-            //return $content->settings->name;
-            //$content = $form->content;
             $content['settings']['name'] = "Clone of ".$content['settings']['name'];
             $cloned_form = Form::create(['content' => json_encode($content)]);
 
@@ -164,8 +162,7 @@ class FormController extends Controller
                 $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $cloned_form->id]);
                 if ($user_form) {
                     // clone the form table
-                    $cloned_content = json_decode($cloned_form['content'], true);
-                    $created_table = $this->dataStoreHelper->createFormTable('forms_'.$cloned_form->id, $cloned_content['data']);
+                    $created_table = $this->dataStoreHelper->cloneFormTable("forms_".$form_id, "forms_".$cloned_form->id);
                     if( $created_table )
                       return response()->json(['status' => 1, 'data' => $user_form, 'message' => '']);
                     else
