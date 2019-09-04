@@ -118,13 +118,14 @@ class DataStoreHelper extends Migration
      */
     public function saveFormTableColumn($tablename, $definitions)
     {
-        if ($definitions) {
+       if ($definitions) {
             $class = new DataStoreHelper();
             $columns = array();
             if (! Schema::hasTable($tablename)) {
               $class->createFormTable($tablename, $definitions);
             }
             else{
+
                 Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
                     $ret = $class->upsertFields($table, $definitions);
                     if (!$ret) {
@@ -426,6 +427,7 @@ class DataStoreHelper extends Migration
                         $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
                     }
                     $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+
                     switch ($type) {
                       case 'text':
                       case 'email':
