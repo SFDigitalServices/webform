@@ -38,7 +38,6 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('delete',['as' => 'delete', 'uses' => 'FormController@delete']);
 	  $router->post('share', ['as' => 'share', 'uses' => 'FormController@share']);
     $router->post('submit',['as' => 'submit', 'uses' => 'FormController@submitForm']);
-    $router->post('submitPartial',['as' => 'submitPartial', 'uses' => 'FormController@submitPartialForm']);
 	  $router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
     $router->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
 	  $router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
