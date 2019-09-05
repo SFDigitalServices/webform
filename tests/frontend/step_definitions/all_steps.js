@@ -5,6 +5,9 @@ const I = actor();
 
 Before(() => {
   I.amOnPage('/');
+  I.executeScript(function() {
+    localStorage.clear();
+  });
   loginPage.login('johndoe@example.com','johndoe')
 });
 
@@ -71,7 +74,7 @@ Then('I should be able modify the attributes', () => {
 // Clone Form Feature
 Given(/I clicked into an existing form/, () => {
   I.click('.forms > a')
-  I.wait(1)
+  I.wait(2)
 })
 When('I click the clone icon', () => {
   I.seeElement('#SFDSWFB-legend')

@@ -59,6 +59,38 @@ class DataStoreHelper extends Migration
         return $object;
     }
 
+    /** Clone database table
+    *
+    * @param $tablename
+    * @param $cloned
+    *
+    * @return bool
+    */
+
+    public function cloneFormTable($tablename, $cloned)
+    {
+       if ($tablename !== '' && $cloned !== '') {
+          try {
+              DB::transaction(function () use ($cloned, $tablename) {
+                $statement = "CREATE TABLE ". $cloned ." AS SELECT * FROM ". $tablename;
+                DB::statement($statement);
+
+                Schema::create($cloned .'_archive', function ($table) {
+                  $table->increments('id');
+                  $table->integer('record_id');
+                  $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
+                  $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
+              });
+            });
+           } catch (\Illuminate\Database\QueryException $ex) {
+             Log::info(print_r($ex->message,1));
+               return false;
+           }
+           return true;
+       }
+       return false;
+    }
+
    /** Deletes database table for deleted form
     *
     * @param $formId
