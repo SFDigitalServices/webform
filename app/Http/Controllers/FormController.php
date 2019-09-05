@@ -395,6 +395,29 @@ class FormController extends Controller
       }
     }
 
+    /** Save partial form data
+    *
+    * @param $request
+    *
+    * @return redirect page
+    */
+    public function submitPartialForm(Request $request)
+    {
+      $form_id = $request->input('form_id');
+      if (!$form_id) {
+          return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
+      }
+      $form = Form::where('id', $form_id)->first();
+      $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+      //todo backend validation
+
+      if($magiclink = $this->dataStoreHelper->submitForm($form,$request, 'partial')){
+          // email magic link to user? confirmation page?
+          print "<div>https://webform.test/form/submitPartial?magiclink=".$magiclink
+          ."</div>";
+		    }
+    }
+
     /** Determine form has been published
     *
     * @param $request
