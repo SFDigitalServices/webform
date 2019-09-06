@@ -412,10 +412,10 @@ class FormController extends Controller
       //todo backend validation
 
       if($magiclink = $this->dataStoreHelper->submitForm($form,$request, 'partial')){
-          // email magic link to user? confirmation page?
-          $this->emailController->sendEmail($form['content'], 'emails.template');
-          print "<div>https://webform.test/form/submitPartial?magiclink=".$magiclink
-          ."</div>";
+          // email magic link to user? confirmation page
+          $data['magiclink'] = $magiclink;
+          $this->emailController->sendEmail($data, 'emails.saveForLater');
+
 		    }
     }
 
