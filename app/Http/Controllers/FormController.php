@@ -12,6 +12,7 @@ use App\Helpers\ListHelper;
 use App\Helpers\HTMLHelper;
 use App\Helpers\DataStoreHelper;
 use App\Helpers\ControllerHelper;
+use App\Http\Controllers\EmailController;
 
 
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class FormController extends Controller
     protected $htmlHelper;
     protected $controllerHelper;
     protected $dataStoreHelper;
+    protected $emailController;
     /**
      * Create a new controller instance.
      *
@@ -45,6 +47,7 @@ class FormController extends Controller
         $this->controllerHelper = new ControllerHelper();
         $this->dataStoreHelper = new DataStoreHelper();
         $this->htmlHelper = new HTMLHelper();
+        $this->emailController = new EmailController();
     }
 
      /** Provide API to obtain user api token.
@@ -107,7 +110,7 @@ class FormController extends Controller
             $returnForm = Form::where('id', $form_id)->first();
             $returnForm['content'] = $this->controllerHelper->scrubString($request->input('content'));
             $previousContent = array();
-            $previousContent['data'] = ($request->input('previousContent'));
+            $previousContent['data'] = json_decode($request->input('previousContent'),true);
 
             $returnForm->save();
             //update form table
@@ -410,6 +413,7 @@ class FormController extends Controller
 
       if($magiclink = $this->dataStoreHelper->submitForm($form,$request, 'partial')){
           // email magic link to user? confirmation page?
+          $this->emailController->sendEmail($form['content'], 'emails.template');
           print "<div>https://webform.test/form/submitPartial?magiclink=".$magiclink
           ."</div>";
 		    }
