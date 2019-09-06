@@ -20,6 +20,6 @@ class EmailController extends Controller
         $data['emailInfo']['subject'] = 'Form submissions status';
         $data['emailInfo']['name'] = 'DS Formbuilder';
 
-        Mail::to('henry.jiang@sfgov.org')->send(new FormBuilderMailer($data));
+        Mail::to($data['emailInfo']['address'])->send(new FormBuilderMailer($data));
     }
 }
