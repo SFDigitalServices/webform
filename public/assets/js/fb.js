@@ -1331,7 +1331,7 @@ function saveForm (previousFormSettings) {
   $('.saveSpinner').show()
   var form = {}
   form.content = $('#SFDSWFB-save').val()
-  form.previousContent = previousFormSettings
+  form.previousContent = JSON.stringify(previousFormSettings);
   form.id = formId
   form.user_id = user_id
   form.api_token = api_token
