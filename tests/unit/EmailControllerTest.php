@@ -26,7 +26,7 @@ class EmailControllerTest extends \Codeception\Test\Unit
       $this->assertEmpty($emails);
 
       $data = array();
-      $data['magiclink'] = 'random stuff';
+      $data['body']['magiclink'] = 'random stuff';
       $template = 'emails.saveForLater';
       $response = $this->emailController->sendEmail($data, $template);
 
