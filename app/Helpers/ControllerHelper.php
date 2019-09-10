@@ -97,9 +97,11 @@ class ControllerHelper
     */
     public function hasFileUpload($data)
     {
-        foreach ($data as $field) {
-            if ($field['formtype'] == "m13") {
-                return true;
+        if ($data) {
+            foreach ($data as $field) {
+                if ($field['formtype'] == "m13") {
+                    return true;
+                }
             }
         }
         return false;
