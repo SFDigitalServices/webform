@@ -32,11 +32,11 @@ jobs: # a collection of steps
           command: composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
-            - composer-v2-{{ checksum "composer.lock" }}
+            - composer-v2.1-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - composer-v2-
+            - composer-v2.1-
       - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
-          key: composer-v2-{{ checksum "composer.lock" }}
+          key: composer-v2.1-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:
@@ -44,7 +44,6 @@ jobs: # a collection of steps
           command: composer update
       - run: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
-      - run: ./vendor/bin/codecept run
       - run:
           name: Configure & start Apache
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
@@ -68,6 +67,7 @@ jobs: # a collection of steps
             export NPX_HOME=$HOME/.nvm/versions/node/v11.0.0/bin
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
+            ./vendor/bin/codecept run
             cd tests/frontend
             $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run
             cd ../../

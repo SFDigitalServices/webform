@@ -190,7 +190,9 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         Schema::dropIfExists('field_mapping_archive');
         Schema::dropIfExists('forms_999999');
         Schema::dropIfExists('forms_999999_archive');
-        Schema::dropIfExists('forms_clone');
-        Schema::dropIfExists('forms_clone_archive');
+        Schema::dropIfExists('forms_cloneme');
+        Schema::dropIfExists('forms_cloneme_archive');
+        Schema::dropIfExists('forms_cloneme_clone');
+        Schema::dropIfExists('forms_cloneme_clone_archive');
     }
   }

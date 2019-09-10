@@ -12,17 +12,19 @@ class FormBuilderMailer extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
+    private $emailInfo;
 
     public function __construct($data)
     {
-        $this->data = $data;
+        $this->data = $data['body'];
+        $this->emailInfo = $data['emailInfo'];
     }
 
     public function build()
     {
-        $address = 'henry.jiang@sfgov.org'; //FROM address
-        $subject = 'This is a demo!';
-        $name = 'Jane Doe';
+        $address = $this->emailInfo['address'];
+        $subject = $this->emailInfo['subject'];
+        $name = $this->emailInfo['name'];
 
         $headerData = [
             //Categories in SendGrid allow you to split your statistics into sections. For example,
@@ -40,7 +42,7 @@ class FormBuilderMailer extends Mailable
                     ->addTextHeader('X-SMTPAPI', $header);
         });
 
-        return $this->view('emails.template')
+        return $this->view($this->emailInfo['template'])
                     ->from($address, $name)
                     ->cc($address, $name)
                     ->bcc($address, $name)

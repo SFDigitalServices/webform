@@ -97,9 +97,11 @@ class ControllerHelper
     */
     public function hasFileUpload($data)
     {
-        foreach ($data as $field) {
-            if ($field['formtype'] == "m13") {
-                return true;
+        if ($data) {
+            foreach ($data as $field) {
+                if ($field['formtype'] == "m13") {
+                    return true;
+                }
             }
         }
         return false;
@@ -278,15 +280,7 @@ class ControllerHelper
             $originalFormData = $this->parseOptionValues($originalFormData);
             $originalFormData = $this->parseOptionValues($originalFormData, 'json');
             foreach ($newFormData['data'] as $key => $value) {
-              // filter non input fields
-              if( isset($value['formtype']) && $this->isNonInputField($value['formtype']) ){
-                unset($newFormData['data'][$key]);
-              }
                 foreach ($originalFormData['data'] as $originalKey => $originalValue) {
-                  if( isset($originalValue['formtype']) && $this->isNonInputField($originalValue['formtype']) ){
-                    unset($originalFormData['data'][$originalKey]);
-                  }
-
                     if (strcmp($value['name'], $originalValue['name']) === 0) {
                         //unset multi-dimensional array values because their existence does not change the database structure
                         unset($value['conditions']);
@@ -322,6 +316,7 @@ class ControllerHelper
           unset($updates['remove']);
           unset($updates['add']);
         }
+        Log::info(print_r($updates,1));
         return $updates;
     }
 }

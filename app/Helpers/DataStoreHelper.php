@@ -83,7 +83,7 @@ class DataStoreHelper extends Migration
               });
             });
            } catch (\Illuminate\Database\QueryException $ex) {
-             Log::info(print_r($ex->message,1));
+                //Log::info(print_r($ex->getMessage(),1));
                return false;
            }
            return true;
@@ -445,6 +445,10 @@ class DataStoreHelper extends Migration
         if ($definitions) {
             $class = new DataStoreHelper();
             foreach ($definitions as $key => $definition) {
+              // filter out non-inputs
+              if( isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype']) ){
+                continue;
+              }
                 if (strcmp($key, 'rename') == 0) { //rename the column, $definition holds any additional updates
                     $definition = $class->renameFormTableColumn($table->getTable(), $definition);
                 } elseif (strcmp($key, 'remove') == 0) {

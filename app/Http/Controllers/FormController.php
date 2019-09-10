@@ -410,12 +410,13 @@ class FormController extends Controller
       $form = Form::where('id', $form_id)->first();
       $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
       //todo backend validation
-
-      if($magiclink = $this->dataStoreHelper->submitForm($form,$request, 'partial')){
-          // email magic link to user? confirmation page?
-          $this->emailController->sendEmail($form['content'], 'emails.template');
-          print "<div>https://webform.test/form/submitPartial?magiclink=".$magiclink
-          ."</div>";
+      if($magiclink = $this->dataStoreHelper->submitForm($form, $request, 'partial')){
+          // email magic link to user? confirmation page
+          $data['body'] = array();
+          $data['body']['magiclink'] = $magiclink;
+          $data['body']['message'] = 'This is the body of the emails';
+          $this->emailController->sendEmail($data, 'emails.saveForLater');
+          return view('emails.saveForLater', ['data' => $data['body']]);
 		    }
     }
 
