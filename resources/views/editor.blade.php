@@ -6,374 +6,93 @@
 		@include('partials.header')
 
     @include('partials.welcome')
+	
+	
+<style>
+	.header-container {max-width:none;padding:0 15px}
+	a:link, a:visited, a:hover, a:active {text-decoration:none}
+	#SFDSWFB-list {margin-top:1em;padding:1em;border:1px solid #ddd;border-radius:5px;max-height:768px;overflow-y:scroll}
+	#SFDSWFB-list a {display:inline-block}
+	#SFDSWFB-list .itemCount {display:inline-block;color:#ccc;padding-right:.5em}
+	#SFDSWFB-list .item {padding:.25em;width:calc(100% - 2.5em)}
+	#SFDSWFB-list .item:hover, #SFDSWFB-list .item.selected {background-color: #eee}
+	#SFDSWFB-list .item.spacer {height:1em;width:100%}
+	#SFDSWFB-list .item.spacer:hover, #SFDSWFB-list .item.spacer.selected {margin-bottom:1em;border-bottom:2px solid blue;background-color:transparent}
+	.menu-button {display:block;padding:.5em;border-radius:5px;border:1px solid #ddd;position:absolute;top:.5em}
+	.embed-toggle {right:5.5em}
+	.settings-toggle {right:3em}
+	.horizontal-toggle {right:.5em}
+	.preview-window {right:1em}
+	.col-xl-1 > a.min-hidden {display:none}
+	#SFDSWFB-preview iframe {height:772px;width:100%}
+	.middlePanel > div {display:none}
+	.field-item {padding:1em;margin:.5em;border:2px solid blue;color:blue;font-weight:bold;border-radius:5px;cursor:pointer;float:left}
+	.field-item.t2 {color:purple;border-color:purple}
+	.field-item.t3 {color:red;border-color:red}
+	.field-item.t4 {color:orange;border-color:orange}
+	.field-item:hover {color:black;border-color:black}
+</style>	
+<script>
+$(document).ready(function () {
+})
+</script>	
+	
 
-    <div style="display:none" class="container">
-		<div class="row clearfix">
-        <div class="col-md-6">
-          <h2>Drag & Drop Components</h2>
-          <hr>
-          <div class="tabbable">
-            <ul class="nav nav-tabs" id="SFDSWFB-navtab">
-              @include('partials.form-nav', ['href' => '1', 'title' => 'Contact', 'class' => 'active'])
-              @include('partials.form-nav', ['href' => '2', 'title' => 'Data'])
-              @include('partials.form-nav', ['href' => '3', 'title' => 'Input'])
-              @include('partials.form-nav', ['href' => '4', 'title' => 'Select'])
-              @include('partials.form-nav', ['href' => '5', 'title' => 'Misc'])
-              @include('partials.form-nav', ['href' => '6', 'title' => 'Rendered', 'id' => 'SFDSWFB-sourcetab'])
-              @include('partials.form-nav', ['href' => '7', 'title' => 'Settings'])
-            </ul>
+    <div style="display:none" class="editorContainer">
 
-            <form class="form-horizontal" id="SFDSWFB-components">
-              <fieldset>
-                <div class="tab-content">
-
-                  <div class="tab-pane active" id="SFDSWFB-1">
-
-                    {{-- Name field --}}
-                    @include('partials.editor.form-component', [
-                      'formtype' => 'c02',
-                      'required' => true,
-                      'type' => 'text',
-                      'title' => 'Name',
-                      'defaultvalue' => true,
-                      'placeholder' => true,
-                      'partial' => 'partials.fields.name'
-                    ])
-
-                    {{-- Email field --}}
-                    @include('partials.editor.form-component', [
-                      'formtype' => 'c04',
-                      'required' => true,
-                      'type' => 'email',
-                      'title' => 'Email',
-                      'defaultvalue' => true,
-                      'placeholder' => true,
-                      'partial' => 'partials.fields.email'
-                    ])
-
-                    {{-- Phone input --}}
-                    @include('partials.editor.form-component', [
-                      'formtype' => 'c06',
-                      'required' => true,
-                      'type' => 'tel',
-                      'title' => 'Phone',
-                      'minlength' => '10',
-                      'defaultvalue' => true,
-                      'placeholder' => true,
-                      'partial' => 'partials.fields.phone'
-                    ])
-
-                    {{-- Address input --}}
-                    @include('partials.editor.form-component', [
-                      'formtype' => 'c08',
-                      'required' => true,
-                      'type' => 'text',
-                      'title' => 'Address',
-                      'partial' => 'partials.fields.address'
-                    ])
-
-                    {{-- City input --}}
-                    @include('partials.editor.form-component', [
-                      'formtype' => 'c10',
-                      'required' => true,
-                      'type' => 'text',
-                      'title' => 'City',
-                      'defaultvalue' => true,
-                      'placeholder' => true,
-                      'partial' => 'partials.fields.city'
-                    ])
-
-                    {{-- ZIP Code input --}}
-                    @include('partials.editor.form-component', [
-                      'formtype' => 'c14',
-                      'required' => true,
-                      'type' => 'text',
-                      'title' => 'Zip',
-                      'minlength' => '5',
-                      'maxlength' => '5',
-                      'defaultvalue' => true,
-                      'placeholder' => true,
-                      'partial' => 'partials.fields.zip'
-                    ])
-      				  </div>
-
-                <div class="tab-pane" id="SFDSWFB-2">
-
-                  {{-- Date input --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'd02',
-                    'required' => true,
-                    'type' => 'date',
-                    'title' => 'Date',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.date'
-                  ])
-
-                  {{-- Time input --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'd04',
-                    'required' => true,
-                    'type' => 'time',
-                    'title' => 'Time',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.time'
-                  ])
-
-                 {{-- Numbers input --}}
-                 @include('partials.editor.form-component', [
-                    'formtype' => 'd06',
-                    'required' => true,
-                    'type' => 'number',
-                    'title' => 'Numbers',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.numbers'
-                  ])
-
-                  {{-- Price --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'd08',
-                    'required' => true,
-                    'type' => 'number',
-                    'title' => 'Price',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.price'
-                  ])
-
-                  {{-- URL input --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'd10',
-                    'required' => true,
-                    'type' => 'url',
-                    'title' => 'URL',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.url'
-                  ])
-
-        				</div>
-
-                <div class="tab-pane" id="SFDSWFB-3">
-
-                  {{-- Text --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'i02',
-                    'required' => true,
-                    'type' => 'text',
-                    'title' => 'Text input',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.text'
-                  ])
-
-                  {{-- Textarea --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'i14',
-                    'required' => true,
-                    'title' => 'Textarea',
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.textarea'
-                  ])
-
-                </div>
-
-                <div class="tab-pane" id="SFDSWFB-4">
-
-				          {{-- Select Basic --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 's02',
-                    'required' => true,
-                    'choose' => true,
-                    'title' => 'Select Dropdown',
-                    'defaultvalue' => true,
-                    'partial' => 'partials.fields.select-basic',
-                    'options' => 'option'
-                  ])
-
-                  {{-- Multiple checkboxes --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 's06',
-                    'required' => true,
-                    'choose' => true,
-                    'title' => 'Multiple checkboxes',
-                    'defaultvalue' => true,
-                    'partial' => 'partials.fields.checkboxes',
-                    'options' => 'checkboxes'
-                  ])
-
-                  {{-- Multiple radios --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 's08',
-                    'required' => true,
-                    'choose' => true,
-                    'title' => 'multiple radios',
-                    'defaultvalue' => true,
-                    'partial' => 'partials.fields.radios',
-                    'options' => 'radios'
-                  ])
-
-                  {{-- State full names --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 's14',
-                    'type' => 'text',
-                    'title' => 'State',
-                    'choose' => true,
-                    'required' => true,
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.state-full-names'
-                  ])
-
-                  {{-- State full names, abbreviated values --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 's15',
-                    'type' => 'text',
-                    'title' => 'State',
-                    'choose' => true,
-                    'required' => true,
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.state-abbr-value'
-                  ])
-
-                  {{-- State abbreviated --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 's16',
-                    'type' => 'text',
-                    'title' => 'State',
-                    'choose' => true,
-                    'required' => true,
-                    'defaultvalue' => true,
-                    'placeholder' => true,
-                    'partial' => 'partials.fields.state-abbr'
-                  ])
-
-                </div>
-
-                <div class="tab-pane" id="SFDSWFB-5">
-
-                  {{-- H1 --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm02',
-                    'type' => 'text',
-                    'title' => 'Name',
-                    'text' => 'H1',
-                    'partial' => 'partials.fields.h1'
-                  ])
-
-                  {{-- H2 --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm04',
-                    'type' => 'text',
-                    'title' => 'Name',
-                    'text' => 'H2',
-                    'partial' => 'partials.fields.h2'
-                  ])
-
-                  {{-- H3 --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm06',
-                    'type' => 'text',
-                    'title' => 'Name',
-                    'text' => 'H3',
-                    'partial' => 'partials.fields.h3'
-                  ])
-
-                  {{-- Paragraph --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm08',
-                    'title' => 'Paragraph_text',
-                    'text' => 'Paragraph',
-                    'partial' => 'partials.fields.paragraph'
-                  ])
-
-                  {{-- Paragraph HTML --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm10',
-                    'title' => 'Paragraph_html',
-                    'text' => 'Paragraph',
-                    'partial' => 'partials.fields.paragraph-html'
-                  ])
-
-                  {{-- Hidden --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm11',
-                    'type' => 'hidden',
-                    'title' => 'Hidden',
-                    'defaultvalue' => true,
-                    'partial' => 'partials.fields.hidden'
-                  ])
-
-                  {{-- File Upload --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm13',
-                    'type' => 'file',
-                    'title' => 'File Upload',
-                    'required' => true,
-                    'defaultvalue' => true,
-                    'partial' => 'partials.fields.file-upload'
-                  ])
-
-                  {{-- Button --}}
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm14',
-                    'title' => 'Button',
-                    'text' => 'Button',
-                    'partial' => 'partials.fields.button'
-                  ])
-
-                  @include('partials.editor.form-component', [
-                    'formtype' => 'm16',
-                    'type' => 'text',
-                    'title' => 'Page Separator',
-                    'text' => 'New Section Title',
-                    'partial' => 'partials.fields.page-separator'
-                  ])
-
-                </div>
-                <div class="tab-pane" id="SFDSWFB-6">
-                  @include('partials.embed-code')
-                </div>
-                <div class="tab-pane" id="SFDSWFB-7">
-                  @include('partials.settings')
-                </div>
-              </div>
-            </fieldset>
-          </form>
-		    </div>
-	    </div>
-
-		<div class="col-md-6">
-		  <div class="clearfix" style="max-height:1000px;overflow-x:visible;overflow-y:auto;padding-right:10px">
-			<div>
-				<h2 style="display:block;float:left;width:auto;margin-bottom:0">Customize Form</h2>
-				@include('partials.form-actions')
-				<div class="clear"></div>
+		<div class="col-xs-12 col-sm-5 col-lg-3 col-xl-2 leftPanel">
+			<h4>Navigation</h4>
+			<div class="tab-pane" id="SFDSWFB-list">
 			</div>
-			<hr>
-			<div id="SFDSWFB-build">
-			  <form id="SFDSWFB-target" class="form-horizontal">
-				<fieldset>
-				  <div id="SFDSWFB-legend" class="component" rel="popover" title="Form Title" trigger="manual"
-					data-content="
-					<form class='form'>
-					  <div class='form-group col-md-12'>
-						<label class='control-label'>Title</label> <input class='form-control' type='text' name='title' id='text'>
-						<hr/>
-						<button class='btn btn-info'>OK</button><button class='btn btn-danger'>Cancel</button>
-					  </div>
-					</form>" data-html="true"
-					>
-					<legend class="valtype" data-valtype="text">My Form</legend>
-				  </div>
-				</fieldset>
-			  </form>
+		</div>
+	
+		<div class="col-xs-12 col-sm-7 col-lg-1 col-xl-1 middlePanel">
+			<a href="javascript:void(0)" onclick="showMiddlePanel('SFDSWFB-embed')" title="Embed" class="embed-toggle menu-button min-hidden md-hidden fa fa-share-alt"></a>
+			<a href="javascript:void(0)" onclick="showMiddlePanel('SFDSWFB-settings')" title="Settings" class="settings-toggle menu-button min-hidden md-hidden fa fa-cog"></a>
+			<a href="javascript:void(0)" onclick="toggleMiddlePanel()" title="Resize" class="horizontal-toggle menu-button md-hidden fa fa-angle-double-right"></a>
+			<div class="tab-pane" id="SFDSWFB-insert">
+				<h4>Insert Field</h4>
+				<a href="javascript:void(0)" onclick="insertField('c02')" class="field-item t1">Name</a>
+				<a href="javascript:void(0)" onclick="insertField('c04')" class="field-item t1">Email</a>
+				<a href="javascript:void(0)" onclick="insertField('c06')" class="field-item t1">Phone</a>
+				<a href="javascript:void(0)" onclick="insertField('c08')" class="field-item t1">Address</a>
+				<a href="javascript:void(0)" onclick="insertField('c10')" class="field-item t1">City</a>
+				<a href="javascript:void(0)" onclick="insertField('s14')" class="field-item t1">State</a>
+				<a href="javascript:void(0)" onclick="insertField('c14')" class="field-item t1">Zip</a>
+				<a href="javascript:void(0)" onclick="insertField('d02')" class="field-item t2">Date</a>
+				<a href="javascript:void(0)" onclick="insertField('d04')" class="field-item t2">Time</a>
+				<a href="javascript:void(0)" onclick="insertField('d06')" class="field-item t2">Numbers</a>
+				<a href="javascript:void(0)" onclick="insertField('d08')" class="field-item t2">Price</a>
+				<a href="javascript:void(0)" onclick="insertField('d10')" class="field-item t2">URL</a>
+				<a href="javascript:void(0)" onclick="insertField('i02')" class="field-item t3">Text</a>
+				<a href="javascript:void(0)" onclick="insertField('i14')" class="field-item t3">Textarea</a>
+				<a href="javascript:void(0)" onclick="insertField('s02')" class="field-item t3">Select</a>
+				<a href="javascript:void(0)" onclick="insertField('s06')" class="field-item t3">Checkboxes</a>
+				<a href="javascript:void(0)" onclick="insertField('s08')" class="field-item t3">Radio</a>
+				<a href="javascript:void(0)" onclick="insertField('m02')" class="field-item t4">H1</a>
+				<a href="javascript:void(0)" onclick="insertField('m04')" class="field-item t4">H2</a>
+				<a href="javascript:void(0)" onclick="insertField('m06')" class="field-item t4">H3</a>
+				<a href="javascript:void(0)" onclick="insertField('m08')" class="field-item t4">Paragraph</a>
+				<a href="javascript:void(0)" onclick="insertField('m10')" class="field-item t4">HTML</a>
+				<a href="javascript:void(0)" onclick="insertField('m11')" class="field-item t4">Hidden</a>
+				<a href="javascript:void(0)" onclick="insertField('m13')" class="field-item t4">File</a>
+				<a href="javascript:void(0)" onclick="insertField('m16')" class="field-item t4">Page Separator</a>
 			</div>
-		  </div>
+			<div class="tab-pane" id="SFDSWFB-attributes">
+				<h4>Edit Attributes</h4>
+			</div>
+			<div class="tab-pane" id="SFDSWFB-settings">
+			  @include('partials.settings')
+			</div>
+			<div class="tab-pane" id="SFDSWFB-embed">
+			  @include('partials.embed-code')
+			</div>
+		</div>
+
+		<div class="sm-hidden col-lg-8 col-xl-9 rightPanel">
+			<a href="javascript:void(0)" onclick="openPreviewWindow()" title="Preview in a New Window" class="preview-window menu-button fa fa-window-restore"></a>
+			<h4>Form Preview</h4>
+			<div class="tab-pane" id="SFDSWFB-preview"></div>
 		</div>
 
 
@@ -382,57 +101,5 @@
         <div class="col-md-12"></div>
       </div>
     </div> {{--  /.container --}}
-
-  @include('partials.editor.conditionals')
-  @include('partials.editor.calculations')
-  @include('partials.editor.validation')
-
-  <div class="hidden clonable accordion-conditionals">
-    <div class='accordion-section conditionals'>
-      <div class='accordion-header'>Conditionals</div>
-      <div class='accordion' style='display:none'>
-      </div>
-    </div>
-  </div>
-
-  @include('partials.editor.webhooks')
-
-	@include('modal', [
-    "id" => "modal-dialog",
-    "secondary" => "Okay"
-  ])
-
-  @include('modal', [
-    "id" => "modal-confirm",
-    "primary" => "Do It",
-    "secondary" => "Cancel"
-  ])
-
-  @component('modal', [
-    "id" => "welcome",
-    "primary" => "Yes Please",
-    "primaryattrs" => "onclick='$('#tutorial').modal()'",
-    "secondary" => "No Thanks"
-  ])
-
-    @slot('title')
-      Welcome to Webform Builder!
-    @endslot
-
-    <p>Let us help you get started creating your new form.</p>
-    <p>Would you like to view the introduction tutorial?</p>
-  @endcomponent
-
-  @component('modal', [
-    "id" => "tutorial",
-    "secondary" => "Got It"
-  ])
-
-    @slot('title')
-      How to get the most out of Webform Builder
-    @endslot
-
-    @include('partials.tutorial')
-  @endcomponent
-
+	
 @endsection

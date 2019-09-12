@@ -38,6 +38,7 @@ SFDSWFB.loadScript = function(type, callback) {
 
 SFDSWFB.loadRemainingScripts();
 SFDSWFB.lastCalled = {};
+SFDSWFB.skipToSectionId = '';
 
 function callWebhook(populateField, endPoint, ids, responseIndex, method, optionsArray, delimiter, responseOptionsIndex) {
 	//validate endPoint and populateField
@@ -161,6 +162,8 @@ function initSectional() {
 		jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');
 		jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
 	}
+	
+	skipToSectionId(SFDSWF_goto);
 }
 
 function phoneIsValid(num) {
@@ -181,7 +184,25 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
+function skipToSectionId(callback) { //does not work for checkboxes and possibly radios and selects
+	if (!SFDSWFB.skipToSectionId) {
+		var url = new URL(window.location.href)
+		if (typeof url.searchParams.get("sectionId") != "undefined") SFDSWFB.skipToSectionId = url.searchParams.get("sectionId")
+	}
+	if (SFDSWFB.skipToSectionId) {
+		if (document.getElementById(SFDSWFB.skipToSectionId) != null) {
+			if (callback && jQuery("#" + SFDSWFB.skipToSectionId).is(":hidden")) callback(jQuery("#" + SFDSWFB.skipToSectionId).closest(".form-section").index('.form-section'))
+			document.getElementById(SFDSWFB.skipToSectionId).scrollIntoView()
+		} else {
+			if (callback && jQuery("div[data-id=" + SFDSWFB.skipToSectionId + "]").is(":hidden")) callback(jQuery("div[data-id=" + SFDSWFB.skipToSectionId + "]").index('.form-section-header'))
+		}
+	}
+}
+
 SFDSWFB.lastScript = function() {
+
+	skipToSectionId(false)
+	
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid($(this).val())) {
 				fieldValid($(this).attr('id'));

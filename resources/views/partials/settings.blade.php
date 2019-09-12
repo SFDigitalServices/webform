@@ -128,10 +128,3 @@
     </label>
 </div>
 --}}
-
-<div class='form-group col-md-12' style="visibility:hidden">
-  <label class="control-label">Load Form</label>
-  <textarea class="form-control" id="SFDSWFB-load"></textarea>
-  <br/>
-  <a class="btn btn-success" onclick="loadForm()" href="javascript:void(0)">Load</a>
-</div>
