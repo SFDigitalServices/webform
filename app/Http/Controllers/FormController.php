@@ -309,11 +309,12 @@ class FormController extends Controller
     */
     public function embedJS(Request $request)
     {
+        $referer = $request->headers->get('referer');
         $form_id = $request->input('id');
         $form = Form::where('id', $form_id)->first();
 				$form['content'] = $this->controllerHelper->scrubString($form['content']);
         $form['content'] = json_decode($form['content'], true);
-        return $this->htmlHelper->wrapJS($form, $request->getHttpHost());
+        return $this->htmlHelper->wrapJS($form, $request->getHttpHost(), $referer);
     }
 
 
@@ -413,9 +414,10 @@ class FormController extends Controller
       if($magiclink = $this->dataStoreHelper->submitForm($form, $request, 'partial')){
           // email magic link to user? confirmation page
           $data['body'] = array();
-          $data['body']['magiclink'] = $magiclink;
+          $magiclink = urlencode($magiclink);
           $data['body']['message'] = 'This is the body of the emails';
-          $this->emailController->sendEmail($data, 'emails.saveForLater');
+          $data['body']['host'] = $request->headers->get('referer') . "?draft=$magiclink&form_id=$form_id";
+          //$this->emailController->sendEmail($data, 'emails.saveForLater');
           return view('emails.saveForLater', ['data' => $data['body']]);
 		    }
     }
@@ -453,13 +455,6 @@ class FormController extends Controller
     public function purgeCSV(Request $request)
     {
         return true;
-        /*$form_id = $request->input('id');
-        $form = Form::where('id', $form_id)->first();
-        $content = json_decode($form->content);
-        $filename = $this->controllerHelper->generateFilename($form_id);
-        $this->dataStoreHelper->rewriteCSV($content, $filename);
-        return response()->json(['status' => 1, 'message' => 'Purged CSV']);
-        */
     }
 
   /** Gets S3 unique filename
@@ -479,7 +474,6 @@ class FormController extends Controller
           return $this->controllerHelper->generateFilename($id);
       }
   }
-
 
     /** Gets submitted form data as CSV/Excel
     *
