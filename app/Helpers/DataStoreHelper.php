@@ -178,6 +178,7 @@ class DataStoreHelper extends Migration
     */
     public function retrieveFormDraft($formid, $draft = '')
     {
+        $data = array();
         if ($formid > 0 && $draft !== '') {
             try {
                 $results = DB::table('forms_'.$formid)
@@ -190,7 +191,6 @@ class DataStoreHelper extends Migration
                 return null;
             }
         }
-        Log::info(print_r($data, 1));
         return $data;
     }
 
@@ -235,7 +235,7 @@ class DataStoreHelper extends Migration
     *
     * @return integer
     */
-    private function insertFormData($content, $formid)
+    public function insertFormData($content, $formid)
     {
         $id = 0;
         $tablename = "forms_".$formid;

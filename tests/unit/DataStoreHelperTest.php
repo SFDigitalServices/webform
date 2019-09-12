@@ -167,13 +167,25 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       $this->dataStoreHelperTester->insertFormData($content, '999999');
 
       $results = DB::table('forms_999999')->get();
+      $draft = '';
       foreach ($results as $result) {
         foreach($result as $key => $value){
+          if($key === 'magiclink')
+            $draft = $value;
           if(! in_array($key, $content)) continue;
             $this->assertEquals($content[$key], $result->$key);
         }
       }
+
+      // test retrieval
+      $this->testRetriveFormData('999999', $draft);
     }
+    private function testRetriveFormData($formid, $draft)
+    {
+        $data = $this->dataStoreHelperTester->retrieveFormDraft($formid, $draft);
+        $this->assertNotNull($data);
+    }
+
     protected function _after()
     {
         Schema::dropIfExists('forms_form1');

@@ -286,7 +286,7 @@ class HTMLHelper
           $populateJS = "var draftData = ". json_encode($data) ."; populateForm(draftData)";
         }
       }
-      $js .= "};script.src = '//".$host."/assets/js/embed.js'; document.head.appendChild(script); document.head.append('<script>var window.draftData = ".$populateJS .";<\/script>');"; //end ready
+      $js .= "};script.src = '//".$host."/assets/js/embed.js';document.head.appendChild(script);document.head.append('<script>var window.draftData = ".$populateJS .";<\/script>');"; //end ready
       return $js;
   }
 
