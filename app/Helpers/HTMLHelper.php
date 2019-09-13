@@ -283,10 +283,10 @@ class HTMLHelper
           $draft = $output['draft'];
           $form_id = $output['form_id'];
           $data = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
-          $populateJS = "var draftData = ". json_encode($data) ."; populateForm(draftData)";
+          $populateJS = "var draftData = ". json_encode($data) .";";
         }
       }
-      $js .= "};script.src = '//".$host."/assets/js/embed.js';document.head.appendChild(script);document.head.append('<script>var window.draftData = ".$populateJS .";<\/script>');"; //end ready
+      $js .= "};script.src = '//".$host."/assets/js/embed.js';var s = document.createElement('script');s.setAttribute('type', 'text/javascript'); s.text='$populateJS';document.head.append(s);document.head.appendChild(script);"; //end ready
       return $js;
   }
 

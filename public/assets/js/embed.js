@@ -186,6 +186,7 @@ function submitPartial(){
   jQuery("form").attr('action', submitUrl);
   jQuery("#submit").click();
 }
+
 SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid($(this).val())) {
@@ -213,10 +214,16 @@ SFDSWFB.lastScript = function() {
 		if (!formValid) {
 			e.preventDefault();
 		}
-	});
+  });
 
+  if(window.draftData !== undefined){
+    populateForm(window.draftData);
+  }
 }
 
-function populateForm(data){
-  console.log(data);
+function populateForm(formData){
+  for(element in formData){
+    if(document.forms[0][element] !== undefined)
+      document.forms[0][element].value = formData[element];
+  };
 }
