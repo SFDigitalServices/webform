@@ -72,8 +72,10 @@ class DataStoreHelper extends Migration
        if ($tablename !== '' && $cloned !== '') {
           try {
               DB::transaction(function () use ($cloned, $tablename) {
-                $statement = "CREATE TABLE ". $cloned ." AS SELECT * FROM ". $tablename;
+                $statement = "CREATE TABLE ". $cloned ." LIKE ". $tablename;
                 DB::statement($statement);
+                $indexes = "INSERT $cloned SELECT * FROM $tablename";
+                DB::statement($indexes);
 
                 Schema::create($cloned .'_archive', function ($table) {
                   $table->increments('id');
@@ -211,6 +213,7 @@ class DataStoreHelper extends Migration
                 DB::table('forms_'.$form['id'])->where('magiclink', '=', $request->input('magiclink'))->delete();
             }
             $id = $this->insertFormData($write['db'], $form['id']);
+            Log::info($id);
             // update status if form is partially completed
             if ($id) {
                 $magiclink = Hash::make(time());
@@ -220,6 +223,7 @@ class DataStoreHelper extends Migration
                         ->update(['status' => $status, 'magiclink' => $magiclink]);
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
+                    Log::info(print_r($ret,1));
                     return "";
                 }
                 return $magiclink;
