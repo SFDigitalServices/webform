@@ -226,4 +226,15 @@ function populateForm(formData){
     if(document.forms[0][element] !== undefined)
       document.forms[0][element].value = formData[element];
   };
+   // inject hidden input for magiclink
+  if(document.forms[0]['magiclink'] === undefined){
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "magiclink";
+    input.value = formData['magiclink'];
+    document.forms[0].appendChild(input);
+  }
+  else{
+    document.forms[0]['magiclink'].value = formData['magiclink'];
+  }
 }
