@@ -48,7 +48,7 @@ Then('I should see my form on the dashboard', () => {
 })
 
 // Modify Form Feature
-Given(/I am on an existing form/, () => {
+Given(/I am on an existing form for modification/, () => {
   I.click('.forms > a')
   I.wait(1)
 })
@@ -72,7 +72,7 @@ Then('I should be able modify the attributes', () => {
 })
 
 // Clone Form Feature
-Given(/I clicked into an existing form/, () => {
+Given(/I clicked into an existing form for cloning/, () => {
   I.click('.forms > a')
   I.wait(2)
 })
@@ -91,7 +91,7 @@ Then('I should see the cloned form', () => {
 })
 
 // Preview Form Feature
-Given(/I have an existing form/, () => {
+Given(/I have an existing form for previewing/, () => {
   I.click('.forms > a')
   I.wait(1)
 })
@@ -142,9 +142,14 @@ Then('I should be redirected to a confirmation page', () => {
 })
 
 // Delete Form Feature
-Given(/I clicked into an existing form/, () => {
+Given(/I clicked into an existing form for deletion/, () => {
   I.click('.forms > a')
-  I.wait(1)
+  I.wait(2)
+  I.click('#SFDSWFB-legend')
+  I.wait(2)
+  I.fillField('title', 'TESTING FORM DELETION')
+  I.wait(2)
+  I.click('OK')
 })
 When('I click the delete icon', () => {
   I.seeElement('#SFDSWFB-legend')
@@ -163,6 +168,6 @@ Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should not see the deleted form', () => {
-  I.dontSee('TESTING FORM CREATION')
+  I.dontSee('TESTING FORM DELETION')
   I.wait(5)
 })
