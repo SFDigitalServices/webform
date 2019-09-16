@@ -222,9 +222,14 @@ SFDSWFB.lastScript = function() {
 }
 
 function populateForm(formData){
+  console.log(formData);
   for(element in formData){
-    if(document.forms[0][element] !== undefined)
+    if(document.forms[0][element] !== undefined){
+      if(document.forms[0][element] instanceof RadioNodeList){
+        getCheckedCheckboxesFor(document.forms[0][element], formData[element])
+      }
       document.forms[0][element].value = formData[element];
+    }
   };
    // inject hidden input for magiclink
   if(document.forms[0]['magiclink'] === undefined){
@@ -237,4 +242,12 @@ function populateForm(formData){
   else{
     document.forms[0]['magiclink'].value = formData['magiclink'];
   }
+}
+
+function getCheckedCheckboxesFor(elements, items) {
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].type == 'checkbox' && items.includes(elements[i].value) ){
+              elements[i].checked = true;
+            }
+        }
 }

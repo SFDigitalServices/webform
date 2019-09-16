@@ -85,7 +85,6 @@ class DataStoreHelper extends Migration
               });
             });
            } catch (\Illuminate\Database\QueryException $ex) {
-                //Log::info(print_r($ex->getMessage(),1));
                return false;
            }
            return true;
@@ -188,6 +187,20 @@ class DataStoreHelper extends Migration
                   ->where('magiclink', $draft)
                   ->first();
                 $data = (array) $results;
+                $lookups = $this->getLookupTable($formid);
+                foreach ($lookups as $lookup) {
+                    $ids = explode(',', $data[$lookup['form_field_name']] );
+                    if (isset($data[$lookup['form_field_name']]) && in_array($lookup['id'], $ids) ) {
+                        if ($lookup['type'] === 's06') {
+                            if (! isset( $data[$lookup['form_field_name']."[]"] )) {
+                                $data[$lookup['form_field_name']."[]"] = array();
+                            }
+                            array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
+                        } else {
+                            $data[$lookup['form_field_name']] = $lookup['value'];
+                        }
+                    }
+                }
             } catch (\Illuminate\Database\QueryException $ex) {
                 $results = ['status' => 0, 'message' => $ex->getMessage()];
                 return null;
@@ -213,7 +226,6 @@ class DataStoreHelper extends Migration
                 DB::table('forms_'.$form['id'])->where('magiclink', '=', $request->input('magiclink'))->delete();
             }
             $id = $this->insertFormData($write['db'], $form['id']);
-            Log::info($id);
             // update status if form is partially completed
             if ($id) {
                 $magiclink = Hash::make(time());
@@ -223,7 +235,6 @@ class DataStoreHelper extends Migration
                         ->update(['status' => $status, 'magiclink' => $magiclink]);
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                    Log::info(print_r($ret,1));
                     return "";
                 }
                 return $magiclink;
@@ -605,15 +616,16 @@ class DataStoreHelper extends Migration
                     'form_table_id' => $form_id,
                     'form_field_name' => $definition['name'],
                     'value' => $value,
+                    'type' => $definition['formtype'],
                 ]);
             }
-            $table->string($definition['name'],25)->default($inserted_id);
+            $table->string($definition['name'],50)->default($inserted_id);
         }
         else{
             //check column, rename not allowed
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
-                    " MODIFY ". $definition['name'] . " varchar(25) ";
+                    " MODIFY ". $definition['name'] . " varchar(50) ";
                 if (isset($definition['value'])) { // need to get reference id from lookup table.
                     $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
                 }
