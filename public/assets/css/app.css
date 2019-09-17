@@ -407,3 +407,148 @@ hr.and::before {
 	margin: 0;
 }
 
+/* New refactor CSS, needs cleanup */
+.header-container {
+	max-width:none;
+	padding:0 15px
+}
+
+a:link, a:visited, a:hover, a:active {
+	text-decoration:none
+}
+
+#SFDSWFB-list {
+	margin-top:1em;
+	padding:1em;
+	border:1px solid #ddd;
+	border-radius:5px;max-height:768px;
+	overflow-y:scroll
+}
+
+#SFDSWFB-list a {
+	display:inline-block
+}
+
+#SFDSWFB-list .itemCount {
+	display:inline-block;
+	color:#ccc;
+	padding-right:.5em
+}
+
+#SFDSWFB-list .item {
+	padding:.25em;width:calc(100% - 7em)
+}
+
+#SFDSWFB-list .item:hover, #SFDSWFB-list .item.selected {
+	background-color: #eee
+}
+
+#SFDSWFB-list .item.selected.moving:hover, #SFDSWFB-list .item.selected.moving {
+	color: #aaa
+}
+
+#SFDSWFB-list .item.spacer {
+	height:1em;width:100%
+}
+
+#SFDSWFB-list .item.spacer:hover, #SFDSWFB-list .item.spacer.selected {
+	margin-bottom:1em;
+	border-bottom:2px solid blue;
+	background-color:transparent
+}
+
+#SFDSWFB-list.moving .item.spacer:hover {
+	border-color:yellowgreen
+}
+
+#SFDSWFB-list .fa-sort {
+	border: 1px solid blue; border-radius:5px; padding:3px 6px
+}
+
+#SFDSWFB-list .fa-times {
+	margin-left:2em
+}
+
+#SFDSWFB-list .fa:hover {
+	background:#eee;
+	color:black;
+	border-color:black
+}
+
+#SFDSWFB-list .fa-sort.moving, #SFDSWFB-list .fa-sort.moving:hover {
+	background:#eee;
+	color:#aaa;
+	border-color:#aaa
+}
+
+.menu-button {
+	display:block;
+	padding:.5em;
+	border-radius:5px;
+	border:1px solid #ddd;
+	position:absolute;
+	top:.5em
+}
+
+.embed-toggle {
+	right:5.5em
+}
+
+.settings-toggle {
+	right:3em
+}
+
+.horizontal-toggle {
+	right:.5em
+}
+
+.preview-window {
+	right:1em
+}
+
+.col-xl-1 > a.min-hidden {
+	display:none
+}
+
+#SFDSWFB-preview iframe {
+	height:772px;width:100%
+}
+
+.middlePanel > div {
+	display:none
+}
+
+.field-item {
+	padding:1em;
+	margin:.5em;
+	border:2px solid blue;
+	color:blue;
+	font-weight:bold;
+	border-radius:5px;
+	cursor:pointer;
+	float:left
+}
+
+.field-item.t2 {
+	color:purple;
+	border-color:purple
+}
+
+.field-item.t3 {
+	color:red;
+	border-color:red
+}
+
+.field-item.t4 {
+	color:orange;
+	border-color:orange
+}
+
+.field-item:hover {
+	color:black;
+	border-color:black
+}
+
+input, textarea {
+	margin-bottom:1em
+}
