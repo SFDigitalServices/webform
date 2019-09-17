@@ -184,7 +184,8 @@ function fieldValid(id) {
 function submitPartial(){
   var submitUrl = jQuery("form").attr('action').replace('submit', 'submitPartial')
   jQuery("form").attr('action', submitUrl);
-  jQuery("#submit").click();
+  console.log(submitUrl);
+  //jQuery("#submit").click();
 }
 
 SFDSWFB.lastScript = function() {
