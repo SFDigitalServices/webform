@@ -189,10 +189,10 @@ function submitPartial(){
 
 SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
-			if (phoneIsValid($(this).val())) {
-				fieldValid($(this).attr('id'));
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
 			} else {
-				fieldInvalid($(this).attr('id'));
+				fieldInvalid(jQuery(this).attr('id'));
 			}
 		var key = event.keyCode || event.charCode;
 		if (key === 8 || key === 46) {
@@ -204,11 +204,11 @@ SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container form').submit(function(e) {
 		var formValid = true;
 		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {
-			if (phoneIsValid($(this).val())) {
-				fieldValid($(this).attr('id'));
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
 			} else {
 				formValid = false;
-				fieldInvalid($(this).attr('id'));
+				fieldInvalid(jQuery(this).attr('id'));
 			}
 		});
 		if (!formValid) {
