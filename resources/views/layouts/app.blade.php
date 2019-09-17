@@ -30,6 +30,11 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/event-source-polyfill/0.0.9/eventsource.min.js"></script>
 		<script src="/assets/js/login.js"></script>
 		<script src="/assets/js/fb.js"></script>
+		<script src="/assets/js/item.js"></script>
+		<script src="/assets/js/form.js"></script>
+		<script src="/assets/js/forms-collection.js"></script>
+		<script src="/assets/js/fb-view.js"></script>
+		<script src="/assets/js/html-templates.js"></script>
 	</head>
 	<body @if('body-class')class="@yield('body-class')"@endif>
 		@yield("content")

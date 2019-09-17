@@ -14,10 +14,4 @@
 	<a class="btn btn-success" onclick="loadForm()" href="javascript:void(0)">ReLoad</a>
 	<br/>
 	<br/>
-
-	<h4>JSON Save Object (deprecated)</h4>
-	<textarea id="SFDSWFB-save" class="col-md-12">{"settings":{"action":"","method":"POST","name":"My Form"},"data":[]}</textarea>
-
-	<h4>JSON Load Object (deprecated)</h4>
-	<textarea class="form-control" id="SFDSWFB-load"></textarea>
 </div> 
