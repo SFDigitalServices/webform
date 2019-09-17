@@ -28,10 +28,11 @@ class HTMLHelper
     public function getHTML($form)
     {
         $content = $form['content'];
+        $formid = $form['id'];
         // form setting (json)
         $formEncoding = $this->controllerHelper->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
 
-        $form_div = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
+        $form_div = '<form id="SFDSWFB_forms_'.$formid.'" class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 
         $form_container = '';
         $sections = [];
@@ -98,7 +99,7 @@ class HTMLHelper
         }
         $form_end = "";
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial()" >Save For Later</a></div></div>';
+          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</fieldset></form>';
         // clean up line breaks, otherwise embedjs will fail

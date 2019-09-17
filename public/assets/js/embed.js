@@ -181,8 +181,11 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
-function submitPartial(){
-  jQuery("#submit").click();
+function submitPartial(formid){
+  var formid = "SFDSWFB_forms_" + formid;
+  var submitUrl = jQuery("#"+formid).attr('action').replace('submit', 'submitPartial');
+  jQuery("#"+formid).attr('action', submitUrl);
+  document.forms[formid].submit.click();
 }
 
 SFDSWFB.lastScript = function() {
@@ -217,24 +220,9 @@ SFDSWFB.lastScript = function() {
   if(window.draftData !== undefined){
     populateForm(window.draftData);
   }
-
-  jQuery("form").submit( function(e) {
-    var submitUrl = jQuery("form").attr('action').replace('submit', 'submitPartial')
-    jQuery("form").attr('action', submitUrl);
-      var form_data = jQuery("form").serialize(); //Encode form elements for submission
-
-      jQuery.ajax({
-        url : submitUrl,
-        type: 'post',
-        data : form_data
-      }).done(function(response){
-        return true;
-      });
-  });
 }
 
 function populateForm(formData){
-  console.log(formData);
   for(element in formData){
     if(document.forms[0][element] !== undefined){
       if(document.forms[0][element] instanceof RadioNodeList){
