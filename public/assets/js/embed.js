@@ -182,9 +182,7 @@ function fieldValid(id) {
 }
 
 function submitPartial(){
-  var submitUrl = jQuery("form").attr('action').replace('submit', 'submitPartial')
-  jQuery("form").attr('action', submitUrl);
-  jQuery("#submit").submit();
+  jQuery("#submit").click();
 }
 
 SFDSWFB.lastScript = function() {
@@ -219,6 +217,20 @@ SFDSWFB.lastScript = function() {
   if(window.draftData !== undefined){
     populateForm(window.draftData);
   }
+
+  jQuery("form").submit( function(e) {
+    var submitUrl = jQuery("form").attr('action').replace('submit', 'submitPartial')
+    jQuery("form").attr('action', submitUrl);
+      var form_data = jQuery("form").serialize(); //Encode form elements for submission
+
+      jQuery.ajax({
+        url : submitUrl,
+        type: 'post',
+        data : form_data
+      }).done(function(response){
+        return true;
+      });
+  });
 }
 
 function populateForm(formData){
