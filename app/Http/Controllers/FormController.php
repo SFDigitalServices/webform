@@ -420,7 +420,7 @@ class FormController extends Controller
           $host = parse_url($referer, PHP_URL_HOST);
           $path = parse_url($referer, PHP_URL_PATH);
           $data['body']['host'] = '//'.$host.$path . "?draft=$magiclink&form_id=$form_id";
-          //$this->emailController->sendEmail($data, 'emails.saveForLater');
+          $this->emailController->sendEmail($data, 'emails.saveForLater');
           return view('emails.saveForLater', ['data' => $data['body']]);
 		    }
     }
