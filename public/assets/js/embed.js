@@ -223,6 +223,7 @@ SFDSWFB.lastScript = function() {
 }
 
 function populateForm(formData){
+  console.log(formData);
   for(element in formData){
     if(document.forms[0][element] !== undefined){
       if(document.forms[0][element] instanceof RadioNodeList){
