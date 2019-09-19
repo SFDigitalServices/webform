@@ -28,10 +28,11 @@ class HTMLHelper
     public function getHTML($form)
     {
         $content = $form['content'];
+        $formid = $form['id'];
         // form setting (json)
         $formEncoding = $this->controllerHelper->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
 
-        $form_div = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
+        $form_div = '<form id="SFDSWFB_forms_'.$formid.'" class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
 
         $form_container = '';
         $sections = [];
@@ -98,7 +99,7 @@ class HTMLHelper
         }
         $form_end = "";
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial()" >Save For Later</a></div></div>';
+          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</fieldset></form>';
         // clean up line breaks, otherwise embedjs will fail
@@ -283,10 +284,10 @@ class HTMLHelper
           $draft = $output['draft'];
           $form_id = $output['form_id'];
           $data = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
-          $populateJS = "var draftData = ". json_encode($data) ."; populateForm(draftData)";
+          $populateJS = "var draftData = ". json_encode($data) .";";
         }
       }
-      $js .= "};script.src = '//".$host."/assets/js/embed.js';document.head.appendChild(script);document.head.append('<script>var window.draftData = ".$populateJS .";<\/script>');"; //end ready
+      $js .= "};script.src = '//".$host."/assets/js/embed.js';var s = document.createElement('script');s.setAttribute('type', 'text/javascript'); s.text='$populateJS';document.head.append(s);document.head.appendChild(script);"; //end ready
       return $js;
   }
 

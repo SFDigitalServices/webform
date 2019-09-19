@@ -181,17 +181,19 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
-function submitPartial(){
-  var submitUrl = jQuery("form").attr('action').replace('submit', 'submitPartial')
-  jQuery("form").attr('action', submitUrl);
-  jQuery("#submit").click();
+function submitPartial(formid){
+  var formid = "SFDSWFB_forms_" + formid;
+  var submitUrl = jQuery("#"+formid).attr('action').replace('submit', 'submitPartial');
+  jQuery("#"+formid).attr('action', submitUrl);
+  document.forms[formid].submit.click();
 }
+
 SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
-			if (phoneIsValid($(this).val())) {
-				fieldValid($(this).attr('id'));
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
 			} else {
-				fieldInvalid($(this).attr('id'));
+				fieldInvalid(jQuery(this).attr('id'));
 			}
 		var key = event.keyCode || event.charCode;
 		if (key === 8 || key === 46) {
@@ -203,20 +205,49 @@ SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container form').submit(function(e) {
 		var formValid = true;
 		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {
-			if (phoneIsValid($(this).val())) {
-				fieldValid($(this).attr('id'));
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
 			} else {
 				formValid = false;
-				fieldInvalid($(this).attr('id'));
+				fieldInvalid(jQuery(this).attr('id'));
 			}
 		});
 		if (!formValid) {
 			e.preventDefault();
 		}
-	});
+  });
 
+  if(window.draftData !== undefined){
+    populateForm(window.draftData);
+  }
 }
 
-function populateForm(data){
-  console.log(data);
+function populateForm(formData){
+  for(element in formData){
+    if(document.forms[0][element] !== undefined){
+      if(document.forms[0][element] instanceof RadioNodeList){
+        getCheckedCheckboxesFor(document.forms[0][element], formData[element])
+      }
+      document.forms[0][element].value = formData[element];
+    }
+  };
+   // inject hidden input for magiclink
+  if(document.forms[0]['magiclink'] === undefined){
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "magiclink";
+    input.value = formData['magiclink'];
+    document.forms[0].appendChild(input);
+  }
+  else{
+    document.forms[0]['magiclink'].value = formData['magiclink'];
+  }
+}
+
+function getCheckedCheckboxesFor(elements, items) {
+        for (var i = 0; i < elements.length; i++) {
+            if (elements[i].type == 'checkbox' && items.includes(elements[i].value) ){
+              elements[i].checked = true;
+            }
+        }
 }

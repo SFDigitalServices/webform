@@ -416,8 +416,11 @@ class FormController extends Controller
           $data['body'] = array();
           $magiclink = urlencode($magiclink);
           $data['body']['message'] = 'This is the body of the emails';
-          $data['body']['host'] = $request->headers->get('referer') . "?draft=$magiclink&form_id=$form_id";
-          //$this->emailController->sendEmail($data, 'emails.saveForLater');
+          $referer = $request->headers->get('referer');
+          $host = parse_url($referer, PHP_URL_HOST);
+          $path = parse_url($referer, PHP_URL_PATH);
+          $data['body']['host'] = '//'.$host.$path . "?draft=$magiclink&form_id=$form_id";
+          $this->emailController->sendEmail($data, 'emails.saveForLater');
           return view('emails.saveForLater', ['data' => $data['body']]);
 		    }
     }

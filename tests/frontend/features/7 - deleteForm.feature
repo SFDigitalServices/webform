@@ -4,7 +4,7 @@ Feature: delete form
   I need an existing form
 
   Scenario:
-    Given I clicked into an existing form
+    Given I clicked into an existing form for deletion
     When I click the delete icon
     Then I should see confirmation popup
     When I click Do It
