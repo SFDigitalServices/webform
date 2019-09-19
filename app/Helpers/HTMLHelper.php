@@ -7,6 +7,7 @@ use App\Helpers\ListHelper;
 class HTMLHelper
 {
     protected $controllerHelper;
+    protected $dataStoreHelper;
 
     /** Create a new controller instance.
      *
@@ -15,6 +16,7 @@ class HTMLHelper
     public function __construct()
     {
       $this->controllerHelper = new ControllerHelper();
+      $this->dataStoreHelper = new DataStoreHelper();
     }
 
      /** Generates form field HTML
@@ -94,8 +96,11 @@ class HTMLHelper
         } else {
             $form_container = $form_div. $form_container;
         }
-
-        $form_end = '</fieldset></form>';
+        $form_end = "";
+        if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
+          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial()" >Save For Later</a></div></div>';
+        }
+        $form_end .= '</fieldset></form>';
         // clean up line breaks, otherwise embedjs will fail
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
@@ -105,10 +110,11 @@ class HTMLHelper
     *
     * @param $form
     * @param $base_url
+    * @param $referer
     *
     * @return string
     */
-  public function wrapJS($form, $host = '')
+  public function wrapJS($form, $host = '', $referer = '')
   {
       $str = $this->getHTML($form, $host);
       $sectional = $this->isSectional($form['content']);
@@ -268,7 +274,19 @@ class HTMLHelper
               $js .= '});';
           }
       }
-      $js .= "};script.src = '//".$host."/assets/js/embed.js';document.head.appendChild(script);"; //end ready
+      // check to see if this is a retrieval
+      $populateJS = '';
+      if($referer !== ''){
+        $query = parse_url($referer, PHP_URL_QUERY);
+        parse_str($query, $output);
+        if(isset($output['draft'])){
+          $draft = $output['draft'];
+          $form_id = $output['form_id'];
+          $data = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
+          $populateJS = "var draftData = ". json_encode($data) ."; populateForm(draftData)";
+        }
+      }
+      $js .= "};script.src = '//".$host."/assets/js/embed.js';document.head.appendChild(script);document.head.append('<script>var window.draftData = ".$populateJS .";<\/script>');"; //end ready
       return $js;
   }
 

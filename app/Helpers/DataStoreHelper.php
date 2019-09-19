@@ -169,6 +169,31 @@ class DataStoreHelper extends Migration
         }
     }
 
+    /** Retrieve form draft
+    *
+    * @param $formid
+    * @param $draft
+    *
+    * @return JSON
+    */
+    public function retrieveFormDraft($formid, $draft = '')
+    {
+        $data = array();
+        if ($formid > 0 && $draft !== '') {
+            try {
+                $results = DB::table('forms_'.$formid)
+                  ->select()
+                  ->where('magiclink', $draft)
+                  ->first();
+                $data = (array) $results;
+            } catch (\Illuminate\Database\QueryException $ex) {
+                $results = ['status' => 0, 'message' => $ex->getMessage()];
+                return null;
+            }
+        }
+        return $data;
+    }
+
    /** Handles form submission
     *
     * @param $form

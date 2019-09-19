@@ -46,7 +46,7 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 		return;
 	}
 	var data = '';
-	
+
 	if (ids.length) {
 		data += '{ ';
 		for (var fieldId of ids) {
@@ -57,7 +57,7 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 			data = JSON.parse(data);
 		}
 	}
-	
+
 	//only call if it's a new endpoint and post combination
 	if (typeof SFDSWFB.lastCalled[endPoint] == "undefined" || SFDSWFB.lastCalled[endPoint] != data) {
 		jQuery.post(endPoint, data, function(response) {
@@ -94,8 +94,8 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 						jQuery("[data-id="+populateField+"] .field-legend").html('');
 						for (var option of parsedData) {
 							jQuery("[data-id="+populateField+"] .field-legend").append('<div class="cb-input-group"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s06" name="'+checkboxName+'[]"/><label for="'+populateField+'_'+option+'" class="checkbox">'+option+'</label></div>');
-						
-						
+
+
 							jQuery('#' + populateField).after('<input type="checkbox" name="'+option+'" value="'+option+'"/>');
 						}
 					} else if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "radio") {
@@ -114,19 +114,19 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 					parsedData = response;
 				}
 				//todo stringify objects
-				//if (typeof parsedData == "object") 
+				//if (typeof parsedData == "object")
 				jQuery('#'+populateField).val(parsedData);
 			}
 		}, method);
 	}
 }
-		
+
 function prefill(arr) {
 	for (var name in arr) {
 		jQuery('[name='+name+']').val(arr[name]);
 	}
-}		
-		
+}
+
 function getDataInPath(obj, path) {
 	var output = obj;
 	var paths = path.split('/');
@@ -181,6 +181,11 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
+function submitPartial(){
+  var submitUrl = jQuery("form").attr('action').replace('submit', 'submitPartial')
+  jQuery("form").attr('action', submitUrl);
+  jQuery("#submit").click();
+}
 SFDSWFB.lastScript = function() {
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid($(this).val())) {
@@ -193,7 +198,7 @@ SFDSWFB.lastScript = function() {
 			return;
 		} else {
 			jQuery(this).val(new libphonenumber.AsYouType('US').input(jQuery(this).val()));
-		}			
+		}
 	});
 	jQuery('#SFDSWF-Container form').submit(function(e) {
 		var formValid = true;
@@ -210,4 +215,8 @@ SFDSWFB.lastScript = function() {
 		}
 	});
 
+}
+
+function populateForm(data){
+  console.log(data);
 }
