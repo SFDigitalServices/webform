@@ -8,10 +8,5 @@
 	<textarea id="SFDSWFB-source" class="col-md-12"></textarea>
 	&nbsp;
 	<br/>
-	<h4>JSON Form Object</h4>
-	<textarea id="SFDSWFB-form" class="col-md-12" rows="20"></textarea>
-	<br/>
-	<a class="btn btn-success" onclick="loadForm()" href="javascript:void(0)">ReLoad</a>
-	<br/>
 	<br/>
 </div> 

@@ -123,11 +123,15 @@ let Item = function(obj) {
 		case 'i14': //textarea
 			this.removeSpecialValues('textarea')
 			this.removeSpecialFunctions(['calculations'])
-			this.removeAttrs(['type'])
+			this.removeAttrs(['type','value'])
 			break
 		case 's02': //select
-		case 's14': //state
 			this.removeSpecialValues('option')
+			this.removeAttrs(['placeholder','type'])
+		case 's14': //state
+		case 's15': //state
+		case 's16': //state
+			this.removeSpecialValues()
 			this.removeAttrs(['placeholder','type'])
 			break
 		case 's06': //checkboxes

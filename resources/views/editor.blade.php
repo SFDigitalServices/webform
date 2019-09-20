@@ -39,5 +39,7 @@
         <div class="col-md-12"></div>
       </div>
     </div> {{--  /.container --}}
+
+  @include('modal')
 	
 @endsection

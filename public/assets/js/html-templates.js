@@ -5,6 +5,7 @@ fb.view.editItem = "\
 		<div class='accordion-section attributes'> \
 			<div class='accordion-header'>Attributes</div> \
 			<div class='accordion'> \
+				<input type='hidden' name='type' id='type'/>\
 				<input type='hidden' name='formtype' id='formtype'/>\
 				<label class='control-label label-attribute'>Label Text</label> <input class='form-control label-attribute' type='text' name='label' id='label'> \
 				<label class='control-label placeholder-attribute'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control placeholder-attribute'> \
@@ -202,4 +203,18 @@ fb.view.listItem = function(id, num, numStr) {
 
 fb.view.listSpacer = function(num) {
 	return '<a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '"></a>'
+}
+
+fb.view.embedCode = function(id, embedUrl, assetsUrl) {
+	return '<!-- If possible, place the following in your <head> tag. -->' +
+	'\n' +
+	'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />\n' +
+	'<link rel="stylesheet" href="' + assetsUrl + 'css/form-base.css" />\n' +
+	'\n' +
+	'<!-- Insert the following in the <body>, wherever\n' +
+	'you would like the form to appear. -->' +
+	'\n' +
+	'<script src="' + embedUrl + '?id=' + id + '"></script>\n' +
+	'<noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>\n' +
+	'<div id="SFDSWF-Container"></div>'
 }

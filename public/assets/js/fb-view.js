@@ -14,17 +14,13 @@ let FbView = function(formsCollection) {
  * Init DOM events
  */
 FbView.prototype.initEvents = function() {
-	this.listForms()
-	this.bindInsertItems()
-	this.bindSystemButtons()
+	var self = this
+	
+	self.listForms()
+	self.bindInsertItems()
+	self.bindSystemButtons()
 
-	if (fb.startedEarly === 1) {
-		this.startForm()
-	} else {
-		$('.welcomeBox .btn-info').on('click', function(){
-			this.startForm()
-		})
-	}
+	if (fb.startedEarly) self.startForm()
 }
 
 /**
@@ -32,12 +28,21 @@ FbView.prototype.initEvents = function() {
  */
 FbView.prototype.bindSystemButtons = function() {
 	var self = this
+
+	$('a.clone-button').on('click', function() {
+		self.formsCollection.forms[fb.formId].clone()
+	})
+	
+	$('a.delete-button').on('click', function() {
+		self.formsCollection.forms[fb.formId].confirmDelete()
+	})
 	
 	$('a.preview-window').on('click', function() {
 		fb.openPreviewWindow()
 	})
 	$('a.embed-toggle').on('click', function() {
 		self.showMiddlePanel('SFDSWFB-embed')
+		self.genSource()
 	})
 	
 	$('a.settings-toggle').on('click', function() {
@@ -47,6 +52,19 @@ FbView.prototype.bindSystemButtons = function() {
 	$('a.horizontal-toggle').on('click', function() {
 		self.toggleMiddlePanel()
 	})
+
+	$('#SFDSWFB-settings .apply-button').on('click', function() {
+		self.formsCollection.forms[fb.formId].saveSettings()
+	})
+	
+	$('#SFDSWFB-settings .revert-button').on('click', function() {
+		self.formsCollection.forms[fb.formId].populateSettings()
+	})
+	
+	$('#SFDSWFB-names').on('change', function() {
+		fb.loadNames(this)
+	})
+	
 }
 
 /**
@@ -58,7 +76,7 @@ FbView.prototype.bindInsertItems = function() {
 	$('#SFDSWFB-insert a').on('click', function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
-		self.populateList(fb.formId)
+		self.populateList()
 		self.editItem($('#SFDSWFB-list .field').eq(index))
 	})
 }
@@ -74,6 +92,11 @@ FbView.prototype.listForms = function() {
 	for (i in this.formsCollection.forms) {
 		$('.forms').append('<div>').append(fb.view.formLink(this.formsCollection.forms[i]))
 	}
+	
+	$('.welcomeBox .btn-info').off()
+	$('.welcomeBox .btn-info').on('click', function() {
+		self.startForm()
+	})
 
 	$('a.start-form').on('click', function() {
 		self.startForm($(this).data('id'))
@@ -91,12 +114,13 @@ FbView.prototype.startForm = function(id) {
 		this.formsCollection.forms[0].loadNewForm()
 		fb.addBrowserState(0, '/home?new')
 		$('#welcome').modal()
-		id = 0
 	} else {
 		this.formsCollection.forms[id].loadExistingForm(id)
 		fb.addBrowserState(id, '/home?id=' + id)
+		// do additional call to get authors
+		fb.callAPI('/form/authors', { 'id': id }, fb.shareResponse)
 	}
-	this.populateList(id)
+	this.populateList()
 	this.loadPreview()
 	$('body > div.content').hide()
 	$('.editorContainer').show()
@@ -104,25 +128,20 @@ FbView.prototype.startForm = function(id) {
 
 /**
  * Loads the form preview in an iframe
- *
- * @param {String} sectionId
  */
 FbView.prototype.loadPreview = function(sectionId) {
-	var scrollTo = typeof sectionId != "undefined" ? '&sectionId=' + sectionId : ''
+	var scrollTo = $('#SFDSWFB-list .item.selected').length != "undefined" ? '&sectionId=' + $('#SFDSWFB-list .item.selected').eq(0).data('id') : ''
 	$('#SFDSWFB-preview').html(fb.view.previewIframe(fb.formId,scrollTo))
 }
 
 /**
  * Recreates the Navigation window from the Form
- *
- * @param {Integer} id
  */
-FbView.prototype.populateList = function(id) {
-	var self = this
-	
+FbView.prototype.populateList = function() {	
+	this.unselectList()
 	var html = ''
 	var count = 1
-	var formData = this.formsCollection.forms[id].content.data
+	var formData = this.formsCollection.forms[fb.formId].content.data
 	for (i in formData) {
 		if (i < formData.length - 1) { //do not show last item, button
 			html += fb.view.listItem(formData[i].id, count, count < 10 ? "0" + count : count)
@@ -131,11 +150,20 @@ FbView.prototype.populateList = function(id) {
 	}
 	html += fb.view.listSpacer(count)
 	$('#SFDSWFB-list').html(html)
+	this.bindListButtons()
+}
+
+/**
+ * Binds click events to the Navigation list items buttons
+ */
+FbView.prototype.bindListButtons = function() {
+	var self = this
+	
 	$('#SFDSWFB-list .item').on('click', function() {
 		self.editItem($(this))
 	})
 	$('#SFDSWFB-list .fa-sort').on('click', function() {
-		self.sortItem($(this), $(this).prev())
+		self.sortItem($(this))
 	})
 	$('#SFDSWFB-list .fa-times').on('click', function() {
 		self.deleteItem($(this).data('index') - 1) //set to zero-indexed
@@ -155,15 +183,14 @@ FbView.prototype.unselectList = function() {
 /**
  * Highlights and opens the selected item for editing
  *
- * @param {Object} obj
+ * @param {JQuery DOM Object} obj
  */
 FbView.prototype.editItem = function(obj) {
-	if (obj.hasClass('spacer') && $('#SFDSWFB-list').hasClass('moving')) return this.moveItem(obj.data('index') - 1) //set to zero-indexed
-	
-	this.loadPreview(obj.data('id'))
+	if (obj.hasClass('spacer') && $('#SFDSWFB-list').hasClass('moving')) return this.moveItemHere(obj.data('index') - 1) //set to zero-indexed
 	this.unselectList()
-	this.showMiddlePanel(obj.hasClass('spacer') ? 'SFDSWFB-insert' : 'SFDSWFB-attributes', obj.data('index') -1) //set to zero-indexed
 	obj.addClass('selected')
+	this.loadPreview()
+	this.showMiddlePanel(obj.hasClass('spacer') ? 'SFDSWFB-insert' : 'SFDSWFB-attributes') //set to zero-indexed
 } 
 
 /**
@@ -172,25 +199,24 @@ FbView.prototype.editItem = function(obj) {
  * @param {Integer} index
  */
 FbView.prototype.deleteItem = function(index) {
+	if (this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)) return fb.loadDialogModal('Error Removing Item', "This item is referenced by other items. Please remove all references to this item before deleting.")
 	this.formsCollection.forms[fb.formId].deleteItem(index)
-	this.loadPreview()
-	this.populateList(fb.formId)
+	this.populateList()
 } 
 
 /**
  * Highlights the item and readies it for reordering
  *
- * @param {Object} sort
- * @param {Object} obj
+ * @param {JQuery DOM Object} handleObj
  */
-FbView.prototype.sortItem = function(sort, obj) {
-	this.loadPreview(obj.data('id'))
+FbView.prototype.sortItem = function(handleObj) {
 	this.unselectList()
-	obj.addClass('selected')
-	obj.addClass('moving')
-	sort.addClass('moving')
+	handleObj.prev().addClass('selected')
+	handleObj.prev().addClass('moving')
+	handleObj.addClass('moving')
 	$('#SFDSWFB-list').addClass('moving')
 	this.showMiddlePanel('SFDSWFB-sort')
+	this.loadPreview()
 } 
 
 /**
@@ -198,23 +224,21 @@ FbView.prototype.sortItem = function(sort, obj) {
  *
  * @param {Integer} index
  */
-FbView.prototype.moveItem = function(index) {
+FbView.prototype.moveItemHere = function(index) {
 	var itemId = $('#SFDSWFB-list .field.selected').eq(0).data('id')
 	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list .field.selected').eq(0).data('index') - 1, index) //adjust for zero index
-	this.loadPreview(itemId)
-	this.populateList(fb.formId)
+	this.populateList()
 	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
 	newObj.addClass('selected')
-	this.showMiddlePanel('SFDSWFB-attributes', newObj.data('index') -1)
+	this.showMiddlePanel('SFDSWFB-attributes')
 }
 
 /**
  * Expands the middle panel, shows a specific panel and optionally highlight an item for editing
  *
  * @param {String} panelId
- * @param {Integer} itemIndex
  */
-FbView.prototype.showMiddlePanel = function(panelId, itemIndex) {
+FbView.prototype.showMiddlePanel = function(panelId) {
 	$('.middlePanel').removeClass('col-lg-1')
 	$('.middlePanel').removeClass('col-xl-1')
 	if (!$('.middlePanel').hasClass('col-lg-4')) $('.middlePanel').addClass('col-lg-4')
@@ -223,12 +247,10 @@ FbView.prototype.showMiddlePanel = function(panelId, itemIndex) {
 	$('.rightPanel').removeClass('col-xl-9')
 	if (!$('.rightPanel').hasClass('col-lg-5')) $('.rightPanel').addClass('col-lg-5')
 	if (!$('.rightPanel').hasClass('col-xl-7')) $('.rightPanel').addClass('col-xl-7')
-	if (typeof panelId != "undefined") {
+	if (typeof panelId !== "undefined") {
 		$('.middlePanel > div').hide()
 		$('#'+panelId).show()
-		if (typeof itemIndex !== "undefined") {
-			this.showAttributes(itemIndex)
-		}
+		if (panelId === "SFDSWFB-attributes") this.showAttributes()
 	}
 	$('.horizontal-toggle').removeClass('fa-angle-double-right')
 	if (!$('.horizontal-toggle').hasClass('fa-angle-double-left')) $('.horizontal-toggle').addClass('fa-angle-double-left')
@@ -239,37 +261,33 @@ FbView.prototype.showMiddlePanel = function(panelId, itemIndex) {
  *
  * @param {Integer} itemIndex
  */
-FbView.prototype.showAttributes = function(itemIndex) {
+FbView.prototype.showAttributes = function() {
 	var self = this
+	var itemIndex = $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1
 
 	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
 
 	$('#SFDSWFB-attributes .apply-button').on('click', function() {
-		var itemId = $('#SFDSWFB-attributes input[name=id]').val()
-		self.formsCollection.forms[fb.formId].modifyItem()
-		self.loadPreview(itemId)
-		self.populateList(fb.formId)
-		var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
-		newObj.addClass('selected')
-		self.showMiddlePanel('SFDSWFB-attributes', newObj.data('index') -1)
+		self.applyAttributes()
 	})
 
 	$('#SFDSWFB-attributes .revert-button').on('click', function() {
-		self.showMiddlePanel('SFDSWFB-attributes', $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1)
+		self.showMiddlePanel('SFDSWFB-attributes')
 	})
 	
-	self.removeEditItemParts(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.delegateItems(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.initAutofillNames()
 	
 	$('.accordion-section > .accordion').hide()
 	$('.accordion-section.attributes > .accordion').show()
 }
 
 /**
- * Strips sections from the edit attributes panel based on the item properties
+ * Populates or strips sections from the edit attributes panel based on the item properties
  *
  * @param {Item} item
  */
-FbView.prototype.removeEditItemParts = function(item) {
+FbView.prototype.delegateItems = function(item) {
 	for (i in item) {
 		if (typeof item[i] !== "function") {
 			if (item[i] === null) {
@@ -291,10 +309,48 @@ FbView.prototype.removeEditItemParts = function(item) {
 						break
 				}
 			} else {
-				$('[name='+i+']').val(item[i])
+				$('#SFDSWFB-attributes input[name='+i+'], #SFDSWFB-attributes textarea[name='+i+']').val(item[i])
 			}
 		}
 	}
+}
+
+/**
+ * Turns on autofill for names based on the value of the dropdown
+ */
+FbView.prototype.initAutofillNames = function() {
+    if (fb.autofillNames != null) {
+	    $('#SFDSWFB-attributes #name').typeahead({
+		    minlength: 1,
+			hint: false
+		}, {
+		    name: 'prefill',
+			source: substringMatcher(fb.autofillNames)
+	    })
+	    // $('#SFDSWFB-attributes #name').tagsinput();
+    } else {
+	    $('#SFDSWFB-attributes #name').typeahead('destroy')
+    }
+}
+
+/**
+ * Validates and saves changes to Item
+ */
+FbView.prototype.applyAttributes = function() {
+	var itemIndex = $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1
+	var itemId = $('#SFDSWFB-attributes input[name=id]').val()
+	var itemName = $('#SFDSWFB-attributes input[name=name]').val()
+
+	//validations
+	if (itemId === "") return fb.loadDialogModal('Error Saving Attributes', "The ID field is required. Please enter an ID.")
+	if (this.formsCollection.forms[fb.formId].doesItExist(itemId, "id", itemIndex)) return fb.loadDialogModal('Error Saving Attributes', "The ID '" + itemId + "' is already in your form. Please use a different ID.")
+	if (itemName !== "" && this.formsCollection.forms[fb.formId].doesItExist(itemName, "name", itemIndex)) return fb.loadDialogModal('Error Saving Attributes', "The Name '" + itemName + "' is already in your form. Please use a different Name.")
+	
+	this.formsCollection.forms[fb.formId].modifyItem()
+	this.populateList()
+	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
+	newObj.addClass('selected')
+	this.showMiddlePanel('SFDSWFB-attributes')
 }
 
 /**
@@ -324,4 +380,50 @@ FbView.prototype.hideMiddlePanel = function() {
 	//$('.middlePanel > div').hide()
 	$('.horizontal-toggle').removeClass('fa-angle-double-left')
 	if (!$('.horizontal-toggle').hasClass('fa-angle-double-right')) $('.horizontal-toggle').addClass('fa-angle-double-right')
+}
+
+/**
+ * Share the form with other users
+ */
+FbView.prototype.share = function() {
+  $('#SFDSWFB-authors').slideUp()
+  fb.callAPI('/form/share', { 'id': fb.formId, 'email': $('#SFDSWFB-authors input').val() }, fb.shareResponse)
+}
+
+
+
+
+
+
+/**
+ * Generate the embed code
+ */
+ //todo make a function to parse a JSON form object
+FbView.prototype.genSource = function() {
+	//can't generate code for unsaved forms
+	if (fb.formId == 0) {
+		$('#SFDSWFB-source').val('Please save your form before generating HTML.')
+		return
+	}
+
+	//do not generate code for forms without an action endpoint
+	if (this.formsCollection.forms[fb.formId].content.settings.action == '') {
+		$('#SFDSWFB-snippet').text('Please set the Form Action (in Settings) before embedding your form.')
+		return
+	}
+
+	$('#SFDSWFB-snippet').text(this.embedCode())
+
+	$.get('/form/generate?id=' + fb.formId, function (data) {
+		$('#SFDSWFB-source').val(data)
+	})
+}
+
+/**
+ * Generate the embed code
+ */
+FbView.prototype.embedCode = function() {
+	var embedUrl = new URL('/form/embed', window.location.href)
+	var assetsUrl = new URL('/assets/', window.location.href)
+	return fb.view.embedCode(fb.formId, embedUrl, assetsUrl)
 }
