@@ -223,31 +223,34 @@ SFDSWFB.lastScript = function() {
 }
 
 function populateForm(formData){
+  if(formData['formid'] === undefined) return false;
+  var formid = 'SFDSWFB_forms_' + formData['formid'];
+  //console.log(document.forms[formid]);
   for(element in formData){
-    if(document.forms[0][element] !== undefined){
-      if(document.forms[0][element] instanceof RadioNodeList){
-        getCheckedCheckboxesFor(document.forms[0][element], formData[element])
+    if(document.forms[formid][element] !== undefined){
+      if(document.forms[formid][element] instanceof RadioNodeList){
+        getCheckedCheckboxesFor(document.forms[formid][element], formData[element])
       }
-      document.forms[0][element].value = formData[element];
+      document.forms[formid][element].value = formData[element];
     }
   };
    // inject hidden input for magiclink
-  if(document.forms[0]['magiclink'] === undefined){
+  if(document.forms[formid]['magiclink'] === undefined){
     var input = document.createElement("input");
     input.type = "hidden";
     input.name = "magiclink";
     input.value = formData['magiclink'];
-    document.forms[0].appendChild(input);
+    document.forms[formid].appendChild(input);
   }
   else{
-    document.forms[0]['magiclink'].value = formData['magiclink'];
+    document.forms[formid]['magiclink'].value = formData['magiclink'];
   }
 }
 
 function getCheckedCheckboxesFor(elements, items) {
-        for (var i = 0; i < elements.length; i++) {
-            if (elements[i].type == 'checkbox' && items.includes(elements[i].value) ){
-              elements[i].checked = true;
-            }
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].type == 'checkbox' && items.includes(elements[i].value) ){
+          elements[i].checked = true;
         }
+    }
 }

@@ -187,6 +187,7 @@ class DataStoreHelper extends Migration
                   ->where('magiclink', $draft)
                   ->first();
                 $data = (array) $results;
+                $data['formid'] = $formid;
                 $lookups = $this->getLookupTable($formid);
                 foreach ($lookups as $lookup) {
                     $ids = explode(',', $data[$lookup['form_field_name']] );
