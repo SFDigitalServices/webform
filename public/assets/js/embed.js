@@ -47,7 +47,7 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 		return;
 	}
 	var data = '';
-	
+
 	if (ids.length) {
 		data += '{ ';
 		for (var fieldId of ids) {
@@ -58,7 +58,7 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 			data = JSON.parse(data);
 		}
 	}
-	
+
 	//only call if it's a new endpoint and post combination
 	if (typeof SFDSWFB.lastCalled[endPoint] == "undefined" || SFDSWFB.lastCalled[endPoint] != data) {
 		jQuery.post(endPoint, data, function(response) {
@@ -95,8 +95,8 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 						jQuery("[data-id="+populateField+"] .field-legend").html('');
 						for (var option of parsedData) {
 							jQuery("[data-id="+populateField+"] .field-legend").append('<div class="cb-input-group"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s06" name="'+checkboxName+'[]"/><label for="'+populateField+'_'+option+'" class="checkbox">'+option+'</label></div>');
-						
-						
+
+
 							jQuery('#' + populateField).after('<input type="checkbox" name="'+option+'" value="'+option+'"/>');
 						}
 					} else if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "radio") {
@@ -115,19 +115,19 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 					parsedData = response;
 				}
 				//todo stringify objects
-				//if (typeof parsedData == "object") 
+				//if (typeof parsedData == "object")
 				jQuery('#'+populateField).val(parsedData);
 			}
 		}, method);
 	}
 }
-		
+
 function prefill(arr) {
 	for (var name in arr) {
 		jQuery('[name='+name+']').val(arr[name]);
 	}
-}		
-		
+}
+
 function getDataInPath(obj, path) {
 	var output = obj;
 	var paths = path.split('/');
@@ -184,6 +184,7 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
+<<<<<<< .merge_file_a20972
 function skipToSectionId(callback) { //does not work for checkboxes and possibly radios and selects
 	if (!SFDSWFB.skipToSectionId) {
 		var url = new URL(window.location.href)
@@ -199,6 +200,13 @@ function skipToSectionId(callback) { //does not work for checkboxes and possibly
 			jQuery("div.form-section-header[data-id=" + SFDSWFB.skipToSectionId + "]").css({'border': '5px solid green', 'background-color': 'yellowgreen'})
 		}
 	}
+=======
+function submitPartial(formid){
+  var formid = "SFDSWFB_forms_" + formid;
+  var submitUrl = jQuery("#"+formid).attr('action').replace('submit', 'submitPartial');
+  jQuery("#"+formid).attr('action', submitUrl);
+  document.forms[formid].submit.click();
+>>>>>>> .merge_file_a20264
 }
 
 SFDSWFB.lastScript = function() {
@@ -206,31 +214,67 @@ SFDSWFB.lastScript = function() {
 	skipToSectionId(false)
 	
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
-			if (phoneIsValid($(this).val())) {
-				fieldValid($(this).attr('id'));
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
 			} else {
-				fieldInvalid($(this).attr('id'));
+				fieldInvalid(jQuery(this).attr('id'));
 			}
 		var key = event.keyCode || event.charCode;
 		if (key === 8 || key === 46) {
 			return;
 		} else {
 			jQuery(this).val(new libphonenumber.AsYouType('US').input(jQuery(this).val()));
-		}			
+		}
 	});
 	jQuery('#SFDSWF-Container form').submit(function(e) {
 		var formValid = true;
 		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {
-			if (phoneIsValid($(this).val())) {
-				fieldValid($(this).attr('id'));
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
 			} else {
 				formValid = false;
-				fieldInvalid($(this).attr('id'));
+				fieldInvalid(jQuery(this).attr('id'));
 			}
 		});
 		if (!formValid) {
 			e.preventDefault();
 		}
-	});
+  });
 
+  if(window.draftData !== undefined){
+    populateForm(window.draftData);
+  }
+}
+
+function populateForm(formData){
+  if(formData['formid'] === undefined) return false;
+  var formid = 'SFDSWFB_forms_' + formData['formid'];
+  //console.log(document.forms[formid]);
+  for(element in formData){
+    if(document.forms[formid][element] !== undefined){
+      if(document.forms[formid][element] instanceof RadioNodeList){
+        getCheckedCheckboxesFor(document.forms[formid][element], formData[element])
+      }
+      document.forms[formid][element].value = formData[element];
+    }
+  };
+   // inject hidden input for magiclink
+  if(document.forms[formid]['magiclink'] === undefined){
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "magiclink";
+    input.value = formData['magiclink'];
+    document.forms[formid].appendChild(input);
+  }
+  else{
+    document.forms[formid]['magiclink'].value = formData['magiclink'];
+  }
+}
+
+function getCheckedCheckboxesFor(elements, items) {
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].type == 'checkbox' && items.includes(elements[i].value) ){
+          elements[i].checked = true;
+        }
+    }
 }
