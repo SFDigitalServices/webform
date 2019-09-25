@@ -184,7 +184,6 @@ function fieldValid(id) {
 	jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
-<<<<<<< .merge_file_a20972
 function skipToSectionId(callback) { //does not work for checkboxes and possibly radios and selects
 	if (!SFDSWFB.skipToSectionId) {
 		var url = new URL(window.location.href)
@@ -200,13 +199,13 @@ function skipToSectionId(callback) { //does not work for checkboxes and possibly
 			jQuery("div.form-section-header[data-id=" + SFDSWFB.skipToSectionId + "]").css({'border': '5px solid green', 'background-color': 'yellowgreen'})
 		}
 	}
-=======
+}
+
 function submitPartial(formid){
   var formid = "SFDSWFB_forms_" + formid;
   var submitUrl = jQuery("#"+formid).attr('action').replace('submit', 'submitPartial');
   jQuery("#"+formid).attr('action', submitUrl);
   document.forms[formid].submit.click();
->>>>>>> .merge_file_a20264
 }
 
 SFDSWFB.lastScript = function() {
