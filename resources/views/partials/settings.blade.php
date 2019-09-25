@@ -6,16 +6,11 @@
 </div>
 
 <div class='form-group'>
-  <label class="radio">
-    <input type="radio" value="db" name="backend" checked="checked">
-    I have a database and submission endpoint
-  </label>
-
-  <label class="radio">
-    <input type="radio" value="csv" name="backend">
-    I want to create a Webform Buider CSV database
-  </label>
-  <!--<input type="hidden" name="hash"/>-->
+	<label class="control-label">Backend</label>
+	<select class="form-control" name="backend">
+		<option value="db">I have a database and submission endpoint</option>
+		<option value="csv">I want to create a Webform Buider CSV database</option>
+	</select>
 </div>
 
 <div class='form-group csvFile' style="display:none">
@@ -39,19 +34,7 @@
 </div>
 --}}
 
-<div class='form-group'>
-  <label class="control-label">Form Method</label>
-
-  <label class="radio">
-    <input type="radio" value="POST" name="method" checked="checked">
-    POST
-  </label>
-
-  <label class="radio">
-    <input type="radio" value="GET" name="method">
-    GET (not recommended)
-  </label>
-</div>
+<input type="hidden" name="method" value="POST"/>
 
 <div class='form-group'>
   <label class="control-label">Co-Authors</label>

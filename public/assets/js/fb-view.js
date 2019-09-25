@@ -8,19 +8,12 @@
  */
 let FbView = function(formsCollection) {
     this.formsCollection = formsCollection
-}
-
-/**
- * Init DOM events
- */
-FbView.prototype.initEvents = function() {
-	var self = this
 	
-	self.listForms()
-	self.bindInsertItems()
-	self.bindSystemButtons()
+	this.listForms()
+	this.bindInsertItems()
+	this.bindSystemButtons()
 
-	if (fb.startedEarly) self.startForm()
+	if (fb.startedEarly) this.startForm()
 }
 
 /**
@@ -55,16 +48,34 @@ FbView.prototype.bindSystemButtons = function() {
 
 	$('#SFDSWFB-settings .apply-button').on('click', function() {
 		self.formsCollection.forms[fb.formId].saveSettings()
+		self.disableTimer()
 	})
 	
 	$('#SFDSWFB-settings .revert-button').on('click', function() {
-		self.formsCollection.forms[fb.formId].populateSettings()
+		self.populateSettings()
 	})
 	
 	$('#SFDSWFB-names').on('change', function() {
 		fb.loadNames(this)
 	})
 	
+}
+
+/**
+ * Binds click events to the Navigation list items buttons
+ */
+FbView.prototype.bindListButtons = function() {
+	var self = this
+	
+	$('#SFDSWFB-list .item').on('click', function() {
+		self.editItem($(this))
+	})
+	$('#SFDSWFB-list .fa-sort').on('click', function() {
+		self.sortItem($(this))
+	})
+	$('#SFDSWFB-list .fa-times').on('click', function() {
+		self.deleteItem($(this).data('index') - 1) //set to zero-indexed
+	})
 }
 
 /**
@@ -77,12 +88,12 @@ FbView.prototype.bindInsertItems = function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
 		self.populateList()
-		self.editItem($('#SFDSWFB-list .field').eq(index))
+		self.editItem($('#SFDSWFB-list .field').eq(index), true)
 	})
 }
 
 /**
- * List all the forms on the welcome page
+ * List all the forms on the welcome page and bind the buttons
  */
 FbView.prototype.listForms = function() {
 	var self = this
@@ -113,25 +124,17 @@ FbView.prototype.startForm = function(id) {
 		this.formsCollection.forms[0] = new Form()
 		this.formsCollection.forms[0].loadNewForm()
 		fb.addBrowserState(0, '/home?new')
-		$('#welcome').modal()
+		if (!fb.startedEarly) fb.startModal()
 	} else {
 		this.formsCollection.forms[id].loadExistingForm(id)
 		fb.addBrowserState(id, '/home?id=' + id)
 		// do additional call to get authors
 		fb.callAPI('/form/authors', { 'id': id }, fb.shareResponse)
+		this.populateList()
+		this.loadPreview()
+		$('.editorContainer').show()
 	}
-	this.populateList()
-	this.loadPreview()
 	$('body > div.content').hide()
-	$('.editorContainer').show()
-}
-
-/**
- * Loads the form preview in an iframe
- */
-FbView.prototype.loadPreview = function(sectionId) {
-	var scrollTo = $('#SFDSWFB-list .item.selected').length != "undefined" ? '&sectionId=' + $('#SFDSWFB-list .item.selected').eq(0).data('id') : ''
-	$('#SFDSWFB-preview').html(fb.view.previewIframe(fb.formId,scrollTo))
 }
 
 /**
@@ -154,23 +157,6 @@ FbView.prototype.populateList = function() {
 }
 
 /**
- * Binds click events to the Navigation list items buttons
- */
-FbView.prototype.bindListButtons = function() {
-	var self = this
-	
-	$('#SFDSWFB-list .item').on('click', function() {
-		self.editItem($(this))
-	})
-	$('#SFDSWFB-list .fa-sort').on('click', function() {
-		self.sortItem($(this))
-	})
-	$('#SFDSWFB-list .fa-times').on('click', function() {
-		self.deleteItem($(this).data('index') - 1) //set to zero-indexed
-	})
-}
-
-/**
  * Clears the Navigation window list of selected or moving modifiers
  */
 FbView.prototype.unselectList = function() {
@@ -181,176 +167,11 @@ FbView.prototype.unselectList = function() {
 }
 
 /**
- * Highlights and opens the selected item for editing
- *
- * @param {JQuery DOM Object} obj
+ * Loads the form preview in an iframe, will highlight the item in the iframe if an item is highlighted in the list
  */
-FbView.prototype.editItem = function(obj) {
-	if (obj.hasClass('spacer') && $('#SFDSWFB-list').hasClass('moving')) return this.moveItemHere(obj.data('index') - 1) //set to zero-indexed
-	this.unselectList()
-	obj.addClass('selected')
-	this.loadPreview()
-	this.showMiddlePanel(obj.hasClass('spacer') ? 'SFDSWFB-insert' : 'SFDSWFB-attributes') //set to zero-indexed
-} 
-
-/**
- * Deletes an item from the form in the Navigation window
- *
- * @param {Integer} index
- */
-FbView.prototype.deleteItem = function(index) {
-	if (this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)) return fb.loadDialogModal('Error Removing Item', "This item is referenced by other items. Please remove all references to this item before deleting.")
-	this.formsCollection.forms[fb.formId].deleteItem(index)
-	this.populateList()
-} 
-
-/**
- * Highlights the item and readies it for reordering
- *
- * @param {JQuery DOM Object} handleObj
- */
-FbView.prototype.sortItem = function(handleObj) {
-	this.unselectList()
-	handleObj.prev().addClass('selected')
-	handleObj.prev().addClass('moving')
-	handleObj.addClass('moving')
-	$('#SFDSWFB-list').addClass('moving')
-	this.showMiddlePanel('SFDSWFB-sort')
-	this.loadPreview()
-} 
-
-/**
- * Moves the highlighted item to the new insertion point
- *
- * @param {Integer} index
- */
-FbView.prototype.moveItemHere = function(index) {
-	var itemId = $('#SFDSWFB-list .field.selected').eq(0).data('id')
-	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list .field.selected').eq(0).data('index') - 1, index) //adjust for zero index
-	this.populateList()
-	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
-	newObj.addClass('selected')
-	this.showMiddlePanel('SFDSWFB-attributes')
-}
-
-/**
- * Expands the middle panel, shows a specific panel and optionally highlight an item for editing
- *
- * @param {String} panelId
- */
-FbView.prototype.showMiddlePanel = function(panelId) {
-	$('.middlePanel').removeClass('col-lg-1')
-	$('.middlePanel').removeClass('col-xl-1')
-	if (!$('.middlePanel').hasClass('col-lg-4')) $('.middlePanel').addClass('col-lg-4')
-	if (!$('.middlePanel').hasClass('col-xl-3')) $('.middlePanel').addClass('col-xl-3')
-	$('.rightPanel').removeClass('col-lg-8')
-	$('.rightPanel').removeClass('col-xl-9')
-	if (!$('.rightPanel').hasClass('col-lg-5')) $('.rightPanel').addClass('col-lg-5')
-	if (!$('.rightPanel').hasClass('col-xl-7')) $('.rightPanel').addClass('col-xl-7')
-	if (typeof panelId !== "undefined") {
-		$('.middlePanel > div').hide()
-		$('#'+panelId).show()
-		if (panelId === "SFDSWFB-attributes") this.showAttributes()
-	}
-	$('.horizontal-toggle').removeClass('fa-angle-double-right')
-	if (!$('.horizontal-toggle').hasClass('fa-angle-double-left')) $('.horizontal-toggle').addClass('fa-angle-double-left')
-}
-
-/**
- * Displays the edit attributes panel for the selected item
- *
- * @param {Integer} itemIndex
- */
-FbView.prototype.showAttributes = function() {
-	var self = this
-	var itemIndex = $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1
-
-	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
-
-	$('#SFDSWFB-attributes .apply-button').on('click', function() {
-		self.applyAttributes()
-	})
-
-	$('#SFDSWFB-attributes .revert-button').on('click', function() {
-		self.showMiddlePanel('SFDSWFB-attributes')
-	})
-	
-	self.delegateItems(self.formsCollection.forms[fb.formId].content.data[itemIndex])
-	self.initAutofillNames()
-	
-	$('.accordion-section > .accordion').hide()
-	$('.accordion-section.attributes > .accordion').show()
-}
-
-/**
- * Populates or strips sections from the edit attributes panel based on the item properties
- *
- * @param {Item} item
- */
-FbView.prototype.delegateItems = function(item) {
-	for (i in item) {
-		if (typeof item[i] !== "function") {
-			if (item[i] === null) {
-				switch (i) {
-					case 'validation':
-						$('.accordion-validation').remove()
-						break
-					case 'conditionals':
-						$('.accordion-conditionals').remove()
-						break
-					case 'calculations':
-						$('.accordion-calculations').remove()
-						break
-					case 'webhooks':
-						$('.accordion-webhooks').remove()
-						break
-					default:
-						$('.' + i + '-attribute').remove()
-						break
-				}
-			} else {
-				$('#SFDSWFB-attributes input[name='+i+'], #SFDSWFB-attributes textarea[name='+i+']').val(item[i])
-			}
-		}
-	}
-}
-
-/**
- * Turns on autofill for names based on the value of the dropdown
- */
-FbView.prototype.initAutofillNames = function() {
-    if (fb.autofillNames != null) {
-	    $('#SFDSWFB-attributes #name').typeahead({
-		    minlength: 1,
-			hint: false
-		}, {
-		    name: 'prefill',
-			source: substringMatcher(fb.autofillNames)
-	    })
-	    // $('#SFDSWFB-attributes #name').tagsinput();
-    } else {
-	    $('#SFDSWFB-attributes #name').typeahead('destroy')
-    }
-}
-
-/**
- * Validates and saves changes to Item
- */
-FbView.prototype.applyAttributes = function() {
-	var itemIndex = $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1
-	var itemId = $('#SFDSWFB-attributes input[name=id]').val()
-	var itemName = $('#SFDSWFB-attributes input[name=name]').val()
-
-	//validations
-	if (itemId === "") return fb.loadDialogModal('Error Saving Attributes', "The ID field is required. Please enter an ID.")
-	if (this.formsCollection.forms[fb.formId].doesItExist(itemId, "id", itemIndex)) return fb.loadDialogModal('Error Saving Attributes', "The ID '" + itemId + "' is already in your form. Please use a different ID.")
-	if (itemName !== "" && this.formsCollection.forms[fb.formId].doesItExist(itemName, "name", itemIndex)) return fb.loadDialogModal('Error Saving Attributes', "The Name '" + itemName + "' is already in your form. Please use a different Name.")
-	
-	this.formsCollection.forms[fb.formId].modifyItem()
-	this.populateList()
-	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
-	newObj.addClass('selected')
-	this.showMiddlePanel('SFDSWFB-attributes')
+FbView.prototype.loadPreview = function(sectionId) {
+	var scrollTo = $('#SFDSWFB-list .item.selected').length != "undefined" ? '&sectionId=' + $('#SFDSWFB-list .item.selected').eq(0).data('id') : ''
+	$('#SFDSWFB-preview').html(fb.view.previewIframe(fb.formId,scrollTo))
 }
 
 /**
@@ -383,17 +204,65 @@ FbView.prototype.hideMiddlePanel = function() {
 }
 
 /**
+ * Expands the middle panel, shows a specific panel and optionally highlight an item for editing
+ *
+ * @param {String} panelId
+ */
+FbView.prototype.showMiddlePanel = function(panelId) {
+	$('.middlePanel').removeClass('col-lg-1')
+	$('.middlePanel').removeClass('col-xl-1')
+	if (!$('.middlePanel').hasClass('col-lg-4')) $('.middlePanel').addClass('col-lg-4')
+	if (!$('.middlePanel').hasClass('col-xl-3')) $('.middlePanel').addClass('col-xl-3')
+	$('.rightPanel').removeClass('col-lg-8')
+	$('.rightPanel').removeClass('col-xl-9')
+	if (!$('.rightPanel').hasClass('col-lg-5')) $('.rightPanel').addClass('col-lg-5')
+	if (!$('.rightPanel').hasClass('col-xl-7')) $('.rightPanel').addClass('col-xl-7')
+	$('.horizontal-toggle').removeClass('fa-angle-double-right')
+	if (!$('.horizontal-toggle').hasClass('fa-angle-double-left')) $('.horizontal-toggle').addClass('fa-angle-double-left')
+		
+	if (typeof panelId !== "undefined") {
+		$('.middlePanel > div').hide()
+		$('#'+panelId).show()
+		if (panelId === "SFDSWFB-attributes") this.showAttributes()
+	}
+}
+
+/**
+ * Fills the settings form with the settings data
+ */
+FbView.prototype.populateSettings = function() {
+	for (i in this.formsCollection.forms[fb.formId].content.settings) {
+		if (typeof this.formsCollection.forms[fb.formId].content.settings[i] !== "function") {
+			$('#SFDSWFB-settings [name=' + i + ']').val(this.formsCollection.forms[fb.formId].content.settings[i])
+		}
+	}
+}
+
+/**
+ * Turns on autofill for names based on the value of the dropdown
+ */
+FbView.prototype.initAutofillNames = function() {
+    if (fb.autofillNames != null) {
+	    $('#SFDSWFB-attributes #name').typeahead({
+		    minlength: 1,
+			hint: false
+		}, {
+		    name: 'prefill',
+			source: substringMatcher(fb.autofillNames)
+	    })
+	    // $('#SFDSWFB-attributes #name').tagsinput();
+    } else {
+	    $('#SFDSWFB-attributes #name').typeahead('destroy')
+    }
+}
+
+/**
  * Share the form with other users
  */
 FbView.prototype.share = function() {
   $('#SFDSWFB-authors').slideUp()
   fb.callAPI('/form/share', { 'id': fb.formId, 'email': $('#SFDSWFB-authors input').val() }, fb.shareResponse)
 }
-
-
-
-
-
 
 /**
  * Generate the embed code
@@ -427,3 +296,307 @@ FbView.prototype.embedCode = function() {
 	var assetsUrl = new URL('/assets/', window.location.href)
 	return fb.view.embedCode(fb.formId, embedUrl, assetsUrl)
 }
+
+/**
+ * Displays the edit attributes panel for the selected item
+ *
+ * @param {Integer} itemIndex
+ */
+FbView.prototype.showAttributes = function() {
+	var self = this
+	var itemIndex = $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1
+
+	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
+
+	$('#SFDSWFB-attributes .apply-button').on('click', function() {
+		self.applyAttributes()
+		self.disableTimer()
+	})
+
+	$('#SFDSWFB-attributes .revert-button').on('click', function() {
+		self.showMiddlePanel('SFDSWFB-attributes')
+	})
+	
+	self.populateWebhooks(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.populateCalculations(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.populateConditionals(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.populateValidation(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.populateAttributes(self.formsCollection.forms[fb.formId].content.data[itemIndex])
+	self.initAutofillNames()
+	
+	$('.accordion-section > .accordion').hide()
+	$('.accordion-section.attributes > .accordion').show()
+	
+	$('.accordion-section').on('click', function() {
+		$('.accordion-section > .accordion').hide()
+		$(this).find('.accordion').show()
+	})
+}
+
+/**
+ * Populates or strips sections from the edit attributes panel based on the item properties
+ *
+ * @param {Item} item
+ */
+FbView.prototype.populateAttributes = function(item) {
+	for (i in item) {
+		if (typeof item[i] !== "function") {
+			if (item[i] === null) {
+				switch (i) {
+					case 'validation':
+						$('#SFDSWFB-attributes .accordion-validation').remove()
+						break
+					case 'conditionals':
+						$('#SFDSWFB-attributes .accordion-conditionals').remove()
+						break
+					case 'calculations':
+						$('#SFDSWFB-attributes .accordion-calculations').remove()
+						break
+					case 'webhooks':
+						$('#SFDSWFB-attributes .accordion-webhooks').remove()
+						break
+					default:
+						$('#SFDSWFB-attributes .' + i + '-attribute').remove()
+						break
+				}
+			} else {
+				$('#SFDSWFB-attributes [name='+i+']').val(item[i])
+			}
+		}
+	}
+}
+
+/**
+ * Populates or strips sections from the validation panel based on the item properties
+ *
+ * @param {Item} item
+ */
+FbView.prototype.populateValidation = function(item) {
+	switch (item.formtype) {
+		case "number":
+		case "date":
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			break
+		case "match":
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			break
+		case "regex":
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateRegex())
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			break
+		case "text":
+		case "email":
+		case "tel":
+		case "url":
+		default:
+			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+		//case "search":
+		//case "password":
+	}	
+	if (item.required == "true") $('#SFDSWFB-attributes input[name=required]').prop('checked', true)
+}
+
+/**
+ * Populates or strips sections from the conditionals panel based on the item properties
+ *
+ * @param {Item} item
+ */
+FbView.prototype.populateConditionals = function(item) {
+	if (item.conditions !== undefined && item.conditions !== null) {
+		for (c in item.conditions.condition) {
+			addConditional()
+			$('#SFDSWFB-attributes .conditionalId').eq(c).val(item.conditions.condition[c].id)
+			$('#SFDSWFB-attributes .conditionalOperator').eq(c).val(item.conditions.condition[c].op)
+			$('#SFDSWFB-attributes .conditionalValue').eq(c).val(item.conditions.condition[c].val)
+			conditionalSelect($('.conditionalOperator').eq(c))
+		}
+		if (item.conditions.showHide) $('#SFDSWFB-attributes .showHide').val(item.conditions.showHide)
+		if (item.conditions.allAny) $('#SFDSWFB-attributes .allAny').val(item.conditions.allAny)
+	}
+}
+
+/**
+ * Populates or strips sections from the calculations panel based on the item properties
+ *
+ * @param {Item} item
+ */
+FbView.prototype.populateCalculations = function(item) {
+	if (item.calculations !== undefined && item.conditions !== null) {
+		var calCount = 0
+		for (l in item.calculations) {
+			if (l == 1) {
+				addCalculation(item.id)
+				$('#SFDSWFB-attributes .calculationId').eq(0).val(item.calculations[0])
+				$('#SFDSWFB-attributes .calculationId').eq(1).val(item.calculations[2])
+				$('#SFDSWFB-attributes .calculationOperator').eq(0).val(item.calculations[1])
+			} else if (Math.abs(l % 2) == 1) { // every odd number after 1
+				calCount++
+				addCalculation(item.id)
+				$('#SFDSWFB-attributes .calculationOperator').eq(calCount).val(item.calculations[l])
+				$('#SFDSWFB-attributes .calculationId').eq(calCount + 1).val(item.calculations[parseInt(l) + 1])
+			}
+		}
+	}
+}
+	
+/**
+ * Populates or strips sections from the webhook panel based on the item properties
+ *
+ * @param {Item} item
+ */
+FbView.prototype.populateWebhooks = function(item) {
+	var self = this
+	
+	// show options only for checkboxes radios and selects
+	var webhookOptionsCompatible = Array('s02', 's06', 's08')
+	if (webhookOptionsCompatible.includes(item.formtype)) $('#SFDSWFB-attributes .webhookOptionsArray').show()
+
+	// get all ids and populate select
+	var ids = self.formsCollection.forms[fb.formId].getIds()
+	$('#SFDSWFB-attributes .webhookId').each(function () {
+		if ($(this).val() == null) {
+			var thisSelect = $(this)
+			$.each(ids, function (i, item) {
+				thisSelect.append($('<option>', {
+					value: item,
+					text:	item
+				}))
+			})
+		}
+	})
+
+	// populate values if there is already a webhook
+	if (item.webhooks !== undefined && item.webhooks !== null) {
+        $('#SFDSWFB-attributes .webhookSelect').val('Use a Webhook')
+        $('#SFDSWFB-attributes .webhookEditor').show()
+
+        // populate post fields
+        var allIdClone = $('#SFDSWFB-attributes .webhookId')[0].outerHTML
+        var counter = 0
+        while (counter < item.webhooks.ids.length) {
+			if (counter) {
+				if (counter > 1) {
+					$('#SFDSWFB-attributes .webhookEditor .fa-minus-circle').eq(counter - 2).after(allIdClone + ' <i class="fas fa-minus-circle" onclick="javascript:removeWebhook(' + counter + ')"></i>')
+				} else {
+					$('#SFDSWFB-attributes .webhookId').eq(counter - 1).after(allIdClone + ' <i class="fas fa-minus-circle" onclick="javascript:removeWebhook(' + counter + ')"></i>')
+				}
+			}
+			$('#SFDSWFB-attributes .webhookId').eq(counter).val(item.webhooks.ids[counter])
+			counter++
+        }
+
+        // populate endpoint
+        $('#SFDSWFB-attributes .webhookEndpoint').val(item.webhooks.endpoint)
+
+        // populate method
+        $('#SFDSWFB-attributes .webhookMethod').val(item.webhooks.method)
+
+        // populate responseIndex
+        $('#SFDSWFB-attributes .webhookResponseIndex').val(item.webhooks.responseIndex)
+
+        // set options array and display
+        if (item.webhooks.optionsArray == 'true') {
+			$('#SFDSWFB-attributes .webhookOptionsArray').val('Will Contain Many Options')
+			$('#SFDSWFB-attributes .webhookOptionsEditor').show()
+
+			// populate split method
+			if (item.webhooks.delimiter != '') { // delimiter overrides path
+				$('#SFDSWFB-attributes .webhookResponseOptionType').val('Delimiter')
+				$('#SFDSWFB-attributes .webhookDelimiter').val(item.webhooks.delimiter)
+				$('#SFDSWFB-attributes .webhookDelimiter').show()
+			} else {
+				$('#SFDSWFB-attributes .webhookResponseOptionType').val('Index/Path')
+				$('#SFDSWFB-attributes .webhookIndex').val(item.webhooks.responseOptionsIndex)
+				$('#SFDSWFB-attributes .webhookIndex').show()
+			}
+        }
+  }
+}
+
+/**
+ * Validates and saves changes to Item
+ */
+FbView.prototype.applyAttributes = function() {
+	var itemIndex = $('#SFDSWFB-list .item.selected').eq(0).data('index') - 1
+	var itemId = $('#SFDSWFB-attributes input[name=id]').val()
+	var itemName = $('#SFDSWFB-attributes input[name=name]').val()
+
+	//validations
+	if (itemId === "") return fb.loadDialogModal('Error Saving Attributes', "The ID field is required. Please enter an ID.")
+	if (this.formsCollection.forms[fb.formId].doesItExist(itemId, "id", itemIndex)) return fb.loadDialogModal('Error Saving Attributes', "The ID '" + itemId + "' is already in your form. Please use a different ID.")
+	if (itemName !== "" && this.formsCollection.forms[fb.formId].doesItExist(itemName, "name", itemIndex)) return fb.loadDialogModal('Error Saving Attributes', "The Name '" + itemName + "' is already in your form. Please use a different Name.")
+	
+	this.formsCollection.forms[fb.formId].modifyItem()
+	this.populateList()
+	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
+	newObj.addClass('selected')
+	this.showMiddlePanel('SFDSWFB-attributes')
+}
+
+/**
+ * Disables the button for a bit
+ *
+ * @param {JQuery DOM Object} buttonObj
+ */
+FbView.prototype.disableTimer = function() {
+	$('.apply-button').addClass('disabled')
+	setTimeout(function() {
+		$('.apply-button').removeClass('disabled')
+	}, 3000)
+}
+
+/**
+ * Highlights the item and readies it for reordering
+ *
+ * @param {JQuery DOM Object} handleObj
+ */
+FbView.prototype.sortItem = function(handleObj) {
+	this.unselectList()
+	handleObj.prev().addClass('selected')
+	handleObj.prev().addClass('moving')
+	handleObj.addClass('moving')
+	$('#SFDSWFB-list').addClass('moving')
+	this.showMiddlePanel('SFDSWFB-sort')
+	this.loadPreview()
+} 
+
+/**
+ * Moves the highlighted item to the new insertion point
+ *
+ * @param {Integer} index
+ */
+FbView.prototype.moveItemHere = function(index) {
+	var itemId = $('#SFDSWFB-list .field.selected').eq(0).data('id')
+	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list .field.selected').eq(0).data('index') - 1, index) //adjust for zero index
+	this.populateList()
+	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
+	newObj.addClass('selected')
+	this.showMiddlePanel('SFDSWFB-attributes')
+}
+
+/**
+ * Highlights and opens the selected item for editing
+ *
+ * @param {JQuery DOM Object} obj
+ * @param overload {Boolean} skipPreview
+ */
+FbView.prototype.editItem = function(obj, skipPreview) {
+	if (obj.hasClass('spacer') && $('#SFDSWFB-list').hasClass('moving')) return this.moveItemHere(obj.data('index') - 1) //set to zero-indexed
+	this.unselectList()
+	obj.addClass('selected')
+	if (skipPreview === undefined || !skipPreview) this.loadPreview()
+	this.showMiddlePanel(obj.hasClass('spacer') ? 'SFDSWFB-insert' : 'SFDSWFB-attributes') //set to zero-indexed
+} 
+
+/**
+ * Deletes an item from the form in the Navigation window
+ *
+ * @param {Integer} index
+ */
+FbView.prototype.deleteItem = function(index) {
+	if (this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)) return fb.loadDialogModal('Error Removing Item', "This item is referenced by other items. Please remove all references to this item before deleting.")
+	this.formsCollection.forms[fb.formId].deleteItem(index)
+	this.populateList()
+} 

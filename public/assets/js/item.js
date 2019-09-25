@@ -84,7 +84,6 @@ let Item = function(obj) {
 		placeholder,
 		help,
 		value,
-		classes,
 		type,
 		required,
 		option,
@@ -99,8 +98,16 @@ let Item = function(obj) {
 	
     Object.assign(this, obj)
 	
-	this.classes = obj.class
+	this.class = obj.class
 	
+	//for new items
+	if (obj.formtype !== undefined && obj.id === undefined && obj.name === undefined) {
+		this.label = this.formTypeNameMapping(this.formtype)
+		this.id = fb.fbView.formsCollection.forms[fb.formId].makeNewId(this.label)
+		this.name = fb.fbView.formsCollection.forms[fb.formId].makeNewName(this.label)
+		this.type = this.formTypeTypeMapping(this.formtype)
+	}
+
 	switch (this.formtype) {
 		case 'i02': //text
 		case 'c02': //name
@@ -172,6 +179,82 @@ let Item = function(obj) {
 			break
 		//case 'm14': //button
 	}
+}
+
+/**
+ * asdfasdf
+ *
+ * @param {String} exception
+ */
+Item.prototype.formTypeNameMapping = function(formtype) {
+	var obj = {
+		'i02': 'Text',
+		'c02': 'Name',
+		'c08': 'Address',
+		'c10': 'City',
+		'c14': 'Zip',
+		'c04': 'Email',
+		'c06': 'Phone',
+		'd02': 'Date',
+		'd04': 'Time',
+		'd10': 'URL',
+		'm13': 'Upload File',
+		'd06': 'Number',
+		'd08': 'Price',
+		'i14': 'Textarea',
+		's02': 'Select',
+		's14': 'State',
+		's15': 'State',
+		's16': 'State',
+		's06': 'Checkboxes',
+		's08': 'Radio',
+		'm11': 'Hidden',
+		'm08': 'Paragraph',
+		'm10': 'HTML',
+		'm02': 'H1',
+		'm04': 'H2',
+		'm06': 'H3',
+		'm16': 'Page_Separator'
+	}
+	return obj[formtype]
+}
+
+/**
+ * asdfasdf
+ *
+ * @param {String} exception
+ */
+Item.prototype.formTypeTypeMapping = function(formtype) {
+	var obj = {
+		'i02': 'text',
+		'c02': 'text',
+		'c08': 'text',
+		'c10': 'text',
+		'c14': 'text',
+		'c04': 'email',
+		'c06': 'tel',
+		'd02': 'date',
+		'd04': 'time',
+		'd10': 'url',
+		'm13': 'file',
+		'd06': 'number',
+		'd08': 'number',
+		'i14': null,
+		's02': null,
+		's14': null,
+		's15': null,
+		's16': null,
+		's06': 'checkbox',
+		's08': 'radio',
+		'm11': 'hidden',
+		'm08': null,
+		'm10': null,
+		'm02': null,
+		'm04': null,
+		'm06': null,
+		'm16': null
+	}
+	return obj[formtype]
 }
 
 /**

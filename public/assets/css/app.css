@@ -250,6 +250,8 @@ legend {
 
 .accordion-section {
 	cursor: pointer;
+	clear: both;
+	margin-bottom: 2em;
 }
 
 .popover {
@@ -436,7 +438,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 #SFDSWFB-list .item {
-	padding:0 .25em;width:calc(100% - 7em)
+	padding:0 .25em;width:calc(100% - 5em)
 }
 
 #SFDSWFB-list .item:hover, #SFDSWFB-list .item.selected {
