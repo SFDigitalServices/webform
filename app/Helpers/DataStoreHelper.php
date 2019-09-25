@@ -72,8 +72,10 @@ class DataStoreHelper extends Migration
        if ($tablename !== '' && $cloned !== '') {
           try {
               DB::transaction(function () use ($cloned, $tablename) {
-                $statement = "CREATE TABLE ". $cloned ." AS SELECT * FROM ". $tablename;
+                $statement = "CREATE TABLE ". $cloned ." LIKE ". $tablename;
                 DB::statement($statement);
+                $indexes = "INSERT $cloned SELECT * FROM $tablename";
+                DB::statement($indexes);
 
                 Schema::create($cloned .'_archive', function ($table) {
                   $table->increments('id');
@@ -83,7 +85,6 @@ class DataStoreHelper extends Migration
               });
             });
            } catch (\Illuminate\Database\QueryException $ex) {
-                //Log::info(print_r($ex->getMessage(),1));
                return false;
            }
            return true;
@@ -167,6 +168,46 @@ class DataStoreHelper extends Migration
                 return $columns;
             }
         }
+    }
+
+    /** Retrieve form draft
+    *
+    * @param $formid
+    * @param $draft
+    *
+    * @return JSON
+    */
+    public function retrieveFormDraft($formid, $draft = '')
+    {
+        $data = array();
+        if ($formid > 0 && $draft !== '') {
+            try {
+                $results = DB::table('forms_'.$formid)
+                  ->select()
+                  ->where('magiclink', $draft)
+                  ->first();
+                $data = (array) $results;
+                $data['formid'] = $formid;
+                $lookups = $this->getLookupTable($formid);
+                foreach ($lookups as $lookup) {
+                    $ids = explode(',', $data[$lookup['form_field_name']] );
+                    if (isset($data[$lookup['form_field_name']]) && in_array($lookup['id'], $ids) ) {
+                        if ($lookup['type'] === 's06') {
+                            if (! isset( $data[$lookup['form_field_name']."[]"] )) {
+                                $data[$lookup['form_field_name']."[]"] = array();
+                            }
+                            array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
+                        } else {
+                            $data[$lookup['form_field_name']] = $lookup['value'];
+                        }
+                    }
+                }
+            } catch (\Illuminate\Database\QueryException $ex) {
+                $results = ['status' => 0, 'message' => $ex->getMessage()];
+                return null;
+            }
+        }
+        return $data;
     }
 
    /** Handles form submission
@@ -576,15 +617,16 @@ class DataStoreHelper extends Migration
                     'form_table_id' => $form_id,
                     'form_field_name' => $definition['name'],
                     'value' => $value,
+                    'type' => $definition['formtype'],
                 ]);
             }
-            $table->string($definition['name'],25)->default($inserted_id);
+            $table->string($definition['name'],50)->default($inserted_id);
         }
         else{
             //check column, rename not allowed
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
-                    " MODIFY ". $definition['name'] . " varchar(25) ";
+                    " MODIFY ". $definition['name'] . " varchar(50) ";
                 if (isset($definition['value'])) { // need to get reference id from lookup table.
                     $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
                 }

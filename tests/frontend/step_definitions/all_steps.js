@@ -44,11 +44,11 @@ Then('I should see my form on the dashboard', () => {
   I.click('SF Digital Services Logo')
   I.wait(1)
   I.see('TESTING FORM CREATION')
-  I.wait(10)
+  I.wait(5)
 })
 
 // Modify Form Feature
-Given(/I am on an existing form/, () => {
+Given(/I am on an existing form for modification/, () => {
   I.click('.forms > a')
   I.wait(1)
 })
@@ -68,11 +68,11 @@ Then('I should be able modify the attributes', () => {
   I.click('OK')
   I.wait(1)
   I.see('Form Saved')
-  I.wait(10)
+  I.wait(5)
 })
 
 // Clone Form Feature
-Given(/I clicked into an existing form/, () => {
+Given(/I clicked into an existing form for cloning/, () => {
   I.click('.forms > a')
   I.wait(2)
 })
@@ -80,18 +80,18 @@ When('I click the clone icon', () => {
   I.seeElement('#SFDSWFB-legend')
   I.seeElement('li[data-original-title="Clone"]')
   I.click('li[data-original-title="Clone"]')
-  I.wait(1)
+  I.wait(3)
 });
 Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should see the cloned form', () => {
   I.see('Clone of TESTING FORM CREATION')
-  I.wait(10)
+  I.wait(5)
 })
 
 // Preview Form Feature
-Given(/I have an existing form/, () => {
+Given(/I have an existing form for previewing/, () => {
   I.click('.forms > a')
   I.wait(1)
 })
@@ -108,7 +108,7 @@ Then('I should see a new window with rendered html', () => {
   I.seeElement('#SFDSWFB-legend')
   I.wait(3)
   I.closeCurrentTab()
-  I.wait(10)
+  I.wait(5)
 })
 
 // Submit Form Feature
@@ -138,13 +138,18 @@ Then('I should be redirected to a confirmation page', () => {
   I.seeInCurrentUrl('/thank-you');
   I.wait(2)
   I.closeCurrentTab();
-  I.wait(10)
+  I.wait(5)
 })
 
 // Delete Form Feature
-Given(/I clicked into an existing form/, () => {
+Given(/I clicked into an existing form for deletion/, () => {
   I.click('.forms > a')
-  I.wait(1)
+  I.wait(2)
+  I.click('#SFDSWFB-legend')
+  I.wait(2)
+  I.fillField('title', 'TESTING FORM DELETION')
+  I.wait(2)
+  I.click('OK')
 })
 When('I click the delete icon', () => {
   I.seeElement('#SFDSWFB-legend')
@@ -157,11 +162,12 @@ Then('I should see confirmation popup', () => {
 })
 When('I click Do It', () => {
   I.click('Do It')
+  I.wait(3)
 })
 Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should not see the deleted form', () => {
-  I.dontSee('TESTING FORM CREATION')
-  I.wait(10)
+  I.dontSee('TESTING FORM DELETION')
+  I.wait(5)
 })

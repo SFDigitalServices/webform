@@ -4,6 +4,6 @@ Feature: preview form
   I want to be able preview a form
 
   Scenario:
-    Given I have an existing form
+    Given I have an existing form for previewing
     When I click on the Preview button
     Then I should see a new window with rendered html

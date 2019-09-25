@@ -4,7 +4,7 @@ Feature: modify form
   I want to be able modify field attributes
 
   Scenario:
-    Given I am on an existing form
+    Given I am on an existing form for modification
     When I click on any existing fields
     Then I should see the field attribute window
     And I should be able modify the attributes
