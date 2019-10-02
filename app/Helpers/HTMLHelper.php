@@ -196,7 +196,7 @@ class HTMLHelper
               $calcFunc .= 	")";
               $js .= $calcFunc;
               $js .= "});";
-              $js .= $calcFunc;
+              $js .= $calcFunc . ";";
           }
       }
 

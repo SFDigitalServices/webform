@@ -9,7 +9,7 @@
 
     <div class="welcomeBox">
       <div>
-        <a href="javascript:void(0)" onclick="loadContent()" class="btn btn-info btn-lg btn-block">Create a New Form</a>
+        <a href="javascript:void(0)" class="btn btn-info btn-lg btn-block">Create a New Form</a>
       </div>
 
       <div class="text-muted">or load an existing form</div>

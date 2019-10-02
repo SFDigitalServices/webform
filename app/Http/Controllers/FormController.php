@@ -68,15 +68,16 @@ class FormController extends Controller
     {
         $user_id = $request->input('user_id');
         $user = Auth::user()->where('id', $user_id)->get();
-        $user_forms = User_Form::where('user_id', $user_id)->get();
-
-        $forms = array();
-        foreach ($user_forms as $form_arr) {
-            $form = Form::where('id', $form_arr['form_id'])->get()->first();
-            $form['content'] = $this->controllerHelper->scrubString($form['content']);
-            $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-            array_push($forms, $form);
-        }
+		$forms = Form::all();
+        $user_forms = User_Form::all();
+		$query = User_Form::select('form_id')->where('user_id', $user_id)->get();
+		
+		$forms = Form::whereIn('id', $query)->get();
+        foreach ($forms as $key => $value) {
+			$forms[$key]['content'] = $this->controllerHelper->scrubString($value['content']);
+            $forms[$key]['content'] = json_decode($value['content'], true); //hack to convert json blob to part of larger object
+		}
+		
         return response()->json($forms);
     }
 
