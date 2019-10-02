@@ -253,11 +253,11 @@ describe("HTML templates", function() {
   });
 
   it("should spit out list item html", function() {
-    expect(fb.view.listItem('a', 1, 'b')).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1" data-id="a"></a></div><div><a href="javascript:void(0)" class="item field" data-index="1" data-id="a"><span class="itemCount">b</span>a</a><a href="javascript:void(0)" data-index="1" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="1" class="fa fa-times"></a></div>');
+    expect(fb.view.listItem('a', 1, 'b')).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1" data-id="a">insert item</a></div><div><a href="javascript:void(0)" class="item field" data-index="1" data-id="a"><span class="itemCount">b</span>a</a><a href="javascript:void(0)" data-index="1" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="1" class="fa fa-times"></a></div>');
   });
 
   it("should spit out list spacer html", function() {
-    expect(fb.view.listSpacer(1)).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1"></a></div>');
+    expect(fb.view.listSpacer(1)).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1">insert item</a></div>');
   });
 
   it("should spit out embed code html", function() {
