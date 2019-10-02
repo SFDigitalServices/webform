@@ -233,7 +233,7 @@ Fb.prototype.view.formLink = function(formObj) {
 }
 
 Fb.prototype.view.previewIframe = function(formId, scrollTo) {
-	return '<iframe src="/form/preview?id=' + formId + scrollTo + '">Your browser does not support iframes, <a href="/form/preview/?id=' + formId + '" target="_blank">click here</a> to a view a preview.</iframe>'
+	return '<iframe src="/form/preview?id=' + formId + scrollTo + '">Your browser does not support iframes, <a href="/form/preview?id=' + formId + '" target="_blank">click here</a> to a view a preview.</iframe>'
 }
 
 Fb.prototype.view.listItem = function(id, num, numStr) {
