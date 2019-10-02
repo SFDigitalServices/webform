@@ -1,45 +1,57 @@
-$(document).ready(function(){
-	$(".content").show()
-	$('.welcomeBox .btn-info').on('click', function(){
-		fb.startedEarly = true
-		$('body > div.content').hide()
-		fb.startModal()
-		//$('.editorContainer').show()
-	})
-	fb.callAPI("/form/getForms", {}, fb.init)
+jQuery(document).ready(function(){
+	fb.init()
 })
 
-var fb = {}
-fb.formId = 0
-fb.previousContent
-fb.startedEarly = false
-fb.api_token
-fb.user_id
-fb.autofillNames = null
+let Fb = function() {
+	this.formId = 0
+	this.previousContent = null
+	this.startedEarly = false
+	this.api_token = null
+	this.user_id = null
+	this.autofillNames = null
+	this.fbView = null
+}
+
+/**
+ * init the app
+ */
+Fb.prototype.init = function() {
+	var self = this
+
+	jQuery(".content").show()
+	jQuery('.welcomeBox .btn-info').on('click', function(){
+		self.startedEarly = true
+		jQuery('body > div.content').hide()
+		//jQuery('.editorContainer').show()
+	})
+	self.callAPI("/form/getForms", {}, fb.startView)
+}
 
 /**
  * the main AJAX function to interface with the backend
  */
-fb.callAPI = function(url, dataObj, callback) {
+Fb.prototype.callAPI = function(url, dataObj, callback) {
+	var self = this
+
   var settings = {
     'async': true,
     'crossDomain': true,
     'url': url,
     'method': 'POST',
     'headers': {
-      'authorization': 'Bearer ' + fb.api_token,
+      'authorization': 'Bearer ' + self.api_token,
       'content-type': 'application/x-www-form-urlencoded',
       'cache-control': 'no-cache'
     },
     'data': {
-      'user_id': fb.user_id,
-      'api_token': fb.api_token
+      'user_id': self.user_id,
+      'api_token': self.api_token
     }
   }
   for (i in dataObj) {
     settings.data[i] = dataObj[i]
   }
-  $.ajax(settings).done(function (response) {
+  jQuery.ajax(settings).done(function (response) {
     callback(response)
   })
 }
@@ -47,8 +59,9 @@ fb.callAPI = function(url, dataObj, callback) {
 /**
  * this is run as the callback after the first callAPI
  */
-fb.init = function(response) {
+Fb.prototype.startView = function(response) {
     fb.fbView = new FbView(new FormsCollection(response))
+    if (fb.startedEarly) fb.startModal()
 }
 
 /**
@@ -57,11 +70,11 @@ fb.init = function(response) {
  * @param {String} title
  * @param {String} body
  */
-fb.loadDialogModal = function(title, body) {
-  $('.modal-dialog .modal-title').text(title)
-  $('.modal-dialog .modal-body p').text(body)
-  $('.modal-dialog .btn-primary').hide()
-  $('.modal').modal()
+Fb.prototype.loadDialogModal = function(title, body) {
+  jQuery('.modal-dialog .modal-title').text(title)
+  jQuery('.modal-dialog .modal-body p').text(body)
+  jQuery('.modal-dialog .btn-primary').hide()
+  jQuery('.modal').modal()
 }
 
 /**
@@ -71,38 +84,59 @@ fb.loadDialogModal = function(title, body) {
  * @param {String} body
  * @param {Function} callback
  */
-fb.loadConfirmModal = function(title, body, callback) {
-  $('.modal-dialog .modal-title').text(title)
-  $('.modal-dialog .modal-body p').text(body)
-  $('.modal-dialog .btn-primary').off()
-  $('.modal-dialog .btn-primary').on('click', callback)
-  $('.modal').modal()
+Fb.prototype.loadConfirmModal = function(title, body, callback) {
+  jQuery('.modal-dialog .modal-title').text(title)
+  jQuery('.modal-dialog .modal-body p').text(body)
+  jQuery('.modal-dialog .btn-primary').off()
+  jQuery('.modal-dialog .btn-primary').on('click', callback)
+  jQuery('.modal').modal()
 }
 
 /**
  * Loads a modal to name the form
  */
-fb.startModal = function() {
-  $('.modal-dialog .modal-title').text('Name your form')
-  $('.modal-dialog .modal-body p').text('Please enter the name of your form')
-  $('.modal-dialog .modal-body p').append('<input type="text" class="form-control" value="My Form" id="formTitle"/>')
-  //$('.modal-dialog .btn-primary, .modal-backdrop, .close').on('click', function(){
-  $('.modal-dialog .btn-secondary').hide()
-  $('[data-dismiss=modal]').on('click', function(){
-	fb.nameForm()
+Fb.prototype.startModal = function() {
+	var self = this
+
+  jQuery('.modal-dialog .modal-title').text('Name your form')
+  jQuery('.modal-dialog .modal-body p').text('Please enter the name of your form')
+  jQuery('.modal-dialog .modal-body p').append('<input type="text" class="form-control" value="My Form" id="formTitle"/>')
+  //jQuery('.modal-dialog .btn-primary, .modal-backdrop, .close').on('click', function(){
+  jQuery('.modal-dialog .btn-secondary').hide()
+  jQuery('[data-dismiss=modal]').on('click', function(){
+	self.nameForm()
   })
-  $('.modal').modal({backdrop: 'static', keyboard: false})
+  jQuery('.modal').modal({backdrop: 'static', keyboard: false})
 }
 
 /**
  * Will save the form if the form is new
  */
-fb.nameForm = function() {
-	if (!fb.formId) {
-		fb.fbView.formsCollection.forms[0].content.settings.name = $('#formTitle').val()
-		fb.fbView.formsCollection.forms[0].saveForm()
-		$('.editorContainer').show()
+Fb.prototype.nameForm = function() {
+	var self = this
+
+	if (!self.formId) {
+		self.fbView.formsCollection.forms[0].content.settings.name = jQuery('#formTitle').val()
+		self.fbView.formsCollection.forms[0].saveForm()
+		jQuery('.editorContainer').show()
+    self.selectInsert()
 	}
+}
+
+/**
+ * Polls the list in one second intervals until it exists and then selects it
+ */
+Fb.prototype.selectInsert = function() {
+  var self = this
+
+  if (!jQuery('#SFDSWFB-list .item').length) {
+		setTimeout(function() {
+      self.selectInsert()
+		}, 1000)
+  } else {
+    jQuery('#SFDSWFB-list .item').eq(0).addClass('selected')
+    self.fbView.showMiddlePanel('SFDSWFB-insert')
+  }
 }
 
 /**
@@ -111,8 +145,8 @@ fb.nameForm = function() {
  * @param {Integer} id
  * @param {String} url
  */
-fb.addBrowserState = function(id, url) {
-	if (history.state == undefined) history.pushState({ formId: id }, null, url)
+Fb.prototype.addBrowserState = function(id, url) {
+	if (history.state === undefined || history.state === null) history.pushState({ formId: id }, null, url)
 }
 
 /**
@@ -124,32 +158,34 @@ window.onpopstate = function(event) {
 	fb.popstate(event)
 }
 
-fb.popstate = function(event) {
-  $('.container').hide()
+Fb.prototype.popstate = function(event) {
+	var self = this
+
+  jQuery('.container').hide()
   if (event.state) {
 	  if (event.state.formId) {
-		  fb.fbView.startForm(event.state.formId)
+		  self.fbView.startForm(event.state.formId)
 	  } else {
-		  fb.fbView.startForm()
+		  self.fbView.startForm()
 	  }
   } else {
-		  $('.editorContainer').hide()
-		  $('.content').show()
+    self.goHome()
   }
 }
 
 /**
  * Opens a preview of the form in a new window
  */
-fb.openPreviewWindow = function() {
-	window.open('/form/preview/?id=' + fb.formId,'_blank')
+Fb.prototype.openPreviewWindow = function() {
+	window.open('/form/preview/?id=' + this.formId,'_blank')
 }
 
 /**
  * Redirects the user back to the welcome screen
  */
-fb.goHome = function() {
-	window.location.replace('/home')
+Fb.prototype.goHome = function() {
+  jQuery('.editorContainer').hide()
+  jQuery('.content').show()
 }
 
 /**
@@ -157,13 +193,15 @@ fb.goHome = function() {
  *
  * @param {Object} obj
  */
-fb.loadNames = function(obj) {
-	var selected = $(obj).val()
+Fb.prototype.loadNames = function(obj) {
+	var self = this
+
+	var selected = jQuery(obj).val()
 	if (selected == '0') {
-		fb.autofillNames = null
+		self.autofillNames = null
 	} else {
-		$.get('/assets/js/' + selected + '.json', function (data) {
-			fb.autofillNames = data.fields
+		jQuery.get('/assets/js/' + selected + '.json', function (data) {
+			self.autofillNames = data.fields
 			// console.log(autofillNames);
 		})
 	}
@@ -172,12 +210,12 @@ fb.loadNames = function(obj) {
 /**
  * Event to handle response to getting a list of authors after loading form
  */
-fb.shareResponse = function(response) {
+Fb.prototype.shareResponse = function(response) {
 	var self = this
-	
+
 	if (response.status && typeof response.data !== 'undefined') {
-		$('#SFDSWFB-existingAuthors').html(response.data)
-		if (response.data.includes(',')) fb.initSSE()
+		jQuery('#SFDSWFB-existingAuthors').html(response.data)
+		if (response.data.includes(',')) self.initSSE()
 	} else if (!response.status) {
 		if (typeof response.message !== 'undefined') loadDialogModal('Attention', response.message)
 	} else {
@@ -188,19 +226,21 @@ fb.shareResponse = function(response) {
 /**
  * Bind event source to SSE listener
  */
-fb.eventSource = false //probably is form level, but there should only be one going on at a time so it's app level
-fb.initSSE = function() {
-	if (!fb.eventSource) {
-		fb.eventSource = new EventSource('/form/push?form_id=' + fb.formId)
+Fb.prototype.eventSource = false //probably is form level, but there should only be one going on at a time so it's app level
+Fb.prototype.initSSE = function() {
+	var self = this
+
+	if (!self.eventSource) {
+		self.eventSource = new EventSource('/form/push?form_id=' + self.formId)
 		var listener = function (event) {
 			var type = event.type
 			// alert(type + ": " + (type === "message" ? event.data : es.url));
 			if (event.type === 'message') {
 				var newContent = JSON.parse(event.data)
-				this.formsCollection.forms[fb.formId] = newContent
-				fb.loadDialogModal('Attention', "Your form has been edited by an external source. Changes have been loaded.") //remove this to make it more like google docs
-				this.populateList(fb.formId)
-				this.loadPreview()
+				self.fbView.formsCollection.forms[self.formId] = newContent
+				self.fbView.loadDialogModal('Attention', "Your form has been edited by an external source. Changes have been loaded.") //remove this to make it more like google docs
+				self.fbView.populateList(self.formId)
+				self.fbView.loadPreview()
 				//todo retain view that user was on
 			}
 		}
@@ -209,130 +249,4 @@ fb.initSSE = function() {
 		fb.eventSource.addEventListener('error', listener)
 	}
 }
-
-/**
- * Special functions, conditionals, calculations and webhooks unrefactored
- */
-function addCalculation (str) {
-  // check if first calculation or not
-  if ($('#SFDSWFB-attributes .addCalculation').length != 0) {
-    if ($('#SFDSWFB-attributes .calculationLabel').length == 0) {
-      $('#SFDSWFB-attributes .addCalculation').before(fb.view.firstCalculation())
-    }
-    $('#SFDSWFB-attributes .addCalculation').before(fb.view.calculationContainer())
-    str = str == undefined ? $('#SFDSWFB-attributes .calculations #id').val() : str
-    var ids = getMathIds(str)
-
-    $('#SFDSWFB-attributes .allMathIds').each(function () {
-      if ($(this).val() == null) {
-        var thisSelect = $(this)
-        $.each(ids, function (i, item) {
-          thisSelect.append($('<option>', {
-            value: item,
-            text:	item
-          }))
-        })
-      }
-    })
-  }
-}
-function addConditional () {
-  $('#SFDSWFB-attributes .addConditional').before(fb.view.addConditional())
-  var ids = fb.fbView.formsCollection.forms[fb.formId].getIds()
-  $('#SFDSWFB-attributes .allIds').each(function () {
-    if ($(this).val() == null) {
-      var thisSelect = $(this)
-      $.each(ids, function (i, item) {
-        thisSelect.append($('<option>', {
-          value: item,
-          text:	item
-        }))
-      })
-    }
-  })
-  // check if first conditional or not
-  if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-    $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
-    $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
-  } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
-    $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
-  }
-  if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
-    $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
-  }
-}
-function removeCalculation (obj) {
-  if ($('#SFDSWFB-attributes .calculation').length < 2) {
-    $('#SFDSWFB-attributes .firstCalculation').remove()
-  }
-  $(obj).parent().parent().remove()
-}
-function removeConditional (obj) {
-  if ($(obj).parent().find('select.showHide').length) {
-    if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
-      $('#SFDSWFB-attributes .conditionalLabel:eq(1)').text(' ' + $(obj).parent().find('span.conditionalLabel').text())
-      $(obj).parent().find('select.showHide').insertBefore('#SFDSWFB-attributes .conditionalLabel:eq(1)')
-    }
-  }
-  $(obj).parent().remove()
-  if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-    if ($('#SFDSWFB-attributes .allAny').length) $('#SFDSWFB-attributes .allAny').remove()
-    if ($('#SFDSWFB-attributes hr.and').length) $('#SFDSWFB-attributes hr.and').remove()
-  }
-}
-function conditionalSelect (obj) {
-  var valueInput = $(obj).next('.conditionalValue')
-  if ($(obj).val() == 'contains anything' || $(obj).val() == 'is blank') {
-    valueInput.val('')
-    if (typeof valueInput.attr('readonly') === 'undefined' || typeof valueInput.attr('readonly') === false) valueInput.attr('readonly', true)
-  } else {
-    valueInput.removeAttr('readonly')
-  }
-}
-function webhookSelect (obj) {
-  if ($(obj).val() == 'Use a Webhook') {
-    $('#SFDSWFB-attributes .webhookEditor').show()
-  } else {
-    $('#SFDSWFB-attributes .webhookEditor').hide()
-  }
-}
-function webhookOptions (obj) {
-  if ($(obj).val() == 'Will Contain Many Options') {
-    $('#SFDSWFB-attributes .webhookOptionsEditor').show()
-  } else {
-    $('#SFDSWFB-attributes .webhookOptionsEditor').hide()
-  }
-}
-function webhookResponseOptionType (obj) {
-  $('#SFDSWFB-attributes .webhookResponseMethod').hide()
-  if ($(obj).val() == 'Delimiter') {
-    $('#SFDSWFB-attributes .webhookDelimiter').show()
-  } else if ($(obj).val() == 'Index/Path') {
-    $('#SFDSWFB-attributes .webhookIndex').show()
-  }
-}
-function addWebhook () {
-  var allIdClone = $('#SFDSWFB-attributes .webhookId')[0].outerHTML
-  var numFields = $('#SFDSWFB-attributes .webhookId').length
-  if ($('#SFDSWFB-attributes .webhookEditor .fa-minus-circle').length) {
-    $('#SFDSWFB-attributes .webhookEditor .fa-minus-circle').eq(numFields - 2).after(allIdClone + ' <i class="fas fa-minus-circle" onclick="javascript:removeWebhook(' + numFields + ')"></i>')
-  } else {
-    $('#SFDSWFB-attributes .webhookId').eq(0).after(allIdClone + ' <i class="fas fa-minus-circle" onclick="javascript:removeWebhook(' + numFields + ')"></i>')
-  }
-}
-function removeWebhook (idx) {
-  $('#SFDSWFB-attributes .webhookId').eq(idx).remove()
-  $('#SFDSWFB-attributes .webhookEditor .fa-minus-circle').eq(idx - 1).remove()
-}
-function getMathIds (str) {
-  var ids = []
-  var saved = fb.fbView.formsCollection.forms[fb.formId].content
-  for (i in saved.data) {
-    if (saved.data[i]['id'] != undefined) {
-      if (saved.data[i].formtype == 'd06' || saved.data[i].formtype == 'd08' || saved.data[i].formtype == 's02' || saved.data[i].formtype == 's06' || saved.data[i].formtype == 's08' || saved.data[i].formtype == 'm11') ids.push(saved.data[i]['id'])
-    }
-  }
-  var index = ids.indexOf(str)
-  if (index !== -1) ids.splice(index, 1)
-  return ids
-}
+var fb = new Fb()

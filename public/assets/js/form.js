@@ -31,7 +31,7 @@ let Form = function(obj) {
 			}]
 		}
 	}
-	
+
 	const {
 		id,
 		content,
@@ -39,9 +39,9 @@ let Form = function(obj) {
 		updated_at,
 		deleted_at,
 	} = obj
-	
-    Object.assign(this, obj)	
-	
+
+  Object.assign(this, obj)
+
 	for (i in this.content.data) {
 		this.content.data[i] = new Item(this.content.data[i])
 	}
@@ -63,6 +63,7 @@ Form.prototype.loadNewForm = function() {
  * @param {Integer} id
  */
 Form.prototype.loadExistingForm = function(id) {
+  if (this.id === 0) this.id = id
 	fb.formId = id
 	var pc = this.preparePostData(this)
 	pc.content = JSON.parse(pc.content)
@@ -80,11 +81,13 @@ Form.prototype.loadExistingForm = function(id) {
 Form.prototype.preparePostData = function(formObj) {
 	var newObj = {}
 	for (i in formObj) {
-		if (typeof formObj[i] !== "function" && formObj[i] !== null && i !== "content") newObj[i] = formObj[i]
+		if (typeof formObj[i] !== "function" && formObj[i] !== null && i !== "content") {
+      newObj[i] = formObj[i]
+    }
 	}
 	newObj.content = {}
 	newObj.content.settings = formObj.content.settings
-	newObj.content.data = []	
+	newObj.content.data = []
 	for (a in formObj.content.data) {
 		newObj.content.data[a] = {}
 		for (b in formObj.content.data[a]) {
@@ -156,7 +159,13 @@ Form.prototype.clone = function() {
 Form.prototype.confirmDelete = function() {
 	var msg = 'Are you sure you want to delete this form?'
 	var url = '/form/delete'
-	var callback = function () { fb.callAPI(url, { 'id': fb.formId }, fb.goHome) }
+	var callback = function () {
+    fb.callAPI(url, { 'id': fb.formId }, function() {
+      delete fb.fbView.formsCollection.forms[fb.formId]
+      fb.fbView.deleteForm(fb.formId)
+      fb.goHome()
+    })
+  }
 	fb.loadConfirmModal('Warning!', msg, callback)
 }
 
@@ -166,7 +175,7 @@ Form.prototype.confirmDelete = function() {
 Form.prototype.saveSettings = function() {
 	var self = this
 
-	$('#SFDSWFB-settings input').each(function(){
+	$('#SFDSWFB-settings input, #SFDSWFB-settings select').each(function(){
 		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined) {
 			self.content.settings[$(this).attr('name')] = $(this).val()
 		}
@@ -180,7 +189,7 @@ Form.prototype.saveSettings = function() {
  * @param {String} formType
  */
 Form.prototype.insertItem = function(formType) {
-	this.content.data.splice($('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1, 0, new Item({'formtype' : formType}))
+	this.content.data.splice($('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1, 0, new Item({'formtype' : formType}, this.getIds(), this.getNames()))
 	this.saveForm()
 }
 
@@ -193,20 +202,20 @@ Form.prototype.modifyItem = function() {
 	var oldId = self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].id
 	var newId = $('#SFDSWFB-attributes input[name=id]').val()
 	if (oldId !== newId) self.renameId(oldId, newId)
-	
+
 	$('#SFDSWFB-attributes input, #SFDSWFB-attributes textarea').each(function(){
 		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined && $(this).val() !== "") {
 			self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1][$(this).attr('name')] = $(this).val()
 		}
 	})
-	
-	self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].required = $('#required').checked ? 'true' : 'false';
+
+  if ($('#required').length) self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].required = $('#required').checked ? 'true' : 'false';
 	self.applyConditionals()
 	self.applyCalculations()
 	self.applyWebhooks()
 	self.saveForm()
-}		
-	
+}
+
 /**
  * Saves changes to conditionals to the form object
  */
@@ -228,7 +237,9 @@ Form.prototype.applyConditionals = function() {
 		})
 		self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].conditions = conditions
 	} else {
-		delete self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].conditions
+    if (self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].conditions !== null) {
+      delete self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].conditions
+    }
 	}
 }
 
@@ -237,7 +248,7 @@ Form.prototype.applyConditionals = function() {
  */
 Form.prototype.applyCalculations = function() {
 	var self = this
-	
+
 	if ($('#SFDSWFB-attributes .calculation').length) {
 		var calculations = []
 		calculations[0] = $('#SFDSWFB-attributes .calculationId').eq(0).val()
@@ -250,7 +261,9 @@ Form.prototype.applyCalculations = function() {
 		})
 		self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].calculations = calculations
 	} else {
-		delete self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].calculations
+    if (self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].calculations !== null) {
+      delete self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].calculations
+    }
 	}
 }
 
@@ -259,7 +272,7 @@ Form.prototype.applyCalculations = function() {
  */
 Form.prototype.applyWebhooks = function() {
 	var self = this
-	
+
 	if ($('#SFDSWFB-attributes .webhookSelect').val() == 'Use a Webhook') {
 		var webhooks = {}
 		webhooks.ids = []
@@ -274,10 +287,12 @@ Form.prototype.applyWebhooks = function() {
 		webhooks.responseOptionsIndex = $('#SFDSWFB-attributes .webhookIndex').val()
 		self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].webhooks = webhooks
 	} else {
-		delete self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].webhooks
+    if (self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].webhooks !== null) {
+      delete self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].webhooks
+    }
 	}
-}	
-	
+}
+
 /**
  * Moves an Item in the form from one index to another
  *
@@ -300,7 +315,6 @@ Form.prototype.deleteItem = function(itemIndex) {
 	this.saveForm()
 }
 
-
 /**
  * Gets all the ids in the form
  *
@@ -309,53 +323,55 @@ Form.prototype.deleteItem = function(itemIndex) {
 Form.prototype.getIds = function() {
 	var ids = [];
 	for (i in this.content.data) {
-		if (this.content.data[i]["id"] != undefined) {
-			ids.push(this.content.data[i]["id"]);
+		if (this.content.data[i].id != undefined) {
+			ids.push(this.content.data[i].id);
 		}
 	}
 	return ids;
-}	
-
-/**
- * Generates a unique id based on the label string
- *
- * @param {String} label
- *
- * @returns {String}
- */
-Form.prototype.makeNewId = function(label) {
-	return this.createUnique(label, "id")
 }
 
 /**
- * Generates a unique form name based on the label string
+ * Gets all the names in the form
  *
- * @param {String} label
- *
- * @returns {String}
+ * @returns {Array}
  */
-Form.prototype.makeNewName = function(label) {
-	return this.createUnique(label, "name")
-}
-
-/**
- * Generates a unique id or name based on the label string
- *
- * @param {String} label
- * @param {String} type (id or name)
- *
- * @returns {String}
- */
-Form.prototype.createUnique = function(label,type) {
-	var count = 1;
-	var newName = label.toLowerCase();
-	newName = newName.replace(/ /g,"_");
-	countName = newName;
-	while (this.doesItExist(countName,type) == true) {
-		countName = newName+"_"+count;
-		count++;
+Form.prototype.getNames = function() {
+	var names = [];
+	for (i in this.content.data) {
+		if (this.content.data[i].name != undefined) {
+			names.push(this.content.data[i].name);
+		}
 	}
-	return countName;
+	return names;
+}
+
+/**
+ * Gets all the formtypes that are number/calculation compatible
+ *
+ * @returns {Array}
+ */
+Form.prototype.getNumberTypes = function() {
+	return ['d06', 'd08', 's02', 's06', 's08', 'm11']
+}
+
+/**
+ * Gets all the ids that are numeric/calculation compatible that are in the form
+ *
+ * @param {String} fieldId
+ *
+ * @returns {Array}
+ */
+Form.prototype.getMathIds = function(fieldId) {
+	var ids = []
+	var numberTypes = this.getNumberTypes()
+	for (i in this.content.data) {
+		if (this.content.data[i].id != undefined) {
+			if(numberTypes.includes(this.content.data[i].formtype)) ids.push(this.content.data[i].id)
+		}
+	}
+	var index = ids.indexOf(fieldId)
+	if (index !== -1) ids.splice(index, 1)
+	return ids
 }
 
 /**
@@ -385,7 +401,7 @@ Form.prototype.doesItExist = function(value, type, skipIndex) {
  */
 Form.prototype.isReferenced = function(myId) {
 	var specialFunctionIds = this.getSpecialFunctionIds()
-	
+
 	for (i in specialFunctionIds) {
 		for (d in specialFunctionIds[i]) {
 			if (specialFunctionIds[i][d].includes(myId)) return true
@@ -402,7 +418,7 @@ Form.prototype.isReferenced = function(myId) {
  */
 Form.prototype.renameId = function(oldId, newId) {
 	var specialFunctionIds = this.getSpecialFunctionIds()
-	
+
 	for (i in specialFunctionIds) {
 		for (d in specialFunctionIds[i]) {
 			if (i == "conditionIds") {

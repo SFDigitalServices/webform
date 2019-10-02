@@ -1,6 +1,11 @@
-Fb.prototype.view = {}
+describe("HTML templates", function() {
+	var fb = new Fb()
 
-Fb.prototype.view.validation = "\
+  beforeEach(function() {
+  });
+
+  it("should spit out validation html", function() {
+    expect(fb.view.validation).toEqual("\
 	<div class='accordion-validation'> \
 		<div class='accordion-section validation'> \
 			<div class='accordion-header'>Validation</div> \
@@ -14,9 +19,11 @@ Fb.prototype.view.validation = "\
 			  <div class='clear'></div> \
 			</div> \
 		</div> \
-	</div>"
+	</div>");
+  });
 
-Fb.prototype.view.conditionals = "\
+  it("should spit out conditionals html", function() {
+    expect(fb.view.conditionals).toEqual("\
 	<div class='accordion-conditionals'> \
 		<div class='accordion-section conditionals'> \
 			<div class='accordion-header'>Conditionals</div> \
@@ -28,9 +35,11 @@ Fb.prototype.view.conditionals = "\
 				</div> \
 			</div> \
 		</div> \
-	</div>"
+	</div>");
+  });
 
-Fb.prototype.view.calculations = "\
+  it("should spit out calculations html", function() {
+    expect(fb.view.calculations).toEqual("\
 	<div class='accordion-calculations'> \
 		<div class='accordion-section calculations'> \
 			<div class='accordion-header'>Calculations</div> \
@@ -42,9 +51,11 @@ Fb.prototype.view.calculations = "\
 				</div> \
 			</div> \
 		</div> \
-	</div>"
+	</div>");
+  });
 
-Fb.prototype.view.webhooks = "\
+  it("should spit out webhooks html", function() {
+    expect(fb.view.webhooks).toEqual("\
 	<div class='accordion-webhooks'> \
 		<div class='accordion-section webhooks'> \
 			<div class='accordion-header'>Webhooks</div> \
@@ -100,13 +111,17 @@ Fb.prototype.view.webhooks = "\
 				</div> \
 			</div> \
 		</div> \
-	</div>"
+	</div>");
+  });
 
-Fb.prototype.view.applyRevertButtons = "\
+  it("should spit out apply and revert buttons html", function() {
+    expect(fb.view.applyRevertButtons).toEqual("\
 	<button class='apply-button btn btn-md btn-primary'>Apply</button> \
-	<button class='revert-button btn btn-md btn-secondary'>Revert</button>"
+	<button class='revert-button btn btn-md btn-secondary'>Revert</button>");
+  });
 
-Fb.prototype.view.editItem = "\
+  it("should spit out edit item html", function() {
+    expect(fb.view.editItem).toEqual("\
 	<div class='accordion-attributes'> \
 		<div class='accordion-section attributes'> \
 			<div class='accordion-header'>Attributes</div> \
@@ -131,10 +146,11 @@ Fb.prototype.view.editItem = "\
 	fb.view.conditionals +
 	fb.view.calculations +
 	fb.view.webhooks +
-	fb.view.applyRevertButtons
+	fb.view.applyRevertButtons);
+  });
 
-Fb.prototype.view.addConditional = function() {
-		return	"<div class='clonable conditional'> \
+  it("should spit out add conditional html", function() {
+    expect(fb.view.addConditional()).toEqual("<div class='clonable conditional'> \
 					<div class='condition'> \
 						<i class='fas fa-minus-circle conditionIcon' onclick='javascript:removeConditional(this)'></i> \
 						<span class='conditionalLabel'></span> \
@@ -152,11 +168,11 @@ Fb.prototype.view.addConditional = function() {
 						</select> \
 						<input type='text' class='conditionalValue' /> \
 					</div> \
-				</div>"
-}
+				</div>");
+  });
 
-Fb.prototype.view.validateMinMax = function() {
-	return	"<div class='validate-minmax'> \
+  it("should spit out min max validation html", function() {
+    expect(fb.view.validateMinMax()).toEqual("<div class='validate-minmax'> \
 				  <div class='floatleft' data-toggle='tooltip' title='The lowest acceptable numerical value, leave blank if there is none'> \
 					<label class='control-label'>Min Value</label> <input class='form-control' type='text' name='min' id='min'> \
 				  </div> \
@@ -164,57 +180,57 @@ Fb.prototype.view.validateMinMax = function() {
 					<label class='control-label'>Max Value</label> <input class='form-control' type='text' name='max' id='max'> \
 				  </div> \
 				  <div class='clear'></div> \
-			  </div>"
-}
+			  </div>");
+  });
 
-Fb.prototype.view.validateRegex = function() {
-	return	"<div class='validate-regex' data-toggle='tooltip' title='For advanced users only'> \
+  it("should spit out regex validation html", function() {
+    expect(fb.view.validateRegex()).toEqual("<div class='validate-regex' data-toggle='tooltip' title='For advanced users only'> \
 				<label class='control-label'>Regular Expression</label> <input class='form-control' type='text' name='regex' id='regex'> \
-			</div>"
-}
+			</div>");
+  });
 
-Fb.prototype.view.validateMatch = function() {
-	return 	"<div class='validate-match' data-toggle='tooltip' title='Use this to only accept a user response if the value matches a different field that you specify'> \
+  it("should spit out match validation html", function() {
+    expect(fb.view.validateMatch()).toEqual("<div class='validate-match' data-toggle='tooltip' title='Use this to only accept a user response if the value matches a different field that you specify'> \
 				<label class='control-label'>Match Another</label> <select class='form-control' name='match' id='match'><option value=''></option></select> \
-			</div>"
-}
+			</div>");
+  });
 
-Fb.prototype.view.validateLength = function() {
-	return	"<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
+  it("should spit out length validation html", function() {
+    expect(fb.view.validateLength()).toEqual("<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
 				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
 			</div> \
 			<div class='floatright' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
 				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
-			</div>"
-}
+			</div>");
+  });
 
-Fb.prototype.view.firstConditional = function() {
-		return	"<div class='clonable firstConditional'> \
+  it("should spit out first conditional html", function() {
+    expect(fb.view.firstConditional()).toEqual("<div class='clonable firstConditional'> \
 					<select class='showHide'> \
 						<option>Show</option> \
 						<option>Hide</option> \
 					</select> \
-				</div>"
-}
+				</div>");
+  });
 
-Fb.prototype.view.multipleConditionals = function() {
-		return "<div class='clonable multipleConditionals'> \
+  it("should spit out multiple conditionals html", function() {
+    expect(fb.view.multipleConditionals()).toEqual("<div class='clonable multipleConditionals'> \
 					<select class='allAny'> \
 						<option>All</option> \
 						<option>Any</option> \
 					</select> \
-				</div>"
-}
+				</div>");
+  });
 
-Fb.prototype.view.firstCalculation = function() {
-		return	"<div class='firstCalculation'> \
+  it("should spit out first calculation html", function() {
+    expect(fb.view.firstCalculation()).toEqual("<div class='firstCalculation'> \
 					<label class='control-label calculationLabel'>Calculation</label> \
 					<select class='allMathIds calculationId'></select> \
-				</div>"
-}
+				</div>");
+  });
 
-Fb.prototype.view.calculationContainer = function() {
-		return "<div class='calculationContainer'> \
+  it("should spit out calculation html", function() {
+    expect(fb.view.calculationContainer()).toEqual("<div class='calculationContainer'> \
 					<div class='calculation'> \
 						<i class='fas fa-minus-circle conditionIcon' onclick='javascript:removeCalculation(this)'></i> \
 						<select class='calculationOperator'> \
@@ -225,35 +241,37 @@ Fb.prototype.view.calculationContainer = function() {
 						</select> \
 						<select class='allMathIds calculationId'></select> \
 					</div> \
-				</div>"
-}
+				</div>");
+  });
 
-Fb.prototype.view.formLink = function(formObj) {
-	return '<a href="javascript:void(0)" data-id="' + formObj.id + '" class="start-form recent btn btn-default btn-md btn-block">' + formObj.content.settings.name + ' <span style="color:green">Last updated: ' + formObj.updated_at + '</span></a>'
-}
+  it("should spit out form links html", function() {
+    expect(fb.view.formLink({id:'a',updated_at:'c',content:{settings:{name:'b'}}})).toEqual('<a href="javascript:void(0)" data-id="a" class="start-form recent btn btn-default btn-md btn-block">b <span style="color:green">Last updated: c</span></a>');
+  });
 
-Fb.prototype.view.previewIframe = function(formId, scrollTo) {
-	return '<iframe src="/form/preview/?id=' + formId + scrollTo + '">Your browser does not support iframes, <a href="/form/preview/?id=' + formId + '" target="_blank">click here</a> to a view a preview.</iframe>'
-}
+  it("should spit out preview iframe html", function() {
+    expect(fb.view.previewIframe('a', 'b')).toEqual('<iframe src="/form/preview/?id=ab">Your browser does not support iframes, <a href="/form/preview/?id=a" target="_blank">click here</a> to a view a preview.</iframe>');
+  });
 
-Fb.prototype.view.listItem = function(id, num, numStr) {
-	return '<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '" data-id="' + id + '"></a></div><div><a href="javascript:void(0)" class="item field" data-index="' + num + '" data-id="' + id + '"><span class="itemCount">' + numStr + '</span>' + id + '</a><a href="javascript:void(0)" data-index="' + num + '" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="' + num + '" class="fa fa-times"></a></div>'
-}
+  it("should spit out list item html", function() {
+    expect(fb.view.listItem('a', 1, 'b')).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1" data-id="a"></a></div><div><a href="javascript:void(0)" class="item field" data-index="1" data-id="a"><span class="itemCount">b</span>a</a><a href="javascript:void(0)" data-index="1" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="1" class="fa fa-times"></a></div>');
+  });
 
-Fb.prototype.view.listSpacer = function(num) {
-	return '<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '"></a></div>'
-}
+  it("should spit out list spacer html", function() {
+    expect(fb.view.listSpacer(1)).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1"></a></div>');
+  });
 
-Fb.prototype.view.embedCode = function(id, embedUrl, assetsUrl) {
-	return '<!-- If possible, place the following in your <head> tag. -->' +
+  it("should spit out embed code html", function() {
+    expect(fb.view.embedCode('a','b','//')).toEqual('<!-- If possible, place the following in your <head> tag. -->' +
 	'\n' +
 	'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />\n' +
-	'<link rel="stylesheet" href="' + assetsUrl + 'css/form-base.css" />\n' +
+	'<link rel="stylesheet" href="//css/form-base.css" />\n' +
 	'\n' +
 	'<!-- Insert the following in the <body>, wherever\n' +
 	'you would like the form to appear. -->' +
 	'\n' +
-	'<script src="' + embedUrl + '?id=' + id + '"></script>\n' +
+	'<script src="b?id=a"></script>\n' +
 	'<noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>\n' +
-	'<div id="SFDSWF-Container"></div>'
-}
+	'<div id="SFDSWF-Container"></div>');
+  });
+
+})

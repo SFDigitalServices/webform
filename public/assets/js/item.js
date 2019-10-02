@@ -75,7 +75,7 @@ Item
 
  * @constructor
  */
-let Item = function(obj) {
+let Item = function(obj, idsArray, namesArray) {
 	const {
 		id,
 		name,
@@ -95,16 +95,17 @@ let Item = function(obj) {
 		conditions,
 		webhooks
 	} = obj
-	
+
     Object.assign(this, obj)
-	
+
 	this.class = obj.class
-	
+  if (this.codearea) this.codearea = this.htmlDecode(this.htmlDecode(this.codearea))
+
 	//for new items
-	if (obj.formtype !== undefined && obj.id === undefined && obj.name === undefined) {
+	if (obj.formtype !== undefined && obj.id === undefined && obj.name === undefined && idsArray !== undefined && namesArray !== undefined) {
 		this.label = this.formTypeNameMapping(this.formtype)
-		this.id = fb.fbView.formsCollection.forms[fb.formId].makeNewId(this.label)
-		this.name = fb.fbView.formsCollection.forms[fb.formId].makeNewName(this.label)
+		this.id = this.createUnique(this.label, idsArray)
+		this.name = this.createUnique(this.label, namesArray)
 		this.type = this.formTypeTypeMapping(this.formtype)
 	}
 
@@ -133,20 +134,21 @@ let Item = function(obj) {
 			this.removeAttrs(['type','value'])
 			break
 		case 's02': //select
-			this.removeSpecialValues('option')
-			this.removeAttrs(['placeholder','type'])
 		case 's14': //state
 		case 's15': //state
 		case 's16': //state
-			this.removeSpecialValues()
+			this.removeSpecialValues('option')
+      this.addOptions('option')
 			this.removeAttrs(['placeholder','type'])
 			break
 		case 's06': //checkboxes
 			this.removeSpecialValues('checkboxes')
+      this.addOptions('checkboxes')
 			this.removeAttrs(['placeholder','type'])
 			break
-		case 's08': //radio
-			this.removeSpecialValues('radio')
+		case 's08': //radios
+			this.removeSpecialValues('radios')
+      this.addOptions('radios')
 			this.removeAttrs(['placeholder','type'])
 			break
 		case 'm11': //hidden
@@ -154,15 +156,17 @@ let Item = function(obj) {
 			this.removeSpecialFunctions(['validation'])
 			this.removeAttrs(['label','help','placeholder'])
 			this.type = 'hidden'
-			break						
+			break
 		case 'm08': //paragraph
 			this.removeSpecialValues('textarea')
 			this.removeSpecialFunctions(['validation', 'calculations'])
+      this.swapLabel()
 			this.removeAttrs(['name','label','help','placeholder','type','value'])
 			break
 		case 'm10': //html
 			this.removeSpecialValues('codearea')
 			this.removeSpecialFunctions(['validation', 'calculations'])
+      this.swapLabel()
 			this.removeAttrs(['name','label','help','placeholder','type','value'])
 			break
 		case 'm02': //h1
@@ -170,6 +174,7 @@ let Item = function(obj) {
 		case 'm06': //h3
 			this.removeSpecialValues('textarea')
 			this.removeSpecialFunctions(['validation', 'calculations'])
+      this.swapLabel()
 			this.removeAttrs(['name','label','help','placeholder','type','value'])
 			break
 		case 'm16': //page separator
@@ -182,9 +187,11 @@ let Item = function(obj) {
 }
 
 /**
- * asdfasdf
+ * Gets the proper label of an item based on its formtype
  *
- * @param {String} exception
+ * @param {String} formtype
+ *
+ * @returns {String}
  */
 Item.prototype.formTypeNameMapping = function(formtype) {
 	var obj = {
@@ -210,19 +217,21 @@ Item.prototype.formTypeNameMapping = function(formtype) {
 		's08': 'Radio',
 		'm11': 'Hidden',
 		'm08': 'Paragraph',
-		'm10': 'HTML',
-		'm02': 'H1',
-		'm04': 'H2',
-		'm06': 'H3',
+		'm10': 'HTML Code',
+		'm02': 'Header 1',
+		'm04': 'Header 2',
+		'm06': 'Header 3',
 		'm16': 'Page_Separator'
 	}
 	return obj[formtype]
 }
 
 /**
- * asdfasdf
+ * Gets the proper type attribute of an item based on its formtype
  *
- * @param {String} exception
+ * @param {String} formtype
+ *
+ * @returns {String}
  */
 Item.prototype.formTypeTypeMapping = function(formtype) {
 	var obj = {
@@ -252,9 +261,23 @@ Item.prototype.formTypeTypeMapping = function(formtype) {
 		'm02': null,
 		'm04': null,
 		'm06': null,
+		'm11': null,
 		'm16': null
 	}
 	return obj[formtype]
+}
+
+/**
+ * Decodes encoded html
+ *
+ * @param {String} input
+ *
+ * @returns {String}
+ */
+Item.prototype.htmlDecode = function(input){
+  var e = document.createElement('textarea');
+  e.innerHTML = input;
+  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
 /**
@@ -280,7 +303,7 @@ Item.prototype.removeSpecialFunctions = function(arr) {
 		switch (arr[i]) {
 			case 'validation':
 				this.validation = null
-				this.required = false
+				this.required = null
 				break
 			case 'conditionals':
 				this.conditionals = null
@@ -293,7 +316,30 @@ Item.prototype.removeSpecialFunctions = function(arr) {
 				break
 		}
 	}
-}	
+}
+
+/**
+ * Swap label for textarea value
+ */
+Item.prototype.swapLabel = function() {
+  var labelTarget = this.formtype == "m10" ? "codearea" : "textarea"
+  if (typeof this.label !== "undefined" && typeof this[labelTarget] === "undefined") {
+    this[labelTarget] = this.label
+  }
+}
+
+/**
+ * Add options if they're empty
+ */
+Item.prototype.addOptions = function(index) {
+  if (typeof this[index] === "undefined" || typeof this[index] === "null") {
+    this[index] = "Choice 1\nChoice 2\nChoice 3"
+  } else {
+    if (typeof this[index] == "object") {
+      this[index] = this[index].join("\n")
+    }
+  }
+}
 
 /**
  * Removes regular attributes due to item type
@@ -304,4 +350,24 @@ Item.prototype.removeAttrs = function(arr) {
 	for (i in arr) {
 		this[arr[i]] = null
 	}
-}	
+}
+
+/**
+ * Generates a unique id or name based on the label string
+ *
+ * @param {String} label
+ * @param {String} type (id or name)
+ *
+ * @returns {String}
+ */
+Item.prototype.createUnique = function(label, arr) {
+	var count = 1;
+	var newName = label.toLowerCase();
+	newName = newName.replace(/ /g,"_");
+	countName = newName;
+  while (arr.includes(countName)) {
+		countName = newName+"_"+count;
+		count++;
+  }
+	return countName;
+}
