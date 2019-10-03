@@ -25,7 +25,7 @@ class FormBuilderMailer extends Mailable
         $address = $this->emailInfo['address'];
         $subject = $this->emailInfo['subject'];
         $name = $this->emailInfo['name'];
-        $file = $this->emailInfo['file'];
+        $file = isset($this->emailInfo['file']) ? $this->emailInfo['file'] : '';
 
         $headerData = [
             //Categories in SendGrid allow you to split your statistics into sections. For example,
