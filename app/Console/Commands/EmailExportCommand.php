@@ -77,11 +77,10 @@ class EmailExportCommand extends Command
               $data['emailInfo']['file'] = storage_path('app') .'/'. $filename;
               $data['emailInfo']['template'] = 'emails.csvExport';
 
-             $emailController->sendEmail($data, '');
+              $emailController->sendEmail($data, '');
 
           } catch (Exception $e) {
               $this->error("An error occurred");
-              var_dump($e->getMessage());
           }
       }
     }

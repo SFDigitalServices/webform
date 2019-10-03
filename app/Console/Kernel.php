@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
-        $schedule->command('email:exports {formid}')->everyTenMinutes();
+        //$schedule->command('email:exports {formid}')->everyTenMinutes();
     }
     protected function commands()
     {
