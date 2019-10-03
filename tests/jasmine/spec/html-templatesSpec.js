@@ -249,7 +249,7 @@ describe("HTML templates", function() {
   });
 
   it("should spit out preview iframe html", function() {
-    expect(fb.view.previewIframe('a', 'b')).toEqual('<iframe src="/form/preview?id=ab">Your browser does not support iframes, <a href="/form/preview/?id=a" target="_blank">click here</a> to a view a preview.</iframe>');
+    expect(fb.view.previewIframe('a', 'b')).toEqual('<iframe src="/form/preview?id=ab">Your browser does not support iframes, <a href="/form/preview?id=a" target="_blank">click here</a> to a view a preview.</iframe>');
   });
 
   it("should spit out list item html", function() {

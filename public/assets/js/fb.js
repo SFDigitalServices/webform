@@ -211,11 +211,9 @@ Fb.prototype.loadNames = function(obj) {
  * Event to handle response to getting a list of authors after loading form
  */
 Fb.prototype.shareResponse = function(response) {
-	var self = this
-
 	if (response.status && typeof response.data !== 'undefined') {
 		jQuery('#SFDSWFB-existingAuthors').html(response.data)
-		if (response.data.includes(',')) self.initSSE()
+		if (response.data.includes(',')) fb.initSSE()
 	} else if (!response.status) {
 		if (typeof response.message !== 'undefined') loadDialogModal('Attention', response.message)
 	} else {
