@@ -138,6 +138,23 @@ legend {
   border-radius: 5px;
 }
 
+.start-form {
+  font-size: 1.25em;
+  text-align: left;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.start-form strong,
+.start-form span {
+  display: block;
+}
+
+.start-form span {
+  color: #666;
+  font-size: 0.875em;
+}
+
 .forms a.btn {
   margin-bottom: 3px;
 }
