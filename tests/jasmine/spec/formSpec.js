@@ -280,15 +280,18 @@ describe("Form", function() {
       expect(form.isReferenced('test100')).toBeFalsy()
     })
 
-    /* todo
     it('should be able to rename ids across the object', function() {
+      form.insertItem('c02')
       form.applyConditionals()
-      //alert(form.content.data[0].conditions.condition[0].id)
-      form.renameId('test1','test100')
-      //alert(form.content.data[0].conditions.condition[0].id)
-      expect(form.content.data[0].conditions.condition[0].id).toEqual('test100')
+      form.insertItem('c04')
+      form.content.data[1].id = "test1"
+      expect(form.content.data[1].id).toEqual("test1")
+      expect(form.content.data[0].conditions.condition[0].id).toEqual("test1")
+      form.content.data[1].id = "new_id"
+      form.renameId('test1','new_id')
+      expect(form.content.data[1].id).toEqual("new_id")
+      expect(form.content.data[0].conditions.condition[0].id).toEqual("new_id")
     })
-    */
 
     afterEach(function() {
       jQuery('#SFDSWFB-attributes').remove()

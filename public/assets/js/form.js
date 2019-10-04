@@ -402,11 +402,13 @@ Form.prototype.doesItExist = function(value, type, skipIndex) {
 Form.prototype.isReferenced = function(myId) {
 	var specialFunctionIds = this.getSpecialFunctionIds()
 
-	for (i in specialFunctionIds) {
-		for (d in specialFunctionIds[i]) {
-			if (specialFunctionIds[i][d].includes(myId)) return true
-		}
-	}
+  for (c in specialFunctionIds) {
+    for (i in specialFunctionIds[c]) {
+      for (d in specialFunctionIds[c][i]) {
+        if (specialFunctionIds[c][i][d].includes(myId)) return true
+      }
+    }
+  }
 	return false
 }
 
@@ -419,15 +421,19 @@ Form.prototype.isReferenced = function(myId) {
 Form.prototype.renameId = function(oldId, newId) {
 	var specialFunctionIds = this.getSpecialFunctionIds()
 
-	for (i in specialFunctionIds) {
-		for (d in specialFunctionIds[i]) {
-			if (i == "conditionIds") {
-				if (specialFunctionIds[i][d] == oldId) this.content.data[i].conditions.condition[d].id = newId
-			} else if (i == "calculationIds") {
-				if (specialFunctionIds[i][d] == oldId) this.content.data[i].calculations[d] = newId
-			} //todo check webhooks and make this better
-		}
-	}
+  for (c in specialFunctionIds) {
+    for (i in specialFunctionIds[c]) {
+      for (d in specialFunctionIds[c][i]) {
+        if (c == "conditionIds") {
+          if (specialFunctionIds[c][i][d] == oldId) {
+            this.content.data[i].conditions.condition[d].id = newId
+          }
+        } else if (c == "calculationIds") {
+          if (specialFunctionIds[c][i][d] == oldId) this.content.data[i].calculations[d] = newId
+        } //todo check webhooks and make this better
+      }
+    }
+  }
 }
 
 /**
@@ -437,8 +443,8 @@ Form.prototype.renameId = function(oldId, newId) {
  */
 Form.prototype.getSpecialFunctionIds = function() {
 	var obj = {}
-	obj.conditionIds = this.getConditionIdsArray()
-	obj.calculationIds = this.getCalculationIdsArray()
+	obj.conditionIds = this.getConditionIds()
+	obj.calculationIds = this.getCalculationIds()
 	//todo probably check webhooks
 	return obj
 }
@@ -446,35 +452,35 @@ Form.prototype.getSpecialFunctionIds = function() {
 /**
  * Gather all ids from conditionals
  *
- * @returns {Array}
+ * @returns {Object} {itemIndex: [id, id, id]}
  */
-Form.prototype.getConditionIdsArray = function() {
-	var arr = []
+Form.prototype.getConditionIds = function() {
+	var obj = {}
 	for (i in this.content.data) {
-		arr[i] = []
 		if (this.content.data[i].conditions != undefined) {
+      obj[i] = []
 			for (con in this.content.data[i].conditions.condition) {
-				arr.push(this.content.data[i].conditions.condition[con].id)
+				obj[i].push(this.content.data[i].conditions.condition[con].id)
 			}
 		}
 	}
-	return arr
+	return obj
 }
 
 /**
  * Gather all ids from calculations
  *
- * @returns {Array}
+ * @returns {Object} {itemIndex: [id, id, id]}
  */
-Form.prototype.getCalculationIdsArray = function() {
-	var arr = []
+Form.prototype.getCalculationIds = function() {
+	var obj = {}
 	for (i in this.content.data) {
-		arr[i] = []
 		if (this.content.data[i].calculations != undefined) {
+      obj[i] = []
 			for (calc in this.content.data[i].calculations) {
-				if (calc % 2 == 0) arr.push(this.content.data[i].calculations[calc])
+				if (calc % 2 == 0) obj[i].push(this.content.data[i].calculations[calc])
 			}
 		}
 	}
-	return arr
+	return obj
 }
