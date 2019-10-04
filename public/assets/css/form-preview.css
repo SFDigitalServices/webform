@@ -2,6 +2,10 @@
   padding: 2em 5em;
 }
 
+body {
+  background-color: #fff;
+}
+
 #SFDSWFB-legend {
   position: relative !important;
   height: auto;
@@ -32,4 +36,3 @@
 .is-selected-in-editor h3:last-of-type {
   margin-bottom: 0;
 }
-

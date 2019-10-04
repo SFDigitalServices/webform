@@ -26,7 +26,7 @@ body {
 .login header,
 .login h1 {
   font-size: 2em;
-  color: #fff;
+  color: #FFFFFF;
   text-shadow: 0 0 18px #000;
 }
 
@@ -108,17 +108,19 @@ legend {
 }
 
 .header {
-  background: #1c3e57;
-  color: #fff;
+  background: #1C3E57;
+  color: #FFFFFF;
   text-align: center;
   padding: 0.5rem 0;
 }
 
-.header h1 {
-  color: #fff;
+.header button {
+  color: #FFFFFF;
   font-size: 2rem;
   font-weight: normal;
-  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .header-sign-out {
@@ -153,7 +155,7 @@ legend {
 }
 
 .start-form span {
-  color: #666;
+  color: rgba(28, 62, 87, 0.65);
   font-size: 0.875em;
 }
 
@@ -166,7 +168,7 @@ legend {
 }
 
 .fa-circle-notch {
-  color: #ddd;
+  color: #d3d3d3;
 }
 
 .forms .fa-circle-notch {
@@ -203,7 +205,7 @@ legend {
 
 #SFDSWFB-target {
   min-height: 200px;
-  border: 1px solid #ccc;
+  border: 1px solid #d3d3d3;
   padding: 5px;
   transition: height 0.3s;
 }
@@ -233,13 +235,13 @@ legend {
   top: 0;
   right: 0;
   font-size: 1.5em;
-  color: #ccc;
+  color: #d3d3d3;
   cursor: pointer;
   z-index: 99;
 }
 
 #SFDSWFB-target .component {
-  border: 1px solid #fff;
+  border: 1px solid #FFFFFF;
 }
 
 #SFDSWFB-target .floatleft,
@@ -252,7 +254,7 @@ legend {
 #SFDSWFB-temp {
   width: 500px;
   background: white;
-  border: 1px dotted #ccc;
+  border: 1px dotted #d3d3d3;
   border-radius: 10px;
 }
 
@@ -260,7 +262,7 @@ legend {
 
 .accordion-header {
   font-size: 1.5em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #e9e9e9;
   margin: 1em 0;
 }
 
@@ -284,7 +286,7 @@ legend {
 }
 
 .popover-content select {
-  border: 1px solid #ccc;
+  border: 1px solid #d3d3d3;
   height: 34px;
   padding: 6px 12px;
   width: 100%;
@@ -316,7 +318,7 @@ legend {
 
 .condition:hover,
 .calculation:hover {
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #212123;
 }
 
 .addConditional {
@@ -332,9 +334,9 @@ hr.and::before {
   position: relative;
   left: calc(45%);
   top: -12px;
-  background: #fff;
+  background: #FFFFFF;
   width: 24px;
-  color: #bbb;
+  color: #323a45;
   display: block;
   text-align: center;
 }
@@ -348,7 +350,7 @@ hr.and::before {
   text-align: left;
   margin-top: 1.5em;
   position: relative;
-  color: #aaa;
+  color: #323a45;
 }
 
 .clickMenu > ul {
@@ -358,12 +360,12 @@ hr.and::before {
 .clickMenu li {
   display: inline-block;
   padding: 0.5em 1em;
-  color: #428bca;
+  color: #4F66EE;
   cursor: pointer;
 }
 
 .clickMenu li:hover {
-  background: #eee;
+  background: #e9e9e9;
   color: #2a6496;
 }
 
@@ -377,18 +379,18 @@ hr.and::before {
   padding: 8px 12px;
   font-size: 24px;
   line-height: 30px;
-  border: 2px solid #ccc;
+  border: 2px solid #d3d3d3;
   border-radius: 8px;
   outline: none;
 }
 
 .tt-query {
   /* UPDATE: newer versions use tt-input instead of tt-query */
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(33, 33, 35, 0.075);
 }
 
 .tt-hint {
-  color: #999;
+  color: #323a45;
 }
 
 .tt-menu {
@@ -396,11 +398,11 @@ hr.and::before {
   width: 422px;
   margin-top: 12px;
   padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: #FFFFFF;
+  border: 1px solid #d3d3d3;
+  border: 1px solid rgba(33, 33, 35, 0.2);
   border-radius: 8px;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(33, 33, 35, 0.2);
 }
 
 .tt-suggestion {
@@ -412,7 +414,7 @@ hr.and::before {
 .tt-suggestion.tt-cursor,
 .tt-suggestion:hover {
   /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
-  color: #fff;
+  color: #FFFFFF;
   background-color: #0097cf;
   cursor: pointer;
 }
@@ -440,8 +442,17 @@ a:active {
   width: 100%;
   flex-direction: row;
   align-items: stretch;
-  height: calc(100% - 3.5rem);
+  height: calc(100vh - 4rem);
   overflow: hidden;
+}
+
+.save-buttons {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 -1px 3px rgba(33, 33, 35, 0.2);
+  padding: 0.5rem 0;
 }
 
 .leftPanel,
@@ -449,7 +460,13 @@ a:active {
 .rightPanel-preview-wrapper {
   padding: 3rem 1rem 0;
   position: relative;
+  height: calc(100vh - 4rem);
   overflow: scroll;
+}
+
+.leftPanel,
+.middlePanel {
+  box-shadow: inset -1px 0 0 0 #323a45;
 }
 
 .leftPanel {
@@ -463,14 +480,18 @@ a:active {
   width: 20%;
 }
 
+.middlePanel textarea {
+  resize: vertical;
+}
+
 .rightPanel {
   width: 60%;
   min-width: 320px;
   max-width: 80%;
   display: flex;
   flex: auto;
-  background: #f7f7f7;
-  border-left: 1px solid #ddd;
+  background: #f1f1f1;
+  border-left: 1px solid #d3d3d3;
   padding: inherit 2.5%;
 }
 
@@ -499,10 +520,22 @@ a:active {
   height: 95%;
   margin: 2.5%;
   margin-left: 0;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: #FFFFFF;
+  border: 1px solid #d3d3d3;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rightPanel-preview-pane::before {
+  position: absolute;
+  content: "Loading";
+  color: #323a45;
+  font-size: 2rem;
+  text-align: center;
+  width: 100%;
+  top: 50%;
 }
 
 .rightPanel-preview-pane iframe {
@@ -511,6 +544,8 @@ a:active {
   border: 0;
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .splitter {
@@ -541,7 +576,7 @@ a:active {
 
 #SFDSWFB-list .itemCount {
   display: inline-block;
-  color: #ccc;
+  color: #d3d3d3;
   padding-right: 0.5em;
 }
 
@@ -554,24 +589,24 @@ a:active {
 
 #SFDSWFB-list .item:hover,
 #SFDSWFB-list .item.selected {
-  background-color: #eee;
+  background-color: #e9e9e9;
 }
 
 #SFDSWFB-list .item.selected.moving,
 #SFDSWFB-list .item.selected.moving:hover {
-  color: #aaa;
+  color: rgba(28, 62, 87, 0.65);
 }
 
 #SFDSWFB-list .item.spacer {
   height: 1.5em;
   width: 100%;
   text-align: center;
-  color: #ddd;
+  color: #d3d3d3;
 }
 
 #SFDSWFB-list .item.spacer:hover,
 #SFDSWFB-list .item.spacer.selected {
-  border-bottom: 2px solid blue;
+  border-bottom: 2px solid #4F66EE;
   background-color: transparent;
 }
 
@@ -580,7 +615,7 @@ a:active {
 }
 
 #SFDSWFB-list .fa-sort {
-  border: 1px solid blue;
+  border: 1px solid #4F66EE;
   border-radius: 5px;
   padding: 3px 6px;
 }
@@ -642,8 +677,8 @@ a:active {
 .field-item {
   padding: 0.5em;
   margin: 0.5em;
-  border: 2px solid blue;
-  color: blue;
+  border: 2px solid #4F66EE;
+  color: #4F66EE;
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;

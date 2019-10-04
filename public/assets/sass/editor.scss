@@ -1,3 +1,5 @@
+@import 'variables';
+
 *,
 *:before,
 *:after {
@@ -26,7 +28,7 @@ body {
   header,
   h1 {
     font-size: 2em;
-    color: #fff;
+    color: $white;
     text-shadow: 0 0 18px #000;
   }
 
@@ -111,16 +113,18 @@ legend {
 }
 
 .header {
-  background: #1c3e57;
-  color: #fff;
+  background: $slate-blue;
+  color: $white;
   text-align: center;
   padding: 0.5rem 0;
 
-  h1 {
-    color: #fff;
+  button {
+    color: $white;
     font-size: 2rem;
     font-weight: normal;
-    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
   }
 }
 
@@ -156,7 +160,7 @@ legend {
 }
 
 .start-form span {
-  color: #666;
+  color: $light-slate-blue;
   font-size: 0.875em;
 }
 
@@ -169,7 +173,7 @@ legend {
 }
 
 .fa-circle-notch {
-  color: #ddd;
+  color: $grey-4;
 
   .forms & {
     font-size: 2em;
@@ -206,7 +210,7 @@ legend {
 
 #SFDSWFB-target {
   min-height: 200px;
-  border: 1px solid #ccc;
+  border: 1px solid $grey-4;
   padding: 5px;
   transition: height .3s;
 
@@ -237,13 +241,13 @@ legend {
     top: 0;
     right: 0;
     font-size: 1.5em;
-    color: #ccc;
+    color: $grey-4;
     cursor: pointer;
     z-index: 99
   }
 
   .component {
-    border: 1px solid #fff;
+    border: 1px solid $white;
   }
 
   .floatleft,
@@ -256,7 +260,7 @@ legend {
 #SFDSWFB-temp {
   width: 500px;
   background: white;
-  border: 1px dotted #ccc;
+  border: 1px dotted $grey-4;
   border-radius: 10px;
 }
 
@@ -265,7 +269,7 @@ legend {
 
 .accordion-header {
   font-size: 1.5em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $grey-3;
   margin: 1em 0;
 }
 
@@ -290,7 +294,7 @@ legend {
   }
 
   select {
-    border: 1px solid #ccc;
+    border: 1px solid $grey-4;
     height: 34px;
     padding: 6px 12px;
     width: 100%;
@@ -321,7 +325,7 @@ legend {
   border-bottom: 1px solid transparent;
 
   &:hover {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid $black;
   }
 }
 
@@ -338,9 +342,9 @@ hr.and::before {
   position: relative;
   left: calc(45%);
   top: -12px;
-  background: #fff;
+  background: $white;
   width: 24px;
-  color: #bbb;
+  color: $grey-5;
   display: block;
   text-align: center;
 }
@@ -355,7 +359,7 @@ hr.and::before {
   text-align: left;
   margin-top: 1.5em;
   position: relative;
-  color: #aaa;
+  color: $grey-5;
 
   > ul {
     margin-top: 10px;
@@ -364,11 +368,11 @@ hr.and::before {
   li {
     display: inline-block;
     padding: .5em 1em;
-    color: #428bca;
+    color: $bright-blue;
     cursor: pointer;
 
     &:hover {
-      background: #eee;
+      background: $grey-3;
       color: #2a6496;
     }
   }
@@ -384,18 +388,18 @@ hr.and::before {
   padding: 8px 12px;
   font-size: 24px;
   line-height: 30px;
-  border: 2px solid #ccc;
+  border: 2px solid $grey-4;
   border-radius: 8px;
   outline: none;
 }
 
 .tt-query {
   /* UPDATE: newer versions use tt-input instead of tt-query */
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba($black, 0.075);
 }
 
 .tt-hint {
-  color: #999;
+  color: $grey-5;
 }
 
 .tt-menu {
@@ -403,11 +407,11 @@ hr.and::before {
   width: 422px;
   margin-top: 12px;
   padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: $white;
+  border: 1px solid $grey-4;
+  border: 1px solid rgba($black, 0.2);
   border-radius: 8px;
-  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  box-shadow: 0 5px 10px rgba($black, 0.2);
 }
 
 .tt-suggestion {
@@ -418,7 +422,7 @@ hr.and::before {
   &.tt-cursor,
   &:hover {
     /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
-    color: #fff;
+    color: $white;
     background-color: #0097cf;
     cursor: pointer;
   }
@@ -438,13 +442,23 @@ a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
 
+$editorHeight: calc(100vh - 4rem);
+
 .editorContainer {
   display: flex;
   width: 100%;
   flex-direction: row;
   align-items: stretch;
-  height: calc(100% - 3.5rem);
+  height: $editorHeight;
   overflow: hidden;
+}
+
+.save-buttons {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 -1px 3px rgba($black, 0.2);
+  padding: 0.5rem 0;
 }
 
 .leftPanel,
@@ -452,7 +466,13 @@ a:link, a:visited, a:hover, a:active {
 .rightPanel-preview-wrapper {
   padding: 3rem 1rem 0;
   position: relative;
+  height: $editorHeight;
   overflow: scroll;
+}
+
+.leftPanel,
+.middlePanel {
+  box-shadow: inset -1px 0 0 0 $grey-5;
 }
 
 .leftPanel {
@@ -464,6 +484,10 @@ a:link, a:visited, a:hover, a:active {
 
 .middlePanel {
   width: 20%;
+
+  textarea {
+    resize: vertical;
+  }
 }
 
 .rightPanel {
@@ -472,8 +496,8 @@ a:link, a:visited, a:hover, a:active {
   max-width: 80%;
   display: flex;
   flex: auto;
-  background: #f7f7f7;
-  border-left: 1px solid #ddd;
+  background: $grey-2;
+  border-left: 1px solid $grey-4;
   padding: inherit 2.5%;
 }
 
@@ -502,10 +526,22 @@ a:link, a:visited, a:hover, a:active {
   height: 95%;
   margin: 2.5%;
   margin-left: 0;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: $white;
+  border: 1px solid $grey-4;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    content: "Loading";
+    color: $grey-5;
+    font-size: 2rem;
+    text-align: center;
+    width: 100%;
+    top: 50%;
+  }
 
   iframe {
     align-self: flex-end;
@@ -513,6 +549,8 @@ a:link, a:visited, a:hover, a:active {
     border: 0;
     width: 100%;
     height: 100%;
+    position: relative;
+    z-index: 2;
   }
 }
 
@@ -545,7 +583,7 @@ a:link, a:visited, a:hover, a:active {
 
   .itemCount {
     display: inline-block;
-    color: #ccc;
+    color: $grey-4;
     padding-right: 0.5em;
   }
 
@@ -557,23 +595,23 @@ a:link, a:visited, a:hover, a:active {
 
     &:hover,
     &.selected {
-      background-color: #eee;
+      background-color: $grey-3;
     }
 
     &.selected.moving,
     &.selected.moving:hover {
-      color: #aaa;
+      color: $light-slate-blue;
     }
 
     &.spacer {
       height: 1.5em;
       width: 100%;
       text-align: center;
-      color: #ddd;
+      color: $grey-4;
 
       &:hover,
       &.selected {
-        border-bottom: 2px solid blue;
+        border-bottom: 2px solid $bright-blue;
         background-color: transparent;
       }
     }
@@ -584,7 +622,7 @@ a:link, a:visited, a:hover, a:active {
   }
 
   .fa-sort {
-    border: 1px solid blue;
+    border: 1px solid $bright-blue;
     border-radius: 5px;
     padding: 3px 6px;
   }
@@ -647,8 +685,8 @@ a:link, a:visited, a:hover, a:active {
 .field-item {
   padding: 0.5em;
   margin: 0.5em;
-  border: 2px solid blue;
-  color: blue;
+  border: 2px solid $bright-blue;
+  color: $bright-blue;
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
