@@ -216,10 +216,11 @@ class DataStoreHelper extends Migration
     * @param $request
     * @param $status
     *
-    * @return string
+    * @return Array
     */
     public function submitForm($form, $request, $status = 'complete')
     {
+        $ret = array();
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
@@ -234,14 +235,16 @@ class DataStoreHelper extends Migration
                     DB::table('forms_'.$form['id'])
                         ->where('id', $id)
                         ->update(['status' => $status, 'magiclink' => $magiclink]);
+                    $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                    $ret = array("status" => 1, "magiclink" => $magiclink, 'email' => $email);
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                    return "";
+                    return null;
                 }
-                return $magiclink;
+                return $ret;
             }
         }
-        return "";
+        return null;
     }
 
    /** Inserts submitted form data into the form table
@@ -784,6 +787,9 @@ class DataStoreHelper extends Migration
                   // fixed bug: if 'name' attribute was not set, exception is thrown here.
                   if (isset($field['name'])) {
                     $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
+                    if($field['formtype'] === 'c04'){
+                      $write['db']['email_save_for_later'] = $request->input($field['name']);
+                    }
                   }
                   $column++;
               }

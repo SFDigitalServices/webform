@@ -162,7 +162,7 @@ function initSectional() {
 		jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');
 		jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
 	}
-	
+
 	skipToSectionId(SFDSWF_goto);
 }
 
@@ -203,7 +203,9 @@ function skipToSectionId(callback) { //does not work for checkboxes and possibly
 
 function submitPartial(formid){
   var formid = "SFDSWFB_forms_" + formid;
-  var submitUrl = jQuery("#"+formid).attr('action').replace('submit', 'submitPartial');
+  var submitUrl = jQuery("#"+formid).attr('action');
+  if(!submitUrl.includes('submitPartial'))
+    submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
   jQuery("#"+formid).attr('action', submitUrl);
   document.forms[formid].submit.click();
 }
@@ -211,7 +213,7 @@ function submitPartial(formid){
 SFDSWFB.lastScript = function() {
 
 	skipToSectionId(false)
-	
+
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));
