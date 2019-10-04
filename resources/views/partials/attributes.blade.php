@@ -1,2 +1,5 @@
-<h4>Edit Item</h4>
+<div class="panel-header">
+  <strong>Edit field</strong>
+</div>
+
 <div class="editContent"></div>
