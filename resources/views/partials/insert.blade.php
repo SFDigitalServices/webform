@@ -1,7 +1,10 @@
 <a href="javascript:void(0)" title="Embed" class="embed-toggle menu-button min-hidden md-hidden fa fa-share-alt"></a>
 <a href="javascript:void(0)" title="Settings" class="settings-toggle menu-button min-hidden md-hidden fa fa-cog"></a>
 <div class="tab-pane" id="SFDSWFB-insert">
-	<h4>Insert Item</h4>
+  <div class="panel-header">
+  	<h4>Add a field</h4>
+  </div>
+
 	<a href="javascript:void(0)" data-formtype="c02" class="field-item t1">Name</a>
 	<a href="javascript:void(0)" data-formtype="c04" class="field-item t1">Email</a>
 	<a href="javascript:void(0)" data-formtype="c06" class="field-item t1">Phone</a>

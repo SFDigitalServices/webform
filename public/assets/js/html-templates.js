@@ -239,11 +239,11 @@ Fb.prototype.view.previewIframe = function(formId, scrollTo) {
 }
 
 Fb.prototype.view.listItem = function(id, num, numStr) {
-	return '<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '" data-id="' + id + '">insert item</a></div><div><a href="javascript:void(0)" class="item field" data-index="' + num + '" data-id="' + id + '"><span class="itemCount">' + numStr + '</span>' + id + '</a><a href="javascript:void(0)" data-index="' + num + '" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="' + num + '" class="fa fa-times"></a></div>'
+	return '<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '" data-id="' + id + '">Add a field here</a></div><div><a href="javascript:void(0)" class="item field" data-index="' + num + '" data-id="' + id + '"><span class="itemCount">' + numStr + '</span>' + id + '</a><a href="javascript:void(0)" data-index="' + num + '" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="' + num + '" class="fa fa-times"></a></div>'
 }
 
 Fb.prototype.view.listSpacer = function(num) {
-	return '<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '">insert item</a></div>'
+	return '<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="' + num + '">Add a field here</a></div>'
 }
 
 Fb.prototype.view.embedCode = function(id, embedUrl, assetsUrl) {
