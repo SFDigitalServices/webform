@@ -71,13 +71,13 @@ class FormController extends Controller
 		$forms = Form::all();
         $user_forms = User_Form::all();
 		$query = User_Form::select('form_id')->where('user_id', $user_id)->get();
-		
+
 		$forms = Form::whereIn('id', $query)->get();
         foreach ($forms as $key => $value) {
 			$forms[$key]['content'] = $this->controllerHelper->scrubString($value['content']);
             $forms[$key]['content'] = json_decode($value['content'], true); //hack to convert json blob to part of larger object
 		}
-		
+
         return response()->json($forms);
     }
 
@@ -278,9 +278,11 @@ class FormController extends Controller
 
         $embedHTML = $this->embedJS($request);
         return '<!DOCTYPE html><html><head>'.
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">'.
         '<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-base.css" />'.
-        '<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
+        '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
+        '</head>'.
         '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
     }
 
