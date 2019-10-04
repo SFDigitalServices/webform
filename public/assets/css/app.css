@@ -449,7 +449,7 @@ a:active {
 
 .leftPanel,
 .middlePanel,
-.rightPanel-preview {
+.rightPanel-preview-wrapper {
   padding: 3rem 1rem 0;
   position: relative;
   overflow: scroll;
@@ -472,15 +472,17 @@ a:active {
   max-width: 80%;
   display: flex;
   flex: auto;
+  background: #f7f7f7;
+  border-left: 1px solid #ddd;
+  padding: inherit 2.5%;
 }
 
 .rightPanel-blank {
   flex: 0 0 auto;
-  width: 0;
   max-width: calc(100% - 320px);
 }
 
-.rightPanel-preview {
+.rightPanel-preview-wrapper {
   width: 100%;
   min-width: 320px;
   max-width: 100%;
@@ -489,10 +491,29 @@ a:active {
   align-items: stretch;
 }
 
-.rightPanel-preview iframe {
+.rightPanel-preview {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.rightPanel-preview-pane {
+  width: 95%;
+  height: 95%;
+  margin: 2.5%;
+  margin-left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.rightPanel-preview-pane iframe {
   align-self: flex-end;
   flex-grow: 1;
   border: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .splitter {
@@ -619,12 +640,6 @@ a:active {
 
 .col-xl-1 > a.min-hidden {
   display: none;
-}
-
-#SFDSWFB-preview,
-#SFDSWFB-preview iframe {
-  height: 100%;
-  width: 100%;
 }
 
 .middlePanel > div {

@@ -1,3 +1,7 @@
-<a href="javascript:void(0)" title="Preview in a New Window" class="preview-window menu-button fa fa-window-restore"></a>
+<a href="javascript:void(0)" class="preview-window menu-button">Open in new window</a>
 <h4>Form Preview</h4>
-<div class="tab-pane" id="SFDSWFB-preview"></div>
+<div class="rightPanel-preview">
+  <div class="rightPanel-preview-pane" id="SFDSWFB-preview"></div>
+  <div class="preview-resizer preview-resizer-right"></div>
+  <div class="rightPanel-blank">&nbsp;</div>
+</div>

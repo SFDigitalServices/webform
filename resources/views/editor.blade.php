@@ -30,16 +30,13 @@
 		</div>
 
 		<div class="rightPanel">
-      <div class="rightPanel-preview">
+      <div class="rightPanel-preview-wrapper">
   			@include('partials.preview')
       </div>
 		</div>
 
 
       </div> {{--  /.row --}}
-      <div class="row clearfix">
-        <div class="col-md-12"></div>
-      </div>
     </div> {{--  /.container --}}
 
   @include('modal')
