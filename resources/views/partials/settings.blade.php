@@ -63,5 +63,7 @@
   </select>
 </div>
 
-<button class='apply-button btn btn-md btn-primary'>Apply</button>
-<button class='revert-button btn btn-md btn-secondary'>Revert</button>
+<div class="save-buttons">
+  <button class='apply-button btn btn-md btn-primary'>Save</button>
+  <button class='revert-button btn btn-md btn-secondary'>Cancel</button>
+</div>

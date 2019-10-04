@@ -103,8 +103,10 @@ Fb.prototype.view.webhooks = "\
 	</div>"
 
 Fb.prototype.view.applyRevertButtons = "\
-	<button class='apply-button btn btn-md btn-primary'>Apply</button> \
-	<button class='revert-button btn btn-md btn-secondary'>Revert</button>"
+  <div class='save-buttons'> \
+	  <button class='apply-button btn btn-md btn-primary'>Save</button> \
+	  <button class='revert-button btn btn-md btn-secondary'>Cancel</button> \
+  </div>"
 
 Fb.prototype.view.editItem = "\
 	<div class='accordion-attributes'> \
@@ -229,7 +231,7 @@ Fb.prototype.view.calculationContainer = function() {
 }
 
 Fb.prototype.view.formLink = function(formObj) {
-	return '<a href="javascript:void(0)" data-id="' + formObj.id + '" class="start-form recent btn btn-default btn-md btn-block">' + formObj.content.settings.name + ' <span style="color:green">Last updated: ' + formObj.updated_at + '</span></a>'
+	return '<a href="javascript:void(0)" data-id="' + formObj.id + '" class="start-form recent">' + formObj.content.settings.name + ' <span style="color:green">Last updated: ' + formObj.updated_at + '</span></a>'
 }
 
 Fb.prototype.view.previewIframe = function(formId, scrollTo) {
