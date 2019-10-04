@@ -25,6 +25,7 @@ class FormBuilderMailer extends Mailable
         $address = $this->emailInfo['address'];
         $subject = $this->emailInfo['subject'];
         $name = $this->emailInfo['name'];
+        $file = isset($this->emailInfo['file']) ? $this->emailInfo['file'] : '';
 
         $headerData = [
             //Categories in SendGrid allow you to split your statistics into sections. For example,
@@ -41,11 +42,21 @@ class FormBuilderMailer extends Mailable
             $message->getHeaders()
                     ->addTextHeader('X-SMTPAPI', $header);
         });
+        if($file){
+          return $this->view($this->emailInfo['template'])
+                    ->from($address, $name)
+                    ->replyTo($address, $name)
+                    ->subject($subject)
+                    ->attach(
+                      $file,
+                      [
+                        'as' => 'csvExport.xlsx'
+                      ]
+                    );
+        }
 
         return $this->view($this->emailInfo['template'])
                     ->from($address, $name)
-                    ->cc($address, $name)
-                    ->bcc($address, $name)
                     ->replyTo($address, $name)
                     ->subject($subject);
     }
