@@ -1,6 +1,5 @@
 <a href="javascript:void(0)" title="Embed" class="embed-toggle menu-button min-hidden md-hidden fa fa-share-alt"></a>
 <a href="javascript:void(0)" title="Settings" class="settings-toggle menu-button min-hidden md-hidden fa fa-cog"></a>
-<a href="javascript:void(0)" title="Resize" class="horizontal-toggle menu-button md-hidden fa fa-angle-double-right"></a>
 <div class="tab-pane" id="SFDSWFB-insert">
 	<h4>Insert Item</h4>
 	<a href="javascript:void(0)" data-formtype="c02" class="field-item t1">Name</a>

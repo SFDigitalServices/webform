@@ -34,16 +34,12 @@ FbView.prototype.bindSystemButtons = function() {
 		fb.openPreviewWindow()
 	})
 	$('a.embed-toggle').on('click', function() {
-		self.showMiddlePanel('SFDSWFB-embed')
+		self.switchMiddlePanel('SFDSWFB-embed')
 		self.genSource()
 	})
 
 	$('a.settings-toggle').on('click', function() {
-		self.showMiddlePanel('SFDSWFB-settings')
-	})
-
-	$('a.horizontal-toggle').on('click', function() {
-		self.toggleMiddlePanel()
+		self.switchMiddlePanel('SFDSWFB-settings')
 	})
 
 	$('#SFDSWFB-settings select[name=backend]').on('change', function() {
@@ -188,51 +184,11 @@ FbView.prototype.loadPreview = function(sectionId) {
 }
 
 /**
- * Control to expand and minimize the middle panel
- */
-FbView.prototype.toggleMiddlePanel = function() {
-	if ($('.middlePanel').hasClass('col-lg-4')) {
-		this.hideMiddlePanel()
-	} else {
-		this.showMiddlePanel()
-	}
-}
-
-/**
- * Minimizes the middle panel
- *
- */
-FbView.prototype.hideMiddlePanel = function() {
-	$('.middlePanel').removeClass('col-lg-4')
-	$('.middlePanel').removeClass('col-xl-3')
-	if (!$('.middlePanel').hasClass('col-lg-1')) $('.middlePanel').addClass('col-lg-1')
-	if (!$('.middlePanel').hasClass('col-xl-1')) $('.middlePanel').addClass('col-xl-1')
-	$('.rightPanel').removeClass('col-lg-5')
-	$('.rightPanel').removeClass('col-xl-7')
-	if (!$('.rightPanel').hasClass('col-lg-8')) $('.rightPanel').addClass('col-lg-8')
-	if (!$('.rightPanel').hasClass('col-lg-9')) $('.rightPanel').addClass('col-xl-9')
-	//$('.middlePanel > div').hide()
-	$('.horizontal-toggle').removeClass('fa-angle-double-left')
-	if (!$('.horizontal-toggle').hasClass('fa-angle-double-right')) $('.horizontal-toggle').addClass('fa-angle-double-right')
-}
-
-/**
  * Expands the middle panel, shows a specific panel and optionally highlight an item for editing
  *
  * @param {String} panelId
  */
-FbView.prototype.showMiddlePanel = function(panelId) {
-	$('.middlePanel').removeClass('col-lg-1')
-	$('.middlePanel').removeClass('col-xl-1')
-	if (!$('.middlePanel').hasClass('col-lg-4')) $('.middlePanel').addClass('col-lg-4')
-	if (!$('.middlePanel').hasClass('col-xl-3')) $('.middlePanel').addClass('col-xl-3')
-	$('.rightPanel').removeClass('col-lg-8')
-	$('.rightPanel').removeClass('col-xl-9')
-	if (!$('.rightPanel').hasClass('col-lg-5')) $('.rightPanel').addClass('col-lg-5')
-	if (!$('.rightPanel').hasClass('col-xl-7')) $('.rightPanel').addClass('col-xl-7')
-	$('.horizontal-toggle').removeClass('fa-angle-double-right')
-	if (!$('.horizontal-toggle').hasClass('fa-angle-double-left')) $('.horizontal-toggle').addClass('fa-angle-double-left')
-
+FbView.prototype.switchMiddlePanel = function(panelId) {
 	if (typeof panelId !== "undefined") {
 		$('.middlePanel > div').hide()
 		$('#'+panelId).show()
@@ -341,7 +297,7 @@ FbView.prototype.showAttributes = function() {
 	})
 
 	$('#SFDSWFB-attributes .revert-button').on('click', function() {
-		self.showMiddlePanel('SFDSWFB-attributes')
+		self.switchMiddlePanel('SFDSWFB-attributes')
 	})
 
 	self.populateWebhooks(self.formsCollection.forms[fb.formId].content.data[itemIndex])
@@ -559,7 +515,7 @@ FbView.prototype.applyAttributes = function() {
 	this.populateList()
 	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
 	newObj.addClass('selected')
-	this.showMiddlePanel('SFDSWFB-attributes')
+	this.switchMiddlePanel('SFDSWFB-attributes')
 }
 
 /**
@@ -585,7 +541,7 @@ FbView.prototype.sortItem = function(handleObj) {
 	handleObj.prev().addClass('moving')
 	handleObj.addClass('moving')
 	$('#SFDSWFB-list').addClass('moving')
-	this.showMiddlePanel('SFDSWFB-sort')
+	this.switchMiddlePanel('SFDSWFB-sort')
 	this.loadPreview()
 }
 
@@ -600,7 +556,7 @@ FbView.prototype.moveItemHere = function(index) {
 	this.populateList()
 	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
 	newObj.addClass('selected')
-	this.showMiddlePanel('SFDSWFB-attributes')
+	this.switchMiddlePanel('SFDSWFB-attributes')
 }
 
 /**
@@ -614,7 +570,7 @@ FbView.prototype.editItem = function(obj, skipPreview) {
 	this.unselectList()
 	obj.addClass('selected')
 	if (skipPreview === undefined || !skipPreview) this.loadPreview()
-	this.showMiddlePanel(obj.hasClass('spacer') ? 'SFDSWFB-insert' : 'SFDSWFB-attributes') //set to zero-indexed
+	this.switchMiddlePanel(obj.hasClass('spacer') ? 'SFDSWFB-insert' : 'SFDSWFB-attributes') //set to zero-indexed
 }
 
 /**
@@ -628,7 +584,6 @@ FbView.prototype.deleteItem = function(index) {
 	this.populateList()
   if (!$('#SFDSWFB-list .item[data-id=' + $('#SFDSWFB-attributes #id').val() + ']').length) {
     $('#SFDSWFB-attributes > .editContent').html('<p>Deleted</p>')
-		this.toggleMiddlePanel()
   }
 }
 
