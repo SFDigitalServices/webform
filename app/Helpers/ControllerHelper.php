@@ -316,7 +316,6 @@ class ControllerHelper
           unset($updates['remove']);
           unset($updates['add']);
         }
-        Log::info(print_r($updates,1));
         return $updates;
     }
 }

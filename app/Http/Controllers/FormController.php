@@ -71,13 +71,13 @@ class FormController extends Controller
 		$forms = Form::all();
         $user_forms = User_Form::all();
 		$query = User_Form::select('form_id')->where('user_id', $user_id)->get();
-		
+
 		$forms = Form::whereIn('id', $query)->get();
         foreach ($forms as $key => $value) {
 			$forms[$key]['content'] = $this->controllerHelper->scrubString($value['content']);
             $forms[$key]['content'] = json_decode($value['content'], true); //hack to convert json blob to part of larger object
 		}
-		
+
         return response()->json($forms);
     }
 
@@ -412,11 +412,12 @@ class FormController extends Controller
       $form = Form::where('id', $form_id)->first();
       $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
       //todo backend validation
-      if($magiclink = $this->dataStoreHelper->submitForm($form, $request, 'partial')){
-          // email magic link to user? confirmation page
+      if($response = $this->dataStoreHelper->submitForm($form, $request, 'partial')){
           $data['body'] = array();
-          $magiclink = urlencode($magiclink);
+          $data['emailInfo'] = array();
+          $magiclink = urlencode($response['magiclink']);
           $data['body']['message'] = 'This is the body of the emails';
+          $data['emailInfo']['address'] = $response['email'];
           $referer = $request->headers->get('referer');
           $host = parse_url($referer, PHP_URL_HOST);
           $path = parse_url($referer, PHP_URL_PATH);
