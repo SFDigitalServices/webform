@@ -1,3 +1,10 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+
 html,
 body {
   height: 100%;
@@ -100,7 +107,6 @@ legend {
   text-align: center;
   font-size: 24px;
   padding: 1em 0;
-  margin-bottom: 1em;
 }
 
 .header-container {
@@ -144,7 +150,7 @@ legend {
   font-size: 1.25em;
   text-align: left;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .start-form strong,
@@ -206,7 +212,6 @@ legend {
   border: 1px solid #ccc;
   padding: 5px;
   transition: height .3s;
-  overflow: hidden;
 
   .form-group {
     width: 100%;
@@ -436,13 +441,84 @@ a:link, a:visited, a:hover, a:active {
   text-decoration: none;
 }
 
+.editorContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: stretch;
+  height: calc(100% - 7.5rem);
+  overflow: hidden;
+}
+
+.leftPanel,
+.middlePanel,
+.rightPanel-preview {
+  padding: 3rem 1rem 0;
+  position: relative;
+  overflow: scroll;
+}
+
+.leftPanel {
+  width: 20%;
+  max-width: 30%;
+  min-width: 25rem;
+  align-self: flex-start;
+}
+
+.middlePanel {
+  width: 20%;
+}
+
+.rightPanel {
+  width: 60%;
+  min-width: 320px;
+  max-width: 80%;
+  display: flex;
+  flex: auto;
+}
+
+.rightPanel-blank {
+  flex: 0 0 auto;
+  width: 0;
+  max-width: calc(100% - 320px);
+}
+
+.rightPanel-preview {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  iframe {
+    align-self: flex-end;
+    flex-grow: 1;
+    border: 0;
+  }
+}
+
+.splitter {
+  width: 10px;
+  flex: 0 0 auto;
+  cursor: col-resize;
+  position: relative;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 4px;
+    width: 2px;
+    height: 100%;
+    background: #777;
+    content: ""
+  }
+}
+
+
 #SFDSWFB-list {
-  margin-top: 1em;
-  padding: 1em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  max-height: 768px;
-  overflow-y: scroll;
+  overflow: scroll;
+  width: 100%;
 
   a {
     display: inline-block;
@@ -457,6 +533,8 @@ a:link, a:visited, a:hover, a:active {
   .item {
     padding: 0 0.25em;
     width: calc(100% - 5em);
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     &:hover,
     &.selected {
@@ -547,8 +625,9 @@ a:link, a:visited, a:hover, a:active {
   display: none;
 }
 
+#SFDSWFB-preview,
 #SFDSWFB-preview iframe {
-  height: 772px;
+  height: 100%;
   width: 100%;
 }
 
@@ -557,7 +636,7 @@ a:link, a:visited, a:hover, a:active {
 }
 
 .field-item {
-  padding: 1em;
+  padding: 0.5em;
   margin: 0.5em;
   border: 2px solid blue;
   color: blue;
