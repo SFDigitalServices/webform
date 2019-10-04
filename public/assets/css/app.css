@@ -98,30 +98,27 @@ legend {
 
 /* App header */
 
-.header {
-  background: #428bca;
-  color: #fff;
-  text-align: center;
-  font-size: 24px;
-  padding: 1em 0;
-}
-
 .header-container {
-  display: block;
+  display: flex;
   max-width: 1140px;
   text-align: right;
   margin: auto;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.logo {
-  display: block;
-  background: #fff;
-  width: 232px;
-  float: left;
-  position: absolute;
-  top: 0px;
-  box-shadow: 0 0 10px #888;
-  cursor: pointer;
+.header {
+  background: #1c3e57;
+  color: #fff;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.header h1 {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: normal;
+  margin: 0;
 }
 
 .header-sign-out {
@@ -443,7 +440,7 @@ a:active {
   width: 100%;
   flex-direction: row;
   align-items: stretch;
-  height: calc(100% - 7.5rem);
+  height: calc(100% - 3.5rem);
   overflow: hidden;
 }
 
