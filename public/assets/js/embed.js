@@ -49,77 +49,95 @@ function callWebhook(populateField, endPoint, ids, responseIndex, method, option
 	var data = '';
 
 	if (ids.length) {
-		data += '{ ';
-		for (var fieldId of ids) {
-			data += '"' + fieldId + '"' + ' : ' + '"' + jQuery('#'+fieldId).val() + '"' + ', ';
-		}
-		data = data.substring(0, data.length - 2) + ' }';
-		if (method == "text") {
-			data = JSON.parse(data);
-		}
+    if (method === "get") {
+      data += '?'
+      for (var fieldId of ids) {
+        data += fieldId + '=' + jQuery('#'+fieldId).val() + '&';
+      }
+      data = data.substring(0, data.length - 1);
+    } else {
+      data += '{ ';
+      for (var fieldId of ids) {
+        data += '"' + fieldId + '"' + ' : ' + '"' + jQuery('#'+fieldId).val() + '"' + ', ';
+      }
+      data = data.substring(0, data.length - 2) + ' }';
+      if (method == "text") {
+        data = JSON.parse(data);
+      }
+    }
 	}
 
 	//only call if it's a new endpoint and post combination
 	if (typeof SFDSWFB.lastCalled[endPoint] == "undefined" || SFDSWFB.lastCalled[endPoint] != data) {
-		jQuery.post(endPoint, data, function(response) {
-			SFDSWFB.lastCalled[endPoint] = data;
-			if (optionsArray) {
-				var options = [];
-				if (delimiter != null && delimiter != "") {
-					options = options.split(delimiter);
-				} else {
-					if (responseOptionsIndex != null && responseOptionsIndex != "") {
-						options = getDataInPath(response, responseOptionsIndex);
-					} else {
-						options = response;
-					}
-				}
-				var parsedData = [];
-				if (responseIndex != null && responseIndex != "") {
-					for (var option of options) {
-						parsedData.push(getDataInPath(option, responseIndex));
-					}
-				} else {
-					parsedData = options;
-				}
-				//todo stringify parsed data options if they're still objects
-				//put options into populateField
-				if (jQuery("[data-id="+populateField+"] select").eq(0).length) {
-					jQuery('#' + populateField).html('');
-					for (var option of parsedData) {
-						jQuery('#' + populateField).append(jQuery('<option>'+option+'</option>').attr("value", option).text(option));
-					}
-				} else if (jQuery("[data-id="+populateField+"] input").eq(0).length) {
-					if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "checkbox") {
-						var checkboxName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
-						jQuery("[data-id="+populateField+"] .field-legend").html('');
-						for (var option of parsedData) {
-							jQuery("[data-id="+populateField+"] .field-legend").append('<div class="cb-input-group"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s06" name="'+checkboxName+'[]"/><label for="'+populateField+'_'+option+'" class="checkbox">'+option+'</label></div>');
-
-
-							jQuery('#' + populateField).after('<input type="checkbox" name="'+option+'" value="'+option+'"/>');
-						}
-					} else if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "radio") {
-						var radioName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
-						jQuery("[data-id="+populateField+"] .field-wrapper").html('');
-						for (var option of parsedData) {
-							jQuery("[data-id="+populateField+"] .field-wrapper").append('<div class="rb-input-group"><input type="radio" id="'+populateField+'_'+option+'" formtype="s08" name="'+radioName+'" value="'+option+'" required/><label for="'+populateField+'_'+option+'" class="radio">'+option+'</label></div>');
-						}
-					}
-				}
-			} else {
-				var parsedData = "";
-				if (responseIndex != null && responseIndex != "") {
-					parsedData = getDataInPath(response, responseIndex);
-				} else {
-					parsedData = response;
-				}
-				//todo stringify objects
-				//if (typeof parsedData == "object")
-				jQuery('#'+populateField).val(parsedData);
-			}
-		}, method);
+    if (method === "get") {
+      jQuery.get(endPoint + data, function(response) {
+        respondWebhook(response, data, populateField, endPoint, ids, responseIndex, optionsArray, delimiter, responseOptionsIndex)
+      });
+    } else {
+      jQuery.post(endPoint, data, function(response) {
+        respondWebhook(response, data, populateField, endPoint, ids, responseIndex, optionsArray, delimiter, responseOptionsIndex)
+      }, method);
+    }
 	}
+}
+
+function respondWebhook(response, data, populateField, endPoint, ids, responseIndex, optionsArray, delimiter, responseOptionsIndex) {
+  SFDSWFB.lastCalled[endPoint] = data;
+  if (optionsArray) {
+    var options = [];
+    if (delimiter != null && delimiter != "") {
+      options = options.split(delimiter);
+    } else {
+      if (responseOptionsIndex != null && responseOptionsIndex != "") {
+        options = getDataInPath(response, responseOptionsIndex);
+      } else {
+        options = response;
+      }
+    }
+    var parsedData = [];
+    if (responseIndex != null && responseIndex != "") {
+      for (var option of options) {
+        parsedData.push(getDataInPath(option, responseIndex));
+      }
+    } else {
+      parsedData = options;
+    }
+    //todo stringify parsed data options if they're still objects
+    //put options into populateField
+    if (jQuery("[data-id="+populateField+"] select").eq(0).length) {
+      jQuery('#' + populateField).html('');
+      for (var option of parsedData) {
+        jQuery('#' + populateField).append(jQuery('<option>'+option+'</option>').attr("value", option).text(option));
+      }
+    } else if (jQuery("[data-id="+populateField+"] input").eq(0).length) {
+      if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "checkbox") {
+        var checkboxName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
+        jQuery("[data-id="+populateField+"] .field-legend").html('');
+        for (var option of parsedData) {
+          jQuery("[data-id="+populateField+"] .field-legend").append('<div class="cb-input-group"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s06" name="'+checkboxName+'[]"/><label for="'+populateField+'_'+option+'" class="checkbox">'+option+'</label></div>');
+
+
+          jQuery('#' + populateField).after('<input type="checkbox" name="'+option+'" value="'+option+'"/>');
+        }
+      } else if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "radio") {
+        var radioName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
+        jQuery("[data-id="+populateField+"] .field-wrapper").html('');
+        for (var option of parsedData) {
+          jQuery("[data-id="+populateField+"] .field-wrapper").append('<div class="rb-input-group"><input type="radio" id="'+populateField+'_'+option+'" formtype="s08" name="'+radioName+'" value="'+option+'" required/><label for="'+populateField+'_'+option+'" class="radio">'+option+'</label></div>');
+        }
+      }
+    }
+  } else {
+    var parsedData = "";
+    if (responseIndex != null && responseIndex != "") {
+      parsedData = getDataInPath(response, responseIndex);
+    } else {
+      parsedData = response;
+    }
+    //todo stringify objects
+    //if (typeof parsedData == "object")
+    jQuery('#'+populateField).val(parsedData);
+  }
 }
 
 function prefill(arr) {
@@ -162,7 +180,7 @@ function initSectional() {
 		jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');
 		jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
 	}
-	
+
 	skipToSectionId(SFDSWF_goto);
 }
 
@@ -211,7 +229,7 @@ function submitPartial(formid){
 SFDSWFB.lastScript = function() {
 
 	skipToSectionId(false)
-	
+
 	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));

@@ -73,6 +73,7 @@ Fb.prototype.view.webhooks = "\
 						<option>script</option> \
 						<option>jsonp</option> \
 						<option>text</option> \
+						<option>get</option> \
 					</select> \
 					<div data-toggle='tooltip' title='' data-original-title='The data index or path to retrieve from the response object, slashes / can be used for traversing hierarchies'> \
 						<label class='control-label' save_image_to_download='true'>Response Index/Path</label> \

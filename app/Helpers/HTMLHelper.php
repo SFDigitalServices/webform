@@ -244,37 +244,10 @@ class HTMLHelper
       if ($sectional) { //additional controls for sectional forms
           $js .= "initSectional();";
       }
-      if (!empty($webhooks)) { //add webhooks behavior
-          foreach ($webhooks as $id => $fld) {
-              $webhookIds = [];
-              //loop through ids
-              foreach ($fld['ids'] as $index => $fieldId) {
-                  if (!in_array($fieldId, $webhookIds)) {
-                      $webhookIds[] = $fieldId;
-                  }
-              }
-              //bind ids with onchange listeners to call webhook
-              $js .= "jQuery('";
-              foreach ($webhookIds as $whId) {
-                  $js .= $this->getInputSelector($whId, $formtypes, false).", ";
-              }
-              $js = substr($js, 0, -2)."').on('change',function(){";
-              //make function check all ids that need to post values have a value
-              $js .= "if (";
-              foreach ($webhookIds as $whId) {
-                  $js .= "jQuery('" . $this->getInputSelector($whId, $formtypes, false) . "').val() != '' && ";
-              }
-              $delimiter = "";
-              $responseOptionsIndex = "";
-              if ($fld['optionsArray']) {
-                  $delimiter = ", " . ($fld['delimiter'] != "" ? "'" . $fld['delimiter'] . "'" : "null");
-                  $responseOptionsIndex = ", " . ($fld['responseOptionsIndex'] != "" ? "'" . $fld['responseOptionsIndex'] . "'" : "null");
-              }
-              $js = substr($js, 0, -4) . 	") ";
-              $js .= "callWebhook('" . $id . "', '" . $fld['endpoint'] . "', Array('" . implode(",", $webhookIds) . "'), '" . $fld['responseIndex'] . "', '" . $fld['method'] . "', " . $fld['optionsArray'] . $delimiter . $responseOptionsIndex . ");";
-              $js .= '});';
-          }
-      }
+
+      //add webhooks behavior
+      $js .= $this->addWebhooks($webhooks, $formtypes);
+
       // check to see if this is a retrieval
       $populateJS = '';
       if($referer !== ''){
@@ -289,6 +262,54 @@ class HTMLHelper
       }
       $js .= "};script.src = '//".$host."/assets/js/embed.js';var s = document.createElement('script');s.setAttribute('type', 'text/javascript'); s.text='$populateJS';document.head.append(s);document.head.appendChild(script);"; //end ready
       return $js;
+  }
+
+  /** Create js string for webhooks
+  *
+  * @param $webhooks
+  * @param $formtypes
+  *
+  * @return string
+  */
+  public function addWebhooks($webhooks, $formtypes) {
+    $js = '';
+    if (!empty($webhooks)) {
+      foreach ($webhooks as $id => $fld) {
+        $webhookIds = [];
+        //loop through ids
+        foreach ($fld['ids'] as $index => $fieldId) {
+          if (!in_array($fieldId, $webhookIds)) {
+            $webhookIds[] = $fieldId;
+          }
+        }
+        //bind ids with onchange listeners to call webhook
+        $js .= "jQuery('";
+        foreach ($webhookIds as $whId) {
+          $js .= $this->getInputSelector($whId, $formtypes, false).", ";
+        }
+        $js = substr($js, 0, -2)."').on('change',function(){";
+        //make function check all ids that need to post values have a value
+        $js .= "if (";
+        foreach ($webhookIds as $whId) {
+          $js .= "jQuery('" . $this->getInputSelector($whId, $formtypes, false) . "').val() != '' && ";
+        }
+        $delimiter = "";
+        $responseOptionsIndex = "";
+        if ($fld['optionsArray']) {
+          $delimiter = ", " . ($fld['delimiter'] != "" ? "'" . $fld['delimiter'] . "'" : "null");
+          $responseOptionsIndex = ", " . ($fld['responseOptionsIndex'] != "" ? "'" . $fld['responseOptionsIndex'] . "'" : "null");
+        }
+        $js = substr($js, 0, -4) . 	") ";
+        $js .= "callWebhook('" . $id . "', '" . $fld['endpoint'] . "', Array(";
+        foreach ($webhookIds as $whId) {
+          $js .= "'" . $whId . "',";
+        }
+        $js = substr($js, 0, -1);
+        $js .= "), '" . $fld['responseIndex'] . "', '" . $fld['method'] . "', " . $fld['optionsArray'] . $delimiter . $responseOptionsIndex . ");";
+        $js .= '});';
+      }
+    }
+    return $js;
   }
 
     /** Generate Radio input element
