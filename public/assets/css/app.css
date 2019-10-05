@@ -320,6 +320,18 @@ legend {
   border-bottom: 1px solid #212123;
 }
 
+.conditional,
+.addCalculationContainer {
+  width: 90%;
+}
+
+.conditional select,
+.conditional input,
+.addCalculationContainer select,
+.addCalculationContainer input {
+  margin-bottom: 0.5em;
+}
+
 .addConditional {
   padding-top: 1em;
 }

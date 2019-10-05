@@ -328,6 +328,15 @@ legend {
   }
 }
 
+.conditional,
+.addCalculationContainer {
+  width: 90%;
+  select,
+  input {
+    margin-bottom: 0.5em;
+  }
+}
+
 .addConditional {
   padding-top: 1em;
 }

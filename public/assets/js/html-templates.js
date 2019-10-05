@@ -66,7 +66,7 @@ Fb.prototype.view.webhooks = "\
 					<div data-toggle='tooltip' title='' data-original-title='The data format that will be transmitted and will also dictate the expected format for the response'> \
 						<label class='control-label' save_image_to_download='true'>Data Format</label> \
 					</div>				 \
-					<select class='webhookMethod'> \
+					<select class='webhookMethod form-control'> \
 						<option>json</option> \
 						<option>xml</option> \
 						<option>html</option> \
@@ -81,7 +81,7 @@ Fb.prototype.view.webhooks = "\
 					<div data-toggle='tooltip' title='' data-original-title='The data response that is received. A single value option or an array of options'> \
 						<label class='control-label' save_image_to_download='true'>Response Type</label> \
 					</div>				 \
-					<select class='webhookOptionsArray' onchange='javascript:webhookOptions(this)'> \
+					<select class='webhookOptionsArray form-control' onchange='javascript:webhookOptions(this)'> \
 						<option>Single Response</option> \
 						<option>Will Contain Many Options</option> <!--only valid if using checkbox, radio or select--> \
 					</select> \
@@ -89,7 +89,7 @@ Fb.prototype.view.webhooks = "\
 						<div data-toggle='tooltip' title='' data-original-title='When parsing an array of options to populate your question field, is it from a delimited string or data constructed as siblings of a parent'> \
 							<label class='control-label' save_image_to_download='true'>Array Split Method</label> \
 						</div>				 \
-						<select class='webhookResponseOptionType' onchange='javascript:webhookResponseOptionType(this)'> \
+						<select class='webhookResponseOptionType form-control' onchange='javascript:webhookResponseOptionType(this)'> \
 							<option>Select</option> \
 							<option>Delimiter</option> \
 							<option>Index/Path</option> \
@@ -140,9 +140,9 @@ Fb.prototype.view.addConditional = function() {
 					<div class='condition'> \
 						<i class='fas fa-minus-circle conditionIcon' onclick='javascript:removeConditional(this)'></i> \
 						<span class='conditionalLabel'></span> \
-						<select class='allIds conditionalId'> \
+						<select class='allIds conditionalId form-control'> \
 						</select> \
-						<select class='conditionalOperator' onchange='javascript:conditionalSelect(this)'> \
+						<select class='conditionalOperator form-control' onchange='javascript:conditionalSelect(this)'> \
 							<option>matches</option> \
 							<option>doesn't match</option> \
 							<option>is less than</option> \
@@ -152,7 +152,7 @@ Fb.prototype.view.addConditional = function() {
 							<option>contains anything</option> \
 							<option>is blank</option> \
 						</select> \
-						<input type='text' class='conditionalValue' /> \
+						<input type='text' class='conditionalValue form-control' /> \
 					</div> \
 				</div>"
 }
@@ -182,50 +182,50 @@ Fb.prototype.view.validateMatch = function() {
 }
 
 Fb.prototype.view.validateLength = function() {
-	return	"<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
-				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
-			</div> \
-			<div class='floatright' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
-				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
-			</div>"
+	return	"<div class='floatleft' style='width: 50%;' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
+    				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
+    			</div> \
+    			<div class='floatright' style='width: 50%;' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
+    				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
+    			</div>"
 }
 
 Fb.prototype.view.firstConditional = function() {
 		return	"<div class='clonable firstConditional'> \
-					<select class='showHide'> \
-						<option>Show</option> \
-						<option>Hide</option> \
-					</select> \
-				</div>"
+    					<select class='showHide form-control'> \
+    						<option>Show</option> \
+    						<option>Hide</option> \
+    					</select> \
+    				</div>"
 }
 
 Fb.prototype.view.multipleConditionals = function() {
 		return "<div class='clonable multipleConditionals'> \
-					<select class='allAny'> \
-						<option>All</option> \
-						<option>Any</option> \
-					</select> \
-				</div>"
+    					<select class='allAny form-control'> \
+    						<option>All</option> \
+    						<option>Any</option> \
+    					</select> \
+    				</div>"
 }
 
 Fb.prototype.view.firstCalculation = function() {
 		return	"<div class='firstCalculation'> \
-					<label class='control-label calculationLabel'>Calculation</label> \
-					<select class='allMathIds calculationId'></select> \
-				</div>"
-}
+    					<label class='control-label calculationLabel'>Calculation</label> \
+    					<select class='allMathIds calculationId form-control'></select> \
+    				</div>"
+    }
 
 Fb.prototype.view.calculationContainer = function() {
 		return "<div class='calculationContainer'> \
 					<div class='calculation'> \
 						<i class='fas fa-minus-circle conditionIcon' onclick='javascript:removeCalculation(this)'></i> \
-						<select class='calculationOperator'> \
+						<select class='calculationOperator form-control'> \
 							<option>Plus</option> \
 							<option>Minus</option> \
 							<option>Multiplied by</option> \
 							<option>Divided by</option> \
 						</select> \
-						<select class='allMathIds calculationId'></select> \
+						<select class='allMathIds calculationId form-control'></select> \
 					</div> \
 				</div>"
 }
