@@ -1,3 +1,9 @@
+@import 'variables';
+
+body {
+  background: $white;
+}
+
 #SFDSWF-Container {
   padding: 2em 5em;
 }
@@ -16,8 +22,8 @@
 .is-selected-in-editor {
   &::before {
     position: absolute;
-    background: rgba(66, 139, 202, 0.1);
-    border: 2px solid rgba(66, 139, 202, 0.3);
+    background: rgba($blue-2, 0.4);
+    border: 2px solid rgba($blue-2, 0.6);
     border-radius: 4px;
     content: "";
     top: -1rem;
@@ -27,10 +33,9 @@
     z-index: -1;
   }
 
-  p:last-of-type,
-  h1:last-of-type,
-  h2:last-of-type,
-  h3:last-of-type {
-    margin-bottom: 0;
+  p, h1, h2, h3 {
+    &:last-of-type {
+      margin-bottom: 0;
+    }
   }
 }
