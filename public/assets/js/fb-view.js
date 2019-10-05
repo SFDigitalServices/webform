@@ -306,14 +306,6 @@ FbView.prototype.showAttributes = function() {
 	self.populateValidation(self.formsCollection.forms[fb.formId].content.data[itemIndex])
 	self.populateAttributes(self.formsCollection.forms[fb.formId].content.data[itemIndex])
 	self.initAutofillNames()
-
-	$('.accordion-section > .accordion').hide()
-	$('.accordion-section.attributes > .accordion').show()
-
-	$('.accordion-section').on('click', function() {
-		$('.accordion-section > .accordion').hide()
-		$(this).find('.accordion').show()
-	})
 }
 
 /**
