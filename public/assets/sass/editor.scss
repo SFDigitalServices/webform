@@ -135,23 +135,21 @@ legend {
 
 /* Welcome page */
 
-.welcomeBack {
-  margin-top: 15vh;
+.welcomeBack,
+.welcomeBox {
+  margin-top: 2em;
 }
 
-.welcomeBox {
-  text-align: center;
-  padding: 4em;
-  margin: 2em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+.welcome-alt-text {
+  color: $light-slate-blue;
+  margin: 0.5em 0 2em;
 }
 
 .start-form {
   font-size: 1.25em;
   text-align: left;
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 1em;
 }
 
 .start-form strong,
@@ -161,11 +159,7 @@ legend {
 
 .start-form span {
   color: $light-slate-blue;
-  font-size: 0.875em;
-}
-
-.forms a.btn {
-  margin-bottom: 3px;
+  font-size: 0.75em;
 }
 
 .text-muted {

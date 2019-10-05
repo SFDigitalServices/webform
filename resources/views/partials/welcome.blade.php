@@ -5,14 +5,14 @@
 
   <div class="col-xs-12 col-sm-10 col-md-8 col-lg-6">
 
-    <h1 class="welcomeBack text-center">Welcome back, <?php print $name; ?>!</h1>
+    <h1 class="welcomeBack">Welcome back, <?php print $name; ?>!</h1>
 
     <div class="welcomeBox">
       <div>
-        <a href="javascript:void(0)" class="btn btn-info btn-lg btn-block">Create a New Form</a>
+        <a href="javascript:void(0)" class="btn btn-info btn-lg">Create a New Form</a>
       </div>
 
-      <div class="text-muted">or load an existing form</div>
+      <div class="welcome-alt-text">or load an existing form</div>
 
       <div class="forms">
         <i class="fas fa-circle-notch fa-spin"></i>

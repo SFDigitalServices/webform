@@ -101,7 +101,7 @@ FbView.prototype.listForms = function() {
 	$('.forms').html('')
 
 	for (i in this.formsCollection.forms) {
-		$('.forms').append('<div>').append(fb.view.formLink(this.formsCollection.forms[i]))
+		$('.forms').append(fb.view.formLink(this.formsCollection.forms[i]))
 	}
 
 	$('.welcomeBox .btn-info').off()

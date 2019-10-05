@@ -231,7 +231,7 @@ Fb.prototype.view.calculationContainer = function() {
 }
 
 Fb.prototype.view.formLink = function(formObj) {
-	return '<a href="javascript:void(0)" data-id="' + formObj.id + '" class="start-form recent">' + formObj.content.settings.name + ' <span style="color:green">Last updated: ' + formObj.updated_at + '</span></a>'
+	return '<a href="javascript:void(0)" data-id="' + formObj.id + '" class="start-form recent">' + formObj.content.settings.name + ' <span>Last updated: ' + formObj.updated_at + '</span></a>'
 }
 
 Fb.prototype.view.previewIframe = function(formId, scrollTo) {
