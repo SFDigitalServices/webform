@@ -618,15 +618,20 @@ $editorHeight: calc(100vh - 4rem);
     padding-right: 0.5em;
   }
 
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
   .item {
-    padding: 0 0.25em;
+    padding: 0.375em;
     width: calc(100% - 5em);
     overflow: hidden;
     text-overflow: ellipsis;
 
     &:hover,
     &.selected {
-      background-color: $grey-3;
+      background-color: $blue-2;
     }
 
     &.selected.moving,
@@ -642,14 +647,28 @@ $editorHeight: calc(100vh - 4rem);
 
       &:hover,
       &.selected {
-        border-bottom: 2px solid $bright-blue;
-        background-color: transparent;
+        background-color: $bright-blue;
+        color: $white;
       }
     }
   }
 
-  &.moving .item.spacer:hover {
-    border-color: yellowgreen;
+  &.moving .item.spacer {
+    position: relative;
+    &::after {
+      position: absolute;
+      width: 100%;
+      top: 1px;
+      left: 0;
+      content: "Move field here";
+      background: $white;
+    }
+    &:hover {
+      &::after {
+        background: $bright-blue;
+        color: $white;
+      }
+    }
   }
 
   .fa-sort {

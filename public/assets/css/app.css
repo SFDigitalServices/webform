@@ -615,8 +615,13 @@ a:active {
   padding-right: 0.5em;
 }
 
+#SFDSWFB-list > div {
+  display: flex;
+  align-items: center;
+}
+
 #SFDSWFB-list .item {
-  padding: 0 0.25em;
+  padding: 0.375em;
   width: calc(100% - 5em);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -624,7 +629,7 @@ a:active {
 
 #SFDSWFB-list .item:hover,
 #SFDSWFB-list .item.selected {
-  background-color: #e9e9e9;
+  background-color: #A9D6EA;
 }
 
 #SFDSWFB-list .item.selected.moving,
@@ -641,12 +646,26 @@ a:active {
 
 #SFDSWFB-list .item.spacer:hover,
 #SFDSWFB-list .item.spacer.selected {
-  border-bottom: 2px solid #4F66EE;
-  background-color: transparent;
+  background-color: #4F66EE;
+  color: #FFFFFF;
 }
 
-#SFDSWFB-list.moving .item.spacer:hover {
-  border-color: yellowgreen;
+#SFDSWFB-list.moving .item.spacer {
+  position: relative;
+}
+
+#SFDSWFB-list.moving .item.spacer::after {
+  position: absolute;
+  width: 100%;
+  top: 1px;
+  left: 0;
+  content: "Move field here";
+  background: #FFFFFF;
+}
+
+#SFDSWFB-list.moving .item.spacer:hover::after {
+  background: #4F66EE;
+  color: #FFFFFF;
 }
 
 #SFDSWFB-list .fa-sort {
