@@ -1,33 +1,53 @@
-<a href="javascript:void(0)" title="Embed" class="embed-toggle menu-button min-hidden md-hidden fa fa-share-alt"></a>
-<a href="javascript:void(0)" title="Settings" class="settings-toggle menu-button min-hidden md-hidden fa fa-cog"></a>
 <div class="tab-pane" id="SFDSWFB-insert">
+
   <div class="panel-header">
-  	<h4>Add a field</h4>
+    <strong>Add a field</strong>
+
+    <div class="panel-header-actions">
+      <button class="embed-toggle min-hidden md-hidden"><i class="fa fa-share-alt"></i> Embed</button>
+      <button class="settings-toggle min-hidden md-hidden"><i class="fa fa-cog"></i> Settings</button>
+    </div>
   </div>
 
-	<a href="javascript:void(0)" data-formtype="c02" class="field-item t1">Name</a>
-	<a href="javascript:void(0)" data-formtype="c04" class="field-item t1">Email</a>
-	<a href="javascript:void(0)" data-formtype="c06" class="field-item t1">Phone</a>
-	<a href="javascript:void(0)" data-formtype="c08" class="field-item t1">Address</a>
-	<a href="javascript:void(0)" data-formtype="c10" class="field-item t1">City</a>
-	<a href="javascript:void(0)" data-formtype="s14" class="field-item t1">State</a>
-	<a href="javascript:void(0)" data-formtype="c14" class="field-item t1">Zip</a>
-	<a href="javascript:void(0)" data-formtype="d02" class="field-item t2">Date</a>
-	<a href="javascript:void(0)" data-formtype="d04" class="field-item t2">Time</a>
-	<a href="javascript:void(0)" data-formtype="d06" class="field-item t2">Numbers</a>
-	<a href="javascript:void(0)" data-formtype="d08" class="field-item t2">Price</a>
-	<a href="javascript:void(0)" data-formtype="d10" class="field-item t2">URL</a>
-	<a href="javascript:void(0)" data-formtype="i02" class="field-item t3">Text</a>
-	<a href="javascript:void(0)" data-formtype="i14" class="field-item t3">Textarea</a>
-	<a href="javascript:void(0)" data-formtype="s02" class="field-item t3">Select</a>
-	<a href="javascript:void(0)" data-formtype="s06" class="field-item t3">Checkboxes</a>
-	<a href="javascript:void(0)" data-formtype="s08" class="field-item t3">Radio</a>
-	<a href="javascript:void(0)" data-formtype="m02" class="field-item t4">H1</a>
-	<a href="javascript:void(0)" data-formtype="m04" class="field-item t4">H2</a>
-	<a href="javascript:void(0)" data-formtype="m06" class="field-item t4">H3</a>
-	<a href="javascript:void(0)" data-formtype="m08" class="field-item t4">Paragraph</a>
-	<a href="javascript:void(0)" data-formtype="m10" class="field-item t4">HTML</a>
-	<a href="javascript:void(0)" data-formtype="m11" class="field-item t4">Hidden</a>
-	<a href="javascript:void(0)" data-formtype="m13" class="field-item t4">File</a>
-	<a href="javascript:void(0)" data-formtype="m16" class="field-item t4">Page Separator</a>
+  <div class="panel-content">
+    <div class="field-item-group">
+      <button data-formtype="i02" class="field-item t3">Text</button>
+      <button data-formtype="i14" class="field-item t3">Textarea</button>
+      <button data-formtype="c02" class="field-item">Name</button>
+      <button data-formtype="c04" class="field-item">Email</button>
+      <button data-formtype="d10" class="field-item t2">URL</button>
+    </div>
+
+    <div class="field-item-group">
+      <button data-formtype="s02" class="field-item t3">Select</button>
+      <button data-formtype="s06" class="field-item t3">Checkboxes</button>
+      <button data-formtype="s08" class="field-item t3">Radio</button>
+      <button data-formtype="m11" class="field-item t4">Hidden</button>
+      <button data-formtype="m13" class="field-item t4">File</button>
+    </div>
+
+    <div class="field-item-group">
+      <button data-formtype="d06" class="field-item t2">Numbers</button>
+      <button data-formtype="d08" class="field-item t2">Price</button>
+      <button data-formtype="c06" class="field-item">Phone</button>
+      <button data-formtype="d02" class="field-item t2">Date</button>
+      <button data-formtype="d04" class="field-item t2">Time</button>
+    </div>
+
+    <div class="field-item-group">
+      <button data-formtype="c08" class="field-item">Address</button>
+      <button data-formtype="c10" class="field-item">City</button>
+      <button data-formtype="s14" class="field-item">State</button>
+      <button data-formtype="c14" class="field-item">Zip</button>
+    </div>
+
+    <div class="field-item-group">
+      <button data-formtype="m02" class="field-item t4">H1</button>
+      <button data-formtype="m04" class="field-item t4">H2</button>
+      <button data-formtype="m06" class="field-item t4">H3</button>
+      <button data-formtype="m08" class="field-item t4">Paragraph</button>
+      <button data-formtype="m10" class="field-item t4">HTML</button>
+      <button data-formtype="m16" class="field-item t4">Page Separator</button>
+    </div>
+  </div>
 </div>

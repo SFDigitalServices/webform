@@ -22,23 +22,23 @@ let FbView = function(formsCollection) {
 FbView.prototype.bindSystemButtons = function() {
 	var self = this
 
-	$('a.clone-button').on('click', function() {
+	$('.clone-button').on('click', function() {
 		self.formsCollection.forms[fb.formId].clone()
 	})
 
-	$('a.delete-button').on('click', function() {
+	$('.delete-button').on('click', function() {
 		self.formsCollection.forms[fb.formId].confirmDelete()
 	})
 
-	$('a.preview-window').on('click', function() {
+	$('.preview-window').on('click', function() {
 		fb.openPreviewWindow()
 	})
-	$('a.embed-toggle').on('click', function() {
+	$('.embed-toggle').on('click', function() {
 		self.switchMiddlePanel('SFDSWFB-embed')
 		self.genSource()
 	})
 
-	$('a.settings-toggle').on('click', function() {
+	$('.settings-toggle').on('click', function() {
 		self.switchMiddlePanel('SFDSWFB-settings')
 	})
 
@@ -84,7 +84,7 @@ FbView.prototype.bindListButtons = function() {
 FbView.prototype.bindInsertItems = function() {
 	var self = this
 
-	$('#SFDSWFB-insert a').on('click', function() {
+	$('#SFDSWFB-insert button').on('click', function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
 		self.populateList()

@@ -1,8 +1,10 @@
-<h4>Settings</h4>
+<div class="panel-header">
+  <strong>Settings</strong>
 
-<div class='form-group'>
-  <label class="control-label" for="name">Form Name</label>
-  <input class="form-control" type="text" id="name" name="name"/>
+  <div class="panel-header-actions">
+    <button class="embed-toggle min-hidden md-hidden"><i class="fa fa-share-alt"></i> Embed</button>
+    <button class="settings-toggle min-hidden md-hidden"><i class="fa fa-cog"></i> Settings</button>
+  </div>
 </div>
 
 <div class='form-group'>

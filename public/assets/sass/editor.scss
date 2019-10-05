@@ -435,7 +435,7 @@ hr.and::before {
 /* New refactor CSS, needs cleanup */
 .header-container {
   max-width: none;
-  padding: 0 15px;
+  padding: 0 1rem;
 }
 
 a:link, a:visited, a:hover, a:active {
@@ -464,7 +464,6 @@ $editorHeight: calc(100vh - 4rem);
 .leftPanel,
 .middlePanel,
 .rightPanel-preview-wrapper {
-  padding: 3rem 1rem 0;
   position: relative;
   height: $editorHeight;
   overflow: scroll;
@@ -554,6 +553,30 @@ $editorHeight: calc(100vh - 4rem);
   }
 }
 
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: rgba($slate-blue, 0.03);
+
+  button {
+    display: inline-block;
+    padding: 0.5em;
+    border-radius: $radius;
+    border: 1px solid $bright-blue;
+    color: $bright-blue;
+    background: $white;
+    font-size: 0.8em;
+    margin-left: 0.5em;
+  }
+}
+
+.panel-content {
+  padding: 0.5rem 1rem;
+  min-height: calc(100vh - 12.5rem);
+}
 
 .splitter {
   width: 10px;
@@ -645,35 +668,6 @@ $editorHeight: calc(100vh - 4rem);
   }
 }
 
-.menu-button {
-  display: block;
-  padding: 0.5em;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  position: absolute;
-  top: -0.5em;
-}
-
-.clone-button {
-  right: 2.5em;
-}
-
-.delete-button {
-  right: 0;
-}
-
-.embed-toggle {
-  right: 5.5em;
-}
-
-.settings-toggle {
-  right: 3em;
-}
-
-.preview-window {
-  right: 1em;
-}
-
 .col-xl-1 > a.min-hidden {
   display: none;
 }
@@ -682,30 +676,21 @@ $editorHeight: calc(100vh - 4rem);
   display: none;
 }
 
+.field-item-group {
+  margin-bottom: 1em;
+  display: block;
+}
+
 .field-item {
   padding: 0.5em;
-  margin: 0.5em;
+  margin: 0 0.5rem 1rem 0;
   border: 2px solid $bright-blue;
   color: $bright-blue;
   font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
-  float: left;
-
-  &.t2 {
-    color: purple;
-    border-color: purple;
-  }
-
-  &.t3 {
-    color: red;
-    border-color: red;
-  }
-
-  &.t4 {
-    color: orange;
-    border-color: orange;
-  }
+  display: inline-block;
+  background: $white;
 
   &:hover {
     color: black;

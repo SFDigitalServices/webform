@@ -1,2 +1,7 @@
-<h4>Move Item</h4>
-<p>Move your item to a new location by clicking on a green line in the Navigation window.</p>
+<div class="panel-header">
+  <strong>Move this field</strong>
+</div>
+
+<div class="panel-content">
+  <p>Click on the place in the lefthand pane where you'd like to move the field.</p>
+</div>
