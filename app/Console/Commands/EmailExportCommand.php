@@ -28,7 +28,8 @@ class EmailExportCommand extends Command
      * @var string
      */
     protected $signature = "email:exports { formid : ID of the form to export }
-                                          { email : email address to send the export to } ";
+                                          { email : email address to send the export to }
+                                          { --fields=* : fields to export }";
 
     /**
      * The console command description.
@@ -46,17 +47,25 @@ class EmailExportCommand extends Command
     {
       $formId = $this->argument('formid');
       $email = $this->argument('email');
+      $fields = $this->option('fields');
       if ($formId) {
           try {
               // get formid from command line, get form data, email it out.
               $dataStoreHelper = new DataStoreHelper();
               $results = $dataStoreHelper->getSubmittedFormData($formId);
-              $columns = array('ID');
+              $columns = $fields;
               $file = fopen('php://memory', 'r+');
               fputcsv($file, $columns);
 
               foreach($results as $result) {
-                  fputcsv($file, array($result->id));
+                  $line = array();
+                  foreach($fields as $field){
+                    if($result->$field)
+                      array_push($line, $result->$field);
+                    else
+                      array_push($line, '');
+                  }
+                  fputcsv($file, $line);
               }
               $filename = "csv_export_$formId";
               rewind($file);
