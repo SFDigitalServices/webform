@@ -77,7 +77,7 @@ describe("HTML templates", function() {
 					<div data-toggle='tooltip' title='' data-original-title='The data format that will be transmitted and will also dictate the expected format for the response'> \
 						<label class='control-label' save_image_to_download='true'>Data Format</label> \
 					</div>				 \
-					<select class='webhookMethod'> \
+					<select class='webhookMethod form-control'> \
 						<option>json</option> \
 						<option>xml</option> \
 						<option>html</option> \
@@ -92,7 +92,7 @@ describe("HTML templates", function() {
 					<div data-toggle='tooltip' title='' data-original-title='The data response that is received. A single value option or an array of options'> \
 						<label class='control-label' save_image_to_download='true'>Response Type</label> \
 					</div>				 \
-					<select class='webhookOptionsArray' onchange='javascript:webhookOptions(this)'> \
+					<select class='webhookOptionsArray form-control' onchange='javascript:webhookOptions(this)'> \
 						<option>Single Response</option> \
 						<option>Will Contain Many Options</option> <!--only valid if using checkbox, radio or select--> \
 					</select> \
@@ -100,7 +100,7 @@ describe("HTML templates", function() {
 						<div data-toggle='tooltip' title='' data-original-title='When parsing an array of options to populate your question field, is it from a delimited string or data constructed as siblings of a parent'> \
 							<label class='control-label' save_image_to_download='true'>Array Split Method</label> \
 						</div>				 \
-						<select class='webhookResponseOptionType' onchange='javascript:webhookResponseOptionType(this)'> \
+						<select class='webhookResponseOptionType form-control' onchange='javascript:webhookResponseOptionType(this)'> \
 							<option>Select</option> \
 							<option>Delimiter</option> \
 							<option>Index/Path</option> \
@@ -116,8 +116,10 @@ describe("HTML templates", function() {
 
   it("should spit out apply and revert buttons html", function() {
     expect(fb.view.applyRevertButtons).toEqual("\
-	<button class='apply-button btn btn-md btn-primary'>Apply</button> \
-	<button class='revert-button btn btn-md btn-secondary'>Revert</button>");
+      <div class='save-buttons'> \
+        <button class='apply-button btn btn-md btn-primary'>Save</button> \
+        <button class='revert-button btn btn-md btn-secondary'>Cancel</button> \
+      </div>)");
   });
 
   it("should spit out edit item html", function() {
@@ -154,9 +156,9 @@ describe("HTML templates", function() {
 					<div class='condition'> \
 						<i class='fas fa-minus-circle conditionIcon' onclick='javascript:removeConditional(this)'></i> \
 						<span class='conditionalLabel'></span> \
-						<select class='allIds conditionalId'> \
+						<select class='allIds conditionalId form-control'> \
 						</select> \
-						<select class='conditionalOperator' onchange='javascript:conditionalSelect(this)'> \
+						<select class='conditionalOperator form-control' onchange='javascript:conditionalSelect(this)'> \
 							<option>matches</option> \
 							<option>doesn't match</option> \
 							<option>is less than</option> \
@@ -166,7 +168,7 @@ describe("HTML templates", function() {
 							<option>contains anything</option> \
 							<option>is blank</option> \
 						</select> \
-						<input type='text' class='conditionalValue' /> \
+						<input type='text' class='conditionalValue form-control' /> \
 					</div> \
 				</div>");
   });
@@ -196,17 +198,17 @@ describe("HTML templates", function() {
   });
 
   it("should spit out length validation html", function() {
-    expect(fb.view.validateLength()).toEqual("<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
+    expect(fb.view.validateLength()).toEqual("<div class='floatleft' style='width: 50%;' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
 				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
 			</div> \
-			<div class='floatright' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
+			<div class='floatright' style='width: 50%;' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
 				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
 			</div>");
   });
 
   it("should spit out first conditional html", function() {
     expect(fb.view.firstConditional()).toEqual("<div class='clonable firstConditional'> \
-					<select class='showHide'> \
+					<select class='showHide form-control'> \
 						<option>Show</option> \
 						<option>Hide</option> \
 					</select> \
@@ -214,18 +216,19 @@ describe("HTML templates", function() {
   });
 
   it("should spit out multiple conditionals html", function() {
-    expect(fb.view.multipleConditionals()).toEqual("<div class='clonable multipleConditionals'> \
-					<select class='allAny'> \
-						<option>All</option> \
-						<option>Any</option> \
-					</select> \
-				</div>");
+    expect(fb.view.multipleConditionals()).toEqual(" \
+      <div class='clonable multipleConditionals'> \
+        <select class='allAny form-control'> \
+          <option>All</option> \
+          <option>Any</option> \
+        </select> \
+      </div>");
   });
 
   it("should spit out first calculation html", function() {
     expect(fb.view.firstCalculation()).toEqual("<div class='firstCalculation'> \
 					<label class='control-label calculationLabel'>Calculation</label> \
-					<select class='allMathIds calculationId'></select> \
+					<select class='allMathIds calculationId form-control'></select> \
 				</div>");
   });
 
@@ -233,19 +236,19 @@ describe("HTML templates", function() {
     expect(fb.view.calculationContainer()).toEqual("<div class='calculationContainer'> \
 					<div class='calculation'> \
 						<i class='fas fa-minus-circle conditionIcon' onclick='javascript:removeCalculation(this)'></i> \
-						<select class='calculationOperator'> \
+						<select class='calculationOperator form-control'> \
 							<option>Plus</option> \
 							<option>Minus</option> \
 							<option>Multiplied by</option> \
 							<option>Divided by</option> \
 						</select> \
-						<select class='allMathIds calculationId'></select> \
+						<select class='allMathIds calculationId form-control'></select> \
 					</div> \
 				</div>");
   });
 
   it("should spit out form links html", function() {
-    expect(fb.view.formLink({id:'a',updated_at:'c',content:{settings:{name:'b'}}})).toEqual('<a href="javascript:void(0)" data-id="a" class="start-form recent btn btn-default btn-md btn-block">b <span style="color:green">Last updated: c</span></a>');
+    expect(fb.view.formLink({id:'a',updated_at:'c',content:{settings:{name:'b'}}})).toEqual('<a href="javascript:void(0)" data-id="a" class="start-form recent">b <span>Last updated: c</span></a>');
   });
 
   it("should spit out preview iframe html", function() {
@@ -253,7 +256,18 @@ describe("HTML templates", function() {
   });
 
   it("should spit out list item html", function() {
-    expect(fb.view.listItem('a', 1, 'b')).toEqual('<div><a href="javascript:void(0)" class="spacer item insert add move" data-index="1" data-id="a">Click to add a field</a></div><div><a href="javascript:void(0)" class="item field" data-index="1" data-id="a"><span class="itemCount">b</span>a</a><a href="javascript:void(0)" data-index="1" class="fa fa-sort"></a><a href="javascript:void(0)" data-index="1" class="fa fa-times"></a></div>');
+    expect(fb.view.listItem('a', 1, 'b')).toEqual('<div> \
+        <a href="javascript:void(0)" class="spacer item insert add move" data-index="1" data-id="a">\
+          Click to add a field \
+        </a> \
+      </div> \
+      <div> \
+        <a href="javascript:void(0)" data-index="1" class="fa fa-sort"></a> \
+        <a href="javascript:void(0)" class="item field" data-index="1" data-id="a"> \
+          <span class="itemCount">b</span>a \
+        </a> \
+        <a href="javascript:void(0)" data-index="1" class="fa fa-times"></a> \
+      </div>');
   });
 
   it("should spit out list spacer html", function() {
