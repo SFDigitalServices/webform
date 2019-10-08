@@ -18,4 +18,4 @@ The following command can be run at your local, or on Heroku(the Scheduler add-o
 | ------------- |:-------------:|
 | [form id]     | right-aligned |
 | [email]       | centered        |
-| --fields      | specify as many fields as you want|
+| --fields      | Fields from the database|
