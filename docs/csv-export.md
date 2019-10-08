@@ -1,6 +1,6 @@
 # CSV export for the MVP
 
-This is only for the ADU permit application MVP. The idea is to run a command line to genereate a CSV file and email it out to departments.
+This is only for the ADU permit application MVP. The idea is to run a command line to genereate a CSV file and email it as an attachment to departments.
 
 ## Setup
 Assuming you already have the webform project checked out, pull in the latest from master
