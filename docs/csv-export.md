@@ -16,6 +16,6 @@ The following command can be run at your local, or on Heroku(the Scheduler add-o
 
 | Parameter     | description   |
 | ------------- |:-------------:|
-| [form id]     | right-aligned |
-| [email]       | centered        |
+| [form id]     | Form ID |
+| [email]       | Email address to email to|
 | --fields      | Fields from the database|
