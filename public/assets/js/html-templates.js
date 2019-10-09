@@ -182,10 +182,10 @@ Fb.prototype.view.validateMatch = function() {
 }
 
 Fb.prototype.view.validateLength = function() {
-	return	"<div class='floatleft' style='width: 50%;' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
+	return	"<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
     				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
     			</div> \
-    			<div class='floatright' style='width: 50%;' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
+    			<div class='floatright' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
     				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
     			</div>"
 }

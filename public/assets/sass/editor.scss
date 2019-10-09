@@ -270,6 +270,11 @@ legend {
 .accordion-section {
   clear: both;
   margin-bottom: 2em;
+
+  .floatleft,
+  .floatright {
+    width: 45%;
+  }
 }
 
 .popover {

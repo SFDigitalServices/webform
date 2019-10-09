@@ -265,6 +265,11 @@ legend {
   margin-bottom: 2em;
 }
 
+.accordion-section .floatleft,
+.accordion-section .floatright {
+  width: 45%;
+}
+
 .popover {
   min-width: 245px;
 }
