@@ -1,3 +1,12 @@
+@import 'variables';
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+
 html,
 body {
   height: 100%;
@@ -19,7 +28,7 @@ body {
   header,
   h1 {
     font-size: 2em;
-    color: #fff;
+    color: $white;
     text-shadow: 0 0 18px #000;
   }
 
@@ -94,31 +103,29 @@ legend {
 
 /* App header */
 
-.header {
-  background: #428bca;
-  color: #fff;
-  text-align: center;
-  font-size: 24px;
-  padding: 1em 0;
-  margin-bottom: 1em;
-}
-
 .header-container {
-  display: block;
+  display: flex;
   max-width: 1140px;
   text-align: right;
   margin: auto;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.logo {
-  display: block;
-  background: #fff;
-  width: 232px;
-  float: left;
-  position: absolute;
-  top: 0px;
-  box-shadow: 0 0 10px #888;
-  cursor: pointer;
+.header {
+  background: $slate-blue;
+  color: $white;
+  text-align: center;
+  padding: 0.5rem 0;
+
+  button {
+    color: $white;
+    font-size: 2rem;
+    font-weight: normal;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 }
 
 .header-sign-out {
@@ -128,20 +135,31 @@ legend {
 
 /* Welcome page */
 
-.welcomeBack {
-  margin-top: 15vh;
-}
-
+.welcomeBack,
 .welcomeBox {
-  text-align: center;
-  padding: 4em;
-  margin: 2em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  margin-top: 2em;
 }
 
-.forms a.btn {
-  margin-bottom: 3px;
+.welcome-alt-text {
+  color: $light-slate-blue;
+  margin: 0.5em 0 2em;
+}
+
+.start-form {
+  font-size: 1.25em;
+  text-align: left;
+  display: block;
+  margin-bottom: 1em;
+}
+
+.start-form strong,
+.start-form span {
+  display: block;
+}
+
+.start-form span {
+  color: $light-slate-blue;
+  font-size: 0.75em;
 }
 
 .text-muted {
@@ -149,7 +167,7 @@ legend {
 }
 
 .fa-circle-notch {
-  color: #ddd;
+  color: $grey-4;
 
   .forms & {
     font-size: 2em;
@@ -186,14 +204,13 @@ legend {
 
 #SFDSWFB-target {
   min-height: 200px;
-  border: 1px solid #ccc;
+  border: 1px solid $grey-4;
   padding: 5px;
   transition: height .3s;
-  overflow: hidden;
 
   .form-group {
     width: 100%;
-	max-width: 525px;
+	  max-width: 525px;
     margin-left: 0;
     position: relative;
 
@@ -218,13 +235,13 @@ legend {
     top: 0;
     right: 0;
     font-size: 1.5em;
-    color: #ccc;
+    color: $grey-4;
     cursor: pointer;
     z-index: 99
   }
 
   .component {
-    border: 1px solid #fff;
+    border: 1px solid $white;
   }
 
   .floatleft,
@@ -237,7 +254,7 @@ legend {
 #SFDSWFB-temp {
   width: 500px;
   background: white;
-  border: 1px dotted #ccc;
+  border: 1px dotted $grey-4;
   border-radius: 10px;
 }
 
@@ -246,14 +263,18 @@ legend {
 
 .accordion-header {
   font-size: 1.5em;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $grey-3;
   margin: 1em 0;
 }
 
 .accordion-section {
-  cursor: pointer;
   clear: both;
   margin-bottom: 2em;
+
+  .floatleft,
+  .floatright {
+    width: 45%;
+  }
 }
 
 .popover {
@@ -271,7 +292,7 @@ legend {
   }
 
   select {
-    border: 1px solid #ccc;
+    border: 1px solid $grey-4;
     height: 34px;
     padding: 6px 12px;
     width: 100%;
@@ -302,7 +323,16 @@ legend {
   border-bottom: 1px solid transparent;
 
   &:hover {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid $black;
+  }
+}
+
+.conditional,
+.addCalculationContainer {
+  width: 90%;
+  select,
+  input {
+    margin-bottom: 0.5em;
   }
 }
 
@@ -319,9 +349,9 @@ hr.and::before {
   position: relative;
   left: calc(45%);
   top: -12px;
-  background: #fff;
+  background: $white;
   width: 24px;
-  color: #bbb;
+  color: $grey-5;
   display: block;
   text-align: center;
 }
@@ -336,7 +366,7 @@ hr.and::before {
   text-align: left;
   margin-top: 1.5em;
   position: relative;
-  color: #aaa;
+  color: $grey-5;
 
   > ul {
     margin-top: 10px;
@@ -345,11 +375,11 @@ hr.and::before {
   li {
     display: inline-block;
     padding: .5em 1em;
-    color: #428bca;
+    color: $bright-blue;
     cursor: pointer;
 
     &:hover {
-      background: #eee;
+      background: $grey-3;
       color: #2a6496;
     }
   }
@@ -365,18 +395,18 @@ hr.and::before {
   padding: 8px 12px;
   font-size: 24px;
   line-height: 30px;
-  border: 2px solid #ccc;
+  border: 2px solid $grey-4;
   border-radius: 8px;
   outline: none;
 }
 
 .tt-query {
   /* UPDATE: newer versions use tt-input instead of tt-query */
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba($black, 0.075);
 }
 
 .tt-hint {
-  color: #999;
+  color: $grey-5;
 }
 
 .tt-menu {
@@ -384,11 +414,11 @@ hr.and::before {
   width: 422px;
   margin-top: 12px;
   padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: $white;
+  border: 1px solid $grey-4;
+  border: 1px solid rgba($black, 0.2);
   border-radius: 8px;
-  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  box-shadow: 0 5px 10px rgba($black, 0.2);
 }
 
 .tt-suggestion {
@@ -399,7 +429,7 @@ hr.and::before {
   &.tt-cursor,
   &:hover {
     /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
-    color: #fff;
+    color: $white;
     background-color: #0097cf;
     cursor: pointer;
   }
@@ -407,167 +437,293 @@ hr.and::before {
   p {
     margin: 0;
   }
-
-
 }
 
 /* New refactor CSS, needs cleanup */
 .header-container {
-  max-width:none;
-  padding:0 15px
+  max-width: none;
+  padding: 0 1rem;
 }
 
 a:link, a:visited, a:hover, a:active {
-  text-decoration:none
+  text-decoration: none;
 }
+
+$editorHeight: calc(100vh - 4rem);
+
+.editorContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: stretch;
+  height: $editorHeight;
+  overflow: hidden;
+}
+
+.save-buttons {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  box-shadow: 0 -1px 3px rgba($black, 0.2);
+  padding: 0.5rem 0;
+}
+
+.leftPanel,
+.middlePanel,
+.rightPanel-preview-wrapper {
+  position: relative;
+  height: $editorHeight;
+  overflow: scroll;
+}
+
+.leftPanel,
+.middlePanel {
+  box-shadow: inset -1px 0 0 0 $grey-5;
+}
+
+.leftPanel {
+  width: 20%;
+  max-width: 30%;
+  min-width: 25rem;
+  align-self: flex-start;
+}
+
+.middlePanel {
+  width: 20%;
+
+  textarea {
+    resize: vertical;
+  }
+}
+
+.rightPanel {
+  width: 60%;
+  min-width: 320px;
+  max-width: 80%;
+  display: flex;
+  flex: auto;
+  background: $grey-2;
+  border-left: 1px solid $grey-4;
+  padding: inherit 2.5%;
+}
+
+.rightPanel-blank {
+  flex: 0 0 auto;
+  max-width: calc(100% - 320px);
+}
+
+.rightPanel-preview-wrapper {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rightPanel-preview {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.rightPanel-preview-pane {
+  width: 95%;
+  height: 95%;
+  margin: 2.5%;
+  margin-left: 0;
+  background: $white;
+  border: 1px solid $grey-4;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    content: "Loading";
+    color: $grey-5;
+    font-size: 2rem;
+    text-align: center;
+    width: 100%;
+    top: 50%;
+  }
+
+  iframe {
+    align-self: flex-end;
+    flex-grow: 1;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: rgba($slate-blue, 0.03);
+
+  button {
+    display: inline-block;
+    padding: 0.5em;
+    border-radius: $radius;
+    border: 1px solid $bright-blue;
+    color: $bright-blue;
+    background: $white;
+    font-size: 0.8em;
+    margin-left: 0.5em;
+  }
+}
+
+.panel-content {
+  padding: 0.5rem 1rem;
+  min-height: calc(100vh - 12.5rem);
+}
+
+.splitter {
+  width: 10px;
+  flex: 0 0 auto;
+  cursor: col-resize;
+  position: relative;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 4px;
+    width: 2px;
+    height: 100%;
+    background: #777;
+    content: ""
+  }
+}
+
 
 #SFDSWFB-list {
-  margin-top:1em;
-  padding:1em;
-  border:1px solid #ddd;
-  border-radius:5px;
-  max-height:768px;
-  overflow-y:scroll
-}
+  overflow: scroll;
+  width: 100%;
 
-#SFDSWFB-list a {
-  display:inline-block
-}
+  a {
+    display: inline-block;
+  }
 
-#SFDSWFB-list .itemCount {
-  display:inline-block;
-  color:#ccc;
-  padding-right:.5em
-}
+  .itemCount {
+    display: inline-block;
+    color: $grey-4;
+    padding-right: 0.5em;
+  }
 
-#SFDSWFB-list .item {
-  padding:0 .25em;
-  width:calc(100% - 5em)
-}
+  > div {
+    display: flex;
+    align-items: center;
+  }
 
-#SFDSWFB-list .item:hover, #SFDSWFB-list .item.selected {
-  background-color: #eee
-}
+  .item {
+    padding: 0.375em;
+    width: calc(100% - 5em);
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-#SFDSWFB-list .item.selected.moving:hover, #SFDSWFB-list .item.selected.moving {
-  color: #aaa
-}
+    &:hover,
+    &.selected {
+      background-color: $blue-2;
+    }
 
-#SFDSWFB-list .item.spacer {
-  height:1.5em;
-  width:100%
-  text-align: center;
-  color: #ddd;
-}
+    &.selected.moving,
+    &.selected.moving:hover {
+      color: $light-slate-blue;
+    }
 
-#SFDSWFB-list .item.spacer:hover, #SFDSWFB-list .item.spacer.selected {
-  border-bottom:2px solid blue;
-  background-color:transparent
-}
+    &.spacer {
+      height: 1.5em;
+      width: 100%;
+      text-align: center;
+      color: $grey-4;
 
-#SFDSWFB-list.moving .item.spacer:hover {
-  border-color:yellowgreen
-}
+      &:hover,
+      &.selected {
+        background-color: $bright-blue;
+        color: $white;
+      }
+    }
+  }
 
-#SFDSWFB-list .fa-sort {
-  border: 1px solid blue;
-  border-radius:5px;
-  padding:3px 6px
-}
+  &.moving .item.spacer {
+    position: relative;
+    &::after {
+      position: absolute;
+      width: 100%;
+      top: 1px;
+      left: 0;
+      content: "Move field here";
+      background: $white;
+    }
+    &:hover {
+      &::after {
+        background: $bright-blue;
+        color: $white;
+      }
+    }
+  }
 
-#SFDSWFB-list .fa-times {
-  margin-left:2em
-}
+  .fa-sort {
+    border: 1px solid $bright-blue;
+    border-radius: 5px;
+    padding: 3px 6px;
+  }
 
-#SFDSWFB-list .fa:hover {
-  background:#eee;
-  color:black;
-  border-color:black
-}
+  .fa-times {
+    margin-left: 2em;
+  }
 
-#SFDSWFB-list .fa-sort.moving, #SFDSWFB-list .fa-sort.moving:hover {
-  background:#eee;
-  color:#aaa;
-  border-color:#aaa
-}
+  .fa:hover {
+    background: #eee;
+    color: black;
+    border-color: black;
+  }
 
-.menu-button {
-  display:block;
-  padding:.5em;
-  border-radius:5px;
-  border:1px solid #ddd;
-  position:absolute;
-  top:.5em
-}
-
-.clone-button {
-  right:2.5em
-}
-
-.delete-button {
-  right:0
-}
-
-.embed-toggle {
-  right:5.5em
-}
-
-.settings-toggle {
-  right:3em
-}
-
-.horizontal-toggle {
-  right:.5em
-}
-
-.preview-window {
-  right:1em
+  .fa-sort.moving,
+  .fa-sort.moving:hover {
+    background: #eee;
+    color: #aaa;
+    border-color: #aaa;
+  }
 }
 
 .col-xl-1 > a.min-hidden {
-  display:none
-}
-
-#SFDSWFB-preview iframe {
-  height:772px;
-  width:100%
+  display: none;
 }
 
 .middlePanel > div {
-  display:none
+  display: none;
+}
+
+.field-item-group {
+  margin-bottom: 1em;
+  display: block;
 }
 
 .field-item {
-  padding:1em;
-  margin:.5em;
-  border:2px solid blue;
-  color:blue;
-  font-weight:bold;
-  border-radius:5px;
-  cursor:pointer;
-  float:left
-}
+  padding: 0.5em;
+  margin: 0 0.5rem 1rem 0;
+  border: 2px solid $bright-blue;
+  color: $bright-blue;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  background: $white;
 
-.field-item.t2 {
-  color:purple;
-  border-color:purple
-}
-
-.field-item.t3 {
-  color:red;
-  border-color:red
-}
-
-.field-item.t4 {
-  color:orange;
-  border-color:orange
-}
-
-.field-item:hover {
-  color:black;
-  border-color:black
+  &:hover {
+    color: black;
+    border-color: black;
+  }
 }
 
 input, textarea {
-  margin-bottom:1em
+  margin-bottom: 1em;
 }

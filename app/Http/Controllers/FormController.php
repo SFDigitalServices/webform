@@ -278,9 +278,11 @@ class FormController extends Controller
 
         $embedHTML = $this->embedJS($request);
         return '<!DOCTYPE html><html><head>'.
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">'.
         '<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-base.css" />'.
-        '<style>#SFDSWF-Container {padding:2em 5em}#SFDSWFB-legend {position:relative !important;height:auto;width:auto;font-size:3em}</style></head>'.
+        '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
+        '</head>'.
         '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
     }
 

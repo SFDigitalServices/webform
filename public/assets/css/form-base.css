@@ -52,6 +52,10 @@ textarea {
 	color: #666;
 }
 
+.help-block:empty {
+  margin: 0;
+}
+
 .help-block ul {
 	margin: 0;
 }

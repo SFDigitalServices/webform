@@ -211,10 +211,10 @@ function skipToSectionId(callback) { //does not work for checkboxes and possibly
 		if (document.getElementById(SFDSWFB.skipToSectionId) != null) {
 			if (callback && jQuery("#" + SFDSWFB.skipToSectionId).is(":hidden")) callback(jQuery("#" + SFDSWFB.skipToSectionId).closest(".form-section").index('.form-section'))
 			document.getElementById(SFDSWFB.skipToSectionId).scrollIntoView()
-			jQuery("#" + SFDSWFB.skipToSectionId).closest('.form-group').css({'border': '5px solid green', 'background-color': 'yellowgreen'})
+			jQuery("#" + SFDSWFB.skipToSectionId).closest('.form-group').addClass('is-selected-in-editor')
 		} else {
 			if (callback && jQuery("div[data-id=" + SFDSWFB.skipToSectionId + "]").is(":hidden")) callback(jQuery("div[data-id=" + SFDSWFB.skipToSectionId + "]").index('.form-section-header'))
-			jQuery("div.form-section-header[data-id=" + SFDSWFB.skipToSectionId + "]").css({'border': '5px solid green', 'background-color': 'yellowgreen'})
+			jQuery("div.form-section-header[data-id=" + SFDSWFB.skipToSectionId + "]").addClass('is-selected-in-editor')
 		}
 	}
 }

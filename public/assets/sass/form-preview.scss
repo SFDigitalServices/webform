@@ -1,0 +1,41 @@
+@import 'variables';
+
+body {
+  background: $white;
+}
+
+#SFDSWF-Container {
+  padding: 2em 5em;
+}
+
+#SFDSWFB-legend {
+  position: relative !important;
+  height: auto;
+  width: auto;
+  font-size: 3em;
+}
+
+.form-group {
+  position: relative;
+}
+
+.is-selected-in-editor {
+  &::before {
+    position: absolute;
+    background: rgba($blue-2, 0.4);
+    border: 2px solid rgba($blue-2, 0.6);
+    border-radius: 4px;
+    content: "";
+    top: -1rem;
+    bottom: -1rem;
+    left: -1.5rem;
+    right: -1.5rem;
+    z-index: -1;
+  }
+
+  p, h1, h2, h3 {
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+}

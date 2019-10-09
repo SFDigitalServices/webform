@@ -135,7 +135,7 @@ Fb.prototype.selectInsert = function() {
 		}, 1000)
   } else {
     jQuery('#SFDSWFB-list .item').eq(0).addClass('selected')
-    self.fbView.showMiddlePanel('SFDSWFB-insert')
+    self.fbView.switchMiddlePanel('SFDSWFB-insert')
   }
 }
 

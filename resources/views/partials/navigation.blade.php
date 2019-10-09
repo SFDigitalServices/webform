@@ -1,4 +1,9 @@
-<a href="javascript:void(0)" title="Clone Form" class="clone-button menu-button min-hidden md-hidden fa fa-clone"></a>
-<a href="javascript:void(0)" title="Delete Form" class="delete-button menu-button min-hidden md-hidden fa fa-trash"></a>
-<h4>Navigation</h4>
-<div class="tab-pane" id="SFDSWFB-list"></div>
+<div class="panel-header">
+  <strong>Your form</strong>
+  <div class="panel-header-actions">
+    <button class="clone-button min-hidden md-hidden"><i class="fa fa-clone"></i> Clone</a>
+    <button class="delete-button min-hidden md-hidden"><i class="fa fa-trash"></i> Delete</a>
+  </div>
+</div>
+
+<div class="tab-pane panel-content" id="SFDSWFB-list"></div>
