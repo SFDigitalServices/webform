@@ -31,19 +31,23 @@
     "puppeteer": "^1.19.0"
   },
   "devDependencies": {
+    "acorn": "^6.1.1",
+    "chai": "^4.2.0",
+    "codeceptjs": "^2.1.4",
     "cross-env": "^5.2.0",
+    "jasmine-core": "^3.5.0",
+    "karma": "^4.3.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-jasmine": "^2.0.1",
     "laravel-mix": "^4.0.16",
     "postcss-import": "^11.0.0",
     "postcss-loader": "^3.0.0",
+    "postcss-scss": "^2.0.0",
+    "puppeteer": "^1.17.0",
     "resolve-url-loader": "2.3.1",
     "sass": "^1.22.1",
     "sass-loader": "7.*",
-    "stylelint": "^10.1.0",
-    "puppeteer": "^1.17.0",
-    "chai": "^4.2.0",
-    "codeceptjs": "^2.1.4",
-    "acorn": "^6.1.1",
-    "postcss-scss": "^2.0.0"
+    "stylelint": "^10.1.0"
   },
   "browserslist": [
     "last 1 version",
