@@ -5,18 +5,18 @@ const I = actor();
 
 // you can provide RegEx to match corresponding steps
   Given(/I have a formbuilder account/, () => {
-  I.amOnPage(process.env.CODECEPT_URL || 'http://localhost');
+  I.amOnPage(process.env.CODECEPT_URL || 'http://localhost:8000');
 });
 
 // Basic Feature
-When('I logged into the my account', () => {
+When('I log into my account', () => {
   loginPage.login('johndoe@example.com','johndoe');
   I.wait(3);
 });
 
 Then('I should see all my forms', () => {
   I.see('Welcome back')
-  I.wait(2)
+  I.wait(3)
 })
 Then('I should be able to create new forms', () => {
   I.see('Create a New Form');
