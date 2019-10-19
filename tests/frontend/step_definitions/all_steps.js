@@ -2,7 +2,8 @@
 const assert = require('assert');
 const loginPage = require('../pages/login');
 const I = actor();
-const sessid = Math.random();
+//const sessid = Math.random();
+const sessid = '';
 
 Before(() => {
   I.amOnPage('/');
@@ -16,7 +17,7 @@ Before(() => {
 Given(/I am on the dashboard page/, () => {
   //loginPage.login('johndoe@example.com','johndoe')
   I.click('Create a New Form')
-  I.wait(5)
+  I.wait(8)
   I.see('Please enter the name of your form')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
