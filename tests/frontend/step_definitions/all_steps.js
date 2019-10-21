@@ -9,14 +9,13 @@ Before(() => {
     localStorage.clear();
   });
   loginPage.login('johndoe@example.com','johndoe')
-  I.wait(5)
 });
 
 // Create Form Feature
 Given(/I am on the dashboard page/, () => {
   //loginPage.login('johndoe@example.com','johndoe')
   I.click('Create a New Form')
-  I.wait(5)
+  I.wait(15)
   I.see('Please enter the name of your form')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
