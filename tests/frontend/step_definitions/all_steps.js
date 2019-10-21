@@ -16,7 +16,7 @@ Given(/I am on the dashboard page/, () => {
   //loginPage.login('johndoe@example.com','johndoe')
   I.click('Create a New Form')
   I.wait(15)
-  I.see('Please enter the name of your form')
+  I.seeElement('#modal #formTitle')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
   I.wait(6)
