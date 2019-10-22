@@ -10,12 +10,12 @@ Before(() => {
     localStorage.clear();
   });
   loginPage.login('johndoe@example.com','johndoe')
+  I.wait(5)
 });
 
 // Create Form Feature
 Given(/I am on the dashboard page/, () => {
   //loginPage.login('johndoe@example.com','johndoe')
-  I.waitForElement("a.start-form", 30)
   I.click('Create a New Form')
   I.wait(2)
   I.see('Please enter the name of your form')

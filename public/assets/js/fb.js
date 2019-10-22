@@ -17,8 +17,13 @@ let Fb = function() {
 Fb.prototype.init = function() {
 	var self = this
 
+  self.startView([])
 	jQuery(".content").show()
-	self.callAPI("/form/getForms", {}, fb.startView)
+	self.callAPI("/form/getForms", {}, this.fbView.populateForms)
+
+	$('.welcomeBox .btn-info').on('click', function() {
+		self.fbView.startForm()
+	})
 }
 
 /**

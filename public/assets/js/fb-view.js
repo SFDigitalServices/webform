@@ -7,11 +7,17 @@
  * @constructor
  */
 let FbView = function(formsCollection) {
-    this.formsCollection = formsCollection
+  this.formsCollection = formsCollection
 
-	this.listForms()
-	this.bindInsertItems()
 	this.bindSystemButtons()
+}
+
+FbView.prototype.populateForms = function(response) {
+  var self = fb.fbView //callback changes scope of this
+
+  self.formsCollection.updateForms(response)
+	self.listForms()
+	self.bindInsertItems()
 }
 
 /**
@@ -101,10 +107,6 @@ FbView.prototype.listForms = function() {
 	for (i in this.formsCollection.forms) {
 		$('.forms').append(fb.view.formLink(this.formsCollection.forms[i]))
 	}
-
-	$('.welcomeBox .btn-info').on('click', function() {
-		self.startForm()
-	})
 
 	$('a.start-form').on('click', function() {
 		self.startForm($(this).data('id'))

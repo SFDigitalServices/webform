@@ -23,6 +23,7 @@ describe("Fb", function() {
 		})
 
     it('should show content', function() {
+      fb.fbView = new FbView()
       var apiSpy = spyOn(fb, "callAPI")
       fb.init()
       expect(apiSpy).toHaveBeenCalled()
