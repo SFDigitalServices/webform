@@ -21,17 +21,15 @@ Given(/I am on the dashboard page/, () => {
   I.see('Please enter the name of your form')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
-  I.wait(10)
 })
 When('I click to insert a field', () => {
+    I.wait(10)
     I.click('Name')
     I.wait(1)
+    I.see('Edit field')
+    I.seeElement('#SFDSWFB-list .item[data-id=name]')
+    I.wait(1)
 });
-Then('I should see the field created in the navigation and an edit panel', () => {
-  I.see('Edit field')
-  I.seeElement('#SFDSWFB-list .item[data-id=name]')
-  I.wait(1)
-})
 Then('I should be able to edit that field to the form', () => {
   I.fillField('label', 'Full Name')
   I.fillField('name', 'full_name')
