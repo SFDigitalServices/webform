@@ -10,7 +10,7 @@ Before(() => {
     localStorage.clear();
   });
   loginPage.login('johndoe@example.com','johndoe')
-  I.wait(5)
+  I.wait(60)
 });
 
 // Create Form Feature
@@ -90,19 +90,19 @@ When('I click the clone icon', () => {
   I.see('Your form')
   I.seeElement('button.clone-button')
   I.click('button.clone-button')
-  I.wait(6)
+  I.wait(30)
 });
 Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should see the cloned form', () => {
   I.see('Clone of TESTING FORM CREATION'+sessid)
-  I.wait(5)
+  I.wait(60)
 })
 When('I click the clone form', () => {
   I.click('Clone of TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
-  I.wait(2)
+  I.wait(10)
 });
 Then('I see the delete icon', () => {
   I.seeElement('button.delete-button')
@@ -115,12 +115,12 @@ Then('I should not see the deleted cloned form', () => {
 Given(/I have an existing form for previewing/, () => {
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
-  I.wait(1)
+  I.wait(3)
 })
 When('I click on the Preview button', () => {
   I.see('Preview')
   I.click('button.preview-window');
-  I.wait(3)
+  I.wait(30)
   I.switchToNextTab(1)
 })
 Then('I should see a new window with rendered html', () => {
@@ -145,9 +145,9 @@ Given(/I navigate to a published form/, () => {
   I.fillField('confirmation', 'https://digitalservices.sfgov.org/thank-you')
   I.fillField('action', '/form/submit')
   I.click('#SFDSWFB-settings button.apply-button')
-  I.wait(3)
+  I.wait(15)
   I.click('button.preview-window');
-  I.wait(1)
+  I.wait(30)
   I.switchToNextTab(1)
 })
 When('I filled out all required fields and click submit', () => {
@@ -157,7 +157,7 @@ When('I filled out all required fields and click submit', () => {
   I.click('Submit')
 })
 Then('I should be redirected to a confirmation page', () => {
-  I.wait(5)
+  I.wait(30)
   I.seeInCurrentUrl('/thank-you');
   I.wait(2)
   I.closeCurrentTab();
@@ -168,19 +168,19 @@ Then('I should be redirected to a confirmation page', () => {
 Given(/I clicked into an existing form for deletion/, () => {
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
-  I.wait(2)
+  I.wait(3)
 })
 When('I click the delete icon', () => {
   I.seeElement('button.delete-button')
   I.click('button.delete-button')
-  I.wait(1)
+  I.wait(3)
 });
 Then('I should see confirmation popup', () => {
   I.see('Are you sure you want to delete this form?')
 })
 When('I click Ok', () => {
   I.click('Ok')
-  I.wait(8)
+  I.wait(15)
 })
 Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
