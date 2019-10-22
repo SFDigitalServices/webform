@@ -15,7 +15,7 @@ Before(() => {
 // Create Form Feature
 Given(/I am on the dashboard page/, () => {
   //loginPage.login('johndoe@example.com','johndoe')
-  I.wait(30)
+  I.wait(15)
   I.click('Create a New Form')
   I.wait(5)
   I.see('Please enter the name of your form')
@@ -50,7 +50,6 @@ Then('I should see my form on the dashboard', () => {
 
 // Modify Form Feature
 Given(/I am on an existing form for modification/, () => {
-  I.wait(30)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(1)
@@ -83,7 +82,6 @@ Then('I should be able modify the attributes', () => {
 
 // Clone Form Feature
 Given(/I clicked into an existing form for cloning/, () => {
-  I.wait(30)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(3)
@@ -115,7 +113,6 @@ Then('I should not see the deleted cloned form', () => {
 })
 // Preview Form Feature
 Given(/I have an existing form for previewing/, () => {
-  I.wait(30)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(1)
@@ -136,7 +133,6 @@ Then('I should see a new window with rendered html', () => {
 
 // Submit Form Feature
 Given(/I navigate to a published form/, () => {
-  I.wait(30)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(1)
@@ -170,7 +166,6 @@ Then('I should be redirected to a confirmation page', () => {
 
 // Delete Form Feature
 Given(/I clicked into an existing form for deletion/, () => {
-  I.wait(30)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(2)
