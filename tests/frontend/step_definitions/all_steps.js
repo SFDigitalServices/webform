@@ -21,18 +21,26 @@ Given(/I am on the dashboard page/, () => {
   I.see('Please enter the name of your form')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
-  I.wait(10)
-  I.click('#SFDSWFB-insert button[data-formtype=c02]')
-  I.wait(10)
-  I.seeElement('#SFDSWFB-attributes')
+  I.wait(60)
+})
+When('I click to insert a field', () => {
+    I.click('Name')
+    I.wait(1)
+});
+Then('I should see the field created in the navigation and an edit panel', () => {
+  I.see('Edit field')
   I.seeElement('#SFDSWFB-list .item[data-id=name]')
-  I.wait(10)
+  I.wait(1)
+})
+Then('I should be able to edit that field to the form', () => {
   I.fillField('label', 'Full Name')
   I.fillField('name', 'full_name')
   I.fillField('id', 'full_name')
   I.click('Save')
   I.wait(1)
   I.see('full_name')
+})
+Then('I should see my form on the dashboard', () => {
   I.click('Digital Services Webform Builder')
   I.wait(2)
   //I.see('TESTING FORM CREATION'+sessid)
