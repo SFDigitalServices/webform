@@ -26,6 +26,8 @@ Given(/I am on the dashboard page/, () => {
 When('I click to insert a field', () => {
     I.click('Name')
     I.wait(3)
+    I.click('Name')
+    I.wait(3)
 });
 Then('I should see the field created in the navigation and an edit panel', () => {
   I.see('Edit field')
