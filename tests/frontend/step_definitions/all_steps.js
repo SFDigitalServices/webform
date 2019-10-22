@@ -24,7 +24,7 @@ Given(/I am on the dashboard page/, () => {
 })
 When('I click to insert a field', () => {
     I.wait(10)
-    I.click('Name')
+    I.click('#SFDSWFB-insert button.field-item[data-formtype=c02]')
     I.wait(1)
     I.see('Edit field')
     I.seeElement('#SFDSWFB-list .item[data-id=name]')
