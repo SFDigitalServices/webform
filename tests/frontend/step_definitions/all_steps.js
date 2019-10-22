@@ -21,7 +21,7 @@ Given(/I am on the dashboard page/, () => {
   I.see('Please enter the name of your form')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
-  I.wait(6)
+  I.wait(10)
 })
 When('I click to insert a field', () => {
     I.click('Name')
