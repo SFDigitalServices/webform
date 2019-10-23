@@ -10,7 +10,7 @@ Before(() => {
     localStorage.clear();
   });
   loginPage.login('johndoe@example.com','johndoe')
-  I.wait(60)
+  I.wait(120)
 });
 
 // Create Form Feature
