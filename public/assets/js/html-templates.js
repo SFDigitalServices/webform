@@ -246,11 +246,11 @@ Fb.prototype.view.listItem = function(id, num, numStr) {
             </a> \
           </div> \
           <div> \
-            <a href='javascript:void(0)' data-index='" + num + "' class='fa fa-sort'></a> \
+            <a href='javascript:void(0)' data-index='" + num + "' data-id='" + id + "' class='fa fa-sort'></a> \
             <a href='javascript:void(0)' class='item field' data-index='" + num + "' data-id='" + id + "'> \
               <span class='itemCount'>" + numStr + "</span>" + id + " \
             </a> \
-            <a href='javascript:void(0)' data-index='" + num + "' class='fa fa-times'></a> \
+            <a href='javascript:void(0)' data-index='" + num + "' data-id='" + id + "' class='fa fa-times'></a> \
           </div>"
 }
 

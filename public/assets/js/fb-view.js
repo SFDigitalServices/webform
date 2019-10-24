@@ -543,8 +543,8 @@ FbView.prototype.sortItem = function(handleObj) {
  * @param {Integer} index
  */
 FbView.prototype.moveItemHere = function(index) {
-	var itemId = $('#SFDSWFB-list .field.selected').eq(0).data('id')
-	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list .field.selected').eq(0).data('index') - 1, index) //adjust for zero index
+	var itemId = $('#SFDSWFB-list a.moving').eq(0).data('id')
+	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list a.moving').eq(0).data('index') - 1, index) //adjust for zero index
 	this.populateList()
 	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
 	newObj.addClass('selected')
