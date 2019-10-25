@@ -108,4 +108,35 @@ describe("Fb View", function() {
     })
   })
 
+  describe("When the settings tab is created", function() {
+    beforeEach(function() {
+      jQuery('body').append('<div id="SFDSWFB-settings"><div class="form-group"><label class="control-label" for="backend">Backend</label><select class="form-control" id="backend" name="backend"><option value="db">I have a database and submission endpoint</option><option value="csv">I want to create a Webform Buider CSV database</option></select></div><div class="form-group csvFile" style="display:none"><a href="javascript:void(0)" class="btn btn-info">Open CSV File</a></div><div class="form-group"><label class="control-label" for="action">Form Action</label><input class="form-control" type="text" id="action" name="action"/></div><div class="form-group confirmPage" style="display:none"><label class="control-label" for="confirmation">Confirmation Page</label><input class="form-control" type="text" id="confirmation" name="confirmation"/></div></div>')
+    })
+
+    it('should be able to populate form backend settings', function() {
+      expect(fbView.formsCollection.forms[0].content.settings.method).toEqual('POST');
+      expect(fbView.formsCollection.forms[0].content.settings.name).toEqual('My Form');
+      expect(fbView.formsCollection.forms[0].content.settings.backend).toEqual('db');
+      fbView.populateSettings()
+      expect(jQuery('#action').val()).toEqual('')
+      expect(jQuery('#backend').val()).toEqual('db')
+      expect(jQuery('#confirmation').is(':visible')).toBeFalsy()
+      jQuery('#backend').val('csv')
+      fbView.toggleConfirmPage(jQuery('#backend'))
+      expect(jQuery('#action').val()).not.toEqual('')
+      expect(jQuery('#backend').val()).toEqual('csv')
+      expect(jQuery('#confirmation').is(':visible')).toBeTruthy()
+      jQuery('#backend').val('db')
+      fbView.toggleConfirmPage(jQuery('#backend'))
+      expect(jQuery('#action').val()).toEqual('')
+      expect(jQuery('#backend').val()).toEqual('db')
+      expect(jQuery('#confirmation').is(':visible')).toBeFalsy()
+    })
+
+
+    afterEach(function() {
+      jQuery('#SFDSWFB-settings').remove()
+    })
+  })
+
 })
