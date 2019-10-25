@@ -1,9 +1,9 @@
 describe("Fb View", function() {
-  var formsCollection;
-  var fbView;
+  var fb
 
   beforeEach(function() {
-    formsCollection = new FormsCollection([{
+    fb = new Fb()
+    fb.fbView = new FbView(new FormsCollection([{
       id: 0,
       content: {
         settings: {
@@ -35,18 +35,17 @@ describe("Fb View", function() {
           color: "btn-primary"
         }]
       }
-    }]);
-    fbView = new FbView(formsCollection)
+    }]));
   });
 
   it("should be able to construct itself", function() {
-    expect(fbView.formsCollection.forms[0].id).toEqual(0);
+    expect(fb.fbView.formsCollection.forms[0].id).toEqual(0);
   });
 
   describe("When a nav list is created", function() {
     beforeEach(function() {
       jQuery('body').append('<div id="SFDSWFB-list"></div>')
-      fbView.populateList()
+      fb.fbView.populateList()
     })
 
     it("should have a list of links", function() {
@@ -114,20 +113,20 @@ describe("Fb View", function() {
     })
 
     it('should be able to populate form backend settings', function() {
-      expect(fbView.formsCollection.forms[0].content.settings.method).toEqual('POST');
-      expect(fbView.formsCollection.forms[0].content.settings.name).toEqual('My Form');
-      expect(fbView.formsCollection.forms[0].content.settings.backend).toEqual('db');
-      fbView.populateSettings()
+      expect(fb.fbView.formsCollection.forms[0].content.settings.method).toEqual('POST');
+      expect(fb.fbView.formsCollection.forms[0].content.settings.name).toEqual('My Form');
+      expect(fb.fbView.formsCollection.forms[0].content.settings.backend).toEqual('db');
+      fb.fbView.populateSettings()
       expect(jQuery('#action').val()).toEqual('')
       expect(jQuery('#backend').val()).toEqual('db')
       expect(jQuery('#confirmation').is(':visible')).toBeFalsy()
       jQuery('#backend').val('csv')
-      fbView.toggleConfirmPage(jQuery('#backend'))
+      fb.fbView.toggleConfirmPage(jQuery('#backend'))
       expect(jQuery('#action').val()).not.toEqual('')
       expect(jQuery('#backend').val()).toEqual('csv')
       expect(jQuery('#confirmation').is(':visible')).toBeTruthy()
       jQuery('#backend').val('db')
-      fbView.toggleConfirmPage(jQuery('#backend'))
+      fb.fbView.toggleConfirmPage(jQuery('#backend'))
       expect(jQuery('#action').val()).toEqual('')
       expect(jQuery('#backend').val()).toEqual('db')
       expect(jQuery('#confirmation').is(':visible')).toBeFalsy()
