@@ -39,7 +39,7 @@ describe("Fb View", function() {
   });
 
   it("should be able to construct itself", function() {
-    expect(fb.fbView.formsCollection.forms[0].id).toEqual(0);
+    expect(fb.fbView.formsCollection.forms[fb.formId].id).toEqual(0);
   });
 
   describe("When a nav list is created", function() {
@@ -113,9 +113,9 @@ describe("Fb View", function() {
     })
 
     it('should be able to populate form backend settings', function() {
-      expect(fb.fbView.formsCollection.forms[0].content.settings.method).toEqual('POST');
-      expect(fb.fbView.formsCollection.forms[0].content.settings.name).toEqual('My Form');
-      expect(fb.fbView.formsCollection.forms[0].content.settings.backend).toEqual('db');
+      expect(fb.fbView.formsCollection.forms[fb.formId].content.settings.method).toEqual('POST');
+      expect(fb.fbView.formsCollection.forms[fb.formId].content.settings.name).toEqual('My Form');
+      expect(fb.fbView.formsCollection.forms[fb.formId].content.settings.backend).toEqual('db');
       fb.fbView.populateSettings()
       expect(jQuery('#action').val()).toEqual('')
       expect(jQuery('#backend').val()).toEqual('db')
