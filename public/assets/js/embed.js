@@ -253,6 +253,13 @@ SFDSWFB.lastScript = function() {
 			jQuery(this).val(new libphonenumber.AsYouType('US').input(jQuery(this).val()));
 		}
 	});
+
+  jQuery("#SFDSWF-Container input[formtype=m13]").change(function() {
+    var file = jQuery(this).val().replace(/C:\\fakepath\\/i, '');
+
+    jQuery(this).next('.file-custom').attr('data-filename', file);
+  });
+
 	jQuery('#SFDSWF-Container form').submit(function(e) {
 		var formValid = true;
 		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {

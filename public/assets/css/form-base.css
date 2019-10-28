@@ -150,6 +150,12 @@ textarea {
 	}
 }
 
+/* Custom filename */
+
+.file-custom::after {
+  content: attr(data-filename);
+}
+
 /* Hacks */
 
 /* Add a cursor to .form-section-nav elements */
