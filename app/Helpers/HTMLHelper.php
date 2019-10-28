@@ -335,7 +335,10 @@ class HTMLHelper
         if (!empty($options)) {
             foreach ($options as $option) {
                 $id = str_replace(' ', '_', $field_id . '_' . $option);
-                $html .= '<div class="rb-input-group"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><label for="'.$id.'" class="radio">'.$option.'</label></div>';
+                $html .= '<label for="'.$id.'">
+                            <input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/>
+                            <span class="inline-label">'.$option.'</span>
+                          </label>';
             }
         }
         return $html;
@@ -364,7 +367,10 @@ class HTMLHelper
         if (!empty($options)) {
             foreach ($options as $option) {
                 $id = str_replace(' ', '_', $field_id . '_' . $option);
-                $html .= '<div class="cb-input-group"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><label for="'. $id .'" class="checkbox">'.$option.'</label></div>';
+                $html .= '<label for="'. $id .'">
+                            <input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/>
+                            <span class="inline-label">'.$option.'</span>
+                          </label>';
             }
         }
         return $html;
@@ -555,14 +561,14 @@ class HTMLHelper
             $label_for = $field['name'];
         }
 
-        $html = ($field['formtype'] == "s06") ? '<legend class="control-label">':  '<label for="'.$label_for.'" class="control-label">';
+        $html = ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '<legend class="control-label">':  '<label for="'.$label_for.'" class="control-label">';
         $html .= isset($field['label']) ? $field['label'] : "";
         if (array_key_exists('required', $field)) {
             if (! $field['required'] == "true") {
                 $html .= ' <span class="optional">(optional)</span>';
             }
         }
-        $html .= ($field['formtype'] == "s06") ? '</legend><div class="field-legend">' : '</label><div class="field-wrapper">';
+        $html .= ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '</legend><div class="field-wrapper">' : '</label><div class="field-wrapper">';
         return $html;
     }
 

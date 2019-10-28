@@ -112,9 +112,13 @@ function respondWebhook(response, data, populateField, endPoint, ids, responseIn
     } else if (jQuery("[data-id="+populateField+"] input").eq(0).length) {
       if (jQuery("[data-id="+populateField+"] input").eq(0).attr("type") == "checkbox") {
         var checkboxName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
-        jQuery("[data-id="+populateField+"] .field-legend").html('');
+        jQuery("[data-id="+populateField+"] .field-wrapper").html('');
         for (var option of parsedData) {
-          jQuery("[data-id="+populateField+"] .field-legend").append('<div class="cb-input-group"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s06" name="'+checkboxName+'[]"/><label for="'+populateField+'_'+option+'" class="checkbox">'+option+'</label></div>');
+          jQuery("[data-id="+populateField+"] .field-wrapper").append(
+            "<label for='"+populateField+"_"+option+"'>" +
+            "  <input type='checkbox' id='"+populateField+"_"+option+"' value='"+option+"' formtype='s06' name="+checkboxName+[]"'/>" +
+            "  <span class='inline-label'>"+option+"</span>" +
+            "</label>");
 
 
           jQuery('#' + populateField).after('<input type="checkbox" name="'+option+'" value="'+option+'"/>');
@@ -123,7 +127,11 @@ function respondWebhook(response, data, populateField, endPoint, ids, responseIn
         var radioName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
         jQuery("[data-id="+populateField+"] .field-wrapper").html('');
         for (var option of parsedData) {
-          jQuery("[data-id="+populateField+"] .field-wrapper").append('<div class="rb-input-group"><input type="radio" id="'+populateField+'_'+option+'" formtype="s08" name="'+radioName+'" value="'+option+'" required/><label for="'+populateField+'_'+option+'" class="radio">'+option+'</label></div>');
+          jQuery("[data-id="+populateField+"] .field-wrapper").append(
+            "<label for='"+populateField+"_"+option+"'>" +
+            "  <input type='radio' id='"+populateField+"_"+option+"' value='"+option+"' formtype='s08' name="+radioName+[]"'/>" +
+            "  <span class='inline-label'>"+option+"</span>" +
+            "</label>");
         }
       }
     }
