@@ -218,7 +218,7 @@ function jsonDecode($json, $assoc = false)
 // EMBED FUNCTIONS
 function generateHTML($content) {
 
-	$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
+	$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><legend id="SFDSWFB-legend">'.$content['settings']['name'].'</legend>';
 	$str = '';
 
 	foreach ($content['data'] as $field) {
