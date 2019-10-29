@@ -544,9 +544,9 @@ class HTMLHelper
     {
         //this one probably needs value!
         $value = isset($field['value']) ? ' value="'.$field['value'].'"' : "";
-        $attrbiutes = self::setAttributes($field);
+        $attributes = self::setAttributes($field);
 
-        return '<input'.$attrbiutes.$value.'/>';
+        return '<input'.$attributes.$value.'/>';
     }
 
   /** Constructs label
