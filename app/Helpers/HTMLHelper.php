@@ -586,7 +586,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><div class="help-text">'.$field['help'].'</div>' : '<div class="help-block with-errors"></div>';
+        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.$field['help'].'</p>' : '<div class="help-block with-errors"></div>';
         // Closing tag for .field-wrapper
         // (see fieldLabel function for opening tag)
         $str .= '</div>';
