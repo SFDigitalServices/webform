@@ -43,21 +43,23 @@ class HTMLHelper
         }
         // looping through all form fields.
         foreach ($content['data'] as $field) {
-            $field_header = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">' . $this->fieldLabel($field);
+            $field_start = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
+            $field_header = $field_start . $this->fieldLabel($field);
+            $field_end = '</div>';
 
             switch ($field['formtype']) {
-												case "s08": $form_container .= $field_header . $this->formRadio($field). $this->helpBlock($field);
+												case "s08": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formRadio($field). $this->helpBlock($field).'</fieldset>';
 														break;
-                        case "s06": $form_container .= $field_header . $this->formCheckbox($field) . $this->helpBlock($field);
+                        case "s06": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formCheckbox($field) . $this->helpBlock($field) .'</fieldset>'. $field_end;
                             break;
-                        case "i14": $form_container .= $field_header . $this->formTextArea($field) . $this->helpBlock($field);
+                        case "i14": $form_container .= $field_header . $this->formTextArea($field) . $this->helpBlock($field). $field_end;
                             break;
                         case "s02":
                         case "s04":
                         case "s14":
                         case "s15":
                         case "s16":
-                            $form_container .= $field_header . $this->formSelect($field) . $this->helpBlock($field);
+                            $form_container .= $field_header . $this->formSelect($field) . $this->helpBlock($field). $field_end;
                             break;
                         case "m02":
                             $form_container .= $this->formHtag($field);
@@ -75,13 +77,13 @@ class HTMLHelper
                             $form_container .= $this->formParagraph($field);
                             break;
                         case "m14":
-							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field);
+							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field). $field_end;
                             break;
                         case "m16": $form_container .= $this->formSection($field); $sections[] = $field;
                             break;
                         case "m11": $form_container .= $this->formHidden($field);
                             break;
-                        default: $form_container .= $field_header . $this->formText($field) . $this->helpBlock($field);
+                        default: $form_container .= $field_header . $this->formText($field) . $this->helpBlock($field). $field_end;
                             break;
             }
             // append help block
@@ -582,7 +584,7 @@ class HTMLHelper
     public static function helpBlock($field)
     {
         $str = array_key_exists('help', $field) ? '<p class="help-block with-errors">'.$field['help'].'</p>' : '<p class="help-block with-errors"></p>';
-        $str .= '</div></div>';
+        $str .= '</div>';
         return $str;
     }
 
