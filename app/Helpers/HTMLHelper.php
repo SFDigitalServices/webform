@@ -668,8 +668,10 @@ class HTMLHelper
             if (in_array($field['type'], array("number", "date", "price"))) {
                 if ($field['formtype'] == "d08") {
                     $field['step'] = '0.01';
+                    $field['class'] = 'length-5';
                 } else {
                     $field['step'] = 'any';
+                    $field['class'] = 'length-13';
                 }
             } else {
                 unset($field['min']);
