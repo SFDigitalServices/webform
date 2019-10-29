@@ -48,7 +48,7 @@ class HTMLHelper
             $field_end = '</div>';
 
             switch ($field['formtype']) {
-												case "s08": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formRadio($field). $this->helpBlock($field).'</fieldset>';
+												case "s08": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formRadio($field). $this->helpBlock($field).'</fieldset>'. $field_end;
 														break;
                         case "s06": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formCheckbox($field) . $this->helpBlock($field) .'</fieldset>'. $field_end;
                             break;
@@ -583,7 +583,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<p class="help-block with-errors">'.$field['help'].'</p>' : '<p class="help-block with-errors"></p>';
+        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><div class="help-text">'.$field['help'].'</div>' : '<div class="help-block with-errors"></div>';
         $str .= '</div>';
         return $str;
     }
