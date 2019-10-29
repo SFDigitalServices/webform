@@ -239,7 +239,7 @@ Fb.prototype.view.previewIframe = function(formId, scrollTo) {
 	return '<iframe src="/form/preview?id=' + formId + scrollTo + '">Your browser does not support iframes, <a href="/form/preview?id=' + formId + '" target="_blank">click here</a> to a view a preview.</iframe>'
 }
 
-Fb.prototype.view.listItem = function(id, num, numStr) { //this should be updated
+Fb.prototype.view.listItem = function(id, num, numStr) {
 	return "<div> \
             <a href='javascript:void(0)' class='spacer item insert add move' data-index='" + num + "'' data-id='" + id + "'> \
               Click to add a field \

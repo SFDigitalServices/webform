@@ -107,7 +107,7 @@ describe("Form", function() {
       form.loadExistingForm(1)
       expect(fb.formId).toEqual(1);
       expect(JSON.parse(fb.previousContent)[0].id).toEqual('submit');
-      fb.formId = 0
+      //fb.formId = 0
     })
 
   })

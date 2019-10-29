@@ -1,5 +1,4 @@
 describe("Fb View", function() {
-  var fb
 
   beforeEach(function() {
     fb = new Fb()
