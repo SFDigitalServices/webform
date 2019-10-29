@@ -43,7 +43,7 @@ class HTMLHelper
         }
         // looping through all form fields.
         foreach ($content['data'] as $field) {
-            $field_header = '<div class="form-group field-'.$field['formtype']'" data-id="'.$field['id'].'">' . $this->fieldLabel($field);
+            $field_header = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">' . $this->fieldLabel($field);
 
             switch ($field['formtype']) {
 												case "s08": $form_container .= $field_header . $this->formRadio($field). $this->helpBlock($field);
@@ -335,10 +335,7 @@ class HTMLHelper
         if (!empty($options)) {
             foreach ($options as $option) {
                 $id = str_replace(' ', '_', $field_id . '_' . $option);
-                $html .= '<label for="'.$id.'">
-                            <input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/>
-                            <span class="inline-label">'.$option.'</span>
-                          </label>';
+                $html .= '<label for="'.$id.'"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
         return $html;
@@ -367,10 +364,7 @@ class HTMLHelper
         if (!empty($options)) {
             foreach ($options as $option) {
                 $id = str_replace(' ', '_', $field_id . '_' . $option);
-                $html .= '<label for="'. $id .'">
-                            <input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/>
-                            <span class="inline-label">'.$option.'</span>
-                          </label>';
+                $html .= '<label for="'.$id.'"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
         return $html;
