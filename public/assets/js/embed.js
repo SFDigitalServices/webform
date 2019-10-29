@@ -114,7 +114,7 @@ function respondWebhook(response, data, populateField, endPoint, ids, responseIn
         var checkboxName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
         jQuery("[data-id="+populateField+"] .field-wrapper").html('');
         for (var option of parsedData) {
-          jQuery("[data-id="+populateField+"] .field-wrapper").append('<label for="'+populateField+'_'+option+'"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s06" name="'+checkboxName+'[]"/><span class="inline-label">'+option+'</span></label>');
+          jQuery("[data-id="+populateField+"] .field-wrapper").append('<label for="'+populateField+'_'+option+'"><input type="checkbox" id="'+populateField+'_'+option+'" value="'+option+'" data-formtype="s06" name="'+checkboxName+'[]"/><span class="inline-label">'+option+'</span></label>');
 
           jQuery('#' + populateField).after('<input type="checkbox" name="'+option+'" value="'+option+'"/>');
         }
@@ -122,7 +122,7 @@ function respondWebhook(response, data, populateField, endPoint, ids, responseIn
         var radioName = jQuery("[data-id="+populateField+"] input").eq(0).attr('name');
         jQuery("[data-id="+populateField+"] .field-wrapper").html('');
         for (var option of parsedData) {
-          jQuery("[data-id="+populateField+"] .field-wrapper").append('<label for="'+populateField+'_'+option+'"><input type="radio" id="'+populateField+'_'+option+'" value="'+option+'" formtype="s08" name="'+radioName+'[]"/><span class="inline-label">'+option+'</span></label>');
+          jQuery("[data-id="+populateField+"] .field-wrapper").append('<label for="'+populateField+'_'+option+'"><input type="radio" id="'+populateField+'_'+option+'" value="'+option+'" data-formtype="s08" name="'+radioName+'[]"/><span class="inline-label">'+option+'</span></label>');
         }
       }
     }
@@ -231,7 +231,7 @@ SFDSWFB.lastScript = function() {
 
   skipToSectionId(false)
 
-  jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
+  jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
       if (phoneIsValid(jQuery(this).val())) {
         fieldValid(jQuery(this).attr('id'));
       } else {
@@ -245,11 +245,11 @@ SFDSWFB.lastScript = function() {
     }
   });
 
-  jQuery("#SFDSWF-Container input[formtype=m13]").change(function() {
+  jQuery("#SFDSWF-Container input[data-formtype=m13]").change(function() {
     var file = jQuery(this).val().replace(/C:\\fakepath\\/i, '');
   });
 
-	jQuery('#SFDSWF-Container input[formtype=c06]').on('keyup blur', function() {
+	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));
 			} else {
@@ -263,7 +263,7 @@ SFDSWFB.lastScript = function() {
 		}
 	});
 
-  jQuery("#SFDSWF-Container input[formtype=m13]").change(function() {
+  jQuery("#SFDSWF-Container input[data-formtype=m13]").change(function() {
     var file = jQuery(this).val().replace(/C:\\fakepath\\/i, '');
 
     jQuery(this).next('.file-custom').attr('data-filename', file);
@@ -271,7 +271,7 @@ SFDSWFB.lastScript = function() {
 
 	jQuery('#SFDSWF-Container form').submit(function(e) {
 		var formValid = true;
-		jQuery('#SFDSWF-Container input[formtype=c06]').each(function() {
+		jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));
 			} else {

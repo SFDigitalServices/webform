@@ -720,6 +720,8 @@ class HTMLHelper
                 if ($value == "true") {
                     $html .= ' required';
                 }
+            } elseif ($key == "formtype") {
+                $html .= ' data-formtype="'. $value . '"';
             } else {
                 $html .= ' '. $key .'="'. $value . '"';
             }
