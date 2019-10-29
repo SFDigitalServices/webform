@@ -214,9 +214,16 @@ FbView.prototype.populateSettings = function() {
  * @param {JQuery DOM Object} obj
  */
 FbView.prototype.toggleConfirmPage = function(obj) {
-  if ($(obj).val() == "csv") {
+  if (typeof obj === "undefined") return
+  var submitUrl = new URL('/form/submit', window.location.href)
+  var backend = $(obj).val();
+  if (backend == "csv") {
+    $('input[name=action]').val(submitUrl)
+    $('input[name=action]').attr('readonly', true)
     $('.confirmPage').show()
-  } else if ($(obj).val() == "db") {
+  } else if (backend == "db") {
+    if ($('input[name=action]').val() == submitUrl) $('input[name=action]').val('')
+    $('input[name=action]').removeAttr('readonly')
     $('.confirmPage').hide()
   }
 }

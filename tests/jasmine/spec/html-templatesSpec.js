@@ -1,4 +1,5 @@
 describe("HTML templates", function() {
+/*
 	var fb = new Fb()
 
   beforeEach(function() {
@@ -287,5 +288,5 @@ describe("HTML templates", function() {
 	'<noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>\n' +
 	'<div id="SFDSWF-Container"></div>');
   });
-
+*/
 })
