@@ -614,9 +614,13 @@ class HTMLHelper
 				unset($field['maxlength']);
 				break;
 			case 'm02': //h1
+        unset($field['name']);
 			case 'm04': //h2
+        unset($field['name']);
 			case 'm06': //h3
+        unset($field['name']);
 			case 'm08': //p
+        unset($field['name']);
 			case 'm10': //p html
 				unset($field['type']);
 				unset($field['minlength']);
