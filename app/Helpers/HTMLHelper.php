@@ -60,12 +60,19 @@ class HTMLHelper
                             $form_container .= $field_header . $this->formSelect($field) . $this->helpBlock($field);
                             break;
                         case "m02":
+                            $form_container .= $this->formHtag($field);
+                            break;
                         case "m04":
-                        case "m06": $form_container .= $field_header . $this->formHtag($field) . $this->helpBlock($field);
+                            $form_container .= $this->formHtag($field);
+                            break;
+                        case "m06":
+                            $form_container .= $this->formHtag($field);
                             break;
                         case "m08":
+                            $form_container .= $this->formParagraph($field);
+                            break;
                         case "m10":
-                            $form_container .= $field_header . $this->formParagraph($field) .$this->helpBlock($field);
+                            $form_container .= $this->formParagraph($field);
                             break;
                         case "m14":
 							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field);
