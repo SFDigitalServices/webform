@@ -617,12 +617,16 @@ class HTMLHelper
 				break;
 			case 'm02': //h1
         unset($field['name']);
+        break;
 			case 'm04': //h2
         unset($field['name']);
+        break;
 			case 'm06': //h3
         unset($field['name']);
+        break;
 			case 'm08': //p
         unset($field['name']);
+        break;
 			case 'm10': //p html
 				unset($field['type']);
 				unset($field['minlength']);
