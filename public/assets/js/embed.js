@@ -245,10 +245,6 @@ SFDSWFB.lastScript = function() {
     }
   });
 
-  jQuery("#SFDSWF-Container input[data-formtype=m13]").change(function() {
-    var file = jQuery(this).val().replace(/C:\\fakepath\\/i, '');
-  });
-
 	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));

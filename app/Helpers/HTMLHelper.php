@@ -76,6 +76,9 @@ class HTMLHelper
                         case "m10":
                             $form_container .= $this->formParagraph($field);
                             break;
+                        case "m13":
+                            $form_container .= $field_start . $this->formFile($field) . $this->helpBlock($field). $field_end;
+                            break;
                         case "m14":
 							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field). $field_end;
                             break;
