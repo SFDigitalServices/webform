@@ -300,7 +300,8 @@ class FormController extends Controller
 			print "<h2>Please set a Form Action before trying to embed your form.</h2>";
 			print "<h3>Below is a summary of what you just submitted:</h3>";
 			foreach ($_POST as $key => $value) {
-				print $key . " = " . $value . "<br/>";
+        $val = is_array($value) ? implode(",", $value) : $value;
+        print $key . " = " . $val . "<br/>";
 			}
 		print "</div>";
     }
