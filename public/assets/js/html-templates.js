@@ -37,7 +37,7 @@ Fb.prototype.view.calculations = "\
 			<div class='accordion'> \
 				<div class='addCalculationContainer'> \
 					<div class='addCalculation'> \
-						<a href='javascript:void(0)' onclick='javascript:addCalculation()'>+Add A Calculation</a> \
+						<a class='addCalculationButton'>+Add A Calculation</a> \
 					</div> \
 				</div> \
 			</div> \

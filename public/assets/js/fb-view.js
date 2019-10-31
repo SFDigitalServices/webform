@@ -298,6 +298,10 @@ FbView.prototype.showAttributes = function() {
 
 	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
 
+  $('#SFDSWFB-attributes .addCalculationButton').on('click', function() {
+    self.addCalculation()
+  })
+
 	$('#SFDSWFB-attributes .apply-button').on('click', function() {
 		self.applyAttributes()
 		self.disableTimer()
@@ -589,7 +593,9 @@ FbView.prototype.deleteItem = function(index) {
 /**
  * Special functions, conditionals, calculations and webhooks unrefactored
  */
-function addCalculation (str) {
+FbView.prototype.addCalculation = function(str) {
+  var self = this
+
   // check if first calculation or not
   if ($('#SFDSWFB-attributes .addCalculation').length != 0) {
     if ($('#SFDSWFB-attributes .calculationLabel').length == 0) {
