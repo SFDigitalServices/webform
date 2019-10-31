@@ -37,6 +37,20 @@ class HTMLHelper
         $form_container = '';
         $sections = [];
 
+        $pageCount = ((array_count_values(array_column($content['data'], 'formtype'))["m16"]) + 1);
+
+        function progressBar($currentPage, $pageCount) {
+          $html = '<div class="form-progress">';
+          if ($pageCount > 5) {
+            $percentDone = round(($currentPage / $pageCount) * 100);
+            $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
+          } else {
+            $html .= '<div class="form-progress-bubble">Page '. $currentPage .' of '. $pageCount .'</div>';
+          }
+          $html .= '</div>';
+          return $html;
+        }
+
         //if this form is a csv transaction, add form_id.
         if( isset($content['settings']['backend']) ) {
             $form_container .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
@@ -70,7 +84,11 @@ class HTMLHelper
                         case "m14":
 							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field);
                             break;
-                        case "m16": $form_container .= $this->formSection($field); $sections[] = $field;
+                        case "m16":
+                            // This loop excludes the first page (see $form_wrapper_top)
+                            $pageNumber= (sizeof($sections) + 2);
+                            $form_container .= $this->formSection($field). progressBar($pageNumber, $pageCount);
+                            $sections[] = $field;
                             break;
                         case "m11": $form_container .= $this->formHidden($field);
                             break;
@@ -91,7 +109,7 @@ class HTMLHelper
                 $nav .= '<a'.$active.' href="javascript:void(0)">'.$section['label'].'</a>';
             }
             $nav .= '</div>';
-            $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
+            $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">'. progressBar(1, $pageCount);
             $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div>';
             $form_container = $nav. $form_div. $form_wraper_top. $form_container. $form_wrapper_bottom;
         } else {
