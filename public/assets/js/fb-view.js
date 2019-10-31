@@ -362,7 +362,6 @@ FbView.prototype.populateValidation = function(item) {
 		case "number":
 		case "date":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
 			break
 		case "match":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())

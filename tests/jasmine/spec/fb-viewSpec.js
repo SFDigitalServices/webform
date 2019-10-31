@@ -208,8 +208,8 @@ describe("Fb View", function() {
 
     it('should load the correct validations for number type', function() {
       fb.fbView.populateValidation(fb.fbView.formsCollection.forms[fb.formId].content.data[2])
-      expect(jQuery('#minlength').is(':visible')).toBeTruthy()
-      expect(jQuery('#maxlength').is(':visible')).toBeTruthy()
+      expect(jQuery('#minlength').is(':visible')).toBeFalsy()
+      expect(jQuery('#maxlength').is(':visible')).toBeFalsy()
       expect(jQuery('.validation .validate-minmax').is(':visible')).toBeTruthy()
     })
 
