@@ -77,8 +77,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['radios'] = array("option one", "option two");
         $this->attributes['formtype'] = 's08';
         $notEmptyRadio = HTMLHelper::formRadio($this->attributes);
-        $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" data-formtype="s08" class="large rounded"/><span class="inline-label">option one</span></label>';
-        $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option one" data-formtype="s08" class="large rounded"/><span class="inline-label">option two</span></label>';
+        $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option two" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyRadio);
     }
 
@@ -103,8 +103,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['checkboxes'] = array("option one", "option two");
         $this->attributes['formtype'] = 's06';
         $notEmptyCheckBox= HTMLHelper::formCheckbox($this->attributes);
-        $expected = '<label for="test_option_one"><input type="checkbox" id="test_option_one" value="option one" data-formtype="s08""/><span class="inline-label">option one</span></label>';
-        $expected .= '<label for="test_option_two"><input type="checkbox" id="test_option_two" value="option two" data-formtype="s08""/><span class="inline-label">option two</span></label>';
+        $expected = '<label for="test_option_one"><input type="checkbox" id="test_option_one" value="option one" data-formtype="s06"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="test_option_two"><input type="checkbox" id="test_option_two" value="option two" data-formtype="s06"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyCheckBox);
 
         $this->attributes['label'] = 'test';
@@ -890,7 +890,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['option'] = array("option one", "option two");
         $this->attributes['formtype'] = 's02';
         $notEmptySelect = HTMLHelper::formSelect($this->attributes);
-        $expected = '<select id="foo" name="bar" data-formtype="s02" required class="large rounded"><option value="option one">option one</option><option value="option two">option two</option></select>';
+        $expected = '<select id="foo" name="bar" data-formtype="s02" required class="large rounded"><option value="">Choose an option</option><option value="option one">option one</option><option value="option two">option two</option></select>';
         $this->assertEquals($expected, $notEmptySelect);
 
         $this->attributes['label'] = 'test';
@@ -1038,7 +1038,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 'm08';
         $this->attributes['textarea'] = 'This is a paragraph';
         $notEmptyParagraph = HTMLHelper::formParagraph($this->attributes);
-        $expected = '<p id="foo" name="bar" data-formtype="m08" class="large rounded">This is a paragraph</p>';
+        $expected = '<p id="foo" data-formtype="m08" class="large rounded">This is a paragraph</p>';
         $this->assertEquals($expected, $notEmptyParagraph);
 
         $this->attributes['id'] = 'paragraph';
@@ -1076,7 +1076,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 'm10';
         $this->attributes['textarea'] = 'invalid';
         $notEmptyParagraph = HTMLHelper::formParagraph($this->attributes);
-        $expected = '<p id="foo" name="bar" data-formtype="m10" class="large rounded">This is a paragraph</p>';
+        $expected = '<p id="foo" data-formtype="m10" class="large rounded">This is a paragraph</p>';
         $this->assertEquals($expected, $notEmptyParagraph);
     }
 
@@ -1165,7 +1165,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = 'invalid';
         $this->attributes['formtype'] = 'm02';
         $notEmptyHtag = HTMLHelper::formHtag($this->attributes);
-        $expected = '<h1 id="foo" name="bar" data-formtype="m02" class="large rounded">hello world</h1>';
+        $expected = '<h1 id="foo" data-formtype="m02" class="large rounded">hello world</h1>';
         $this->assertEquals($expected, $notEmptyHtag);
     }
 

@@ -444,7 +444,7 @@ class HTMLHelper
     {
 		$attributes = self::setAttributes($field);
 		$prepended = self::getPrepended($field);
-        $html = $prepended . '<label for="' . $field['id'] . '"><span class="label">'. $field['label'] . '</span><input' . $attributes . '/><span class="file-custom" data-filename=""></span></label>';
+        $html = $prepended . '<label><span class="label">'. $field['label'] . '</span><input' . $attributes . '/><span class="file-custom" data-filename=""></span></label>';
         return $html;
     }
 
