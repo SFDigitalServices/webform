@@ -58,7 +58,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 's08';
         $notEmptyRadio = HTMLHelper::formRadio($this->attributes);
         $expected = '<label for="test_option_one"><input type="radio" id="test_option_one" value="option one" data-formtype="s08"/><span class="inline-label">option one</span></label>';
-        $expected .= '<label for="test_option_one"><input type="radio" id="test_option_two" value="option two" data-formtype="s08"/><span class="inline-label">option two</span></label>';
+        $expected .= '<label for="test_option_two"><input type="radio" id="test_option_two" value="option two" data-formtype="s08"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyRadio);
 
         $this->attributes['label'] = 'test';
@@ -103,8 +103,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['checkboxes'] = array("option one", "option two");
         $this->attributes['formtype'] = 's06';
         $notEmptyCheckBox= HTMLHelper::formCheckbox($this->attributes);
-        $expected = '<label for="test_option_one"><input type="radio" id="test_option_one" value="option one" data-formtype="s08""/><span class="inline-label">option one</span></label>';
-        $expected .= '<label for="test_option_two"><input type="radio" id="test_option_two" value="option two" data-formtype="s08""/><span class="inline-label">option two</span></label>';
+        $expected = '<label for="test_option_one"><input type="checkbox" id="test_option_one" value="option one" data-formtype="s08""/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="test_option_two"><input type="checkbox" id="test_option_two" value="option two" data-formtype="s08""/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyCheckBox);
 
         $this->attributes['label'] = 'test';
@@ -533,7 +533,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '';
         $this->attributes['formtype'] = 'd02';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="test" type="date" data-formtype="d02" step="any"/>';
+        $expected = '<input id="test" type="date" data-formtype="d02" class="length-13" step="any"/>';
         $this->assertEquals($expected, $notEmptyText);
 
         $this->attributes['label'] = 'test';
@@ -871,7 +871,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['option'] = array("option one", "option two");
         $this->attributes['formtype'] = 's02';
         $notEmptySelect = HTMLHelper::formSelect($this->attributes);
-        $expected = '<select id="test" data-formtype="s02"><option value="option one">option one</option><option value="option two">option two</option></select>';
+        $expected = '<select id="test" data-formtype="s02"><option value="">Choose an option</option><option value="option one">option one</option><option value="option two">option two</option></select>';
         $this->assertEquals($expected, $notEmptySelect);
 
         $this->attributes['label'] = 'test';
@@ -914,7 +914,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     public function testFormFile(){
         // test file uploads
         $emptyFile = HTMLHelper::formFile($this->attributes);
-        $expected = '<input/><label for=""></label>';
+        $expected = '<label><span class="label"></span><input/><span class="file-custom" data-filename=""></span></label>';
         $this->assertSame($expected, $emptyFile);
 
         $this->attributes['label'] = 'test';
@@ -1238,7 +1238,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
         $this->attributes['help'] = 'help block';
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors">help block</div></div>';
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p></div>';
         $this->assertEquals($expected, $notEmptyBlock);
     }
 
