@@ -650,6 +650,7 @@ class HTMLHelper
         unset($field['required']);
         break;
 			case 'm10': //p html
+        unset($field['name']);
 				unset($field['type']);
 				unset($field['minlength']);
 				unset($field['maxlength']);
