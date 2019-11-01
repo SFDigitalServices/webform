@@ -623,15 +623,31 @@ class HTMLHelper
 				break;
 			case 'm02': //h1
         unset($field['name']);
+        unset($field['type']);
+        unset($field['minlength']);
+        unset($field['maxlength']);
+        unset($field['required']);
         break;
 			case 'm04': //h2
         unset($field['name']);
+        unset($field['type']);
+        unset($field['minlength']);
+        unset($field['maxlength']);
+        unset($field['required']);
         break;
 			case 'm06': //h3
         unset($field['name']);
+        unset($field['type']);
+        unset($field['minlength']);
+        unset($field['maxlength']);
+        unset($field['required']);
         break;
 			case 'm08': //p
         unset($field['name']);
+        unset($field['type']);
+        unset($field['minlength']);
+        unset($field['maxlength']);
+        unset($field['required']);
         break;
 			case 'm10': //p html
 				unset($field['type']);
