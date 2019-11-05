@@ -84,7 +84,7 @@ FbView.prototype.bindListButtons = function() {
 FbView.prototype.bindInsertItems = function() {
 	var self = this
 
-	$('#SFDSWFB-insert button').on('click', function() {
+	$('#SFDSWFB-insert button.field-item').on('click', function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
 		self.populateList()
