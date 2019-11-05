@@ -84,7 +84,7 @@ FbView.prototype.bindListButtons = function() {
 FbView.prototype.bindInsertItems = function() {
 	var self = this
 
-	$('#SFDSWFB-insert button').on('click', function() {
+	$('#SFDSWFB-insert button.field-item').on('click', function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
 		self.populateList()
@@ -362,11 +362,10 @@ FbView.prototype.populateAttributes = function(item) {
  * @param {Item} item
  */
 FbView.prototype.populateValidation = function(item) {
-	switch (item.formtype) {
+	switch (item.type) {
 		case "number":
 		case "date":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
 			break
 		case "match":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())

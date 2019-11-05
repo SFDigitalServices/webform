@@ -214,4 +214,35 @@ describe("Fb View", function() {
     })
   })
 
+  describe("When attributes to a field is created", function() {
+    beforeEach(function() {
+      jQuery('body').append("<div id='SFDSWFB-attributes'> \
+        <div class='accordion-validation'> \
+          <div class='accordion-section validation'> \
+            <div class='accordion-header'>Validation</div> \
+            <div class='accordion'> \
+            </div> \
+          </div> \
+        </div> \
+      </div>")
+    })
+
+    it('should load the correct validations for text type', function() {
+      fb.fbView.populateValidation(fb.fbView.formsCollection.forms[fb.formId].content.data[0])
+      expect(jQuery('#minlength').is(':visible')).toBeTruthy()
+      expect(jQuery('#maxlength').is(':visible')).toBeTruthy()
+      expect(jQuery('.validation .validate-minmax').is(':visible')).toBeFalsy()
+    })
+
+    it('should load the correct validations for number type', function() {
+      fb.fbView.populateValidation(fb.fbView.formsCollection.forms[fb.formId].content.data[2])
+      expect(jQuery('#minlength').is(':visible')).toBeFalsy()
+      expect(jQuery('#maxlength').is(':visible')).toBeFalsy()
+      expect(jQuery('.validation .validate-minmax').is(':visible')).toBeTruthy()
+    })
+
+    afterEach(function() {
+      jQuery('#SFDSWFB-attributes').remove()
+    })
+  })
 })
