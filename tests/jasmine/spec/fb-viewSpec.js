@@ -160,6 +160,19 @@ describe("Fb View", function() {
   describe("When attributes to a field is created", function() {
     beforeEach(function() {
       jQuery('body').append("<div id='SFDSWFB-attributes'> \
+        <div class='modal' id='modal' tabindex='-1' role='dialog'><div class='modal-dialog'><h5 class='modal-title'></h5><div class='modal-body'><p></p></div><button type='button' class='btn btn-primary' data-dismiss='modal'>Ok</button></div></div>\
+        <div class='accordion-conditionals'> \
+          <div class='accordion-section conditionals'> \
+            <div class='accordion-header'>Conditionals</div> \
+            <div class='accordion'> \
+              <div class='clonable addConditionalContainer'> \
+                <div class='addConditional' style=''> \
+                  <a href='javascript:void(0)' onclick='javascript:addConditional()'>+Add A Condition</a> \
+                </div> \
+              </div> \
+            </div> \
+          </div> \
+        </div> \
         <div class='accordion-calculations'> \
           <div class='accordion-section calculations'> \
             <div class='accordion-header'>Calculations</div> \
@@ -181,8 +194,24 @@ describe("Fb View", function() {
       expect(jQuery('select.allMathIds').eq(0).text()).toEqual('number1number2')
     })
 
+    it("should be able to add conditionals", function() {
+      fb.fbView.addConditional();
+      expect(jQuery('.firstConditional').is(':visible')).toBeTruthy()
+      expect(jQuery('.conditionalId').is(':visible')).toBeTruthy()
+      expect(jQuery('.conditionalOperator').is(':visible')).toBeTruthy()
+      expect(jQuery('.conditionalValue').is(':visible')).toBeTruthy()
+    })
+
+    it("should be able to add conditionals", function() {
+      fb.fbView.formsCollection.forms[fb.formId].content.data.splice(1,3)
+      fb.fbView.addConditional();
+      expect(jQuery('.modal-dialog .modal-title').text()).toEqual('Notice')
+      expect(jQuery('.modal-dialog .modal-body p').text()).toEqual('You need more fields in your form before adding a conditional.')
+    })
+
     afterEach(function() {
       jQuery('#SFDSWFB-attributes').remove()
     })
   })
+
 })
