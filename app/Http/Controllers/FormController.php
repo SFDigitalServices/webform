@@ -296,13 +296,15 @@ class FormController extends Controller
     */
     public function previewSubmitted(Request $request)
     {
-		print "<div style='padding:3em 4.5em'>";
-			print "<h2>Please set a Form Action before trying to embed your form.</h2>";
-			print "<h3>Below is a summary of what you just submitted:</h3>";
-			foreach ($_POST as $key => $value) {
-				print $key . " = " . $value . "<br/>";
+      $output = "<div style='padding:3em 4.5em'>".
+			"<h2>Please set a Form Action before trying to embed your form.</h2>".
+			"<h3>Below is a summary of what you just submitted:</h3>";
+			foreach ($request->request->all() as $key => $value) {
+        $val = is_array($value) ? implode(",", $value) : $value;
+        $output .= $key . " = " . $val . "<br/>";
 			}
-		print "</div>";
+      $output .= "</div>";
+      return $output;
     }
 
     /**

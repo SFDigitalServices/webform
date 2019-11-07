@@ -6,7 +6,7 @@ Fb.prototype.view.validation = "\
 			<div class='accordion-header'>Validation</div> \
 			<div class='accordion'> \
 			  <div class='validate-required' data-toggle='tooltip' title='Check this to indicate the user must fill out this field'> \
-				<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' id='required'><br/>  \
+				<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' id='required' name='required'><br/>  \
 			  </div> \
 			  <div class='validate-type' data-toggle='tooltip' title='This is to make sure the user response fits the field type'> \
 				<label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select> \
@@ -37,7 +37,7 @@ Fb.prototype.view.calculations = "\
 			<div class='accordion'> \
 				<div class='addCalculationContainer'> \
 					<div class='addCalculation'> \
-						<a href='javascript:void(0)' onclick='javascript:addCalculation()'>+Add A Calculation</a> \
+						<a class='addCalculationButton'>+Add A Calculation</a> \
 					</div> \
 				</div> \
 			</div> \

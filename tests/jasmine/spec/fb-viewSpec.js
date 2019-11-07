@@ -28,6 +28,22 @@ describe("Fb View", function() {
           type: "email"
         },
         {
+          label: "Number 1",
+          id: "number1",
+          name: "number1",
+          formtype: "d06",
+          required: "true",
+          type: "number"
+        },
+        {
+          label: "Number 2",
+          id: "number2",
+          name: "number2",
+          formtype: "d06",
+          required: "true",
+          type: "number"
+        },
+        {
           button: "Submit",
           id: "submit",
           formtype: "m14",
@@ -137,4 +153,68 @@ describe("Fb View", function() {
     })
   })
 
+  it("should be able to construct itself", function() {
+    expect(fb.fbView.formsCollection.forms[fb.formId].id).toEqual(0);
+  });
+
+  describe("When attributes to a field is created", function() {
+    beforeEach(function() {
+      jQuery('body').append("<div id='SFDSWFB-attributes'> \
+        <div class='accordion-calculations'> \
+          <div class='accordion-section calculations'> \
+            <div class='accordion-header'>Calculations</div> \
+            <div class='accordion'> \
+              <div class='addCalculationContainer'> \
+                <div class='addCalculation'> \
+                  <a class='addCalculationButton'>+Add A Calculation</a> \
+                </div> \
+              </div> \
+            </div> \
+          </div> \
+        </div> \
+      </div>")
+    })
+
+    it("should be able to calculate numeric fields", function() {
+      fb.fbView.addCalculation();
+      expect(jQuery('select.allMathIds').length).toEqual(2)
+      expect(jQuery('select.allMathIds').eq(0).text()).toEqual('number1number2')
+    })
+
+    afterEach(function() {
+      jQuery('#SFDSWFB-attributes').remove()
+    })
+  })
+
+  describe("When attributes to a field is created", function() {
+    beforeEach(function() {
+      jQuery('body').append("<div id='SFDSWFB-attributes'> \
+        <div class='accordion-validation'> \
+          <div class='accordion-section validation'> \
+            <div class='accordion-header'>Validation</div> \
+            <div class='accordion'> \
+            </div> \
+          </div> \
+        </div> \
+      </div>")
+    })
+
+    it('should load the correct validations for text type', function() {
+      fb.fbView.populateValidation(fb.fbView.formsCollection.forms[fb.formId].content.data[0])
+      expect(jQuery('#minlength').is(':visible')).toBeTruthy()
+      expect(jQuery('#maxlength').is(':visible')).toBeTruthy()
+      expect(jQuery('.validation .validate-minmax').is(':visible')).toBeFalsy()
+    })
+
+    it('should load the correct validations for number type', function() {
+      fb.fbView.populateValidation(fb.fbView.formsCollection.forms[fb.formId].content.data[2])
+      expect(jQuery('#minlength').is(':visible')).toBeFalsy()
+      expect(jQuery('#maxlength').is(':visible')).toBeFalsy()
+      expect(jQuery('.validation .validate-minmax').is(':visible')).toBeTruthy()
+    })
+
+    afterEach(function() {
+      jQuery('#SFDSWFB-attributes').remove()
+    })
+  })
 })

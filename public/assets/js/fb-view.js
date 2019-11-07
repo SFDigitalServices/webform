@@ -84,7 +84,7 @@ FbView.prototype.bindListButtons = function() {
 FbView.prototype.bindInsertItems = function() {
 	var self = this
 
-	$('#SFDSWFB-insert button').on('click', function() {
+	$('#SFDSWFB-insert button.field-item').on('click', function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
 		self.populateList()
@@ -298,6 +298,10 @@ FbView.prototype.showAttributes = function() {
 
 	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
 
+  $('#SFDSWFB-attributes .addCalculationButton').on('click', function() {
+    self.addCalculation()
+  })
+
 	$('#SFDSWFB-attributes .apply-button').on('click', function() {
 		self.applyAttributes()
 		self.disableTimer()
@@ -354,11 +358,10 @@ FbView.prototype.populateAttributes = function(item) {
  * @param {Item} item
  */
 FbView.prototype.populateValidation = function(item) {
-	switch (item.formtype) {
+	switch (item.type) {
 		case "number":
 		case "date":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
 			break
 		case "match":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())
@@ -589,7 +592,9 @@ FbView.prototype.deleteItem = function(index) {
 /**
  * Special functions, conditionals, calculations and webhooks unrefactored
  */
-function addCalculation (str) {
+FbView.prototype.addCalculation = function(str) {
+  var self = this
+
   // check if first calculation or not
   if ($('#SFDSWFB-attributes .addCalculation').length != 0) {
     if ($('#SFDSWFB-attributes .calculationLabel').length == 0) {
