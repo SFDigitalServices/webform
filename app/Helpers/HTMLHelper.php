@@ -37,18 +37,30 @@ class HTMLHelper
         $form_container = '';
         $sections = [];
 
-        $pageCount = ((array_count_values(array_column($content['data'], 'formtype'))["m16"]) + 1);
+        function totalPages($array) {
+          if (in_array("m16", array_column($array, "formtype"))) {
+            $totalPages = ((array_count_values(array_column($array, 'formtype'))["m16"]) + 1);
+          }
+          else {
+            $totalPages = 1;
+          }
+          return $totalPages;
+        }
+
+        $pageCount = totalPages($content['data']);
 
         function progressBar($currentPage, $pageCount) {
-          $html = '<div class="form-progress">';
-          if ($pageCount > 5) {
-            $percentDone = round(($currentPage / $pageCount) * 100);
-            $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
-          } else {
-            $html .= '<div class="form-progress-bubble">Page '. $currentPage .' of '. $pageCount .'</div>';
+          if ($pageCount > 1) {
+            $html = '<div class="form-progress">';
+            if ($pageCount > 5) {
+              $percentDone = round(($currentPage / $pageCount) * 100);
+              $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
+            } else {
+              $html .= '<div class="form-progress-bubble">Page '. $currentPage .' of '. $pageCount .'</div>';
+            }
+            $html .= '</div>';
+            return $html;
           }
-          $html .= '</div>';
-          return $html;
         }
 
         //if this form is a csv transaction, add form_id.
