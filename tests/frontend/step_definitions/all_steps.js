@@ -20,7 +20,7 @@ Given(/I am on the dashboard page/, () => {
   I.see('Please enter the name of your form')
   I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
   I.click('Ok')
-  I.wait(60)
+  I.wait(5)
 })
 When('I click to insert a field', () => {
     I.click('Name')
@@ -49,7 +49,7 @@ Then('I should see my form on the dashboard', () => {
 
 // Modify Form Feature
 Given(/I am on an existing form for modification/, () => {
-  I.wait(60)
+  I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(1)
@@ -82,7 +82,7 @@ Then('I should be able modify the attributes', () => {
 
 // Clone Form Feature
 Given(/I clicked into an existing form for cloning/, () => {
-  I.wait(60)
+  I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(3)
@@ -91,19 +91,19 @@ When('I click the clone icon', () => {
   I.see('Your form')
   I.seeElement('button.clone-button')
   I.click('button.clone-button')
-  I.wait(30)
+  I.wait(5)
 });
 Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
 })
 Then('I should see the cloned form', () => {
   I.see('Clone of TESTING FORM CREATION'+sessid)
-  I.wait(60)
+  I.wait(5)
 })
 When('I click the clone form', () => {
   I.click('Clone of TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
-  I.wait(10)
+  I.wait(5)
 });
 Then('I see the delete icon', () => {
   I.seeElement('button.delete-button')
@@ -114,7 +114,7 @@ Then('I should not see the deleted cloned form', () => {
 })
 // Preview Form Feature
 Given(/I have an existing form for previewing/, () => {
-  I.wait(60)
+  I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(3)
@@ -122,7 +122,7 @@ Given(/I have an existing form for previewing/, () => {
 When('I click on the Preview button', () => {
   I.see('Preview')
   I.click('button.preview-window');
-  I.wait(30)
+  I.wait(5)
   I.switchToNextTab(1)
 })
 Then('I should see a new window with rendered html', () => {
@@ -135,7 +135,7 @@ Then('I should see a new window with rendered html', () => {
 
 // Submit Form Feature
 Given(/I navigate to a published form/, () => {
-  I.wait(60)
+  I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(1)
@@ -148,19 +148,19 @@ Given(/I navigate to a published form/, () => {
   I.fillField('confirmation', 'https://digitalservices.sfgov.org/thank-you')
   I.fillField('action', '/form/submit')
   I.click('#SFDSWFB-settings button.apply-button')
-  I.wait(15)
+  I.wait(5)
   I.click('button.preview-window');
-  I.wait(30)
-  I.switchToNextTab(1)
+  I.wait(5)
+  I.switchToNextTab()
 })
 When('I filled out all required fields and click submit', () => {
-  I.fillField('Name', 'TEST NAME')
+  //I.fillField('name', 'TEST NAME')
   I.fillField('Email', 'TESTEMAIL@sf.gov')
   I.wait(2)
   I.click('Submit')
 })
 Then('I should be redirected to a confirmation page', () => {
-  I.wait(30)
+  I.wait(2)
   I.seeInCurrentUrl('/thank-you');
   I.wait(2)
   I.closeCurrentTab();
@@ -169,7 +169,7 @@ Then('I should be redirected to a confirmation page', () => {
 
 // Delete Form Feature
 Given(/I clicked into an existing form for deletion/, () => {
-  I.wait(60)
+  I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
   //I.click('.forms > a')
   I.wait(3)
@@ -184,7 +184,7 @@ Then('I should see confirmation popup', () => {
 })
 When('I click Ok', () => {
   I.click('Ok')
-  I.wait(15)
+  I.wait(2)
 })
 Then('I should be redirected back to the dashboard', () => {
   I.see('Welcome back,')
