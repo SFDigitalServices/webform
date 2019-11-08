@@ -32,8 +32,11 @@ Then('I should see the field created in the navigation and an edit panel', () =>
 })
 Then('I should be able to edit that field to the form', () => {
   I.fillField('label', 'Full Name')
+  I.wait(1)
   I.fillField('name', 'full_name')
+  I.wait(1)
   I.fillField('id', 'full_name')
+  I.wait(1)
   I.click('Save')
   I.wait(3)
   I.switchTo('iframe');
