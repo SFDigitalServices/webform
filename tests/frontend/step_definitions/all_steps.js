@@ -35,8 +35,6 @@ Then('I should be able to edit that field to the form', () => {
   I.wait(1)
   I.fillField('name', 'full_name')
   I.wait(1)
-  I.fillField('id', 'full_name')
-  I.wait(1)
   I.click('Save')
   I.wait(3)
   I.switchTo('iframe');
