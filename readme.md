@@ -12,7 +12,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 1. Setup a new project sekeleton from this repository
 ```
         git clone git@github.com:SFDigitalServices/webform.git webform
-        cd webform
+        cd webform/src
         cp .env.example .env
         composer install
 ```
@@ -41,20 +41,14 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 5. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
 ### JS Unit Testing
-1. Navigate to the src/docker directory and spin up docker as normal
+1. Make sure docker is running as normal
+2. Navigate to src/tests/jasmine
 ```
-        docker-compose up -d
-```
-2. Navigate to /src/tests/jasmine
-```
-        run SpecRunner.html
+        Open SpecRunner.html file in your browser
 ```
 
 ### PHP Unit Testing
-1. Navigate to the src/docker directory and spin up docker as normal
-```
-        docker-compose up -d
-```
+1. Make sure docker is running as normal
 2. List your docker containers and get the id of your db
 ```
         docker ps
@@ -82,11 +76,14 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ```
 
 ### End to End Testing
-1. Navigate to the src/docker directory and spin up docker as normal
+1. Make sure docker is running as normal
+2. Navigate to src/tests/frontend
+3. Make sure codecept.conf.js puppeteer is pointed to your local environment
 ```
-        docker-compose up -d
+      Puppeteer: {
+        url: process.env.CODECEPT_URL || 'http://your_local_environment',
 ```
-2. Navigate to /src/tests/frontend
+4. Execute codeceptjs tests with npx (can append --steps flag to get more detailed information)
 ```
         npx codeceptjs run
 ```
