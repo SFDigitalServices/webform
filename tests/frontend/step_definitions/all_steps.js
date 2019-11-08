@@ -24,10 +24,10 @@ Given(/I am on the dashboard page/, () => {
 })
 When('I click to insert a field', () => {
     I.click('Name')
-    I.wait(1)
+    I.wait(2)
 });
 Then('I should see the field created in the navigation and an edit panel', () => {
-  I.see('Edit field')
+  I.see('Edit field', '.panel-header')
   I.seeElement('#SFDSWFB-list .item[data-id=name]')
   I.wait(1)
 })
@@ -36,7 +36,7 @@ Then('I should be able to edit that field to the form', () => {
   I.fillField('name', 'full_name')
   I.fillField('id', 'full_name')
   I.click('Save')
-  I.wait(1)
+  I.wait(3)
   I.see('full_name')
 })
 Then('I should see my form on the dashboard', () => {
