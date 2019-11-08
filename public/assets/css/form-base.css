@@ -95,43 +95,9 @@ textarea {
 	float: right;
 }
 
-.form-section-nav {
-	display: none;
-}
-
-.form-section-nav li {
-	list-style: none;
-	padding: 0.5rem 1rem;
-	display: block;
-}
-
-.form-section-nav li.active {
-	font-weight: bold;
-	position: relative;
-}
-
-.form-section-nav li.active:before {
-	content: "";
-	border-radius: 50%;
-	width: 0.5rem;
-	height: 0.5rem;
-	position: absolute;
-	left: 0;
-	top: 50%;
-	margin-top: -0.25rem;
-	background: currentColor;
-}
-
 @media screen and (min-width: 40rem) {
-	.form-section-nav,
 	.form-horizontal {
 		float: left;
-	}
-
-	.form-section-nav {
-		display: block;
-		width: 20%;
-		margin-right: 5%;
 	}
 
 	.form-horizontal {
@@ -140,36 +106,9 @@ textarea {
 }
 
 @media screen and (min-width: 70rem) {
-	.form-section-nav {
-		width: 15%;
-		margin-right: 5%;
-	}
-
 	.form-horizontal {
 		width: 70%;
 	}
-}
-
-/* Hacks */
-
-/* Add a cursor to .form-section-nav elements */
-.form-section-nav li {
-	cursor: pointer;
-}
-
-/* Label .form-section-nav */
-
-.form-section-nav {
-	position: relative;
-	padding-top: 1rem;
-}
-
-.form-section-nav:before {
-	content: "Choose a Page";
-	position: absolute;
-	font-size: 1.25rem;
-	color: #666;
-	top: -1rem;
 }
 
 /* Only display legend to screen readers*/
