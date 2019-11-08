@@ -83,7 +83,8 @@ textarea {
 }
 
 .form-section-prev,
-.form-section-next {
+.form-section-next,
+.form-section-submit {
 	margin-top: 1.5rem;
 }
 
@@ -91,7 +92,8 @@ textarea {
 	float: left;
 }
 
-.form-section-next {
+.form-section-next,
+.form-section-submit {
 	float: right;
 }
 
