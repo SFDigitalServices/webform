@@ -70,9 +70,9 @@ Then('I should see the field attribute window', () => {
   I.see('Edit field')
 })
 Then('I should be able modify the attributes', () => {
-  I.fillField('placeholder', 'AUTOMATED PLACEHOLDER')
-  I.fillField('name', 'AUTOMATED_NAME')
-  I.fillField('id', 'AUTOMATED_ID')
+  I.fillField('Placeholder', 'AUTOMATED PLACEHOLDER')
+  I.fillField('Name Attribute', 'AUTOMATED_NAME')
+  I.fillField('Unique ID', 'AUTOMATED_ID')
   I.click('Save')
   I.wait(1)
   I.see('AUTOMATED_ID')
