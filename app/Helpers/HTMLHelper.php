@@ -137,8 +137,8 @@ class HTMLHelper
             }
             $nav .= '</div>';
             $form_wrapper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">'. progressBar(1, $pageCount);
-            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div>';
             $form_container = $nav. $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
+            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div>';
         } else {
             $form_container = $form_div. $form_container;
         }
