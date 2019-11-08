@@ -43,9 +43,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ### JS Unit Testing
 1. Make sure docker is running as normal
 2. Navigate to src/tests/jasmine
-```
-        Open SpecRunner.html file in your browser
-```
+3. Open SpecRunner.html file in your browser
 
 ### PHP Unit Testing
 1. Make sure docker is running as normal
