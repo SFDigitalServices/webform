@@ -112,8 +112,9 @@ class HTMLHelper
                             break;
                         case "m16":
                             // This loop excludes the first page (see $form_wrapper_top)
-                            $pageNumber= (sizeof($sections) + 2);
                             $form_container .= $this->formSection($field). progressBar($pageNumber, $pageCount);
+                            $pageNumber= (sizeof($sections) + 1);
+                            $form_container .= $this->formSection($field, $pageNumber). progressBar(($pageNumber + 1), $pageCount);
                             $sections[] = $field;
                             break;
                         case "m11": $form_container .= $this->formHidden($field);
@@ -567,9 +568,24 @@ class HTMLHelper
      *
      * @return html
      */
-    public static function formSection($field)
+    public static function formSection($field, $pageNumber)
     {
-        $html = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
+        // Start pagination .form-group
+        $html = '<div class="form-group">';
+
+        // Don't insert "previous" button on page 1
+        if ($pageNumber > 1) {
+          $html .= '<a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a>';
+        }
+
+        // Insert "next" button, close .form-group
+        $html .= '<a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div>';
+
+        // Close the previous .form-section, start a new one
+        $html .= '</div><div class="form-section" data-id="'.$field['id'].'">';
+
+        // Insert section header
+        $html .= '<div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div>';
 
         return $html;
     }
