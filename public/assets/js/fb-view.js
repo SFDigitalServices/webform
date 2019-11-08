@@ -298,6 +298,10 @@ FbView.prototype.showAttributes = function() {
 
 	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
 
+  $('#SFDSWFB-attributes .addConditionalButton').on('click', function() {
+    self.addConditional()
+  })
+
   $('#SFDSWFB-attributes .addCalculationButton').on('click', function() {
     self.addCalculation()
   })
@@ -391,7 +395,7 @@ FbView.prototype.populateValidation = function(item) {
 FbView.prototype.populateConditionals = function(item) {
 	if (item.conditions !== undefined && item.conditions !== null) {
 		for (c in item.conditions.condition) {
-			addConditional()
+			this.addConditional()
 			$('#SFDSWFB-attributes .conditionalId').eq(c).val(item.conditions.condition[c].id)
 			$('#SFDSWFB-attributes .conditionalOperator').eq(c).val(item.conditions.condition[c].op)
 			$('#SFDSWFB-attributes .conditionalValue').eq(c).val(item.conditions.condition[c].val)
@@ -617,29 +621,33 @@ FbView.prototype.addCalculation = function(str) {
     })
   }
 }
-function addConditional () {
-  $('#SFDSWFB-attributes .addConditional').before(fb.view.addConditional())
-  var ids = fb.fbView.formsCollection.forms[fb.formId].getIds()
-  $('#SFDSWFB-attributes .allIds').each(function () {
-    if ($(this).val() == null) {
-      var thisSelect = $(this)
-      $.each(ids, function (i, item) {
-        thisSelect.append($('<option>', {
-          value: item,
-          text:	item
-        }))
-      })
+FbView.prototype.addConditional = function() {
+  if (fb.fbView.formsCollection.forms[fb.formId].content.data.length > 2) {
+    $('#SFDSWFB-attributes .addConditional').before(fb.view.addConditional())
+    var ids = fb.fbView.formsCollection.forms[fb.formId].getIds()
+    $('#SFDSWFB-attributes .allIds').each(function () {
+      if ($(this).val() == null) {
+        var thisSelect = $(this)
+        $.each(ids, function (i, item) {
+          thisSelect.append($('<option>', {
+            value: item,
+            text:	item
+          }))
+        })
+      }
+    })
+    // check if first conditional or not
+    if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
+      $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
+      $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
+    } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
+      $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
     }
-  })
-  // check if first conditional or not
-  if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-    $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
-    $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
-  } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
-    $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
-  }
-  if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
-    $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
+    if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
+      $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
+    }
+  } else {
+    fb.loadDialogModal('Notice', "You need more fields in your form before adding a conditional.")
   }
 }
 function removeCalculation (obj) {

@@ -23,7 +23,7 @@ Fb.prototype.view.conditionals = "\
 			<div class='accordion'> \
 				<div class='clonable addConditionalContainer'> \
 					<div class='addConditional' style=''> \
-						<a href='javascript:void(0)' onclick='javascript:addConditional()'>+Add A Condition</a> \
+						<a href='javascript:void(0)' class='addConditionalButton'>+Add A Condition</a> \
 					</div> \
 				</div> \
 			</div> \
