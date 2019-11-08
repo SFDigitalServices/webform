@@ -88,7 +88,7 @@ FbView.prototype.bindListButtons = function() {
 FbView.prototype.bindInsertItems = function() {
 	var self = this
 
-	$('#SFDSWFB-insert button').on('click', function() {
+	$('#SFDSWFB-insert button.field-item').on('click', function() {
 		var index = $('#SFDSWFB-list .spacer.selected').eq(0).data('index') - 1
 		self.formsCollection.forms[fb.formId].insertItem($(this).data('formtype'))
 		self.populateList()
@@ -213,9 +213,16 @@ FbView.prototype.populateSettings = function() {
  * @param {JQuery DOM Object} obj
  */
 FbView.prototype.toggleConfirmPage = function(obj) {
-  if ($(obj).val() == "csv") {
+  if (typeof obj === "undefined") return
+  var submitUrl = new URL('/form/submit', window.location.href)
+  var backend = $(obj).val();
+  if (backend == "csv") {
+    $('input[name=action]').val(submitUrl)
+    $('input[name=action]').attr('readonly', true)
     $('.confirmPage').show()
-  } else if ($(obj).val() == "db") {
+  } else if (backend == "db") {
+    if ($('input[name=action]').val() == submitUrl) $('input[name=action]').val('')
+    $('input[name=action]').removeAttr('readonly')
     $('.confirmPage').hide()
   }
 }
@@ -290,6 +297,14 @@ FbView.prototype.showAttributes = function() {
 
 	$('#SFDSWFB-attributes > .editContent').html(fb.view.editItem)
 
+  $('#SFDSWFB-attributes .addConditionalButton').on('click', function() {
+    self.addConditional()
+  })
+
+  $('#SFDSWFB-attributes .addCalculationButton').on('click', function() {
+    self.addCalculation()
+  })
+
 	$('#SFDSWFB-attributes .apply-button').on('click', function() {
 		self.applyAttributes()
 		self.disableTimer()
@@ -346,11 +361,10 @@ FbView.prototype.populateAttributes = function(item) {
  * @param {Item} item
  */
 FbView.prototype.populateValidation = function(item) {
-	switch (item.formtype) {
+	switch (item.type) {
 		case "number":
 		case "date":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
 			break
 		case "match":
 			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())
@@ -380,7 +394,7 @@ FbView.prototype.populateValidation = function(item) {
 FbView.prototype.populateConditionals = function(item) {
 	if (item.conditions !== undefined && item.conditions !== null) {
 		for (c in item.conditions.condition) {
-			addConditional()
+			this.addConditional()
 			$('#SFDSWFB-attributes .conditionalId').eq(c).val(item.conditions.condition[c].id)
 			$('#SFDSWFB-attributes .conditionalOperator').eq(c).val(item.conditions.condition[c].op)
 			$('#SFDSWFB-attributes .conditionalValue').eq(c).val(item.conditions.condition[c].val)
@@ -542,8 +556,8 @@ FbView.prototype.sortItem = function(handleObj) {
  * @param {Integer} index
  */
 FbView.prototype.moveItemHere = function(index) {
-	var itemId = $('#SFDSWFB-list .field.selected').eq(0).data('id')
-	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list .field.selected').eq(0).data('index') - 1, index) //adjust for zero index
+	var itemId = $('#SFDSWFB-list a.moving').eq(0).data('id')
+	this.formsCollection.forms[fb.formId].moveItem($('#SFDSWFB-list a.moving').eq(0).data('index') - 1, index) //adjust for zero index
 	this.populateList()
 	var newObj = $('#SFDSWFB-list .field[data-id=' + itemId + ']')
 	newObj.addClass('selected')
@@ -581,7 +595,9 @@ FbView.prototype.deleteItem = function(index) {
 /**
  * Special functions, conditionals, calculations and webhooks unrefactored
  */
-function addCalculation (str) {
+FbView.prototype.addCalculation = function(str) {
+  var self = this
+
   // check if first calculation or not
   if ($('#SFDSWFB-attributes .addCalculation').length != 0) {
     if ($('#SFDSWFB-attributes .calculationLabel').length == 0) {
@@ -604,29 +620,33 @@ function addCalculation (str) {
     })
   }
 }
-function addConditional () {
-  $('#SFDSWFB-attributes .addConditional').before(fb.view.addConditional())
-  var ids = fb.fbView.formsCollection.forms[fb.formId].getIds()
-  $('#SFDSWFB-attributes .allIds').each(function () {
-    if ($(this).val() == null) {
-      var thisSelect = $(this)
-      $.each(ids, function (i, item) {
-        thisSelect.append($('<option>', {
-          value: item,
-          text:	item
-        }))
-      })
+FbView.prototype.addConditional = function() {
+  if (fb.fbView.formsCollection.forms[fb.formId].content.data.length > 2) {
+    $('#SFDSWFB-attributes .addConditional').before(fb.view.addConditional())
+    var ids = fb.fbView.formsCollection.forms[fb.formId].getIds()
+    $('#SFDSWFB-attributes .allIds').each(function () {
+      if ($(this).val() == null) {
+        var thisSelect = $(this)
+        $.each(ids, function (i, item) {
+          thisSelect.append($('<option>', {
+            value: item,
+            text:	item
+          }))
+        })
+      }
+    })
+    // check if first conditional or not
+    if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
+      $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
+      $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
+    } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
+      $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
     }
-  })
-  // check if first conditional or not
-  if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-    $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
-    $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
-  } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
-    $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
-  }
-  if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
-    $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
+    if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
+      $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
+    }
+  } else {
+    fb.loadDialogModal('Notice', "You need more fields in your form before adding a conditional.")
   }
 }
 function removeCalculation (obj) {

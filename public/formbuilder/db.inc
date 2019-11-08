@@ -7,7 +7,7 @@ function openDB() {
 	 // Check connection
 	 if ($conn->connect_error) {
 	    die("Connection failed: " . $conn->connect_error);
-	 } 
+	 }
 	 return $conn;
 }
 
@@ -218,7 +218,7 @@ function jsonDecode($json, $assoc = false)
 // EMBED FUNCTIONS
 function generateHTML($content) {
 
-	$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><div id="SFDSWFB-legend"><legend>'.$content['settings']['name'].'</legend></div>';
+	$str1 = '<form class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'"><fieldset><legend id="SFDSWFB-legend">'.$content['settings']['name'].'</legend>';
 	$str = '';
 
 	foreach ($content['data'] as $field) {
@@ -297,7 +297,7 @@ function generateHTML($content) {
 
 	$str2 = '</fieldset></form>';
 
-	if (!empty($sections)) {  
+	if (!empty($sections)) {
 	  $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
 	  $nav = '<ul class="form-section-nav"><li class="active">'.$section1.'</li>';
 	  foreach ($sections as $idx => $section) {
@@ -311,17 +311,17 @@ function generateHTML($content) {
 	} else {
 	  $str = $str1.$str.$str2;
 	}
-	
+
 	return $str;
 }
 
 function isSectional($content) {
-	
+
 	foreach ($content['data'] as $field) {
 	  if ($field['formtype'] == "m16") return true;
 	}
 	return false;
-	
+
 }
 
 function wrapJS($str, $sectional) {
