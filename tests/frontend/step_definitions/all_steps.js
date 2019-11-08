@@ -154,7 +154,7 @@ Given(/I navigate to a published form/, () => {
   I.switchToNextTab()
 })
 When('I filled out all required fields and click submit', () => {
-  //I.fillField('name', 'TEST NAME')
+  I.fillField('Full Name', 'TEST NAME')
   I.fillField('Email', 'TESTEMAIL@sf.gov')
   I.wait(2)
   I.click('Submit')
