@@ -53,7 +53,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ```
 3. Inspect your database container and write down the db's IPAddress
 ```
-        docker inspect docker_db_1
+        docker inspect docker_db_container_id
 ```
 4. Navigate to the src directory and edit codeception.yml
 ```
