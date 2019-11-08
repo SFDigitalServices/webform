@@ -155,32 +155,28 @@ function getDataInPath(obj, path) {
 }
 
 function initSectional() {
-  jQuery('#SFDSWF-Container .form-section-nav a').click(function(e){
-    var i = jQuery(e.target).prevAll().length;
-    SFDSWF_goto(i);
-  });
+  var activePageNum = 0;
 
-  jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
-    var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
-    SFDSWF_goto(i < 1 ? 0 : i-1);
-  });
+  function paginate(count) {
+    // Hide the current page
+    jQuery('.form-section').eq(activePageNum).removeClass('active');
 
-  jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
-    var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
-    SFDSWF_goto(i+1);
-  });
+    // Go to the previous / next page
+    activePageNum = activePageNum + count;
+    var activePage = jQuery('.form-section').eq(activePageNum);
+    activePage.addClass('active');
 
-  var SFDSWF_goto = function(i) {
-    jQuery('#SFDSWF-Container .form-section-nav a').removeClass('active');
-    jQuery('#SFDSWF-Container .form-section-nav a').eq(i).addClass('active');
-    jQuery('#SFDSWF-Container .form-section').removeClass('active');
-    jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');
-    jQuery('#SFDSWF-Container .form-section-header').removeClass('active');
-    jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');
-    jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
+
   }
 
-  skipToSectionId(SFDSWF_goto);
+  // Pagination button click events
+  jQuery('.form-section-prev').click(function(e) {
+    paginate(-1);
+  });
+
+  jQuery('.form-section-next').click(function(e) {
+    paginate(1);
+  });
 }
 
 function phoneIsValid(num) {

@@ -112,7 +112,6 @@ class HTMLHelper
                             break;
                         case "m16":
                             // This loop excludes the first page (see $form_wrapper_top)
-                            $form_container .= $this->formSection($field). progressBar($pageNumber, $pageCount);
                             $pageNumber= (sizeof($sections) + 1);
                             $form_container .= $this->formSection($field, $pageNumber). progressBar(($pageNumber + 1), $pageCount);
                             $sections[] = $field;
@@ -130,15 +129,9 @@ class HTMLHelper
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $nav = '<div class="form-section-nav"><a class="active" href="javascript:void(0)">'.$section1.'</a>';
-            foreach ($sections as $idx => $section) {
-                $active = $idx === "0" ? ' class="active"' : '';
-                $nav .= '<a'.$active.' href="javascript:void(0)">'.$section['label'].'</a>';
-            }
-            $nav .= '</div>';
-            $form_container = $nav. $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
             $form_wrapper_top = '<div class="sections-container"><div class="form-section active">'. progressBar(1, $pageCount).'<div class="form-section-header">'.$section1.'</div>';
-            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div>';
+            $form_wrapper_bottom = '<div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button id="submit" class="btn btn-lg form-section-submit">Submit</button></div></div>';
+            $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
             $form_container = $form_div. $form_container;
         }
