@@ -7,13 +7,17 @@
  * @constructor
  */
 let FbView = function(formsCollection) {
-    this.formsCollection = formsCollection
+  this.formsCollection = formsCollection
 
-	this.listForms()
-	this.bindInsertItems()
 	this.bindSystemButtons()
+}
 
-	if (fb.startedEarly) this.startForm()
+FbView.prototype.populateForms = function(response) {
+  var self = fb.fbView //callback changes scope of this
+
+  self.formsCollection.updateForms(response)
+	self.listForms()
+	self.bindInsertItems()
 }
 
 /**
@@ -104,11 +108,6 @@ FbView.prototype.listForms = function() {
 		$('.forms').append(fb.view.formLink(this.formsCollection.forms[i]))
 	}
 
-	$('.welcomeBox .btn-info').off()
-	$('.welcomeBox .btn-info').on('click', function() {
-		self.startForm()
-	})
-
 	$('a.start-form').on('click', function() {
 		self.startForm($(this).data('id'))
 	})
@@ -124,7 +123,7 @@ FbView.prototype.startForm = function(id) {
 		this.formsCollection.forms[0] = new Form()
 		this.formsCollection.forms[0].loadNewForm()
 		fb.addBrowserState(0, '/home?new')
-		if (!fb.startedEarly) fb.startModal()
+		fb.startModal()
 	} else {
 		this.formsCollection.forms[id].loadExistingForm(id)
 		fb.addBrowserState(id, '/home?id=' + id)

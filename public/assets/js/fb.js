@@ -5,7 +5,6 @@ jQuery(document).ready(function(){
 let Fb = function() {
 	this.formId = 0
 	this.previousContent = null
-	this.startedEarly = false
 	this.api_token = null
 	this.user_id = null
 	this.autofillNames = null
@@ -18,13 +17,13 @@ let Fb = function() {
 Fb.prototype.init = function() {
 	var self = this
 
+  self.startView([])
 	jQuery(".content").show()
-	jQuery('.welcomeBox .btn-info').on('click', function(){
-		self.startedEarly = true
-		jQuery('body > div.content').hide()
-		//jQuery('.editorContainer').show()
+	self.callAPI("/form/getForms", {}, this.fbView.populateForms)
+
+	$('.welcomeBox .btn-info').on('click', function() {
+		self.fbView.startForm()
 	})
-	self.callAPI("/form/getForms", {}, fb.startView)
 }
 
 /**
@@ -61,7 +60,6 @@ Fb.prototype.callAPI = function(url, dataObj, callback) {
  */
 Fb.prototype.startView = function(response) {
     fb.fbView = new FbView(new FormsCollection(response))
-    if (fb.startedEarly) fb.startModal()
 }
 
 /**

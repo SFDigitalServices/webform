@@ -10,9 +10,9 @@ services:
       - ./conf/default-ssl.conf:/etc/apache2/sites-available/default-ssl.conf
       - ./conf/ssl:/etc/apache2/ssl
     links:
-      - db 
+      - db
     ports:
-      - 8080:80
+      - 80:80
       - 443:443
   db:
     image: mysql:5.6

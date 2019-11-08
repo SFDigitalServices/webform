@@ -3,16 +3,22 @@ exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
-      url: process.env.CODECEPT_URL || 'http://localhost',
+      ignoreHTTPSErrors: true,
+      waitForNavigation: [ "domcontentloaded", "networkidle0" ],
+      url: process.env.CODECEPT_URL || 'http://webform.test',
       'chrome': {
-        'headless': true,
+        'headless': false,
         'args': [
-          '--no-sandbox'
+          '--no-sandbox',
+          '--content-shell-host-window-size=1600x1200',
+          '--ignore-certificate-errors',
         ]
       },
       restart: false,
-      windowSize: '1600x1200',
       show: false,
+      windowSize: '1600x1200',
+      fullPageScreenshots: true,
+      uniqueScreenshotNames: true,
       keepBrowserState: true
     },
     REST: {},
@@ -41,12 +47,6 @@ exports.config = {
   plugins: {
     allure: {
       enabled: false,
-    },
-    wdio: {
-      enabled: false,
-      services: [
-        'selenium-standalone',
-      ],
     },
     stepByStepReport: {},
     autoDelay: {
