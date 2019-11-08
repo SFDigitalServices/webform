@@ -124,7 +124,7 @@ $app->routeMiddleware([
  $app->register(Aws\Laravel\AwsServiceProvider::class);
 
  // Sentry.io integration
- $app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
+ //$app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
  //$app->register('Sentry\Laravel\ServiceProvider');
 
 // Dingo Adapter for Lumen
