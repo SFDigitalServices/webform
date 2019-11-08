@@ -28,7 +28,6 @@ When('I click to insert a field', () => {
 });
 Then('I should see the field created in the navigation and an edit panel', () => {
   I.see('Edit field', '.panel-header')
-  I.seeElement('#SFDSWFB-list .item[data-id=name]')
   I.wait(1)
 })
 Then('I should be able to edit that field to the form', () => {
@@ -51,7 +50,6 @@ Then('I should see my form on the dashboard', () => {
 Given(/I am on an existing form for modification/, () => {
   I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
-  //I.click('.forms > a')
   I.wait(1)
 })
 Then('I should be able to insert another field', () => {
@@ -61,7 +59,7 @@ Then('I should be able to insert another field', () => {
   I.click('Email')
   I.wait(1)
   I.see('Edit field')
-  I.seeElement('#SFDSWFB-list .item[data-id=email]')
+  //I.seeElement('#SFDSWFB-list .item[data-id=email]')
 })
 When('I click on any existing fields', () => {
   I.seeElement('#SFDSWFB-list')
