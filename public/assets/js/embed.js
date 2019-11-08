@@ -166,7 +166,12 @@ function initSectional() {
     var activePage = jQuery('.form-section').eq(activePageNum);
     activePage.addClass('active');
 
+    // Automatically move to the top of SF.gov pages
+    var topOfSFGovPage = document.getElementById("main-content");
 
+    if (topOfSFGovPage) {
+      topOfSFGovPage.scrollIntoView();
+    }
   }
 
   // Pagination button click events
