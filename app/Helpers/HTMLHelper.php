@@ -568,11 +568,11 @@ class HTMLHelper
 
         // Don't insert "previous" button on page 1
         if ($pageNumber > 1) {
-          $html .= '<a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a>';
+          $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
         }
 
         // Insert "next" button, close .form-group
-        $html .= '<a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div>';
+        $html .= '<button class="btn btn-lg form-section-next">Next</button></div>';
 
         // Close the previous .form-section, start a new one
         $html .= '</div><div class="form-section" data-id="'.$field['id'].'">';
