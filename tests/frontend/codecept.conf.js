@@ -3,9 +3,9 @@ exports.config = {
   output: './output',
   helpers: {
     Puppeteer: {
-      url: process.env.CODECEPT_URL || 'http://localhost',
+      url: process.env.CODECEPT_URL || 'http://webform.test',
       'chrome': {
-        'headless': true,
+        'headless': false,
         'args': [
           '--no-sandbox'
         ]
@@ -19,7 +19,7 @@ exports.config = {
   },
   multiple: {
     parallel: {
-      chunks: 1
+      chunks: 2
     }
   },
   include: {
