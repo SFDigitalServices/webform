@@ -24,10 +24,11 @@ Given(/I am on the dashboard page/, () => {
 })
 When('I click to insert a field', () => {
     I.click('Name')
-    I.wait(2)
+    I.wait(5)
 });
 Then('I should see the field created in the navigation and an edit panel', () => {
   I.see('Edit field', '.panel-header')
+  I.waitForElement('.save-buttons')
   I.wait(1)
 })
 Then('I should be able to edit that field to the form', () => {
@@ -35,7 +36,7 @@ Then('I should be able to edit that field to the form', () => {
   I.wait(1)
   I.fillField('name', 'full_name')
   I.wait(2)
-  I.fillField('name', 'full_name1')
+  I.fillField('id', 'full_name')
   I.wait(2)
   I.click('Save')
   I.wait(3)

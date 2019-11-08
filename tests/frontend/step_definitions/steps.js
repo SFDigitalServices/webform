@@ -5,7 +5,7 @@ const I = actor();
 
 // you can provide RegEx to match corresponding steps
   Given(/I have a formbuilder account/, () => {
-  I.amOnPage(process.env.CODECEPT_URL || 'http://webform.test');
+  I.amOnPage(process.env.CODECEPT_URL || 'http://webform.test:8080');
 });
 
 // Basic Feature
