@@ -16,10 +16,14 @@
 		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
 
-		<!-- Sentyr.io javascript integration -->
-		<script src="//js.sentry-cdn.com/b53658ff4ec749719da39905217d41e0.min.js" crossorigin="anonymous">
+    <!-- Sentyr.io javascript integration -->
+    <script src="https://cdn.ravenjs.com/3.14.0/raven.min.js"></script>
+      <script type="text/javascript">
+          Raven.config('https://b53658ff4ec749719da39905217d41e0@sentry.io/1366253').install()
+      </script>
+		<!--script src="//js.sentry-cdn.com/b53658ff4ec749719da39905217d41e0.min.js" crossorigin="anonymous">
 			Sentry.init({ dsn: 'https://b53658ff4ec749719da39905217d41e0@sentry.io/1366253' });
-		</script>
+		</script-->
 
 		<script type="text/javascript" language="Javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<script type="text/javascript" language="Javascript" src="//cdnjs.cloudflare.com/ajax/libs/jQuery-Validation-Engine/2.6.4/jquery.validationEngine.min.js"></script>
