@@ -17,6 +17,7 @@ module.exports = function (config) {
       'public/assets/js/forms-collection.js',
       'public/assets/js/form.js',
       'public/assets/js/item.js',
+      'public/assets/js/typeahead.bundle.min.js',
       'tests/jasmine/spec/*.js'
     ],
 

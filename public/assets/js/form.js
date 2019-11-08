@@ -209,7 +209,7 @@ Form.prototype.modifyItem = function() {
 		}
 	})
 
-  if ($('#required').length) self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].required = $('#required').checked ? 'true' : 'false';
+  if ($('#required').length) self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].required = $('#required').prop('checked') ? 'true' : 'false';
 	self.applyConditionals()
 	self.applyCalculations()
 	self.applyWebhooks()
