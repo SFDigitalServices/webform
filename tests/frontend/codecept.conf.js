@@ -4,14 +4,15 @@ exports.config = {
   helpers: {
     Puppeteer: {
       url: process.env.CODECEPT_URL || 'http://webform.test',
-      'chrome': {
-        'headless': false,
+      'firefox': {
+        'headless': true,
         'args': [
-          '--no-sandbox'
+          '--no-sandbox',
+          '--ignore-certificate-errors',
         ]
       },
       restart: false,
-      windowSize: '1600x1200',
+      windowSize: '1200x800',
       show: false,
       keepBrowserState: true
     },
