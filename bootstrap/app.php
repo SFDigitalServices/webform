@@ -125,7 +125,7 @@ $app->routeMiddleware([
 
  // Sentry.io integration
  //$app->register('Sentry\SentryLaravel\SentryLumenServiceProvider');
- //$app->register('Sentry\Laravel\ServiceProvider');
+ $app->register('Sentry\Laravel\ServiceProvider');
 
 // Dingo Adapter for Lumen
 //$app->register(Zeek\LumenDingoAdapter\Providers\LumenDingoAdapterServiceProvider::class);
