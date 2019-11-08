@@ -36,7 +36,10 @@ Then('I should be able to edit that field to the form', () => {
   I.fillField('id', 'full_name')
   I.click('Save')
   I.wait(3)
-  I.see('full_name')
+  I.switchTo('iframe');
+  I.see('Name', '#SFDSWF-Container')
+  I.wait(1)
+  I.switchTo();
 })
 Then('I should see my form on the dashboard', () => {
   I.click('Digital Services Webform Builder')
@@ -58,7 +61,7 @@ Then('I should be able to insert another field', () => {
   I.see('Add a field')
   I.click('Email')
   I.wait(1)
-  I.see('Edit field')
+  I.see('Edit field', '#SFDSWFB-attributes')
   //I.seeElement('#SFDSWFB-list .item[data-id=email]')
 })
 When('I click on any existing fields', () => {
@@ -67,15 +70,18 @@ When('I click on any existing fields', () => {
 Then('I should see the field attribute window', () => {
   I.click('email')
   I.wait(1)
-  I.see('Edit field')
+  I.see('Edit field', '#SFDSWFB-attributes')
 })
 Then('I should be able modify the attributes', () => {
-  I.fillField('Placeholder', 'AUTOMATED PLACEHOLDER')
-  I.fillField('Name Attribute', 'AUTOMATED_NAME')
-  I.fillField('Unique ID', 'AUTOMATED_ID')
+  I.fillField('placeholder', 'AUTOMATED PLACEHOLDER')
+  I.fillField('name', 'AUTOMATED_NAME')
+  I.fillField('id', 'AUTOMATED_ID')
   I.click('Save')
+  I.wait(3)
+  I.switchTo('iframe');
+  I.seeElement('#AUTOMATED_ID')
   I.wait(1)
-  I.see('AUTOMATED_ID')
+  I.switchTo();
 })
 
 // Clone Form Feature
@@ -135,11 +141,9 @@ Then('I should see a new window with rendered html', () => {
 Given(/I navigate to a published form/, () => {
   I.wait(5)
   I.click('TESTING FORM CREATION'+sessid)
-  //I.click('.forms > a')
-  I.wait(1)
-  I.click('AUTOMATED_ID') //we should remove this step
-  I.wait(1)
-  //I.click('a.horizontal-toggle')
+  I.wait(2);
+  I.click('AUTOMATED_ID')
+  I.wait(2)
   I.click('#SFDSWFB-attributes button.settings-toggle')
   I.selectOption('backend','csv');
   I.wait(1)
