@@ -70,15 +70,23 @@ class HTMLHelper
         // looping through all form fields.
         foreach ($content['data'] as $field) {
             $field_start = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
+            $fieldset_header = $field_start .'<fieldset>'. $this->fieldLabel($field);
             $field_header = $field_start . $this->fieldLabel($field);
-            $field_end = '</div>';
+
+            // Closing tags for .field-wrapper (see fieldLabel function)
+            // and .form-group
+            $field_end = '</div></div>';
+            $fieldset_end = '</div></fieldset></div>';
 
             switch ($field['formtype']) {
-												case "s08": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formRadio($field). $this->helpBlock($field).'</fieldset>'. $field_end;
+												case "s08":
+                            $form_container .= $fieldset_header . $this->formRadio($field). $this->helpBlock($field) . $fieldset_end;
 														break;
-                        case "s06": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formCheckbox($field) . $this->helpBlock($field) .'</fieldset>'. $field_end;
+                        case "s06":
+                            $form_container .= $fieldset_header . $this->formCheckbox($field) . $this->helpBlock($field) . $fieldset_end;
                             break;
-                        case "i14": $form_container .= $field_header . $this->formTextArea($field) . $this->helpBlock($field). $field_end;
+                        case "i14":
+                            $form_container .= $field_header . $this->formTextArea($field) . $this->helpBlock($field). $field_end;
                             break;
                         case "s02":
                         case "s04":
@@ -88,22 +96,16 @@ class HTMLHelper
                             $form_container .= $field_header . $this->formSelect($field) . $this->helpBlock($field). $field_end;
                             break;
                         case "m02":
-                            $form_container .= $this->formHtag($field);
-                            break;
                         case "m04":
-                            $form_container .= $this->formHtag($field);
-                            break;
                         case "m06":
                             $form_container .= $this->formHtag($field);
                             break;
                         case "m08":
-                            $form_container .= $this->formParagraph($field);
-                            break;
                         case "m10":
                             $form_container .= $this->formParagraph($field);
                             break;
                         case "m13":
-                            $form_container .= $field_start . $this->formFile($field) . $this->helpBlock($field). $field_end;
+                            $form_container .= $field_start . $this->formFile($field) . $this->helpBlock($field) . '</div>';
                             break;
                         case "m14":
 							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field). $field_end;
@@ -618,9 +620,6 @@ class HTMLHelper
     public static function helpBlock($field)
     {
         $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.$field['help'].'</p>' : '<div class="help-block with-errors"></div>';
-        // Closing tag for .field-wrapper
-        // (see fieldLabel function for opening tag)
-        $str .= '</div>';
         return $str;
     }
 
