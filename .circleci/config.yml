@@ -49,7 +49,25 @@ jobs: # a collection of steps
           name: Configure & start Apache
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
       # end to end testing
-
+      - run:
+          name: install nodejs
+          command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run:
+          name: install depdencies and run tests
+          command: |
+            sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts'
+            sudo apt-get install -y nodejs
+            npm install
+            chmod -R 777 storage #apache needs to write to logs
+            cp .env.example .env
+            ./vendor/bin/codecept run # run unit/api/functional tests
+            ./node_modules/karma/bin/karma start --single-run --browsers ChromeHeadless karma.conf.js # run jasmine
+            cd tests/frontend
+            npx codeceptjs run --verbose #run e2e tests
+            cd ../../
+            ./node_modules/stylelint/bin/stylelint.js public/assets/sass/*.scss --fix #lint css source
+            npm run dev # compile sass
+            ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
       - deploy:
           name: deploy builds to ${CIRCLE_BRANCH}
           working_directory: /home/circleci/project
