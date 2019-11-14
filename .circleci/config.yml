@@ -44,10 +44,7 @@ jobs: # a collection of steps
           command: composer update
       - run: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
-      - run:
-          name: Configure & start Apache
-          command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
-      # end to end testing
+        # end to end testing
       - run:
           name: install nodejs
           command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
