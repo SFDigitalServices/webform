@@ -41,7 +41,7 @@ class CreateUsersTable extends Migration
         Schema::dropIfExists('enum_mappings');
         Schema::create('enum_mappings', function (Blueprint $table) {
             $table->increments('id');
-            $table->smallInteger('form_table_id');
+            $table->integer('form_table_id');
             $table->string('form_field_name');
             $table->string('value');
         });

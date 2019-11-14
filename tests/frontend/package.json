@@ -1,0 +1,60 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "This is the source for the web form builder, cloned from https://github.com/krisanalfa/lumen-jwt as a starting point. Decided to not implement jwt at this point.",
+  "main": "codecept.conf.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests\frontend"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "node node_modules/cross-env/dist/bin/cross-env.js NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SFDigitalServices/webform.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SFDigitalServices/webform/issues"
+  },
+  "homepage": "https://github.com/SFDigitalServices/webform#readme",
+  "dependencies": {
+    "acorn": "^6.1.1",
+    "codeceptjs": "^2.1.4",
+    "postcss-scss": "^2.0.0",
+    "puppeteer-firefox": "^0.5.0",
+    "selenium-webdriver": "^4.0.0-alpha.5"
+  },
+  "devDependencies": {
+    "acorn": "^6.1.1",
+    "chai": "^4.2.0",
+    "codeceptjs": "^2.1.4",
+    "cross-env": "^5.2.0",
+    "jasmine-core": "^3.5.0",
+    "karma": "^4.3.0",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-jasmine": "^2.0.1",
+    "laravel-mix": "^4.0.16",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-scss": "^2.0.0",
+    "puppeteer": "^1.20.0",
+    "resolve-url-loader": "2.3.1",
+    "sass": "^1.22.1",
+    "sass-loader": "7.*",
+    "stylelint": "^10.1.0",
+    "webdriverio": "^5.16.4"
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ]
+}

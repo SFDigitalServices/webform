@@ -112,6 +112,8 @@ class HTMLHelper
         $form_end = "";
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
           $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+          $resumeDraftURL = str_replace('/submit', '/resume-draft', $content['settings']['action']);
+          $form_end .= '<div class="form-group" data-id="resumeDraft"><label for="resumeDraft" class="control-label"></label><div class="field-wrapper"><a href="' . $resumeDraftURL . '">Resume Draft</a></div></div>';
         }
         $form_end .= '</fieldset></form>';
         // clean up line breaks, otherwise embedjs will fail
@@ -269,6 +271,7 @@ class HTMLHelper
           $draft = $output['draft'];
           $form_id = $output['form_id'];
           $data = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
+
           $populateJS = "var draftData = ". json_encode($data) .";";
         }
       }
