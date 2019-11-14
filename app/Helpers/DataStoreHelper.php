@@ -36,8 +36,6 @@ class DataStoreHelper extends Migration
         $object = null;
         Schema::create($tablename, function ($table) use ($tablename, $definitions, $class, &$object) {
             $table->increments('id');
-            $table->string('status')->default('completed');
-            $table->string('magiclink');
             if ($definitions) {
                 $class->upsertFields($table, $definitions);
             }
@@ -182,23 +180,32 @@ class DataStoreHelper extends Migration
         $data = array();
         if ($formid > 0 && $draft !== '') {
             try {
-                $results = DB::table('forms_'.$formid)
-                  ->select()
-                  ->where('magiclink', $draft)
-                  ->first();
-                $data = (array) $results;
-                $data['formid'] = $formid;
-                $lookups = $this->getLookupTable($formid);
-                foreach ($lookups as $lookup) {
-                    $ids = explode(',', $data[$lookup['form_field_name']] );
-                    if (isset($data[$lookup['form_field_name']]) && in_array($lookup['id'], $ids) ) {
-                        if ($lookup['type'] === 's06') {
-                            if (! isset( $data[$lookup['form_field_name']."[]"] )) {
-                                $data[$lookup['form_field_name']."[]"] = array();
+                $form_draft = DB::table('form_table_drafts')
+                ->select()
+                ->where('magiclink', $draft)
+                ->first();
+
+                if ($form_draft) {
+                    $results = DB::table('forms_'.$formid)
+                    ->select()
+                    ->where('id', $form_draft->form_record_id)
+                    ->first();
+
+                    $data = (array) $results;
+                    $data['formid'] = $formid;
+                    $data['magiclink'] = $draft;
+                    $lookups = $this->getLookupTable($formid);
+                    foreach ($lookups as $lookup) {
+                        $ids = explode(',', $data[$lookup['form_field_name']]);
+                        if (isset($data[$lookup['form_field_name']]) && in_array($lookup['id'], $ids)) {
+                            if ($lookup['type'] === 's06') {
+                                if (! isset($data[$lookup['form_field_name']."[]"])) {
+                                    $data[$lookup['form_field_name']."[]"] = array();
+                                }
+                                array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
+                            } else {
+                                $data[$lookup['form_field_name']] = $lookup['value'];
                             }
-                            array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
-                        } else {
-                            $data[$lookup['form_field_name']] = $lookup['value'];
                         }
                     }
                 }
@@ -208,6 +215,30 @@ class DataStoreHelper extends Migration
             }
         }
         return $data;
+    }
+    /** Retrieve form draft
+    *
+    * @param $formid
+    * @param $draft
+    *
+    * @return Array
+    */
+    public function getFormDraftList($hash){
+        $list = array();
+        try {
+            $results = DB::table('form_table_drafts')
+                  ->select()
+                  ->where('email', $hash)
+                  ->get();
+
+            foreach ($results as $result) {
+              $list[] = ['host' => $result->host, 'magiclink' => urlencode($result->magiclink), 'form_id' => $result->form_table_id];
+            }
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $ret = ['status' => 0, 'message' => $ex->getMessage()];
+            return $ret;
+        }
+        return $list;
     }
 
    /** Handles form submission
@@ -225,26 +256,35 @@ class DataStoreHelper extends Migration
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
             if ($request->input('magiclink')) {
-                DB::table('forms_'.$form['id'])->where('magiclink', '=', $request->input('magiclink'))->delete();
+              try {
+                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
+                  if ($record) {
+                      DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
+                      DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
+                  }
+              } catch (\Illuminate\Database\QueryException $ex) {
+                 $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
+                 return null;
+             }
             }
             $id = $this->insertFormData($write['db'], $form['id']);
             // update status if form is partially completed
             if ($id) {
-                $magiclink = Hash::make(time());
+                $ret = array("status" => 1, "message" => 'success' );
                 try {
-                    DB::table('forms_'.$form['id'])
-                        ->where('id', $id)
-                        ->update(['status' => $status, 'magiclink' => $magiclink]);
-                    $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                    $ret = array("status" => 1, "magiclink" => $magiclink, 'email' => $email);
+                    if ($status != 'complete') {
+                        $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                        $magiclink = Hash::make(time());
+                        DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
+                        $ret = array("status" => 1, "magiclink" => $magiclink, 'email' => $email);
+                    }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                    return null;
                 }
                 return $ret;
             }
         }
-        return null;
+        return $ret;
     }
 
    /** Inserts submitted form data into the form table
