@@ -141,7 +141,7 @@ Then('I should see a new window with rendered html', () => {
   I.wait(3)
 })
 
-// Submit Form Feature
+ // Submit Form Feature
 Given(/I navigate to a published form/, () => {
   I.wait(3)
   I.click('TESTING FORM CREATION'+sessid)
