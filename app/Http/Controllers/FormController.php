@@ -420,7 +420,7 @@ class FormController extends Controller
           $data['body'] = array();
           $data['emailInfo'] = array();
           $magiclink = urlencode($response['magiclink']);
-          $data['body']['message'] = 'This is the body of the emails';
+          $data['body']['message'] = 'To go back to your draft, visit the link below.';
           $data['emailInfo']['address'] = $response['email'];
           $referer = $request->headers->get('referer');
           $host = parse_url($referer, PHP_URL_HOST);
