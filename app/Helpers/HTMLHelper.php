@@ -69,67 +69,42 @@ class HTMLHelper
         }
         // looping through all form fields.
         foreach ($content['data'] as $field) {
-            $field_start = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
-            $fieldset_header = $field_start .'<fieldset>'. $this->fieldLabel($field);
-            $field_header = $field_start . $this->fieldLabel($field);
+          switch ($field['formtype']) {
+            case "m02":
+            case "m04":
+            case "m06":
+              $form_container .= $this->formHtag($field);
+              break;
+            case "m08":
+            case "m10":
+              $form_container .= $this->formParagraph($field);
+              break;
+            case "m14":
+              if (empty($sections)) $form_container .= $this->fieldWrapper($field);
+              break;
+            case "m16":
+              // This loop excludes the first page (see $form_wrapper_top)
+              $pageNumber= (sizeof($sections) + 1);
 
-            // Closing tags for .field-wrapper (see fieldLabel function)
-            // and .form-group
-            $field_end = '</div></div>';
-            $fieldset_end = '</div></fieldset></div>';
+              $form_container .= $this->formSection($field, $pageNumber);
+              $form_container .= $this->formSectionHeader($field['label'], $field['id'], ($pageNumber + 1), $pageCount);
 
-            switch ($field['formtype']) {
-												case "s08":
-                            $form_container .= $fieldset_header . $this->formRadio($field). $this->helpBlock($field) . $fieldset_end;
-														break;
-                        case "s06":
-                            $form_container .= $fieldset_header . $this->formCheckbox($field) . $this->helpBlock($field) . $fieldset_end;
-                            break;
-                        case "i14":
-                            $form_container .= $field_header . $this->formTextArea($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "s02":
-                        case "s04":
-                        case "s14":
-                        case "s15":
-                        case "s16":
-                            $form_container .= $field_header . $this->formSelect($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "m02":
-                        case "m04":
-                        case "m06":
-                            $form_container .= $this->formHtag($field);
-                            break;
-                        case "m08":
-                        case "m10":
-                            $form_container .= $this->formParagraph($field);
-                            break;
-                        case "m13":
-                            $form_container .= $field_start . $this->formFile($field) . $this->helpBlock($field) . '</div>';
-                            break;
-                        case "m14":
-							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "m16":
-                            // This loop excludes the first page (see $form_wrapper_top)
-                            $pageNumber= (sizeof($sections) + 1);
-                            $form_container .= $this->formSection($field, $pageNumber). progressBar(($pageNumber + 1), $pageCount);
-                            $sections[] = $field;
-                            break;
-                        case "m11": $form_container .= $this->formHidden($field);
-                            break;
-                        default: $form_container .= $field_header . $this->formText($field) . $this->helpBlock($field). $field_end;
-                            break;
-            }
-            // append help block
-            //$form_container .= $this->helpBlock($field);
-        } //end of foreach
+              $sections[] = $field;
+              break;
+            case "m11":
+              $form_container .= $this->formHidden($field);
+              break;
+            default:
+              $form_container .= $this->fieldWrapper($field);
+              break;
+          }
+        }
 
 
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $form_wrapper_top = '<div class="sections-container"><div class="form-section active">'. progressBar(1, $pageCount).'<div class="form-section-header">'.$section1.'</div>';
+            $form_wrapper_top = '<div class="sections-container"><div class="form-section active">'.formSectionHeader($content['settings']['name'], 1, 1, $pageCount);
             $form_wrapper_bottom = '<div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button id="submit" class="btn btn-lg form-section-submit">Submit</button></div></div>';
             $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
@@ -470,7 +445,10 @@ class HTMLHelper
     {
 		$attributes = self::setAttributes($field);
 		$prepended = self::getPrepended($field);
-        $html = $prepended . '<label><span class="label">'. $field['label'] . '</span><input' . $attributes . '/><span class="file-custom" data-filename=""></span></label>';
+        $html = $prepended . '<label>';
+        $html .= '<span class="label">'. $field['label'] . '</span>';
+        $html .= '<input' . $attributes . '/><span class="file-custom" data-filename=""></span>';
+        $html .= '</label>';
         return $html;
     }
 
@@ -561,6 +539,17 @@ class HTMLHelper
      *
      * @return html
      */
+
+    public static function formSectionHeader($label, $id, $pageNumber, $pageCount) {
+      $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
+      $html .= '<div class="form-header-meta">';
+      $html .= '<h2>'.$content['settings']['name'].'</h2>';
+      $html .= progressBar($pageNumber, $pageCount);
+      $html .= '</div>';
+      $html .= '<h1 class="form-section-header" data-id="'.$label.'">'.$id.'</h1></header>';
+      return $html;
+    }
+
     public static function formSection($field, $pageNumber)
     {
         // Start pagination .form-group
@@ -576,9 +565,6 @@ class HTMLHelper
 
         // Close the previous .form-section, start a new one
         $html .= '</div><div class="form-section" data-id="'.$field['id'].'">';
-
-        // Insert section header
-        $html .= '<div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div>';
 
         return $html;
     }
@@ -616,7 +602,7 @@ class HTMLHelper
                 $html .= ' <span class="optional">(optional)</span>';
             }
         }
-        $html .= ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '</legend><div class="field-wrapper">' : '</label><div class="field-wrapper">';
+        $html .= ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '</legend>' : '</label>';
         return $html;
     }
 
@@ -834,6 +820,74 @@ class HTMLHelper
 		}
 		return $str;
   }
+
+    /** Generate wrapper elements
+    *
+    * @param $field
+    *
+    * @returns html
+    */
+
+    public static function fieldWrapper($field) {
+      $html = '';
+
+      $html.= '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
+
+      // Enclose checkboxes and radio buttons in a fieldset
+      if($field['formtype'] == "s06" || $field['formtype'] == "s08") {
+        $html .= "<fieldset>";
+      }
+
+      // Don't render fieldLabel for file inputs
+
+      // (Their labels are rendered in formFile,
+      // to enable custom styling)
+      if($field['formtype'] !== "m13") {
+        $html .= self::fieldLabel($field);
+      }
+
+      $html .= '<div class="field-wrapper">';
+
+      switch ($field['formtype']) {
+        case "s08":
+          $html.= self::formRadio($field);
+          break;
+        case "s06":
+          $html.= self::formCheckbox($field);
+          break;
+        case "i14":
+          $html.= self::formTextArea($field);
+          break;
+        case "s02":
+        case "s04":
+        case "s14":
+        case "s15":
+        case "s16":
+          $html.= self::formSelect($field);
+          break;
+        case "m13":
+          $html.= self::formFile($field);
+          break;
+        default:
+          $html.= self::formText($field);
+          break;
+      }
+
+      // Close .field-wrapper
+      $html .= "</div>";
+
+      $html .= self::helpBlock($field);
+
+      if($field['formtype'] == "s06" || $field['formtype'] == "s08") {
+        $html .= "</fieldset>";
+      }
+
+      // Close .form-group
+      $html .= "</div>";
+
+      return $html;
+    }
+
     /** Determine sectionals in the form
     *
     * @param $content
