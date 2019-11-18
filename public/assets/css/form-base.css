@@ -7,7 +7,6 @@ fieldset {
 label,
 legend {
 	display: block;
-	margin: 1.5rem 0 0.25rem;
 }
 
 .field-legend:after,
@@ -22,14 +21,12 @@ input[type="checkbox"],
 input[type="radio"],
 input[type="checkbox"] + label,
 input[type="radio"] + label {
-	float: left;
 	margin: 0 0 1rem;
 }
 
 input[type="checkbox"],
 input[type="radio"] {
 	margin-right: 1rem;
-	clear: left;
 }
 
 input[type="text"],
@@ -42,14 +39,11 @@ input[type="date"],
 input[type="email"],
 input[type="url"],
 textarea {
-	border: 1px solid #777;
 	width: 100%;
-	padding: 0.5rem;
 }
 
-.help-block {
+.help-text {
 	margin: 0.5rem 0 0;
-	color: #666;
 }
 
 .help-block:empty {
@@ -68,18 +62,12 @@ textarea {
 	color: red;
 }
 
-.form-section,
-.form-section-header {
+.form-section {
 	display: none;
 }
 
-.form-section.active,
-.form-section-header.active {
+.form-section.active {
 	display: block;
-}
-
-.form-section-header {
-	font-size: 1.5em;
 }
 
 .form-section-prev,
@@ -95,30 +83,4 @@ textarea {
 .form-section-next,
 .form-section-submit {
 	float: right;
-}
-
-@media screen and (min-width: 40rem) {
-	.form-horizontal {
-		float: left;
-	}
-
-	.form-horizontal {
-		width: 60%;
-	}
-}
-
-@media screen and (min-width: 70rem) {
-	.form-horizontal {
-		width: 70%;
-	}
-}
-
-/* Only display legend to screen readers*/
-
-#SFDSWFB-legend {
-	position: absolute !important;
-	height: 1px; width: 1px;
-	overflow: hidden;
-	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-	clip: rect(1px, 1px, 1px, 1px);
 }
