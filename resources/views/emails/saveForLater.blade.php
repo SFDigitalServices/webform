@@ -134,7 +134,7 @@ div[style*="margin: 16px 0;"] {
       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
         <tr>
           <td valign="top">
-            <img alt="City and County of San Francisco" src="https://i.imgur.com/KAj2mNH.png" width="84" height="84" style="display: block; font-family: 'Rubik', sans-serif; font-weight: 400; color: #1c3e57; font-size: 17px;" border="0">
+            <img alt="City and County of San Francisco" src="https://sf.gov/themes/custom/sfgovpl/src/img/sf-seal-3x.png" width="84" height="84" style="display: block; font-family: 'Rubik', sans-serif; font-weight: 400; color: #1c3e57; font-size: 17px;" border="0">
             </td>
           </tr>
       </table>
