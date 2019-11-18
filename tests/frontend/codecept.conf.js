@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '../../.env' })
 
 exports.config = {
   output: './output',
