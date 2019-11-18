@@ -5,7 +5,7 @@ Feature: Business rules
 
   Scenario:
     Given I have a formbuilder account
-    When I logged into the my account
+    When I log into my account
     Then I should see all my forms
     And I should be able to create new forms
     And I should be able to logout

@@ -1,10 +1,10 @@
 describe("HTML templates", function() {
-/*
+/* whitespace issues
+
 	var fb = new Fb()
 
   beforeEach(function() {
   });
-
   it("should spit out validation html", function() {
     expect(fb.view.validation).toEqual("\
 	<div class='accordion-validation'> \

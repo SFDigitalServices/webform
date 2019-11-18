@@ -7,6 +7,6 @@ Feature: delete form
     Given I clicked into an existing form for deletion
     When I click the delete icon
     Then I should see confirmation popup
-    When I click Do It
+    When I click Ok
     Then I should be redirected back to the dashboard
     And I should not see the deleted form
