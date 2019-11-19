@@ -22,7 +22,8 @@ class FormBuilderMailer extends Mailable
 
     public function build()
     {
-        $address = $this->emailInfo['address'];
+        $from_address = $this->emailInfo['from_address'];
+        $replyto_address = $this->emailInfo['replyto_address'];
         $subject = $this->emailInfo['subject'];
         $name = $this->emailInfo['name'];
         $file = isset($this->emailInfo['file']) ? $this->emailInfo['file'] : '';
@@ -32,7 +33,7 @@ class FormBuilderMailer extends Mailable
             //if you have a Whitelabeled service, you can split your statistics by the user login.
             'category' => 'category',
             'unique_args' => [
-                'variable_1' => 'abc'
+                'variable_1' => 'as needed'
             ]
         ];
 
@@ -42,22 +43,22 @@ class FormBuilderMailer extends Mailable
             $message->getHeaders()
                     ->addTextHeader('X-SMTPAPI', $header);
         });
-        if($file){
-          return $this->view($this->emailInfo['template'])
-                    ->from($address, $name)
-                    ->replyTo($address, $name)
+        if ($file) {
+            return $this->view($this->emailInfo['template'])
+                    ->from($from_address, $name)
+                    ->replyTo($replyto_address, $name)
                     ->subject($subject)
                     ->attach(
-                      $file,
-                      [
+                        $file,
+                        [
                         'as' => 'csvExport.xlsx'
                       ]
                     );
         }
 
         return $this->view($this->emailInfo['template'])
-                    ->from($address, $name)
-                    ->replyTo($address, $name)
+                    ->from($from_address, $name)
+                    ->replyTo($replyto_address, $name)
                     ->subject($subject);
     }
 

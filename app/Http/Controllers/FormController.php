@@ -423,12 +423,7 @@ class FormController extends Controller
         $scheme = parse_url($referer, PHP_URL_SCHEME);
         $form['host'] = $host !== '' ? $scheme.'://'.$host.$path : '';
         if ($response = $this->dataStoreHelper->submitForm($form, $request, 'partial')) {
-            $data['body'] = array();
-            $data['emailInfo'] = array();
-            $magiclink = urlencode($response['magiclink']);
-            $data['body']['message'] = 'To go back to your draft, visit the link below.';
-            $data['emailInfo']['address'] = $response['email'];
-            $data['body']['host'] = $form['host'] . "?draft=$magiclink&form_id=$form_id";
+            $data = $response['data'];
             $this->emailController->sendEmail($data, 'emails.saveForLater');
             return view('emails.saveForLater', ['data' => $data['body']]);
         }

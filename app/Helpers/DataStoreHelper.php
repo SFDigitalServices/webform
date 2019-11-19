@@ -276,7 +276,8 @@ class DataStoreHelper extends Migration
                         $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
                         $magiclink = Hash::make(time());
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                        $ret = array("status" => 1, "magiclink" => $magiclink, 'email' => $email);
+                        //$ret = array("status" => 1, "magiclink" => $magiclink, 'email' => $email);
+                        $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
@@ -836,5 +837,33 @@ class DataStoreHelper extends Migration
           }
       }
       return $write;
+    }
+
+    /** Get form data for email templates
+    *
+    * @param $form
+    * @param @magiclink
+    * @param @email
+    *
+    * @return Array
+    */
+    private function constructResumeDraftEmailData($form, $magiclink, $email)
+    {
+      $ret = array();
+      if($form){
+        $data['body'] = array();
+        // Set email body variables
+        $ret['body']['formname'] = $form['content']['settings']['name'];
+        $ret['body']['message'] = 'To go back to your draft, visit the link below.';
+        $ret['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+        // Set email header
+        $ret['emailInfo'] = array();
+        $ret['emailInfo']['address'] = $email;
+        //$data['emailInfo']['from_address'];
+        //$data['emailInfo']['replyto_address'];
+        $data['emailInfo']['subject'] = "Form submissions status";
+        $data['emailInfo']['name'] = 'City and County of San Francisco';
+      }
+      return $ret;
     }
 }
