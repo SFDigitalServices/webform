@@ -2,7 +2,7 @@
 @include('emails.partial.header')
 
 <!-- HIDDEN PREHEADER TEXT -->
-<div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Rubik', sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">To continue your draft of "{{ $data['formname'] }}", click the link in this email. @include('emails.partial.preview')
+<div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: 'Rubik', sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">To continue your draft of "{{ $data['formname'] }}", click the link in this email. @include('emails.partial.preview_whitespace')
 </div>
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
