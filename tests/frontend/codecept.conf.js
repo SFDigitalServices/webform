@@ -7,7 +7,7 @@ exports.config = {
       waitForNavigation: [ "domcontentloaded", "networkidle0" ],
       url: process.env.CODECEPT_URL || 'http://webform.test',
       'chrome': {
-        'headless': false,
+        'headless': true,
         'args': [
           '--no-sandbox',
           '--content-shell-host-window-size=1600x1200',
