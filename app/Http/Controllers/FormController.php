@@ -68,15 +68,16 @@ class FormController extends Controller
     {
         $user_id = $request->input('user_id');
         $user = Auth::user()->where('id', $user_id)->get();
-		$forms = Form::all();
+        $forms = Form::all();
         $user_forms = User_Form::all();
-		$query = User_Form::select('form_id')->where('user_id', $user_id)->get();
+        $query = User_Form::select('form_id')->where('user_id', $user_id)->get();
 
-		$forms = Form::whereIn('id', $query)->get();
+        $forms = Form::whereIn('id', $query)->get();
+
         foreach ($forms as $key => $value) {
-			$forms[$key]['content'] = $this->controllerHelper->scrubString($value['content']);
+            $forms[$key]['content'] = $this->controllerHelper->scrubString($value['content']);
             $forms[$key]['content'] = json_decode($value['content'], true); //hack to convert json blob to part of larger object
-		}
+        }
 
         return response()->json($forms);
     }
@@ -409,26 +410,28 @@ class FormController extends Controller
     */
     public function submitPartialForm(Request $request)
     {
-      $form_id = $request->input('form_id');
-      if (!$form_id) {
-          return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
-      }
-      $form = Form::where('id', $form_id)->first();
-      $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-      //todo backend validation
-      if($response = $this->dataStoreHelper->submitForm($form, $request, 'partial')){
-          $data['body'] = array();
-          $data['emailInfo'] = array();
-          $magiclink = urlencode($response['magiclink']);
-          $data['body']['message'] = 'To go back to your draft, visit the link below.';
-          $data['emailInfo']['address'] = $response['email'];
-          $referer = $request->headers->get('referer');
-          $host = parse_url($referer, PHP_URL_HOST);
-          $path = parse_url($referer, PHP_URL_PATH);
-          $data['body']['host'] = '//'.$host.$path . "?draft=$magiclink&form_id=$form_id";
-          $this->emailController->sendEmail($data, 'emails.saveForLater');
-          return view('emails.saveForLater', ['data' => $data['body']]);
-		    }
+        $form_id = $request->input('form_id');
+        if (!$form_id) {
+            return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
+        }
+        $form = Form::where('id', $form_id)->first();
+        $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+        //todo backend validation
+        $referer = $request->headers->get('referer');
+        $host = parse_url($referer, PHP_URL_HOST);
+        $path = parse_url($referer, PHP_URL_PATH);
+        $scheme = parse_url($referer, PHP_URL_SCHEME);
+        $form['host'] = $host !== '' ? $scheme.'://'.$host.$path : '';
+        if ($response = $this->dataStoreHelper->submitForm($form, $request, 'partial')) {
+            $data['body'] = array();
+            $data['emailInfo'] = array();
+            $magiclink = urlencode($response['magiclink']);
+            $data['body']['message'] = 'To go back to your draft, visit the link below.';
+            $data['emailInfo']['address'] = $response['email'];
+            $data['body']['host'] = $form['host'] . "?draft=$magiclink&form_id=$form_id";
+            $this->emailController->sendEmail($data, 'emails.saveForLater');
+            return view('emails.saveForLater', ['data' => $data['body']]);
+        }
     }
 
     /** Determine form has been published
@@ -576,5 +579,44 @@ class FormController extends Controller
 
             sleep(10);
         }
+    }
+
+    /** Get a list of drafts
+    *
+    * @param $request
+    *
+    * @return Page
+    */
+    public function getFormDraftList(Request $request){
+      $hash = $request->input('email');
+      $data = array();
+      if ($hash) {
+          $list = $this->dataStoreHelper->getFormDraftList($hash);
+          if ( (isset($list['status']) && $list['status'] == 0 ) || ! $list) {
+              $template = 'emails.noDraftsFound';
+          } else {
+              $template = 'emails.confirmationDraftList';
+              // send "resume draft" email
+              $data['emailInfo']['address'] = $hash;
+              $data['emailInfo']['subject'] = 'Here is your list of form drafts';
+              $data['body']['list'] = $list;
+              $emailTemplate = 'emails.draftList';
+              $this->emailController->sendEmail($data, $emailTemplate);
+          }
+      }
+      // return "no drafts found" page
+      return view($template, ['data' => $data]);
+    }
+
+    /** Let user check form drafts based on input email
+    *
+    * @param $request
+    *
+    * @return Page
+    */
+    public function resumeDraft(Request $request){
+        $template = 'emails.resumeDraft';
+        $url = '//'.$request->getHttpHost(). '/form/draft-list';
+        return view($template, ['host' => $url]);
     }
 }

@@ -46,6 +46,8 @@ $router->group(['prefix' => 'form'], function($router) {
 	  $router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
     $router->post('purge-csv', ['as' => 'purge-csv', 'uses' => 'FormController@purgeCSV']);
     $router->post('export-csv', ['as' => 'export-csv', 'uses' => 'FormController@exportFormData']);
+    $router->get('resume-draft', ['as' => 'resume-draft', 'uses' => 'FormController@resumeDraft']);
+    $router->post('draft-list', ['as' => 'draft-list', 'uses' => 'FormController@getFormDraftList']);
 });
 
 $router->group(['prefix' => 'api'], function($router) {
