@@ -229,24 +229,6 @@ div[style*="margin: 16px 0;"] {
       <![endif]-->
     </td>
   </tr>
-
-  <!-- FOOTER -->
-  <tr>
-    <td align="center" style="padding: 0px 0px 17px 0px;">
-      <!--[if (gte mso 9)|(IE)]>
-      <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
-      <tr>
-      <td align="center" valign="top" width="500">
-      <![endif]-->
-      <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
-      </table>
-      <!--[if (gte mso 9)|(IE)]>
-      </td>
-      </tr>
-      </table>
-      <![endif]-->
-    </td>
-  </tr>
 </table>
 
 </body>
