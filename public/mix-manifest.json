@@ -1,4 +1,17 @@
 {
     "/assets/css/app.css": "/assets/css/app.css",
-    "/assets/css/form-preview.css": "/assets/css/form-preview.css"
+    "/assets/css/form-branding.css": "/assets/css/form-branding.css",
+    "/assets/css/form-preview.css": "/assets/css/form-preview.css",
+    "/assets/sass/sf-design-system/design-tokens/_base.scss": "/assets/sass/sf-design-system/design-tokens/_base.scss",
+    "/assets/sass/sf-design-system/design-tokens/_breakpoints.scss": "/assets/sass/sf-design-system/design-tokens/_breakpoints.scss",
+    "/assets/sass/sf-design-system/design-tokens/_colors.scss": "/assets/sass/sf-design-system/design-tokens/_colors.scss",
+    "/assets/sass/sf-design-system/design-tokens/_mixins.scss": "/assets/sass/sf-design-system/design-tokens/_mixins.scss",
+    "/assets/sass/sf-design-system/design-tokens/_typography-mixins.scss": "/assets/sass/sf-design-system/design-tokens/_typography-mixins.scss",
+    "/assets/sass/sf-design-system/design-tokens/_typography.scss": "/assets/sass/sf-design-system/design-tokens/_typography.scss",
+    "/assets/sass/sf-design-system/design-tokens/_variables.scss": "/assets/sass/sf-design-system/design-tokens/_variables.scss",
+    "/assets/sass/sf-design-system/layout/_containers.scss": "/assets/sass/sf-design-system/layout/_containers.scss",
+    "/assets/sass/sf-design-system/layout/_two-column-container.scss": "/assets/sass/sf-design-system/layout/_two-column-container.scss",
+    "/assets/sass/sf-design-system/layout/_hero-banner.scss": "/assets/sass/sf-design-system/layout/_hero-banner.scss",
+    "/assets/sass/sf-design-system/forms/_form-fields.scss": "/assets/sass/sf-design-system/forms/_form-fields.scss",
+    "/assets/sass/sf-design-system/forms/_pagination.scss": "/assets/sass/sf-design-system/forms/_pagination.scss"
 }
