@@ -45,6 +45,7 @@ class FormBuilderMailer extends Mailable
         });
         if ($file) {
             return $this->view($this->emailInfo['template'])
+                    ->text($this->emailInfo['template']."_plain")
                     ->from($from_address, $name)
                     ->replyTo($replyto_address, $name)
                     ->subject($subject)
@@ -57,6 +58,7 @@ class FormBuilderMailer extends Mailable
         }
 
         return $this->view($this->emailInfo['template'])
+                    ->text($this->emailInfo['template']."_plain")
                     ->from($from_address, $name)
                     ->replyTo($replyto_address, $name)
                     ->subject($subject);
