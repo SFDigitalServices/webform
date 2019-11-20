@@ -37,6 +37,12 @@ class HTMLHelper
         $form_container = '';
         $sections = [];
 
+        /** Calculate total pages
+         *
+         * @param $array
+         *
+         * @return totalPages
+         */
         function totalPages($array) {
           if (in_array("m16", array_column($array, "formtype"))) {
             $totalPages = ((array_count_values(array_column($array, 'formtype'))["m16"]) + 1);
@@ -128,6 +134,7 @@ class HTMLHelper
         if( isset($content['settings']['backend']) ) {
             $form_container .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
         }
+
         // looping through all form fields.
         foreach ($content['data'] as $field) {
           switch ($field['formtype']) {
