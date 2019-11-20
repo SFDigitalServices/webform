@@ -147,8 +147,9 @@ class HTMLHelper
               // This loop excludes the first page (see $form_wrapper_top)
               $pageNumber= (sizeof($sections) + 1);
 
-              $form_container .= $this->formSection($field, $pageNumber);
-              $form_container .= $this->formSectionHeader($field['label'], $field['id'], ($pageNumber + 1), $pageCount);
+              $form_container .= formSection($field, $pageNumber, $pageCount);
+              $form_container .= formSectionHeader($content['settings']['name'], $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
+              $form_container .= '<div class="form-content">';
 
               $sections[] = $field;
               break;
