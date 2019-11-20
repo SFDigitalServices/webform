@@ -87,12 +87,12 @@ class HTMLHelper
         }
 
 
-        /** Generate pagination block
-         *
-         * @param $pageNumber, $pageCount
-         *
-         * @return html
-         */
+        //** Generate pagination block
+        // *
+        // * @param $pageNumber, $pageCount
+        // *
+        // * @return html
+        // */
         function pagination($pageNumber, $pageCount) {
           $html = '<div class="form-group">';
 
