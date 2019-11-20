@@ -49,18 +49,37 @@ class HTMLHelper
 
         $pageCount = totalPages($content['data']);
 
-        function progressBar($currentPage, $pageCount) {
+
+        /** Generate section header
+         *
+         * @param $pageNumber, $pageCount
+         *
+         * @return html
+         */
+        function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
+          $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
+          $html .= '<div class="form-header-meta">';
+          $html .= '<h2>'.$formName.'</h2>';
+
+          // Progress bar
           if ($pageCount > 1) {
-            $html = '<div class="form-progress">';
+            $html .= '<div class="form-progress">';
             if ($pageCount > 5) {
-              $percentDone = round(($currentPage / $pageCount) * 100);
+              $percentDone = round(($pageNumber / $pageCount) * 100);
               $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
             } else {
-              $html .= '<div class="form-progress-bubble">Page '. $currentPage .' of '. $pageCount .'</div>';
+              $html .= '<div class="form-progress-bubble">Page '. $pageNumber .' of '. $pageCount .'</div>';
             }
             $html .= '</div>';
-            return $html;
           }
+
+          // Close .form-header-meta
+          $html .= '</div>';
+
+          $html .= '<h1 class="form-section-header" data-id="'.$id.'">'.$pageName.'</h1></header>';
+          return $html;
+        }
+
         }
 
         //if this form is a csv transaction, add form_id.
