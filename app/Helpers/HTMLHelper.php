@@ -868,6 +868,9 @@ class HTMLHelper
         case "m13":
           $html.= self::formFile($field);
           break;
+        case "m14":
+          $html.= self::formButton($field);
+          break;
         default:
           $html.= self::formText($field);
           break;
