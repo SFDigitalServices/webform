@@ -32,7 +32,7 @@ class HTMLHelper
         // form setting (json)
         $formEncoding = $this->controllerHelper->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
 
-        $form_div = '<form id="SFDSWFB_forms_'.$formid.'" class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><legend id="SFDSWFB-legend">'.$content['settings']['name'].'</legend>';
+        $form_div = '<form id="SFDSWFB_forms_'.$formid.'" class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'>';
 
         $form_container = '';
         $sections = [];
@@ -176,7 +176,7 @@ class HTMLHelper
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
           $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
-        $form_end .= '</fieldset></form>';
+        $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
