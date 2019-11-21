@@ -8,8 +8,9 @@ mix.copy(
       'public/assets/sass/sf-design-system/layout/').
     copy(
       'node_modules/sf-design-system/src/components/04-forms/**/*.scss',
-      'public/assets/sass/sf-design-system/forms/').
-    sass('public/assets/sass/app.scss', 'public/assets/css').
+      'public/assets/sass/sf-design-system/forms/');
+
+  mix.sass('public/assets/sass/app.scss', 'public/assets/css').
     sass('public/assets/sass/form-branding.scss', 'public/assets/css').
     sass('public/assets/sass/form-preview.scss', 'public/assets/css').
    options({
