@@ -7,4 +7,4 @@ public/formbuilder/env.inc
 vendor/
 tests/_support/_generated
 node_modules/
-
+public/assets/css/form-preview.css
