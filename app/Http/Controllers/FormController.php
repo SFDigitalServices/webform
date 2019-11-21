@@ -281,7 +281,6 @@ class FormController extends Controller
         '<meta name="viewport" content="width=device-width, initial-scale=1.0">'.
         '<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-base.css" />'.
-        '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-branding.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
         '</head>'.
         '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';

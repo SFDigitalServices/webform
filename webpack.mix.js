@@ -1,16 +1,6 @@
 const mix = require('laravel-mix');
 
-mix.copy(
-      'node_modules/sf-design-system/src/components/00-design-tokens/**/*.scss',
-      'public/assets/sass/sf-design-system/design-tokens/').
-    copy(
-      'node_modules/sf-design-system/src/components/03-layout/**/*.scss',
-      'public/assets/sass/sf-design-system/layout/').
-    copy(
-      'node_modules/sf-design-system/src/components/04-forms/**/*.scss',
-      'public/assets/sass/sf-design-system/forms/').
-    sass('public/assets/sass/app.scss', 'public/assets/css').
-    sass('public/assets/sass/form-branding.scss', 'public/assets/css').
+mix.sass('public/assets/sass/app.scss', 'public/assets/css').
     sass('public/assets/sass/form-preview.scss', 'public/assets/css').
    options({
       includePaths: [

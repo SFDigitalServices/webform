@@ -1,20 +1,22 @@
-@import 'sf-design-system/design-tokens/colors';
-@import 'sf-design-system/design-tokens/breakpoints';
-@import 'sf-design-system/design-tokens/typography-mixins';
-@import 'sf-design-system/design-tokens/mixins';
-@import 'sf-design-system/design-tokens/variables';
-
+@import 'variables';
 
 body {
   background: $white;
 }
 
 #SFDSWF-Container {
-  padding: 1rem;
+  padding: 2em 5em;
 }
 
-.hero-banner {
-  padding-top: 0 !important;
+#SFDSWFB-legend {
+  position: relative !important;
+  height: auto;
+  width: auto;
+  font-size: 3em;
+}
+
+.form-group {
+  position: relative;
 }
 
 .is-selected-in-editor {
@@ -22,7 +24,7 @@ body {
     position: absolute;
     background: rgba($blue-2, 0.4);
     border: 2px solid rgba($blue-2, 0.6);
-    border-radius: $radius;
+    border-radius: 4px;
     content: "";
     top: -1rem;
     bottom: -1rem;
