@@ -66,6 +66,7 @@ jobs: # a collection of steps
             cd ../../
             ./node_modules/karma/bin/karma start --single-run --browsers ChromeHeadless karma.conf.js # run jasmine
             ./node_modules/stylelint/bin/stylelint.js public/assets/sass/*.scss --fix #lint css source
+            npm update
             npm run dev # compile sass
             ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
       - deploy:
