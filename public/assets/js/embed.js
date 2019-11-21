@@ -158,16 +158,19 @@ function initSectional() {
   jQuery('#SFDSWF-Container .form-section-nav a').click(function(e){
     var i = jQuery(e.target).prevAll().length;
     SFDSWF_goto(i);
+    history.pushState(i, null, null);
   });
 
   jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
     var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
     SFDSWF_goto(i < 1 ? 0 : i-1);
+    history.pushState(i-1, null, null);
   });
 
   jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
     var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
     SFDSWF_goto(i+1);
+    history.pushState(i+1, null, null);
   });
 
   var SFDSWF_goto = function(i) {
@@ -179,6 +182,11 @@ function initSectional() {
     jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');
     jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
   }
+
+  window.addEventListener('popstate', function(e) {
+    var i = e.state === null ? 0 : e.state;
+    SFDSWF_goto(i)
+  });
 
   skipToSectionId(SFDSWF_goto);
 }
