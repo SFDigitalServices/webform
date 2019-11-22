@@ -7,4 +7,6 @@ public/formbuilder/env.inc
 vendor/
 tests/_support/_generated
 node_modules/
-
+public/assets/css/form-branding.css
+public/assets/css/form-preview.css
+public/assets/sass/sf-design-system/
