@@ -569,7 +569,7 @@ class HTMLHelper
         }
 
         $html = ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '<legend class="control-label">':  '<label for="'.$label_for.'" class="control-label">';
-        $html .= isset($field['label']) ? $field['label'] : "";
+        $html .= isset($field['label']) ? html_entity_decode($field['label']) : "";
         if (array_key_exists('required', $field)) {
             if (! $field['required'] == "true") {
                 $html .= ' <span class="optional">(optional)</span>';
@@ -587,7 +587,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.$field['help'].'</p>' : '<div class="help-block with-errors"></div>';
+        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.html_entity_decode($field['help']).'</p>' : '<div class="help-block with-errors"></div>';
         // Closing tag for .field-wrapper
         // (see fieldLabel function for opening tag)
         $str .= '</div>';

@@ -1228,7 +1228,39 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $notEmptyText);
     }
     public function testFieldLabel(){
+        $emptyLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="" class="control-label"> <span class="optional">(optional)</span></label><div class="field-wrapper">';
 
+        $this->assertSame($expected, $emptyLabel);
+
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $notEmptyLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_name" class="control-label">hello world <span class="optional">(optional)</span></label><div class="field-wrapper">';
+        $this->assertEquals($expected, $notEmptyLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $idLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">hello world <span class="optional">(optional)</span></label><div class="field-wrapper">';
+        $this->assertEquals($expected, $idLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $this->attributes['required'] = 'true';
+        $reqLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">hello world</label><div class="field-wrapper">';
+        $this->assertEquals($expected, $reqLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = "wayne's world";
+        $this->attributes['required'] = 'true';
+        $aposLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">wayne\'s world</label><div class="field-wrapper">';
+        $this->assertEquals($expected, $aposLabel);
     }
     public function testHelpBlock(){
         $emptyBlock = HTMLHelper::helpBlock($this->attributes);
@@ -1240,6 +1272,11 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
         $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p></div>';
         $this->assertEquals($expected, $notEmptyBlock);
+
+        $this->attributes['help'] = 'bob\'s block';
+        $aposBlock = HTMLHelper::helpBlock($this->attributes);
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">bob\'s block</p></div>';
+        $this->assertEquals($expected, $aposBlock);
     }
 
     public function testWebhook(){
