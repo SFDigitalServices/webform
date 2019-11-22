@@ -56,9 +56,12 @@ class HTMLHelper
 
             $pageNumber= (sizeof($sections) + 1);
 
-            $form_container .= $this->formSection($content, $field, $pageNumber, $pageCount);
+            $form_container .= $this->formSection($content['settings']['name'], $field, $pageNumber, $pageCount);
 
             $sections[] = $field;
+
+            // All other static / hidden field types start
+            // with the letter "m"
           } else if ($field['formtype'][0] == "m") {
             $form_container .= $this->createContentAndHiddenFields($field);
           } else {
@@ -70,9 +73,9 @@ class HTMLHelper
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $firstSectionHeader = $this->formSectionHeader($content['settings']['name'], 1, $section1, 1, $pageCount);
+            $firstSectionHeader = self::formSectionHeader($content['settings']['name'], 1, $section1, 1, $pageCount);
             $form_wrapper_top = '<div class="sections-container"><div class="form-section active">'.$firstSectionHeader.'<div class="form-content">';
-            $form_wrapper_bottom = $this->pagination($pageCount, $pageCount).'</div></div>';
+            $form_wrapper_bottom = self::pagination($pageCount, $pageCount).'</div></div>';
             $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
             $form_container = $form_div. $form_container;
@@ -315,7 +318,7 @@ class HTMLHelper
      * @return html
      */
 
-    public function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
+    public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
       $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
       $html .= '<div class="form-header-meta">';
       $html .= '<h2>'.$formName.'</h2>';
@@ -346,7 +349,7 @@ class HTMLHelper
     // * @return html
     // */
 
-    public function pagination($pageNumber, $pageCount) {
+    public static function pagination($pageNumber, $pageCount) {
       $html = '<div class="form-group">';
 
       if ($pageNumber > 1) {
@@ -373,14 +376,14 @@ class HTMLHelper
      * @return html
      */
 
-    public static function formSection($content, $field, $pageNumber, $pageCount) {
-      $html = $this->pagination($pageNumber, $pageCount);
+    public static function formSection($name, $field, $pageNumber, $pageCount) {
+      $html = self::pagination($pageNumber, $pageCount);
 
       // - Close the previous .form-content and .form-section
       // - Open the next .form-section
       $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
 
-      $html .= $this->formSectionHeader($content['settings']['name'], $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
+      $html .= self::formSectionHeader($name, $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
 
       // - Open the next .form-content
       $html .= '<div class="form-content">';
