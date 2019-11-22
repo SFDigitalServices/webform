@@ -74,7 +74,7 @@ jobs: # a collection of steps
             ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
             ./vendor/bin/codecept run # run unit/api/functional tests
             cd tests/frontend #run E2E tests
-            npx codeceptjs run --override '{ "helpers": {"Puppeteer": {"url": "https://formbuilder-sf-staging-pr-'${CIRCLE_PULL_REQUEST##*/}'.herokuapp.com/"}}}' #run e2e tests
+            sh run_tests.sh
       - deploy:
           name: deploy builds to ${CIRCLE_BRANCH}
           working_directory: /home/circleci/project
