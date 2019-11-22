@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css?family=Rubik:300,400,400i,500&display=swap');
 
-@import './sf-design-system/design-tokens/_colors';
-@import './sf-design-system/design-tokens/breakpoints';
-@import './sf-design-system/design-tokens/typography-mixins';
-@import './sf-design-system/design-tokens/typography';
-@import './sf-design-system/design-tokens/mixins';
-@import './sf-design-system/design-tokens/variables';
-@import './sf-design-system/design-tokens/base';
+@import 'sf-design-system/design-tokens/colors';
+@import 'sf-design-system/design-tokens/breakpoints';
+@import 'sf-design-system/design-tokens/typography-mixins';
+@import 'sf-design-system/design-tokens/typography';
+@import 'sf-design-system/design-tokens/mixins';
+@import 'sf-design-system/design-tokens/variables';
+@import 'sf-design-system/design-tokens/base';
 
-@import './sf-design-system/layout/hero-banner';
-@import './sf-design-system/forms/form-fields';
-@import './sf-design-system/forms/pagination';
+@import 'sf-design-system/layout/hero-banner';
+@import 'sf-design-system/forms/form-fields';
+@import 'sf-design-system/forms/pagination';
 
 .form-content {
   @include contain-1090;

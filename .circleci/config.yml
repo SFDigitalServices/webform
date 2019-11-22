@@ -33,17 +33,22 @@ jobs: # a collection of steps
           command: composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
-            - composer-v2.1-{{ checksum "composer.lock" }}
+            - composer-v2.2-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - composer-v2.1-
+            - composer-v2.2-
       - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
-          key: composer-v2.1-{{ checksum "composer.lock" }}
+          key: composer-v2.2-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:
           name: Update Missed Dependencies
           command: composer update --prefer-dist
-      - run: php artisan migrate:refresh --force
+      - run:
+          name: Install node and dependencies
+          command: npm install
+      - run:
+          name: Database migration
+          command: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
       - run:
           name: Configure & start Apache
@@ -57,7 +62,7 @@ jobs: # a collection of steps
           command: |
             sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts'
             sudo apt-get install -y nodejs
-            npm install
+
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
             ./vendor/bin/codecept run # run unit/api/functional tests
@@ -65,7 +70,6 @@ jobs: # a collection of steps
             npx codeceptjs run --override '{ "helpers": {"Puppeteer": {"url": "https://formbuilder-sf-staging-pr-'${CIRCLE_PULL_REQUEST##*/}'.herokuapp.com/"}}}' #run e2e tests
             cd ../../
             ./node_modules/karma/bin/karma start --single-run --browsers ChromeHeadless karma.conf.js # run jasmine
-            npm install sf-design-system
             ./node_modules/stylelint/bin/stylelint.js public/assets/sass/*.scss --fix #lint css source
             npm run dev # compile sass
             ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
