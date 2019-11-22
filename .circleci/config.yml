@@ -44,9 +44,6 @@ jobs: # a collection of steps
           name: Update Missed Dependencies
           command: composer update --prefer-dist
       - run:
-          name: Install node and dependencies
-          command: npm install
-      - run:
           name: Database migration
           command: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
@@ -57,6 +54,9 @@ jobs: # a collection of steps
       - run:
           name: install nodejs
           command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+     - run:
+          name: Install node and dependencies
+          command: npm install
       - run:
           name: install depdencies and run tests
           command: |
