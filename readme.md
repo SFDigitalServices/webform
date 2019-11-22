@@ -1,4 +1,4 @@
-# Web Form Builder 
+# Web Form Builder
 
 This is the source for the web form builder, cloned from https://github.com/krisanalfa/lumen-jwt as a starting point. Decided to not implement jwt at this point.
 
@@ -11,7 +11,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ### Setup steps
 1. Setup a new project sekeleton from this repository
 ```
-        git clone git@github.com:SFDigitalServices/webform.git webform 
+        git clone git@github.com:SFDigitalServices/webform.git webform
         cd webform
         cp .env.example .env
         composer install
@@ -26,7 +26,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 
 3. Start your Docker containers with:
 ```
-        docker-compose up -d 
+        docker-compose up -d
 ```
 *** Docker on Windows alert: you may have to specify the Dockerfile in docker-compose.yml file.
 ```
@@ -43,11 +43,11 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ### Unit Testing
 1. Navigate to the src/docker directory and spin up docker as normal
 ```
-        docker-compose up -d 
+        docker-compose up -d
 ```
 2. List your docker containers and get the id of your db
 ```
-        docker ps 
+        docker ps
 ```
 3. Inspect your database container and write down the db's IPAddress
 ```
@@ -74,7 +74,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 
 ## Deployment to Heroku
 
-A pipeline has been setup for this project on Heroku that connects to the github repo. Every push to the branch you specify here will deploy a new version of this app. 
+A pipeline has been setup for this project on Heroku that connects to the github repo. Every push to the branch you specify here will deploy a new version of this app.
 
 ## License
 
