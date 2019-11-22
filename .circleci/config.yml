@@ -25,9 +25,14 @@ jobs: # a collection of steps
     working_directory: /home/circleci/project # directory where steps will run
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
+      - run:
+          name: initiate environment setup
+          command: |
+            chmod -R 777 storage #apache needs to write to logs
+            cp .env.example .env
+            sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts' #set url for test
       - run: sudo a2enmod rewrite
       - run: sudo docker-php-ext-install mysqli pdo_mysql
-      - run: sudo apt-get -y install vim
       - run:
           name: Install Project Dependencies
           command: composer install -n --prefer-dist
@@ -52,18 +57,17 @@ jobs: # a collection of steps
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
       # end to end testing
       - run:
-          name: install nodejs
+          name: download nodejs
           command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
       - run:
-          name: Install node and dependencies
-          command: npm install
+          name: Install nodejs
+          command:  sudo apt-get install -y nodejs
       - run:
-          name: install depdencies and run tests
+          name: Install node dependencies
+          command:  npm install
+      - run:
+          name: run tests
           command: |
-            sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts'
-            sudo apt-get install -y nodejs
-            chmod -R 777 storage #apache needs to write to logs
-            cp .env.example .env
             ./vendor/bin/codecept run # run unit/api/functional tests
             cd tests/frontend
             npx codeceptjs run --override '{ "helpers": {"Puppeteer": {"url": "https://formbuilder-sf-staging-pr-'${CIRCLE_PULL_REQUEST##*/}'.herokuapp.com/"}}}' #run e2e tests
