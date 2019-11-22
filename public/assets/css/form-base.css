@@ -1,0 +1,86 @@
+fieldset {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+label,
+legend {
+	display: block;
+}
+
+.field-legend:after,
+.field-wrapper:after,
+.form-group:after {
+	display: table;
+	content: "";
+	clear: both;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+	margin: 0 0 1rem;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+	margin-right: 1rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="tel"],
+input[type="password"],
+input[type="time"],
+input[type="search"],
+input[type="date"],
+input[type="email"],
+input[type="url"],
+textarea {
+	width: 100%;
+}
+
+.help-text {
+	margin: 0.5rem 0 0;
+}
+
+.help-block:empty {
+	margin: 0;
+}
+
+.help-block ul {
+	margin: 0;
+}
+
+.help-block .list-unstyled {
+	padding: 0;
+}
+
+.has-error .help-block {
+	color: red;
+}
+
+.form-section {
+	display: none;
+}
+
+.form-section.active {
+	display: block;
+}
+
+.form-section-prev,
+.form-section-next,
+.form-section-submit {
+	margin-top: 1.5rem;
+}
+
+.form-section-prev {
+	float: left;
+}
+
+.form-section-next,
+.form-section-submit {
+	float: right;
+}

@@ -134,10 +134,25 @@ DROP TABLE IF EXISTS `enum_mappings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `enum_mappings` (
-  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `form_table_id` smallint(6) DEFAULT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `form_table_id` int(10) unsigned DEFAULT NULL,
   `form_field_name` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB AUTO_INCREMENT=3632 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `form_table_drafts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `form_table_drafts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `form_table_id` int(10) unsigned DEFAULT NULL,
+  `form_record_id` int(10) unsigned DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `host` varchar(255) DEFAULT NULL,
+  `magiclink` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 
 ) ENGINE=InnoDB AUTO_INCREMENT=3632 DEFAULT CHARSET=utf8;
