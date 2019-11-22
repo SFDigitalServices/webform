@@ -1232,13 +1232,13 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     }
     public function testHelpBlock(){
         $emptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div></div>';
+        $expected = '<div class="help-block with-errors"></div>';
 
         $this->assertSame($expected, $emptyBlock);
 
         $this->attributes['help'] = 'help block';
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p></div>';
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p>';
         $this->assertEquals($expected, $notEmptyBlock);
     }
 

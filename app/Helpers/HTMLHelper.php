@@ -49,7 +49,7 @@ class HTMLHelper
         foreach ($content['data'] as $field) {
           if ($field['formtype'] == "m14") {
             // Submit button
-            if (empty($sections)) $form_container .= $this->fieldWrapper($field);
+            if (empty($sections)) $form_container .= $this->createEditableFields($field);
           } else if ($field['formtype'] == "m16") {
             // Page separators
             // This loop excludes the first page (see $form_wrapper_top)
@@ -373,7 +373,7 @@ class HTMLHelper
      * @return html
      */
 
-    public function formSection($content, $field, $pageNumber, $pageCount) {
+    public static function formSection($content, $field, $pageNumber, $pageCount) {
       $html = $this->pagination($pageNumber, $pageCount);
 
       // - Close the previous .form-content and .form-section
