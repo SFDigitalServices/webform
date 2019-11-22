@@ -25,6 +25,7 @@ class HTMLHelper
      *
      * @return HTML
      */
+
     public function getHTML($form)
     {
         $content = $form['content'];
@@ -37,98 +38,7 @@ class HTMLHelper
         $form_container = '';
         $sections = [];
 
-        /** Calculate total pages
-         *
-         * @param $array
-         *
-         * @return totalPages
-         */
-        function totalPages($array) {
-          if (in_array("m16", array_column($array, "formtype"))) {
-            $totalPages = ((array_count_values(array_column($array, 'formtype'))["m16"]) + 1);
-          }
-          else {
-            $totalPages = 1;
-          }
-          return $totalPages;
-        }
-
-        $pageCount = totalPages($content['data']);
-
-
-        /** Generate section header
-         *
-         * @param $pageNumber, $pageCount
-         *
-         * @return html
-         */
-        function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
-          $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
-          $html .= '<div class="form-header-meta">';
-          $html .= '<h2>'.$formName.'</h2>';
-
-          // Progress bar
-          if ($pageCount > 1) {
-            $html .= '<div class="form-progress">';
-            if ($pageCount > 5) {
-              $percentDone = round(($pageNumber / $pageCount) * 100);
-              $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
-            } else {
-              $html .= '<div class="form-progress-bubble">Page '. $pageNumber .' of '. $pageCount .'</div>';
-            }
-            $html .= '</div>';
-          }
-
-          // Close .form-header-meta
-          $html .= '</div>';
-
-          $html .= '<h1 class="form-section-header" data-id="'.$id.'">'.$pageName.'</h1></header>';
-          return $html;
-        }
-
-
-        //** Generate pagination block
-        // *
-        // * @param $pageNumber, $pageCount
-        // *
-        // * @return html
-        // */
-        function pagination($pageNumber, $pageCount) {
-          $html = '<div class="form-group">';
-
-          if ($pageNumber > 1) {
-            $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
-          }
-
-          if ($pageNumber == $pageCount) {
-            $html .= '<button id="submit" class="btn btn-lg form-section-submit">Submit</button>';
-          } else {
-            $html .= '<button class="btn btn-lg form-section-next">Next</button>';
-          }
-
-          // Close .form-group
-          $html .= '</div>';
-
-          return $html;
-        }
-
-
-        /** Generate Section element
-         *
-         * @param $field, $pageNumber, $pageCount
-         *
-         * @return html
-         */
-        function formSection($field, $pageNumber, $pageCount) {
-          $html = pagination($pageNumber, $pageCount);
-
-          // - Close .form-content,
-          // - Close the previous .form-section
-          // - Start a new .form-section
-          $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
-
-          return $html;
-        }
+        $pageCount = $this->totalPages($content['data']);
 
         //if this form is a csv transaction, add form_id.
         if( isset($content['settings']['backend']) ) {
@@ -154,8 +64,8 @@ class HTMLHelper
               // This loop excludes the first page (see $form_wrapper_top)
               $pageNumber= (sizeof($sections) + 1);
 
-              $form_container .= formSection($field, $pageNumber, $pageCount);
-              $form_container .= formSectionHeader($content['settings']['name'], $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
+              $form_container .= $this->formSection($field, $pageNumber, $pageCount);
+              $form_container .= $this->formSectionHeader($content['settings']['name'], $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
               $form_container .= '<div class="form-content">';
 
               $sections[] = $field;
@@ -173,9 +83,9 @@ class HTMLHelper
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $firstSectionHeader = formSectionHeader($content['settings']['name'], 1, $section1, 1, $pageCount);
+            $firstSectionHeader = $this->formSectionHeader($content['settings']['name'], 1, $section1, 1, $pageCount);
             $form_wrapper_top = '<div class="sections-container"><div class="form-section active">'.$firstSectionHeader.'<div class="form-content">';
-            $form_wrapper_bottom = pagination($pageCount, $pageCount).'</div></div>';
+            $form_wrapper_bottom = $this->pagination($pageCount, $pageCount).'</div></div>';
             $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
             $form_container = $form_div. $form_container;
@@ -394,6 +304,98 @@ class HTMLHelper
     }
     return $js;
   }
+
+    /** Calculate total pages
+     *
+     * @param $array
+     *
+     * @return totalPages
+     */
+    public function totalPages($array) {
+      if (in_array("m16", array_column($array, "formtype"))) {
+        $totalPages = ((array_count_values(array_column($array, 'formtype'))["m16"]) + 1);
+      }
+      else {
+        $totalPages = 1;
+      }
+      return $totalPages;
+    }
+
+    /** Generate section header
+     *
+     * @param $formName, $id, $pageName, $pageNumber, $pageCount
+     *
+     * @return html
+     */
+
+    public function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
+      $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
+      $html .= '<div class="form-header-meta">';
+      $html .= '<h2>'.$formName.'</h2>';
+
+      // Progress bar
+      if ($pageCount > 1) {
+        $html .= '<div class="form-progress">';
+        if ($pageCount > 5) {
+          $percentDone = round(($pageNumber / $pageCount) * 100);
+          $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
+        } else {
+          $html .= '<div class="form-progress-bubble">Page '. $pageNumber .' of '. $pageCount .'</div>';
+        }
+        $html .= '</div>';
+      }
+
+      // Close .form-header-meta
+      $html .= '</div>';
+
+      $html .= '<h1 class="form-section-header" data-id="'.$id.'">'.$pageName.'</h1></header>';
+      return $html;
+    }
+
+    //** Generate pagination block
+    // *
+    // * @param $pageNumber, $pageCount
+    // *
+    // * @return html
+    // */
+
+    public function pagination($pageNumber, $pageCount) {
+      $html = '<div class="form-group">';
+
+      if ($pageNumber > 1) {
+        $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
+      }
+
+      if ($pageNumber == $pageCount) {
+        $html .= '<button id="submit" class="btn btn-lg form-section-submit">Submit</button>';
+      } else {
+        $html .= '<button class="btn btn-lg form-section-next">Next</button>';
+      }
+
+      // Close .form-group
+      $html .= '</div>';
+
+      return $html;
+    }
+
+
+    /** Generate Section element
+     *
+     * @param $field, $pageNumber, $pageCount
+     *
+     * @return html
+     */
+
+    public function formSection($field, $pageNumber, $pageCount) {
+      $html = $this->pagination($pageNumber, $pageCount);
+
+      // - Close .form-content,
+      // - Close the previous .form-section
+      // - Start a new .form-section
+      $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
+
+      return $html;
+    }
 
     /** Generate Radio input element
     *
