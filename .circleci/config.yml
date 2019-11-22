@@ -54,7 +54,7 @@ jobs: # a collection of steps
       - run:
           name: install nodejs
           command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-     - run:
+      - run:
           name: Install node and dependencies
           command: npm install
       - run:
@@ -62,7 +62,6 @@ jobs: # a collection of steps
           command: |
             sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts'
             sudo apt-get install -y nodejs
-
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
             ./vendor/bin/codecept run # run unit/api/functional tests
