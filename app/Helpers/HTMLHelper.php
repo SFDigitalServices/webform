@@ -47,35 +47,22 @@ class HTMLHelper
 
         // looping through all form fields.
         foreach ($content['data'] as $field) {
-          switch ($field['formtype']) {
-            case "m02":
-            case "m04":
-            case "m06":
-              $form_container .= $this->formHtag($field);
-              break;
-            case "m08":
-            case "m10":
-              $form_container .= $this->formParagraph($field);
-              break;
-            case "m14":
-              if (empty($sections)) $form_container .= $this->fieldWrapper($field);
-              break;
-            case "m16":
-              // This loop excludes the first page (see $form_wrapper_top)
-              $pageNumber= (sizeof($sections) + 1);
+          if ($field['formtype'] == "m14") {
+            // Submit button
+            if (empty($sections)) $form_container .= $this->fieldWrapper($field);
+          } else if ($field['formtype'] == "m16") {
+            // Page separators
+            // This loop excludes the first page (see $form_wrapper_top)
 
-              $form_container .= $this->formSection($field, $pageNumber, $pageCount);
-              $form_container .= $this->formSectionHeader($content['settings']['name'], $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
-              $form_container .= '<div class="form-content">';
+            $pageNumber= (sizeof($sections) + 1);
 
-              $sections[] = $field;
-              break;
-            case "m11":
-              $form_container .= $this->formHidden($field);
-              break;
-            default:
-              $form_container .= $this->fieldWrapper($field);
-              break;
+            $form_container .= $this->formSection($content, $field, $pageNumber, $pageCount);
+
+            $sections[] = $field;
+          } else if ($field['formtype'][0] == "m") {
+            $form_container .= $this->createContentAndHiddenFields($field);
+          } else {
+            $form_container .= $this->createEditableFields($field);
           }
         }
 
@@ -386,13 +373,17 @@ class HTMLHelper
      * @return html
      */
 
-    public function formSection($field, $pageNumber, $pageCount) {
+    public function formSection($content, $field, $pageNumber, $pageCount) {
       $html = $this->pagination($pageNumber, $pageCount);
 
-      // - Close .form-content,
-      // - Close the previous .form-section
-      // - Start a new .form-section
+      // - Close the previous .form-content and .form-section
+      // - Open the next .form-section
       $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
+
+      $html .= $this->formSectionHeader($content['settings']['name'], $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
+
+      // - Open the next .form-content
+      $html .= '<div class="form-content">';
 
       return $html;
     }
@@ -860,17 +851,48 @@ class HTMLHelper
 		return $str;
   }
 
-    /** Generate wrapper elements
+
+
+
+    /** Generate headings, paragraphs, and hidden fields
     *
     * @param $field
     *
     * @returns html
     */
 
-    public static function fieldWrapper($field) {
-      $html = '';
+    public static function createContentAndHiddenFields($field) {
+      $html = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
 
-      $html.= '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
+      switch ($field['formtype']) {
+        case "m02":
+        case "m04":
+        case "m06":
+          $html .= self::formHtag($field);
+          break;
+        case "m11":
+          $html .= self::formHidden($field);
+          break;
+        default:
+          $html .= self::formParagraph($field);
+          break;
+      }
+
+      // Close .form-group
+      $html .= "</div>";
+
+      return $html;
+    }
+
+    /** Generate user-editable fields
+    *
+    * @param $field
+    *
+    * @returns html
+    */
+
+    public static function createEditableFields($field) {
+      $html = '<div class="form-group form-group-field field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
 
       // Enclose checkboxes and radio buttons in a fieldset
       if($field['formtype'] == "s06" || $field['formtype'] == "s08") {
