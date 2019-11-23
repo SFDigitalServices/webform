@@ -18,6 +18,7 @@ SFDSWFB.loadRemainingScripts = function() {
 
 SFDSWFB.loadScript = function(type, callback) {
   var scriptArray;
+
   if (type == "pre") {
     scriptArray = SFDSWFB.preRenderScripts;
   } else if (type == "post") {

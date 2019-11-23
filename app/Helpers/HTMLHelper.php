@@ -9,7 +9,7 @@ class HTMLHelper
     protected $controllerHelper;
     protected $dataStoreHelper;
 
-    /** Create a new controller instance.
+    /**  Create a new controller instance.
      *
      * @return void
      */

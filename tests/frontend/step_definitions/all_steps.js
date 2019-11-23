@@ -39,7 +39,7 @@ Then('I should be able to edit that field to the form', () => {
   I.fillField('id', 'full_name')
   I.wait(2)
   I.click('Save')
-  I.wait(8)
+  I.wait(3)
   I.switchTo('iframe');
   I.see('Name', '#SFDSWF-Container')
   I.wait(1)

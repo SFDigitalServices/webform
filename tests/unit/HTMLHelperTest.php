@@ -10,6 +10,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     protected $htmlHelperTester;
     protected $attributes;
 
+
     protected function _before()
     {
         $this->htmlHelperTester = new HTMLHelper();
