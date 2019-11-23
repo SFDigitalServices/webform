@@ -36,9 +36,11 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
                 dockerfile: Dockerfile
 ```
 
-4. To compile Sass stylesheets, run `npm run watch`
+4. Run `scripts/copy_sf_design_system.sh` to copy pattern library stylesheets. (You will need to run this manually whenever a pattern library update is released.)
 
-5. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
+5. Run `npm run watch`
+
+6. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
 ### Unit Testing
 1. Navigate to the src/docker directory and spin up docker as normal

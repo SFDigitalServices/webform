@@ -25,6 +25,7 @@ class HTMLHelper
      *
      * @return HTML
      */
+
     public function getHTML($form)
     {
         $content = $form['content'];
@@ -32,80 +33,50 @@ class HTMLHelper
         // form setting (json)
         $formEncoding = $this->controllerHelper->hasFileUpload($content['data']) ? ' enctype="multipart/form-data"' : '';
 
-        $form_div = '<form id="SFDSWFB_forms_'.$formid.'" class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'><fieldset><legend id="SFDSWFB-legend">'.$content['settings']['name'].'</legend>';
+        $form_div = '<form id="SFDSWFB_forms_'.$formid.'" class="form-horizontal" action="'.$content['settings']['action'].'" method="'.$content['settings']['method'].'" '.$formEncoding.'>';
 
         $form_container = '';
         $sections = [];
+
+        $pageCount = $this->totalPages($content['data']);
 
         //if this form is a csv transaction, add form_id.
         if( isset($content['settings']['backend']) ) {
             $form_container .= '<input type="hidden" name="form_id" value="'.$form['id'].'"/>';
         }
+
         // looping through all form fields.
         foreach ($content['data'] as $field) {
-            $field_start = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
-            $field_header = $field_start . $this->fieldLabel($field);
-            $field_end = '</div>';
+          if ($field['formtype'] == "m14") {
+            // Submit button
+            if (empty($sections)) $form_container .= $this->createEditableFields($field);
+          } else if ($field['formtype'] == "m16") {
+            // Page separators
+            // This loop excludes the first page (see $form_wrapper_top)
 
-            switch ($field['formtype']) {
-												case "s08": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formRadio($field). $this->helpBlock($field).'</fieldset>'. $field_end;
-														break;
-                        case "s06": $form_container .= $field_start .'<fieldset>'. $this->fieldLabel($field) . $this->formCheckbox($field) . $this->helpBlock($field) .'</fieldset>'. $field_end;
-                            break;
-                        case "i14": $form_container .= $field_header . $this->formTextArea($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "s02":
-                        case "s04":
-                        case "s14":
-                        case "s15":
-                        case "s16":
-                            $form_container .= $field_header . $this->formSelect($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "m02":
-                            $form_container .= $this->formHtag($field);
-                            break;
-                        case "m04":
-                            $form_container .= $this->formHtag($field);
-                            break;
-                        case "m06":
-                            $form_container .= $this->formHtag($field);
-                            break;
-                        case "m08":
-                            $form_container .= $this->formParagraph($field);
-                            break;
-                        case "m10":
-                            $form_container .= $this->formParagraph($field);
-                            break;
-                        case "m13":
-                            $form_container .= $field_start . $this->formFile($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "m14":
-							              if (empty($sections)) $form_container .= $field_header . $this->formButton($field) . $this->helpBlock($field). $field_end;
-                            break;
-                        case "m16": $form_container .= $this->formSection($field); $sections[] = $field;
-                            break;
-                        case "m11": $form_container .= $this->formHidden($field);
-                            break;
-                        default: $form_container .= $field_header . $this->formText($field) . $this->helpBlock($field). $field_end;
-                            break;
-            }
-            // append help block
-            //$form_container .= $this->helpBlock($field);
-        } //end of foreach
+            $pageNumber= (sizeof($sections) + 1);
+
+            $form_container .= $this->formSection($content['settings']['name'], $field, $pageNumber, $pageCount);
+
+            $sections[] = $field;
+
+            // All other static / hidden field types start
+            // with the letter "m"
+          } else if ($field['formtype'][0] == "m") {
+            $form_container .= $this->createContentAndHiddenFields($field);
+          } else {
+            $form_container .= $this->createEditableFields($field);
+          }
+        }
 
 
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
-            $nav = '<div class="form-section-nav"><a class="active" href="javascript:void(0)">'.$section1.'</a>';
-            foreach ($sections as $idx => $section) {
-                $active = $idx === "0" ? ' class="active"' : '';
-                $nav .= '<a'.$active.' href="javascript:void(0)">'.$section['label'].'</a>';
-            }
-            $nav .= '</div>';
-            $form_wraper_top = '<div class="sections-container"><div class="form-section-header active">'.$section1.'</div><div class="form-section active">';
-            $form_wrapper_bottom = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><button id="submit" class="btn btn-lg submit">Submit</button></div></div></div>';
-            $form_container = $nav. $form_div. $form_wraper_top. $form_container. $form_wrapper_bottom;
+            $firstSectionHeader = self::formSectionHeader($content['settings']['name'], 1, $section1, 1, $pageCount);
+            $form_wrapper_top = '<div class="sections-container"><div class="form-section active">'.$firstSectionHeader.'<div class="form-content">';
+            $form_wrapper_bottom = self::pagination($pageCount, $pageCount).'</div></div>';
+            $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
             $form_container = $form_div. $form_container;
         }
@@ -113,7 +84,7 @@ class HTMLHelper
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
           $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
-        $form_end .= '</fieldset></form>';
+        $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
@@ -324,6 +295,102 @@ class HTMLHelper
     return $js;
   }
 
+    /** Calculate total pages
+     *
+     * @param $array
+     *
+     * @return totalPages
+     */
+    public function totalPages($array) {
+      if (in_array("m16", array_column($array, "formtype"))) {
+        $totalPages = ((array_count_values(array_column($array, 'formtype'))["m16"]) + 1);
+      }
+      else {
+        $totalPages = 1;
+      }
+      return $totalPages;
+    }
+
+    /** Generate section header
+     *
+     * @param $formName, $id, $pageName, $pageNumber, $pageCount
+     *
+     * @return html
+     */
+
+    public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
+      $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
+      $html .= '<div class="form-header-meta">';
+      $html .= '<h2>'.$formName.'</h2>';
+
+      // Progress bar
+      if ($pageCount > 1) {
+        $html .= '<div class="form-progress">';
+        if ($pageCount > 5) {
+          $percentDone = round(($pageNumber / $pageCount) * 100);
+          $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
+        } else {
+          $html .= '<div class="form-progress-bubble">Page '. $pageNumber .' of '. $pageCount .'</div>';
+        }
+        $html .= '</div>';
+      }
+
+      // Close .form-header-meta
+      $html .= '</div>';
+
+      $html .= '<h1 class="form-section-header" data-id="'.$id.'">'.$pageName.'</h1></header>';
+      return $html;
+    }
+
+    //** Generate pagination block
+    // *
+    // * @param $pageNumber, $pageCount
+    // *
+    // * @return html
+    // */
+
+    public static function pagination($pageNumber, $pageCount) {
+      $html = '<div class="form-group">';
+
+      if ($pageNumber > 1) {
+        $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
+      }
+
+      if ($pageNumber == $pageCount) {
+        $html .= '<button id="submit" class="btn btn-lg form-section-submit">Submit</button>';
+      } else {
+        $html .= '<button class="btn btn-lg form-section-next">Next</button>';
+      }
+
+      // Close .form-group
+      $html .= '</div>';
+
+      return $html;
+    }
+
+
+    /** Generate Section element
+     *
+     * @param $field, $pageNumber, $pageCount
+     *
+     * @return html
+     */
+
+    public static function formSection($name, $field, $pageNumber, $pageCount) {
+      $html = self::pagination($pageNumber, $pageCount);
+
+      // - Close the previous .form-content and .form-section
+      // - Open the next .form-section
+      $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
+
+      $html .= self::formSectionHeader($name, $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
+
+      // - Open the next .form-content
+      $html .= '<div class="form-content">';
+
+      return $html;
+    }
+
     /** Generate Radio input element
     *
     * @param $field
@@ -444,7 +511,10 @@ class HTMLHelper
     {
 		$attributes = self::setAttributes($field);
 		$prepended = self::getPrepended($field);
-        $html = $prepended . '<label><span class="label">'. $field['label'] . '</span><input' . $attributes . '/><span class="file-custom" data-filename=""></span></label>';
+        $html = $prepended . '<label>';
+        $html .= '<span class="label">'. $field['label'] . '</span>';
+        $html .= '<input' . $attributes . '/><span class="file-custom" data-filename=""></span>';
+        $html .= '</label>';
         return $html;
     }
 
@@ -529,18 +599,8 @@ class HTMLHelper
         return $html;
     }
 
-   /** Generate Section element
-     *
-     * @param $field
-     *
-     * @return html
-     */
-    public static function formSection($field)
-    {
-        $html = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="'.$field['id'].'">'.$field['label'].'</div><div class="form-section" data-id="'.$field['id'].'">';
 
-        return $html;
-    }
+
 
   /** Generate hidden element
     *
@@ -575,7 +635,7 @@ class HTMLHelper
                 $html .= ' <span class="optional">(optional)</span>';
             }
         }
-        $html .= ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '</legend><div class="field-wrapper">' : '</label><div class="field-wrapper">';
+        $html .= ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '</legend>' : '</label>';
         return $html;
     }
 
@@ -588,9 +648,6 @@ class HTMLHelper
     public static function helpBlock($field)
     {
         $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.$field['help'].'</p>' : '<div class="help-block with-errors"></div>';
-        // Closing tag for .field-wrapper
-        // (see fieldLabel function for opening tag)
-        $str .= '</div>';
         return $str;
     }
 
@@ -796,6 +853,108 @@ class HTMLHelper
 		}
 		return $str;
   }
+
+
+
+
+    /** Generate headings, paragraphs, and hidden fields
+    *
+    * @param $field
+    *
+    * @returns html
+    */
+
+    public static function createContentAndHiddenFields($field) {
+      $html = '<div class="form-group field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
+
+      switch ($field['formtype']) {
+        case "m02":
+        case "m04":
+        case "m06":
+          $html .= self::formHtag($field);
+          break;
+        case "m11":
+          $html .= self::formHidden($field);
+          break;
+        default:
+          $html .= self::formParagraph($field);
+          break;
+      }
+
+      // Close .form-group
+      $html .= "</div>";
+
+      return $html;
+    }
+
+    /** Generate user-editable fields
+    *
+    * @param $field
+    *
+    * @returns html
+    */
+
+    public static function createEditableFields($field) {
+      $html = '<div class="form-group form-group-field field-'.$field['formtype'].'" data-id="'.$field['id'].'">';
+
+      // Enclose checkboxes and radio buttons in a fieldset
+      if($field['formtype'] == "s06" || $field['formtype'] == "s08") {
+        $html .= "<fieldset>";
+      }
+
+      // Don't render fieldLabel for file inputs
+
+      // (Their labels are rendered in formFile,
+      // to enable custom styling)
+      if($field['formtype'] !== "m13") {
+        $html .= self::fieldLabel($field);
+      }
+
+      $html .= '<div class="field-wrapper">';
+
+      switch ($field['formtype']) {
+        case "s08":
+          $html.= self::formRadio($field);
+          break;
+        case "s06":
+          $html.= self::formCheckbox($field);
+          break;
+        case "i14":
+          $html.= self::formTextArea($field);
+          break;
+        case "s02":
+        case "s04":
+        case "s14":
+        case "s15":
+        case "s16":
+          $html.= self::formSelect($field);
+          break;
+        case "m13":
+          $html.= self::formFile($field);
+          break;
+        case "m14":
+          $html.= self::formButton($field);
+          break;
+        default:
+          $html.= self::formText($field);
+          break;
+      }
+
+      // Close .field-wrapper
+      $html .= "</div>";
+
+      $html .= self::helpBlock($field);
+
+      if($field['formtype'] == "s06" || $field['formtype'] == "s08") {
+        $html .= "</fieldset>";
+      }
+
+      // Close .form-group
+      $html .= "</div>";
+
+      return $html;
+    }
+
     /** Determine sectionals in the form
     *
     * @param $content
