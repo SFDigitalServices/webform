@@ -39,7 +39,7 @@ Then('I should be able to edit that field to the form', () => {
   I.fillField('id', 'full_name')
   I.wait(2)
   I.click('Save')
-  I.wait(8)
+  I.wait(3)
   I.switchTo('iframe');
   I.see('Name', '#SFDSWF-Container')
   I.wait(1)
@@ -135,6 +135,7 @@ When('I click on the Preview button', () => {
 })
 Then('I should see a new window with rendered html', () => {
   I.seeElement('#SFDSWF-Container')
+  I.seeElement('#SFDSWFB-legend')
   I.wait(3)
   I.closeCurrentTab()
   I.wait(3)
