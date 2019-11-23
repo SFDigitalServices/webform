@@ -28,6 +28,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ```
         docker-compose up -d
 ```
+
 *** Docker on Windows alert: you may have to specify the Dockerfile in docker-compose.yml file.
 ```
         apache_php:
