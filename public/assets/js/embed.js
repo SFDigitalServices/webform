@@ -182,11 +182,12 @@ function initSectional() {
   // Pagination button click events
   jQuery('.form-section-prev').click(function(e) {
     paginate(-1, true);
-
+    e.preventDefault();
   });
 
   jQuery('.form-section-next').click(function(e) {
     paginate(1, true);
+    e.preventDefault();
   });
 
   window.addEventListener('popstate', function(e) {
