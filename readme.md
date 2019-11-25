@@ -33,7 +33,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ```
         apache_php:
             build:
-                context: ./path/to/Dockerfile
+               context: ./path/to/Dockerfile
                 dockerfile: Dockerfile
 ```
 
