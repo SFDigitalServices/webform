@@ -393,6 +393,7 @@ class HTMLHelper
         $attributes = self::setAttributes($field);
         $prepended = self::getPrepended($field);
         $html = $prepended . "<input" . $attributes . "/>";
+        if (isset($field['unit']) && $field['formtype'] == "d06" && $field['unit'] != "") $html = $html . '<span class="unit">' . $field['unit'] . '</span>';
         return $html;
     }
 
@@ -741,7 +742,7 @@ class HTMLHelper
         unset($field['color']);
 
         foreach ($field as $key => $value) {
-            if ($value == '') {
+            if ($value == '' || $key == 'unit') {
                 //fields with empty values are skipped
             } elseif ($key == 'type' && ($value == 'regex' || $value == 'match')) {
                 $html .= ' type="text"';

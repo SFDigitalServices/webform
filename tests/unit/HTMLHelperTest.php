@@ -653,6 +653,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['class'] = 'large rounded';
         $this->attributes['type'] = 'number';
         $this->attributes['required'] = 'true';
+        $this->attributes['unit'] = 'km';
 		$this->attributes['regex'] = 'invalid';
 		$this->attributes['match'] = 'invalid';
 		$this->attributes['minlength'] = '3';
@@ -661,7 +662,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '20';
         $this->attributes['formtype'] = 'd06';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="foo" name="bar" type="number" data-formtype="d06" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="any"/>';
+        $expected = '<input id="foo" name="bar" type="number" data-formtype="d06" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="any"/><span class="unit">km</span>';
         $this->assertEquals($expected, $notEmptyText);
 
         // Price fields
