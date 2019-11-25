@@ -1171,15 +1171,15 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
     public function testFormSection(){
         $this->attributes['formtype'] = "m02";
-        $emptySection = HTMLHelper::formSection($this->attributes);
-        $expected = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id=""></div><div class="form-section" data-id="">';
+        $emptySection = HTMLHelper::formSection('My Form', $this->attributes, 2, 4);
+        $expected = '<div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button class="btn btn-lg form-section-next">Next</button></div></div></div><div class="form-section" data-id=""><header class="hero-banner default" id="form_page_3"><div class="form-header-meta"><h2>My Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 3 of 4</div></div></div><h1 class="form-section-header" data-id=""></h1></header><div class="form-content">';
 
         $this->assertSame($expected, $emptySection);
 
         $this->attributes['id'] = 'section_id';
         $this->attributes['label'] = "section_label";
-        $notEmptySection = HTMLHelper::formSection($this->attributes);
-        $expected = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="section_id">section_label</div><div class="form-section" data-id="section_id">';
+        $notEmptySection = HTMLHelper::formSection('My Form', $this->attributes, 3, 4);
+        $expected = '<div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button class="btn btn-lg form-section-next">Next</button></div></div></div><div class="form-section" data-id="section_id"><header class="hero-banner default" id="form_page_4"><div class="form-header-meta"><h2>My Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 4 of 4</div></div></div><h1 class="form-section-header" data-id="section_id">section_label</h1></header><div class="form-content">';
 
         $this->assertEquals($expected, $notEmptySection);
 
@@ -1232,13 +1232,13 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     }
     public function testHelpBlock(){
         $emptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div></div>';
+        $expected = '<div class="help-block with-errors"></div>';
 
         $this->assertSame($expected, $emptyBlock);
 
         $this->attributes['help'] = 'help block';
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p></div>';
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p>';
         $this->assertEquals($expected, $notEmptyBlock);
     }
 
