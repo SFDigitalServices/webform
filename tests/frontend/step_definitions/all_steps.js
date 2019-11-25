@@ -135,6 +135,7 @@ When('I click on the Preview button', () => {
 })
 Then('I should see a new window with rendered html', () => {
   I.seeElement('#SFDSWF-Container')
+  I.seeElement('#SFDSWFB-legend')
   I.wait(3)
   I.closeCurrentTab()
   I.wait(3)

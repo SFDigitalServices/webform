@@ -18,26 +18,27 @@ class FormTest extends \Codeception\Test\Unit
         $this->controllerHelper = new ControllerHelper();
         $this->htmlHelper = new HTMLHelper();
 
-        $this->emptyFormAttributes = array(
+		$this->emptyFormAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"","method":"POST","name":""},"data":[]}', true)
+			"content" => json_decode('{"settings":{"action":"","method":"POST","name":""},"data":[]}', true)
         );
 
-        $this->simpleFormAttributes = array(
+		$this->simpleFormAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
-        $this->complexFormAttributes = array(
+		$this->complexFormAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"Select - Basic","option":["Enter","Your","Options","Here!"],"id":"select_dropdown","formtype":"s02","required":"true"},{"label":"Checkboxes","checkboxes":["Option one","Option two"],"id":"checkboxId[]","formtype":"s06","required":"false","name":"checkboxName"},{"label":"Radio buttons","radios":["Option one","Option two"],"id":"multiple_radios","formtype":"s08","name":"multiple_radios","required":"true"},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"Select - Basic","option":["Enter","Your","Options","Here!"],"id":"select_dropdown","formtype":"s02","required":"true"},{"label":"Checkboxes","checkboxes":["Option one","Option two"],"id":"checkboxId[]","formtype":"s06","required":"false","name":"checkboxName"},{"label":"Radio buttons","radios":["Option one","Option two"],"id":"multiple_radios","formtype":"s08","name":"multiple_radios","required":"true"},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
-        $this->sectionalFormAttributes = array(
+		$this->sectionalFormAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"Page Separator","id":"page_separator","formtype":"m16","type":"text"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true"},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"Page Separator","id":"page_separator","formtype":"m16","type":"text"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true"},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
-    }
+
+	}
 
 	public function testFormIsSectional()
     {
@@ -60,49 +61,49 @@ class FormTest extends \Codeception\Test\Unit
 
 	public function testFormGetInputSelector()
     {
-        $testId = "";
-        $this->attributes = array();
-        $checked = false;
+		$testId = "";
+		$this->attributes = array();
+		$checked = false;
 
         $emptyGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = '';
         $this->assertSame($expected, $emptyGetInputSelector);
 
-        $testId = "name";
-        $this->attributes = array(
-                                "name" => "c02",
-                                "submit" => "m14"
-                            );
-        $checked = false;
+		$testId = "name";
+		$this->attributes = array(
+								"name" => "c02",
+								"submit" => "m14"
+							);
+		$checked = false;
 
         $simpleGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = '#name';
         $this->assertEquals($expected, $simpleGetInputSelector);
 
-        $testId = "address";
-        $this->attributes = array(
-                                "name" => "c02",
-                                "address" => "s06",
-                                "submit" => "m14"
-                            );
-        $checked = false;
+		$testId = "address";
+		$this->attributes = array(
+								"name" => "c02",
+								"address" => "s06",
+								"submit" => "m14"
+							);
+		$checked = false;
 
         $checkboxGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = 'input[name="address[]"]';
         $this->assertEquals($expected, $checkboxGetInputSelector);
 
-        $testId = "address";
-        $this->attributes = array(
-                                "name" => "c02",
-                                "address" => "s08",
-                                "submit" => "m14"
-                            );
-        $checked = true;
+		$testId = "address";
+		$this->attributes = array(
+								"name" => "c02",
+								"address" => "s08",
+								"submit" => "m14"
+							);
+		$checked = true;
 
         $checkedRadioGetInputSelector = $this->htmlHelper->getInputSelector($testId, $this->attributes, $checked);
         $expected = 'input[name=address]:checked';
         $this->assertEquals($expected, $checkedRadioGetInputSelector);
-    }
+	}
 
 	public function testFormGetOp()
     {
@@ -149,11 +150,11 @@ class FormTest extends \Codeception\Test\Unit
         $notContainGetOp = $this->controllerHelper->getOp("doesn't contain");
         $expected = "doesn't contain";
         $this->assertEquals($expected, $notContainGetOp);
-    }
+	}
 
 	public function testFormGetConditionalStatement()
     {
-        $foo = "foo";
+		$foo = "foo";
 
         $emptyGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "", "bar");
         $expected = "";
@@ -198,7 +199,7 @@ class FormTest extends \Codeception\Test\Unit
         $notContainGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "doesn't contain", "bar");
         $expected = "(foo).search(/bar/i) == -1";
         $this->assertEquals($expected, $notContainGetConditionalStatement);
-    }
+	}
 
 	public function testFormGetHTML()
     {
@@ -217,12 +218,12 @@ class FormTest extends \Codeception\Test\Unit
         $sectionalGetHTML = $this->htmlHelper->getHTML($this->sectionalFormAttributes);
         $expected = '<form id="SFDSWFB_forms_" class="form-horizontal" action="http://somewhere.com/post" method="POST" ><div class="sections-container"><div class="form-section active"><header class="hero-banner default" id="form_page_1"><div class="form-header-meta"><h2>Test Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 1 of 2</div></div></div><h1 class="form-section-header" data-id="1">Test Form</h1></header><div class="form-content"><div class="form-group form-group-field field-c02" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" data-formtype="c02" name="name" type="text" required/></div><div class="help-block with-errors"></div><p class="help-text"></p></div><div class="form-group"><button class="btn btn-lg form-section-next">Next</button></div></div></div><div class="form-section" data-id="page_separator"><header class="hero-banner default" id="form_page_2"><div class="form-header-meta"><h2>Test Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 2 of 2</div></div></div><h1 class="form-section-header" data-id="page_separator">Page Separator</h1></header><div class="form-content"><div class="form-group form-group-field field-s08" data-id="address"><fieldset><legend class="control-label">Address</legend><div class="field-wrapper"><label for="address_test"><input type="radio" id="address_test" value="test" data-formtype="s08" name="address" required/><span class="inline-label">test</span></label></div><div class="help-block with-errors"></div></fieldset></div><div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button id="submit" class="btn btn-lg form-section-submit">Submit</button></div></div></div></form>';
         $this->assertEquals($expected, $sectionalGetHTML);
-    }
+	}
 
 	public function testFormWrapJS()
     {
         $emptyWrapJS = $this->htmlHelper->wrapJS($this->emptyFormAttributes);
-        $expected = 'var SFDSWFB = {};SFDSWFB.preRenderScripts = [\'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\', \'//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js\', \'///assets/js/error-msgs.js\'];SFDSWFB.postRenderScripts = [\'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js\'];var script = document.createElement(\'script\'); SFDSWFB.formRender = function() {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form id="SFDSWFB_forms_" class="form-horizontal" action="" method="POST" ></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }};script.src = \'///assets/js/embed.js\';var s = document.createElement(\'script\');s.setAttribute(\'type\', \'text/javascript\'); s.text=\'\';document.head.append(s);document.head.appendChild(script);';
+		    $expected = 'var SFDSWFB = {};SFDSWFB.preRenderScripts = [\'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\', \'//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js\', \'///assets/js/error-msgs.js\'];SFDSWFB.postRenderScripts = [\'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js\'];var script = document.createElement(\'script\'); SFDSWFB.formRender = function() {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form id="SFDSWFB_forms_" class="form-horizontal" action="" method="POST" ></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }};script.src = \'///assets/js/embed.js\';var s = document.createElement(\'script\');s.setAttribute(\'type\', \'text/javascript\'); s.text=\'\';document.head.append(s);document.head.appendChild(script);';
         $this->assertSame($expected, $emptyWrapJS);
 
         $simpleWrapJS = $this->htmlHelper->wrapJS($this->simpleFormAttributes);
@@ -237,11 +238,11 @@ class FormTest extends \Codeception\Test\Unit
         $expected = 'var SFDSWFB = {};SFDSWFB.preRenderScripts = [\'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\', \'//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js\', \'///assets/js/error-msgs.js\'];SFDSWFB.postRenderScripts = [\'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js\'];var script = document.createElement(\'script\'); SFDSWFB.formRender = function() {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form id="SFDSWFB_forms_" class="form-horizontal" action="http://somewhere.com/post" method="POST" ><div class="sections-container"><div class="form-section active"><header class="hero-banner default" id="form_page_1"><div class="form-header-meta"><h2>Test Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 1 of 2</div></div></div><h1 class="form-section-header" data-id="1">Test Form</h1></header><div class="form-content"><div class="form-group form-group-field field-c02" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" data-formtype="c02" name="name" type="text" required/></div><div class="help-block with-errors"></div><p class="help-text"></p></div><div class="form-group"><button class="btn btn-lg form-section-next">Next</button></div></div></div><div class="form-section" data-id="page_separator"><header class="hero-banner default" id="form_page_2"><div class="form-header-meta"><h2>Test Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 2 of 2</div></div></div><h1 class="form-section-header" data-id="page_separator">Page Separator</h1></header><div class="form-content"><div class="form-group form-group-field field-s08" data-id="address"><fieldset><legend class="control-label">Address</legend><div class="field-wrapper"><label for="address_test"><input type="radio" id="address_test" value="test" data-formtype="s08" name="address" required/><span class="inline-label">test</span></label></div><div class="help-block with-errors"></div></fieldset></div><div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button id="submit" class="btn btn-lg form-section-submit">Submit</button></div></div></div></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }initSectional();};script.src = \'///assets/js/embed.js\';var s = document.createElement(\'script\');s.setAttribute(\'type\', \'text/javascript\'); s.text=\'\';document.head.append(s);document.head.appendChild(script);';
         $this->assertEquals($expected, $sectionalWrapJS);
 
-        //todo calculation and conditional tests
+		//todo calculation and conditional tests
 
         $this->webhookSingleAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"false","delimiter":"","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"false","delimiter":"","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
         $webhookSingleWrapJS = $this->htmlHelper->wrapJS($this->webhookSingleAttributes);
@@ -250,7 +251,7 @@ class FormTest extends \Codeception\Test\Unit
 
         $this->webhookOptionsAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":"","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":"","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
         $webhookOptionsWrapJS = $this->htmlHelper->wrapJS($this->webhookOptionsAttributes);
@@ -261,7 +262,7 @@ class FormTest extends \Codeception\Test\Unit
 
         $this->webhookDelimiterAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":",","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":",","responseOptionsIndex":""}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
         $webhookDelimiterWrapJS = $this->htmlHelper->wrapJS($this->webhookDelimiterAttributes);
@@ -272,7 +273,7 @@ class FormTest extends \Codeception\Test\Unit
 
         $this->webhookFullAttributes = array(
             "id" => "",
-            "content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":"","responseOptionsIndex":"data"}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
+			"content" => json_decode('{"settings":{"action":"http://somewhere.com/post","method":"POST","name":"Test Form"},"data":[{"label":"Name","placeholder":"","help":"","id":"name","formtype":"c02","name":"name","type":"text","required":"true"},{"label":"BAN Number","placeholder":"","help":"","id":"BAN","formtype":"d06","type":"number","required":"true","name":"BAN"},{"label":"Address","radios":["test"],"id":"address","formtype":"s08","name":"address","required":"true","webhooks":{"ids":["BAN"],"endpoint":"http:\/\/apps.sfgov.org\/bpdev\/sites\/all\/modules\/ccsf_api\/TTX\/BAN.php?type=OOC","responseIndex":"StreetAddress","method":"json","optionsArray":"true","delimiter":"","responseOptionsIndex":"data"}},{"button":"Submit","id":"submit","formtype":"m14","color":"btn-primary"}]}', true)
         );
 
         $webhookFullWrapJS = $this->htmlHelper->wrapJS($this->webhookFullAttributes);
@@ -280,7 +281,7 @@ class FormTest extends \Codeception\Test\Unit
         $expected = 'var SFDSWFB = {};SFDSWFB.preRenderScripts = [\'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\', \'//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js\', \'///assets/js/error-msgs.js\'];SFDSWFB.postRenderScripts = [\'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js\'];var script = document.createElement(\'script\'); SFDSWFB.formRender = function() {document.getElementById(\'SFDSWF-Container\').innerHTML = \'<form id="SFDSWFB_forms_" class="form-horizontal" action="http://somewhere.com/post" method="POST" ><div class="form-group form-group-field field-c02" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input id="name" data-formtype="c02" name="name" type="text" required/></div><div class="help-block with-errors"></div><p class="help-text"></p></div><div class="form-group form-group-field field-d06" data-id="BAN"><label for="BAN" class="control-label">BAN Number</label><div class="field-wrapper"><input id="BAN" data-formtype="d06" type="number" required name="BAN" step="any"/></div><div class="help-block with-errors"></div><p class="help-text"></p></div><div class="form-group form-group-field field-s08" data-id="address"><fieldset><legend class="control-label">Address</legend><div class="field-wrapper"><label for="address_test"><input type="radio" id="address_test" value="test" data-formtype="s08" name="address" required/><span class="inline-label">test</span></label></div><div class="help-block with-errors"></div></fieldset></div><div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><button id="submit" data-formtype="m14" class=" btn-primary">Submit</button></div><div class="help-block with-errors"></div></div></form>\';if (typeof SFDSerrorMsgs != \'undefined\') { SFDSerrorMsgs(); } else { jQuery(\'#SFDSWF-Container form\').validator(); }jQuery(\'#BAN\').on(\'change\',function(){if (jQuery(\'#BAN\').val() != \'\') callWebhook(\'address\', \'http://apps.sfgov.org/bpdev/sites/all/modules/ccsf_api/TTX/BAN.php?type=OOC\', Array(\'BAN\'), \'StreetAddress\', \'json\', true, null, \'data\');});};script.src = \'///assets/js/embed.js\';var s = document.createElement(\'script\');s.setAttribute(\'type\', \'text/javascript\'); s.text=\'\';document.head.append(s);document.head.appendChild(script);';
 
         $this->assertEquals($expected, $webhookFullWrapJS);
-    }
+	}
 
     protected function _after()
     {
