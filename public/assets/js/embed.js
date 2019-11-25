@@ -18,7 +18,6 @@ SFDSWFB.loadRemainingScripts = function() {
 
 SFDSWFB.loadScript = function(type, callback) {
   var scriptArray;
-
   if (type == "pre") {
     scriptArray = SFDSWFB.preRenderScripts;
   } else if (type == "post") {
@@ -156,40 +155,53 @@ function getDataInPath(obj, path) {
 }
 
 function initSectional() {
-  jQuery('#SFDSWF-Container .form-section-nav a').click(function(e){
-    var i = jQuery(e.target).prevAll().length;
-    SFDSWF_goto(i);
-    history.pushState(i, null, null);
-  });
+  var activePageNum = 0;
 
-  jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
-    var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
-    SFDSWF_goto(i < 1 ? 0 : i-1);
-    history.pushState(i-1, null, null);
-  });
+  function paginate(count, pushState) {
+    // Hide the current page
+    jQuery('.form-section').eq(activePageNum).removeClass('active');
 
-  jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
-    var i = jQuery('.form-section-nav a.active').prevAll('.form-section-nav a').length;
-    SFDSWF_goto(i+1);
-    history.pushState(i+1, null, null);
-  });
 
-  var SFDSWF_goto = function(i) {
-    jQuery('#SFDSWF-Container .form-section-nav a').removeClass('active');
-    jQuery('#SFDSWF-Container .form-section-nav a').eq(i).addClass('active');
-    jQuery('#SFDSWF-Container .form-section').removeClass('active');
-    jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active');
-    jQuery('#SFDSWF-Container .form-section-header').removeClass('active');
-    jQuery('#SFDSWF-Container .form-section-header').eq(i).addClass('active');
-    jQuery('html,body').animate({ scrollTop: 0 }, 'medium');
+    // Go to the previous / next page
+    activePageNum = activePageNum + count;
+    var activePage = jQuery('.form-section').eq(activePageNum);
+    activePage.addClass('active');
+
+    if (pushState) {
+      history.pushState(history.state + 1, null, "#page-" + (activePageNum + 1));
+    }
+
+    // Automatically move to the top of SF.gov pages
+    var topOfSFGovPage = document.getElementById("main-content");
+
+    if (topOfSFGovPage) {
+      topOfSFGovPage.scrollIntoView();
+    }
   }
 
-  window.addEventListener('popstate', function(e) {
-    var i = e.state === null ? 0 : e.state;
-    SFDSWF_goto(i)
+  // Pagination button click events
+  jQuery('.form-section-prev').click(function(e) {
+    paginate(-1, true);
+
   });
 
-  skipToSectionId(SFDSWF_goto);
+  jQuery('.form-section-next').click(function(e) {
+    paginate(1, true);
+  });
+
+  window.addEventListener('popstate', function(e) {
+    // Get the currently visible page index
+    visiblePageNum = ($('.form-section').index($('.active'))) + 1;
+
+    // Get the current URL's page number
+    url = window.location.href;
+    urlPageNum = parseInt(url.substring(url.length - 1));
+
+    // Paginate the difference
+    var count = urlPageNum - visiblePageNum;
+    paginate(count, false);
+
+  });
 }
 
 function phoneIsValid(num) {
