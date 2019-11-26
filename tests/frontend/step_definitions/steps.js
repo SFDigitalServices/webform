@@ -15,10 +15,10 @@ When('I log into my account', async () => {
 });
 
 Then('I should see all my forms', () => {
-  I.waitForText('Welcome back,', 3, '.content')
+  I.waitForElement('.welcomeBack', 3)
 })
 Then('I should be able to create new forms', () => {
-  I.waitForText('Create a New Form');
+  I.waitForText('Create a New Form', 3, '.welcomeBox');
 });
 Then('I should be able to logout', () => {
   I.click('Sign Out')
