@@ -10,7 +10,7 @@ const I = actor();
 
 // Basic Feature
 When('I log into my account', () => {
-  loginPage.login('johndoe@example.com','johndoe');
+  loginPage.login('test@sf.gov','johndoe');
   I.wait(3);
 });
 

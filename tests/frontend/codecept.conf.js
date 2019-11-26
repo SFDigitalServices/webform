@@ -30,9 +30,7 @@ exports.config = {
     }
   },
   include: {
-    I: './custom_steps.js',
-    loginPage: './pages/Login.js',
-    fieldContent: './pages/fieldContent.js',
+    I: './custom_steps.js'
   },
   mocha: {},
   bootstrap: './bootstrap.js',
