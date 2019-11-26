@@ -10,19 +10,16 @@ const I = actor();
 
 // Basic Feature
 When('I log into my account', () => {
-  loginPage.login('test@sf.gov','johndoe');
-  I.wait(3);
+  loginPage.login('test@sf.gov','johndoe')
 });
 
 Then('I should see all my forms', () => {
-  I.see('Welcome back')
-  I.wait(3)
+  I.waitForText('Welcome back,', 3, '.content')
 })
 Then('I should be able to create new forms', () => {
-  I.see('Create a New Form');
+  I.waitForText('Create a New Form');
 });
 Then('I should be able to logout', () => {
   I.click('Sign Out')
-  I.wait(2)
-  I.seeElement('#login-form')
+  I.waitForElement('#login-form', 5)
 })
