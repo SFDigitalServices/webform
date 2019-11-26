@@ -9,8 +9,9 @@ const I = actor();
 });
 
 // Basic Feature
-When('I log into my account', () => {
-  loginPage.login('test@sf.gov','johndoe')
+When('I log into my account', async () => {
+  await loginPage.login('test@sf.gov','johndoe')
+  I.wait(3)
 });
 
 Then('I should see all my forms', () => {
