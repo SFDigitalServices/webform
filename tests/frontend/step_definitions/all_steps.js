@@ -26,7 +26,6 @@ Given(/I have a formbuilder account/, () => {
 When('I log into my account', () => {
   I.wait(3)
 });
-
 Then('I should see all my forms', () => {
   I.waitForVisible('.forms', 3)
 })
@@ -43,7 +42,6 @@ createFormPage.createForm(sessid)
 
 // Clone Form Feature
 cloneFormFormPage.cloneForm(sessid)
-
 
 // Modify Form Feature
 ModifyFormPage.modifyForm(sessid)

@@ -22,8 +22,8 @@ module.exports = {
     Then('I should be able to edit that field to the form', async() => {
       I.fillField('label', 'Full Name')
       I.fillField('name', 'full_name')
-      I.fillField('id', 'full_name')
-      await I.click('Save')
+      I.fillField('id', 'full_id')
+      I.click('Save')
       I.wait(2)
       I.switchTo('iframe');
       I.wait(3)
