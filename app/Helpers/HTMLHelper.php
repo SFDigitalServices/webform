@@ -599,9 +599,6 @@ class HTMLHelper
         return $html;
     }
 
-
-
-
   /** Generate hidden element
     *
     * @return html
@@ -629,7 +626,7 @@ class HTMLHelper
         }
 
         $html = ($field['formtype'] == "s06" || $field['formtype'] == "s08") ? '<legend class="control-label">':  '<label for="'.$label_for.'" class="control-label">';
-        $html .= isset($field['label']) ? $field['label'] : "";
+        $html .= isset($field['label']) ? html_entity_decode($field['label']) : "";
         if (array_key_exists('required', $field)) {
             if (! $field['required'] == "true") {
                 $html .= ' <span class="optional">(optional)</span>';
