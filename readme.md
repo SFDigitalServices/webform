@@ -1,4 +1,4 @@
-# Web Form Builder 
+# Web Form Builder
 
 This is the source for the web form builder, cloned from https://github.com/krisanalfa/lumen-jwt as a starting point. Decided to not implement jwt at this point.
 
@@ -11,7 +11,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 ### Setup steps
 1. Setup a new project sekeleton from this repository
 ```
-        git clone git@github.com:SFDigitalServices/webform.git webform 
+        git clone git@github.com:SFDigitalServices/webform.git webform
         cd webform
         cp .env.example .env
         composer install
@@ -26,7 +26,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 
 3. Start your Docker containers with:
 ```
-        docker-compose up -d 
+        docker-compose up -d
 ```
 *** Docker on Windows alert: you may have to specify the Dockerfile in docker-compose.yml file.
 ```
@@ -36,18 +36,20 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
                 dockerfile: Dockerfile
 ```
 
-4. To compile Sass stylesheets, run `npm run watch`
+4. Run `scripts/copy_sf_design_system.sh` to copy pattern library stylesheets. (You will need to run this manually whenever a pattern library update is released.)
 
-5. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
+5. Run `npm run watch`
+
+6. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
 ### Unit Testing
 1. Navigate to the src/docker directory and spin up docker as normal
 ```
-        docker-compose up -d 
+        docker-compose up -d
 ```
 2. List your docker containers and get the id of your db
 ```
-        docker ps 
+        docker ps
 ```
 3. Inspect your database container and write down the db's IPAddress
 ```
@@ -74,7 +76,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 
 ## Deployment to Heroku
 
-A pipeline has been setup for this project on Heroku that connects to the github repo. Every push to the branch you specify here will deploy a new version of this app. 
+A pipeline has been setup for this project on Heroku that connects to the github repo. Every push to the branch you specify here will deploy a new version of this app.
 
 ## License
 
