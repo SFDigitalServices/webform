@@ -39,7 +39,6 @@ exports.config = {
   gherkin: {
     features: './features/*.feature',
     steps: [
-      './step_definitions/steps.js',
       './step_definitions/all_steps.js',
     ],
   },

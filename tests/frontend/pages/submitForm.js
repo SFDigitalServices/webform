@@ -18,6 +18,7 @@ module.exports = {
       I.switchToNextTab()
     })
     When('I filled out all required fields and click submit',  () => {
+      I.waitForElement('#SFDSWF-Container', 3)
       I.fillField('Full Name', 'TEST NAME')
       I.fillField('Email', 'TESTEMAIL@sf.gov')
       I.click('Submit')

@@ -19,14 +19,34 @@ Before(() => {
   loginPage.login('test@sf.gov','johndoe')
 });
 
+// Basic Feature
+Given(/I have a formbuilder account/, () => {
+  I.wait(1)
+});
+When('I log into my account', () => {
+  I.wait(3)
+});
+
+Then('I should see all my forms', () => {
+  I.waitForVisible('.forms', 3)
+})
+Then('I should be able to create new forms', () => {
+  I.waitForText('Create a New Form', 3, '.welcomeBox');
+});
+Then('I should be able to logout', () => {
+  I.click('Sign Out')
+  I.waitForVisible('#login-form', 5)
+})
+
 // Create Form Feature
 createFormPage.createForm(sessid)
 
-// Modify Form Feature
-ModifyFormPage.modifyForm(sessid)
-
 // Clone Form Feature
 cloneFormFormPage.cloneForm(sessid)
+
+
+// Modify Form Feature
+ModifyFormPage.modifyForm(sessid)
 
 // Preview Form Feature
 previewFormFormPage.previewForm(sessid)
