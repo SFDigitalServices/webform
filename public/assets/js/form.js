@@ -177,7 +177,7 @@ Form.prototype.saveSettings = function() {
 
 	$('#SFDSWFB-settings input, #SFDSWFB-settings select').each(function(){
 		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined) {
-			self.content.settings[$(this).attr('name')] = $(this).val()
+			self.content.settings[$(this).attr('name')] = $(this).val().trim()
 		}
 	})
 	this.saveForm()
@@ -205,7 +205,7 @@ Form.prototype.modifyItem = function() {
 
 	$('#SFDSWFB-attributes input, #SFDSWFB-attributes textarea').each(function(){
 		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined && $(this).val() !== "") {
-			self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1][$(this).attr('name')] = $(this).val()
+			self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1][$(this).attr('name')] = $(this).val().trim()
 		}
 	})
 
@@ -233,7 +233,7 @@ Form.prototype.applyConditionals = function() {
 			conditions.condition[i] = {}
 			conditions.condition[i].id = $(this).find('.conditionalId').val()
 			conditions.condition[i].op = $(this).find('.conditionalOperator').val()
-			conditions.condition[i].val = $(this).find('.conditionalValue').val()
+			conditions.condition[i].val = $(this).find('.conditionalValue').val().trim()
 		})
 		self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].conditions = conditions
 	} else {
@@ -279,12 +279,12 @@ Form.prototype.applyWebhooks = function() {
 		$('#SFDSWFB-attributes .webhookId').each(function (i) {
 			webhooks.ids.push($('#SFDSWFB-attributes .webhookId').eq(i).val())
 		})
-		webhooks.endpoint = $('#SFDSWFB-attributes .webhookEndpoint').val()
-		webhooks.responseIndex = $('#SFDSWFB-attributes .webhookResponseIndex').val()
+		webhooks.endpoint = $('#SFDSWFB-attributes .webhookEndpoint').val().trim()
+		webhooks.responseIndex = $('#SFDSWFB-attributes .webhookResponseIndex').val().trim()
 		webhooks.method = $('#SFDSWFB-attributes .webhookMethod').val()
 		webhooks.optionsArray = $('#SFDSWFB-attributes .webhookOptionsArray').val() == 'Will Contain Many Options' ? 'true' : 'false'
-		webhooks.delimiter = $('#SFDSWFB-attributes .webhookDelimiter').val()
-		webhooks.responseOptionsIndex = $('#SFDSWFB-attributes .webhookIndex').val()
+		webhooks.delimiter = $('#SFDSWFB-attributes .webhookDelimiter').val().trim()
+		webhooks.responseOptionsIndex = $('#SFDSWFB-attributes .webhookIndex').val().trim()
 		self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].webhooks = webhooks
 	} else {
     if (self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].webhooks !== null) {
