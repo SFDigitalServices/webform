@@ -349,7 +349,14 @@ FbView.prototype.populateAttributes = function(item) {
 						break
 				}
 			} else {
-				$('#SFDSWFB-attributes [name='+i+']').val(item[i])
+        // hack to double decode html entities
+        var v = item[i]
+        if (v != "") {
+          var d = document.createElement('textarea');
+          d.innerHTML = v;
+          d.innerHTML = d.value;
+          $('#SFDSWFB-attributes [name='+i+']').val(d.value)
+        }
 			}
 		}
 	}
