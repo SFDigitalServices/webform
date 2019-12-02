@@ -17,6 +17,7 @@ Before(() => {
     localStorage.clear();
   });
   loginPage.login('test@sf.gov','johndoe')
+  I.wait(5)
 });
 
 // Basic Feature
