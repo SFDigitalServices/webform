@@ -349,7 +349,7 @@ FbView.prototype.populateAttributes = function(item) {
 						break
 				}
 			} else {
-				$('#SFDSWFB-attributes [name='+i+']').val(item[i])
+        if (item[i] !== "") $('#SFDSWFB-attributes [name='+i+']').val(fb.doubleDecodeEntities(item[i]))
 			}
 		}
 	}

@@ -206,6 +206,19 @@ Fb.prototype.loadNames = function(obj) {
 }
 
 /**
+ * Utility to decode double enoded html entities
+ *
+ * @param {String} str
+ * @returns {String}
+ */
+Fb.prototype.doubleDecodeEntities = function(str) {
+  var d = document.createElement('textarea')
+  d.innerHTML = str
+  d.innerHTML = d.value
+  return d.value
+}
+
+/**
  * Event to handle response to getting a list of authors after loading form
  */
 Fb.prototype.shareResponse = function(response) {
