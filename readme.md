@@ -12,7 +12,7 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 1. Setup a new project sekeleton from this repository
 ```
         git clone git@github.com:SFDigitalServices/webform.git webform
-        cd webform
+        cd webform/src
         cp .env.example .env
         composer install
 ```
@@ -42,18 +42,20 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 
 6. You may now access your site at `https://webform.test` (or whatever domain you setup), with the email johndoe@example.com and password johndoe
 
-### Unit Testing
-1. Navigate to the src/docker directory and spin up docker as normal
-```
-        docker-compose up -d
-```
+### JS Unit Testing
+1. Make sure docker is running as normal
+2. Navigate to src/tests/jasmine
+3. Open SpecRunner.html file in your browser
+
+### PHP Unit Testing
+1. Make sure docker is running as normal
 2. List your docker containers and get the id of your db
 ```
         docker ps
 ```
 3. Inspect your database container and write down the db's IPAddress
 ```
-        docker inspect docker_db_1
+        docker inspect docker_db_container_id
 ```
 4. Navigate to the src directory and edit codeception.yml
 ```
@@ -73,6 +75,18 @@ You need [Docker](https://www.docker.com/get-started), [docker-compose](https://
 		vendor/bin/codecept run unit
 ```
 
+### End to End Testing
+1. Make sure docker is running as normal
+2. Navigate to src/tests/frontend
+3. Make sure codecept.conf.js puppeteer is pointed to your local environment
+```
+      Puppeteer: {
+        url: process.env.CODECEPT_URL || 'http://your_local_environment',
+```
+4. Execute codeceptjs tests with npx (can append --steps flag to get more detailed information)
+```
+        npx codeceptjs run
+```
 
 ## Deployment to Heroku
 
