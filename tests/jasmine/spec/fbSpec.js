@@ -33,6 +33,10 @@ describe("Fb", function() {
       //expect(jQuery('.content').is(':visible')).toBeFalsy()
     })
 
+		it("should be able to double decode strings", function() {
+			expect(fb.doubleDecodeEntities("help&amp;apos;s &amp;quot;text&amp;quot;")).toEqual("help's \"text\"")
+		})
+
     afterEach(function() {
       jQuery('#test').remove()
     })
