@@ -356,7 +356,7 @@ describe("Item", function() {
 	describe("When a new d06 item is initialized", function() {
 
     beforeEach(function() {
-      item = new Item({'formtype' : 'd06'}, [], []);
+      item = new Item({'formtype' : 'd06','unit':'km'}, [], []);
     });
 
     it("should be able to construct itself", function() {
@@ -365,6 +365,10 @@ describe("Item", function() {
 
     it("should be able to have a unique ID", function() {
       expect(item.id).toEqual('number');
+    });
+
+    it("should have a unit attribute", function() {
+      expect(item.unit).toEqual('km');
     });
 
     it("should be able to construct itself", function() {
@@ -393,6 +397,10 @@ describe("Item", function() {
 
     it("should be able to have a unique ID", function() {
       expect(item.id).toEqual('price');
+    });
+
+    it("should not have a unit attribute", function() {
+      expect(item.unit).toBeNull();
     });
 
     it("should be able to construct itself", function() {
