@@ -1,10 +1,10 @@
 describe("HTML templates", function() {
-/*
+/* whitespace issues
+
 	var fb = new Fb()
 
   beforeEach(function() {
   });
-
   it("should spit out validation html", function() {
     expect(fb.view.validation).toEqual("\
 	<div class='accordion-validation'> \
@@ -280,6 +280,7 @@ describe("HTML templates", function() {
 	'\n' +
 	'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />\n' +
 	'<link rel="stylesheet" href="//css/form-base.css" />\n' +
+  '<link rel="stylesheet" href="//css/form-branding.css" />\n' +
 	'\n' +
 	'<!-- Insert the following in the <body>, wherever\n' +
 	'you would like the form to appear. -->' +

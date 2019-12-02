@@ -122,7 +122,7 @@ describe("Form", function() {
       var ajaxSpy = spyOn(XMLHttpRequest.prototype,'open')
       form.saveSettings()
       expect(form.content.settings.name).toEqual('test')
-      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true)
+      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true) //randomly failing on Circle CI
     })
 
     afterEach(function() {
@@ -141,7 +141,7 @@ describe("Form", function() {
       form.insertItem('c02')
       expect(form.content.data[1].id).toEqual('name_1')
       expect(form.content.data[1].label).toEqual('Name')
-      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true)
+      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true) //randomly failing on Circle CI
     })
 
     it('should be able to move an item', function() {
@@ -150,7 +150,7 @@ describe("Form", function() {
       form.moveItem(0, 2)
       expect(form.content.data[1].id).toEqual('name')
       expect(form.content.data[1].label).toEqual('Name')
-      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true)
+      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true) //randomly failing on Circle CI
     })
 
     it('should be able to delete an item', function() {
@@ -161,7 +161,7 @@ describe("Form", function() {
       form.deleteItem(0)
       expect(form.content.data.length).toEqual(1)
       expect(form.content.data[0].id).toEqual('submit')
-      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true)
+      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true) //randomly failing on Circle CI
     })
 
     it('should be able to get ids', function() {
@@ -196,7 +196,7 @@ describe("Form", function() {
     it('should call the save endpoint', function() {
       var ajaxSpy = spyOn(XMLHttpRequest.prototype,'open')
       form.saveForm()
-      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true)
+      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true) //randomly failing on Circle CI
     })
 
   })
@@ -232,7 +232,7 @@ describe("Form", function() {
 
   describe("modifying item attributes", function() {
     beforeEach(function() {
-      jQuery('body').append('<div id="SFDSWFB-list"><div class="item selected" data-index="1" data-id="random"></div></div><div id="SFDSWFB-attributes"><input type="text" name="name" value="test1"/><input type="checkbox" id="required" checked/><textarea name="textarea">test2</textarea><div class="condition"><input class="conditionalId" type="text" value="test1"/><input class="conditionalOperator" type="text" value="test2"/><input class="conditionalValue" type="text" value="test3"/></div><input class="calculationId" type="text" value="test1"/><div class="calculation"><input class="calculationOperator" type="text" value="test2"/><input class="calculationId" type="text" value="test3"/></div><input class="webhookSelect" value="Use a Webhook"/><input class="webhookId" value="test1"/><input class="webhookEndpoint" value="test2"/><input class="webhookResponseIndex" value="test3"/><input class="webhookMethod" value="test4"/><input class="webhookOptionsArray" value="Will Contain Many Options"/><input class="webhookDelimiter" value="test5"/><input class="webhookIndex" value="test6"/></div>')
+      jQuery('body').append('<div id="SFDSWFB-list"><div class="item selected" data-index="1" data-id="random"></div></div><div id="SFDSWFB-attributes"><input type="text" name="name" value="    test1    \n  "/><input type="checkbox" id="required" checked/><textarea name="textarea">test2</textarea><div class="condition"><input class="conditionalId" type="text" value="test1"/><input class="conditionalOperator" type="text" value="test2"/><input class="conditionalValue" type="text" value="test3"/></div><input class="calculationId" type="text" value="test1"/><div class="calculation"><input class="calculationOperator" type="text" value="test2"/><input class="calculationId" type="text" value="test3"/></div><input class="webhookSelect" value="Use a Webhook"/><input class="webhookId" value="test1"/><input class="webhookEndpoint" value="test2"/><input class="webhookResponseIndex" value="test3"/><input class="webhookMethod" value="test4"/><input class="webhookOptionsArray" value="Will Contain Many Options"/><input class="webhookDelimiter" value="test5"/><input class="webhookIndex" value="test6"/></div>')
     })
 
     it('should save the item attributes to the form object', function() {
@@ -247,7 +247,7 @@ describe("Form", function() {
       expect(conditionalsSpy).toHaveBeenCalled()
       expect(calculationsSpy).toHaveBeenCalled()
       expect(webhooksSpy).toHaveBeenCalled()
-      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true)
+      //expect(ajaxSpy).toHaveBeenCalledWith('POST', '/form/save', true) //randomly failing on Circle CI
     })
 
     it('should save the conditional logic to the form object', function() {

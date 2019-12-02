@@ -28,6 +28,8 @@ class EmailControllerTest extends \Codeception\Test\Unit
       $data = array();
       $data['body']['host'] = 'random stuff';
       $data['body']['message'] = 'message';
+      $data['body']['formname'] = 'test form';
+      $data['emailInfo']['address'] = 'henry.jiang@sfgov.org';
       $template = 'emails.saveForLater';
       $response = $this->emailController->sendEmail($data, $template);
 
