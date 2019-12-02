@@ -25,6 +25,12 @@ jobs: # a collection of steps
     working_directory: /home/circleci/project # directory where steps will run
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
+      - run:
+          name: initiate environment setup
+          command: |
+            chmod -R 777 storage #apache needs to write to logs
+            cp .env.example .env
+            sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts' #set url for test
       - run: sudo a2enmod rewrite
       - run: sudo docker-php-ext-install mysqli pdo_mysql
       - run:
@@ -32,50 +38,44 @@ jobs: # a collection of steps
           command: composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
-            - composer-v2.1-{{ checksum "composer.lock" }}
+            - composer-v2.2-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - composer-v2.1-
+            - composer-v2.2-
       - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
-          key: composer-v2.1-{{ checksum "composer.lock" }}
+          key: composer-v2.2-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:
           name: Update Missed Dependencies
-          command: composer update
-      - run: php artisan migrate:refresh --force
+          command: composer update --prefer-dist
+      - run:
+          name: Database migration
+          command: php artisan migrate:refresh --force
       - run: php artisan db:seed --force
       - run:
           name: Configure & start Apache
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
       # end to end testing
       - run:
-          name: install nvm
-          command: curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+          name: download nodejs
+          command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
       - run:
-          name: activate nvm
+          name: Install nodejs
+          command:  sudo apt-get install -y nodejs
+      - run:
+          name: Install node dependencies
+          command:  npm install
+      - run:
+          name: run tests
           command: |
-            # Activate nvm
-            export NVM_DIR=$HOME/.nvm
-            touch $HOME/.nvmrc
-            source $NVM_DIR/nvm.sh
-            # Use node 11.0.0
-            nvm install 11.0.0 && nvm alias default 11.0.0
-            echo 11.0.0 > $HOME/.nvmrc
-            # Enable nvm in following steps
-            echo '[ -s "$HOME/.bashrc" ] && \. "$HOME/.bashrc"' >> $HOME/.bash_profile
-            npm install
-            export NPX_HOME=$HOME/.nvm/versions/node/v11.0.0/bin
-            chmod -R 777 storage #apache needs to write to logs
-            cp .env.example .env
-            ./vendor/bin/codecept run # run unit/api/functional tests
             ./node_modules/karma/bin/karma start --single-run --browsers ChromeHeadless karma.conf.js # run jasmine
-            cd tests/frontend
-            sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts'
-            $HOME/.nvm/versions/node/v11.0.0/bin/npx codeceptjs run --verbose #run e2e tests
-            cd ../../
             ./node_modules/stylelint/bin/stylelint.js public/assets/sass/*.scss --fix #lint css source
+            sh scripts/copy_sf_design_system.sh #copy sf-design-system source files
             npm run dev # compile sass
             ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
+            ./vendor/bin/codecept run # run unit/api/functional tests
+            cd tests/frontend #run E2E tests
+            sh run_tests.sh
       - deploy:
           name: deploy builds to ${CIRCLE_BRANCH}
           working_directory: /home/circleci/project

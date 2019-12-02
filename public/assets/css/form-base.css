@@ -7,7 +7,6 @@ fieldset {
 label,
 legend {
 	display: block;
-	margin: 1.5rem 0 0.25rem;
 }
 
 .field-legend:after,
@@ -22,14 +21,12 @@ input[type="checkbox"],
 input[type="radio"],
 input[type="checkbox"] + label,
 input[type="radio"] + label {
-	float: left;
 	margin: 0 0 1rem;
 }
 
 input[type="checkbox"],
 input[type="radio"] {
 	margin-right: 1rem;
-	clear: left;
 }
 
 input[type="text"],
@@ -42,18 +39,15 @@ input[type="date"],
 input[type="email"],
 input[type="url"],
 textarea {
-	border: 1px solid #777;
 	width: 100%;
-	padding: 0.5rem;
 }
 
-.help-block {
+.help-text {
 	margin: 0.5rem 0 0;
-	color: #666;
 }
 
 .help-block:empty {
-  margin: 0;
+	margin: 0;
 }
 
 .help-block ul {
@@ -68,22 +62,17 @@ textarea {
 	color: red;
 }
 
-.form-section,
-.form-section-header {
+.form-section {
 	display: none;
 }
 
-.form-section.active,
-.form-section-header.active {
+.form-section.active {
 	display: block;
 }
 
-.form-section-header {
-	font-size: 1.5em;
-}
-
 .form-section-prev,
-.form-section-next {
+.form-section-next,
+.form-section-submit {
 	margin-top: 1.5rem;
 }
 
@@ -91,93 +80,7 @@ textarea {
 	float: left;
 }
 
-.form-section-next {
+.form-section-next,
+.form-section-submit {
 	float: right;
-}
-
-.form-section-nav {
-	display: none;
-}
-
-.form-section-nav li {
-	list-style: none;
-	padding: 0.5rem 1rem;
-	display: block;
-}
-
-.form-section-nav li.active {
-	font-weight: bold;
-	position: relative;
-}
-
-.form-section-nav li.active:before {
-	content: "";
-	border-radius: 50%;
-	width: 0.5rem;
-	height: 0.5rem;
-	position: absolute;
-	left: 0;
-	top: 50%;
-	margin-top: -0.25rem;
-	background: currentColor;
-}
-
-@media screen and (min-width: 40rem) {
-	.form-section-nav,
-	.form-horizontal {
-		float: left;
-	}
-
-	.form-section-nav {
-		display: block;
-		width: 20%;
-		margin-right: 5%;
-	}
-
-	.form-horizontal {
-		width: 60%;
-	}
-}
-
-@media screen and (min-width: 70rem) {
-	.form-section-nav {
-		width: 15%;
-		margin-right: 5%;
-	}
-
-	.form-horizontal {
-		width: 70%;
-	}
-}
-
-/* Hacks */
-
-/* Add a cursor to .form-section-nav elements */
-.form-section-nav li {
-	cursor: pointer;
-}
-
-/* Label .form-section-nav */
-
-.form-section-nav {
-	position: relative;
-	padding-top: 1rem;
-}
-
-.form-section-nav:before {
-	content: "Choose a Page";
-	position: absolute;
-	font-size: 1.25rem;
-	color: #666;
-	top: -1rem;
-}
-
-/* Only display legend to screen readers*/
-
-#SFDSWFB-legend {
-	position: absolute !important;
-	height: 1px; width: 1px;
-	overflow: hidden;
-	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
-	clip: rect(1px, 1px, 1px, 1px);
 }

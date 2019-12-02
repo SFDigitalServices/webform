@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '../../.env' })
 
 exports.config = {
   output: './output',
@@ -7,7 +8,7 @@ exports.config = {
       waitForNavigation: [ "domcontentloaded", "networkidle0" ],
       url: process.env.CODECEPT_URL || 'http://webform.test',
       'chrome': {
-        'headless': false,
+        'headless': true,
         'args': [
           '--no-sandbox',
           '--content-shell-host-window-size=1600x1200',
@@ -29,9 +30,7 @@ exports.config = {
     }
   },
   include: {
-    I: './custom_steps.js',
-    loginPage: './pages/Login.js',
-    fieldContent: './pages/fieldContent.js',
+    I: './custom_steps.js'
   },
   mocha: {},
   bootstrap: './bootstrap.js',
@@ -40,7 +39,6 @@ exports.config = {
   gherkin: {
     features: './features/*.feature',
     steps: [
-      './step_definitions/steps.js',
       './step_definitions/all_steps.js',
     ],
   },

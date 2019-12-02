@@ -123,6 +123,7 @@ Fb.prototype.view.editItem = "\
 				<label class='control-label radios-attribute'>Radios</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea> \
 				<label class='control-label textarea-attribute'>Text Area</label> <textarea class='form-control textarea-attribute' name='textarea' id='textarea'></textarea> \
 				<label class='control-label codearea-attribute'>Text Area</label> <textarea class='form-control codearea-attribute' name='codearea' id='codearea'></textarea> \
+				<label class='control-label unit-attribute'>Unit</label> <input data-toggle='tooltip' title='Use this to set the unit of the number, it is not required' class='form-control unit-attribute' type='text' name='unit' id='unit'> \
 				<label class='control-label value-attribute'>Default Value</label> <input data-toggle='tooltip' title='Use this to prefill this field with a value, otherwise this should be left blank' class='form-control value-attribute' type='text' name='value' id='value'> \
 				<label class='control-label name-attribute'>Name Attribute</label> <input data-toggle='tooltip' title='You must set a unique machine name for this field' class='form-control name-attribute' type='text' name='name' id='name'> \
 				<label class='control-label id-attribute'>Unique ID</label> <input data-toggle='tooltip' title='Use this to set the unique id of this field, it is good practice to use the same value as the name' class='form-control id-attribute' type='text' name='id' id='id'> \
@@ -263,6 +264,7 @@ Fb.prototype.view.embedCode = function(id, embedUrl, assetsUrl) {
 	'\n' +
 	'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />\n' +
 	'<link rel="stylesheet" href="' + assetsUrl + 'css/form-base.css" />\n' +
+  '<link rel="stylesheet" href="' + assetsUrl + 'css/form-branding.css" />\n' +
 	'\n' +
 	'<!-- Insert the following in the <body>, wherever\n' +
 	'you would like the form to appear. -->' +

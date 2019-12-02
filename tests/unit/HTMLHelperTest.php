@@ -653,6 +653,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['class'] = 'large rounded';
         $this->attributes['type'] = 'number';
         $this->attributes['required'] = 'true';
+        $this->attributes['unit'] = 'km';
 		$this->attributes['regex'] = 'invalid';
 		$this->attributes['match'] = 'invalid';
 		$this->attributes['minlength'] = '3';
@@ -661,7 +662,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '20';
         $this->attributes['formtype'] = 'd06';
         $notEmptyText = HTMLHelper::formText($this->attributes);
-        $expected = '<input id="foo" name="bar" type="number" data-formtype="d06" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="any"/>';
+        $expected = '<input id="foo" name="bar" type="number" data-formtype="d06" required minlength="3" maxlength="9" min="10" max="20" class="large rounded" step="any"/><span class="unit">km</span>';
         $this->assertEquals($expected, $notEmptyText);
 
         // Price fields
@@ -1171,15 +1172,15 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
     public function testFormSection(){
         $this->attributes['formtype'] = "m02";
-        $emptySection = HTMLHelper::formSection($this->attributes);
-        $expected = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id=""></div><div class="form-section" data-id="">';
+        $emptySection = HTMLHelper::formSection('My Form', $this->attributes, 2, 4);
+        $expected = '<div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button class="btn btn-lg form-section-next">Next</button></div></div></div><div class="form-section" data-id=""><header class="hero-banner default" id="form_page_3"><div class="form-header-meta"><h2>My Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 3 of 4</div></div></div><h1 class="form-section-header" data-id=""></h1></header><div class="form-content">';
 
         $this->assertSame($expected, $emptySection);
 
         $this->attributes['id'] = 'section_id';
         $this->attributes['label'] = "section_label";
-        $notEmptySection = HTMLHelper::formSection($this->attributes);
-        $expected = '<div class="form-group"><a class="btn btn-lg form-section-prev" href="javascript:void(0)">Previous</a><a class="btn btn-lg form-section-next" href="javascript:void(0)">Next</a></div></div><div class="form-section-header" data-id="section_id">section_label</div><div class="form-section" data-id="section_id">';
+        $notEmptySection = HTMLHelper::formSection('My Form', $this->attributes, 3, 4);
+        $expected = '<div class="form-group"><button class="btn btn-lg form-section-prev">Previous</button><button class="btn btn-lg form-section-next">Next</button></div></div></div><div class="form-section" data-id="section_id"><header class="hero-banner default" id="form_page_4"><div class="form-header-meta"><h2>My Form</h2><div class="form-progress"><div class="form-progress-bubble">Page 4 of 4</div></div></div><h1 class="form-section-header" data-id="section_id">section_label</h1></header><div class="form-content">';
 
         $this->assertEquals($expected, $notEmptySection);
 
@@ -1228,18 +1229,63 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->assertEquals($expected, $notEmptyText);
     }
     public function testFieldLabel(){
+        $emptyLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="" class="control-label"> <span class="optional">(optional)</span></label>';
 
+        $this->assertSame($expected, $emptyLabel);
+
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $notEmptyLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_name" class="control-label">hello world <span class="optional">(optional)</span></label>';
+        $this->assertEquals($expected, $notEmptyLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $idLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">hello world <span class="optional">(optional)</span></label>';
+        $this->assertEquals($expected, $idLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $this->attributes['required'] = 'true';
+        $reqLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">hello world</label>';
+        $this->assertEquals($expected, $reqLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = "wayne's world";
+        $this->attributes['required'] = 'true';
+        $aposLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">wayne\'s world</label>';
+        $this->assertEquals($expected, $aposLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'wayne"s world';
+        $this->attributes['required'] = 'true';
+        $quotLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<label for="form_id" class="control-label">wayne"s world</label>';
+        $this->assertEquals($expected, $quotLabel);
     }
     public function testHelpBlock(){
         $emptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div></div>';
+        $expected = '<div class="help-block with-errors"></div>';
 
         $this->assertSame($expected, $emptyBlock);
 
         $this->attributes['help'] = 'help block';
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p></div>';
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p>';
         $this->assertEquals($expected, $notEmptyBlock);
+
+        $this->attributes['help'] = 'bob\'s block';
+        $aposBlock = HTMLHelper::helpBlock($this->attributes);
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">bob\'s block</p>';
+        $this->assertEquals($expected, $aposBlock);
     }
 
     public function testWebhook(){
