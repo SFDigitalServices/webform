@@ -15,7 +15,8 @@ exports.config = {
           '--ignore-certificate-errors',
           '--bwsi',
           '--disable-extensions',
-          '--browser-test'
+          '--browser-test',
+          '--run-web-tests'
         ]
       },
       restart: false,
