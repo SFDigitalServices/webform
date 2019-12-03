@@ -13,14 +13,18 @@ exports.config = {
           '--no-sandbox',
           '--content-shell-host-window-size=1600x1200',
           '--ignore-certificate-errors',
+          '--bwsi',
+          '--disable-extensions',
+          '--browser-test'
         ]
       },
       restart: false,
       show: false,
       windowSize: '1600x1200',
-      fullPageScreenshots: true,
+      disableScreenshots: true,
       uniqueScreenshotNames: true,
-      keepBrowserState: true
+      keepBrowserState: true,
+      waitForAction: 500
     },
     REST: {},
   },
@@ -48,7 +52,7 @@ exports.config = {
     },
     stepByStepReport: {},
     autoDelay: {
-      enabled: false,
+      enabled: true,
     },
     retryFailedStep: {
       enabled: true,
