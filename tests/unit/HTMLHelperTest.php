@@ -1042,6 +1042,25 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $expected = '<p id="foo" data-formtype="m08" class="large rounded">This is a paragraph</p>';
         $this->assertEquals($expected, $notEmptyParagraph);
 
+        $this->attributes['id'] = 'foo';
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'invalid';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = 'invalid';
+		$this->attributes['maxlength'] = 'invalid';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'm08';
+        $this->attributes['textarea'] = 'This is Jim&amp;apos;s &amp;lt;b&amp;gt;&amp;quot;test&amp;quot;&amp;lt;/b&amp;gt;';
+        $entityParagraph = HTMLHelper::formParagraph($this->attributes);
+        $expected = '<p id="foo" data-formtype="m08" class="large rounded">This is Jim&apos;s &lt;b&gt;&quot;test&quot;&lt;/b&gt;</p>';
+        $this->assertEquals($expected, $entityParagraph);
+
         $this->attributes['id'] = 'paragraph';
         $this->attributes['label'] = 'test';
         $this->attributes['codearea'] = 'This is a paragraph';
@@ -1079,6 +1098,25 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $notEmptyParagraph = HTMLHelper::formParagraph($this->attributes);
         $expected = '<p id="foo" data-formtype="m10" class="large rounded">This is a paragraph</p>';
         $this->assertEquals($expected, $notEmptyParagraph);
+
+        $this->attributes['id'] = 'foo';
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'This is Jim&amp;apos;s &amp;lt;b&amp;gt;&amp;quot;test&amp;quot;&amp;lt;/b&amp;gt;';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+		$this->attributes['regex'] = 'invalid';
+		$this->attributes['match'] = 'invalid';
+		$this->attributes['minlength'] = 'invalid';
+		$this->attributes['maxlength'] = 'invalid';
+		$this->attributes['min'] = 'invalid';
+		$this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'm10';
+        $this->attributes['textarea'] = 'invalid';
+        $entityParagraph = HTMLHelper::formParagraph($this->attributes);
+        $expected = '<p id="foo" data-formtype="m10" class="large rounded">This is Jim&apos;s <b>"test"</b></p>';
+        $this->assertEquals($expected, $entityParagraph);
     }
 
     public function testFormTextArea(){
