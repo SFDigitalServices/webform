@@ -22,8 +22,13 @@ module.exports = {
       await loginPage.login('test@sf.gov','johndoe')
       I.waitForVisible('.forms', 3)
     })
-    Then('I should see the cloned form', () => {
+    Then('I should see the cloned form', async() => {
       I.waitForText('Clone of TESTING FORM CREATION'+sessid, 8, '.forms')
+      I.click('Clone of TESTING FORM CREATION'+sessid)
+      I.waitForElement('button.delete-button')
+      await I.click('button.delete-button')
+      I.waitForText('Are you sure you want to delete this form?')
+      await I.click('Ok')
     })
   },
 };
