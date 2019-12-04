@@ -562,7 +562,7 @@ class HTMLHelper
         $attributes = self::setAttributes($field);
 
         if ($field['formtype'] == "m08") {
-            $field_value = isset($field['textarea']) ? str_replace("\n", "<br/>", $field['textarea']) : "";
+            $field_value = isset($field['textarea']) ? str_replace("\n", "<br/>", html_entity_decode($field['textarea'])) : "";
         } elseif ($field['formtype'] == "m10") {
             $field_value = isset($field['codearea']) ? str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['codearea']))) : "";
         } else {
