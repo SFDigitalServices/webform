@@ -957,7 +957,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     public function testFormButton(){
         $this->attributes['button'] = '';
         $emptyButton = HTMLHelper::formButton($this->attributes);
-        $expected = '<button></button>';
+        $expected = '<input type="submit" value=""/>';
         $this->assertSame($expected, $emptyButton);
 
         $this->attributes['id'] = '';
@@ -976,7 +976,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 'm14';
         $this->attributes['button'] = 'Submit';
         $notEmptyButton = HTMLHelper::formButton($this->attributes);
-        $expected = '<button data-formtype="m14">Submit</button>';
+        $expected = '<input type="submit" value="Submit" data-formtype="m14"/>';
         $this->assertEquals($expected, $notEmptyButton);
 
         $this->attributes['id'] = 'foo';
@@ -996,7 +996,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['formtype'] = 'm14';
         $this->attributes['button'] = 'Submit';
         $notEmptyButton = HTMLHelper::formButton($this->attributes);
-        $expected = '<button id="foo" name="bar" data-formtype="m14" class="large rounded success">Submit</button>';
+        $expected = '<input type="submit" value="Submit" id="foo" name="bar" data-formtype="m14" class="large rounded success"/>';
         $this->assertEquals($expected, $notEmptyButton);
     }
     public function testFormParagraph(){

@@ -860,7 +860,6 @@ describe("Item", function() {
 
     it("should remove the calculations special functions", function() {
       expect(item.validation).toBeNull();
-      expect(item.conditionals).toBeNull();
       expect(item.calculations).toBeNull();
       expect(item.webhooks).toBeNull();
     });
