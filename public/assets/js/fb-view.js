@@ -155,7 +155,7 @@ FbView.prototype.populateList = function() {
 	var formData = this.formsCollection.forms[fb.formId].content.data
 	for (i in formData) {
 		if (i < formData.length - 1) { //do not show last item, button
-			html += fb.view.listItem(formData[i].id, count, count < 10 ? "0" + count : count)
+			html += fb.view.listItem(formData[i], count, count < 10 ? "0" + count : count)
 			count++
 		}
 	}

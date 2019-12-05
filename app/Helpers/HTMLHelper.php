@@ -186,7 +186,11 @@ class HTMLHelper
       if (!empty($conditions)) { //add conditional behavior
           foreach ($conditions as $id => $fld) {
               //set default visibility
-              $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group')";
+              if ($formtypes[$id] == "m16") {
+                $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group')";
+              } else {
+                $js .= "jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group')";
+              }
               if ($fld['showHide'] == "Show") {
                   $js .= ".hide();";
                   $revert = "hide";
@@ -201,11 +205,11 @@ class HTMLHelper
                   if (!in_array($condition['id'], $conditionIds)) {
                       $conditionIds[] = $condition['id'];
                   }
-				  if ($formtypes[$condition['id']] == "s06") { //exception case for checkboxes because they have multiple inputs per name
-					$conditionSts[] = $this->getCheckboxConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val']);
-				  } else {
-					$conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
-				  }
+                  if ($formtypes[$condition['id']] == "s06") { //exception case for checkboxes because they have multiple inputs per name
+                    $conditionSts[] = $this->getCheckboxConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val']);
+                  } else {
+                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
+                  }
               }
               if ($fld['allAny']) {
                   //group multiple conditions
@@ -220,7 +224,11 @@ class HTMLHelper
                   $js .= $this->getInputSelector($chId, $formtypes, false).", ";
               }
               $js = substr($js, 0, -2)."').on('keyup change',function(){";
-              $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
+              if ($formtypes[$id] == "m16") {
+                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group').".$revert."()}});";
+              } else {
+                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
+              }
           }
       }
 
@@ -357,7 +365,7 @@ class HTMLHelper
       }
 
       if ($pageNumber == $pageCount) {
-        $html .= '<button id="submit" class="btn btn-lg form-section-submit">Submit</button>';
+        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
       } else {
         $html .= '<button class="btn btn-lg form-section-next">Next</button>';
       }
@@ -546,7 +554,7 @@ class HTMLHelper
         $button = isset($field['button']) ? $field['button'] : "";
         $attributes = self::setAttributes($field);
 
-        $html = "<button".$attributes .">" . $button ."</button>";
+        $html = '<input type="submit" value="' . $button . '"' .$attributes .'/>';
         return $html;
     }
 
@@ -998,6 +1006,9 @@ class HTMLHelper
                   $output = "input[name=".$id."]";
               }
               break;
+          case "m16":
+            $output = ".form-section[data-id=".$id."]";
+            break;
           default:
               $output = "#".$id;
       }

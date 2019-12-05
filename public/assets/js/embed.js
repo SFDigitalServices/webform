@@ -154,55 +154,72 @@ function getDataInPath(obj, path) {
   return output;
 }
 
+//returns boolean
+function validPage() {
+  jQuery('#SFDSWF-Container .form-section.active').validator('validate');
+  return jQuery('#SFDSWF-Container .form-section.active .has-error').length === 0 ? true : false
+}
+
 function initSectional() {
-  var activePageNum = 0;
+  //bind previous button
+  jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
+    SFDSWF_paginate(SFDSWF_currentPage()-1)
+    e.preventDefault()
+  });
 
-  function paginate(count, pushState) {
-    // Hide the current page
-    jQuery('.form-section').eq(activePageNum).removeClass('active');
-
-
-    // Go to the previous / next page
-    activePageNum = activePageNum + count;
-    var activePage = jQuery('.form-section').eq(activePageNum);
-    activePage.addClass('active');
-
-    if (pushState) {
-      history.pushState(history.state + 1, null, "#page-" + (activePageNum + 1));
+  //bind next button
+  jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
+    if (validPage()) {
+      SFDSWF_paginate(SFDSWF_currentPage()+1)
+      e.preventDefault()
     }
+  });
 
-    // Automatically move to the top of SF.gov pages
-    var topOfSFGovPage = document.getElementById("main-content");
-
-    if (topOfSFGovPage) {
-      topOfSFGovPage.scrollIntoView();
-    }
+  //returns the current page
+  var SFDSWF_currentPage = function() {
+    return jQuery('#SFDSWF-Container .form-section.active').prevAll('#SFDSWF-Container .form-section').length
   }
 
-  // Pagination button click events
-  jQuery('.form-section-prev').click(function(e) {
-    paginate(-1, true);
-    e.preventDefault();
-  });
+  //go to page by index
+  var SFDSWF_paginate = function(i, browserHistory) {
+    browserHistory = typeof browserHistory === "undefined" ? false : true
+    var forward = i > SFDSWF_currentPage() ? true : false
+    var totalPages = jQuery('#SFDSWF-Container .form-section').length
 
-  jQuery('.form-section-next').click(function(e) {
-    paginate(1, true);
-    e.preventDefault();
-  });
+    //update page/section
+    jQuery('#SFDSWF-Container .form-section').removeClass('active')
+    jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active')
 
+    //check if page is not the first or last page and the one we're navigating to is empty
+    if (i > 0 && i < totalPages - 1 && jQuery('#SFDSWF-Container .form-section.active .form-group:visible').length < 2) {
+      //skip to next page in direction of travel
+      return SFDSWF_paginate(forward ? i+1 : i-1)
+    }
+
+    //scroll to top
+    document.getElementById("SFDSWF-Container").scrollIntoView();
+
+    //initialize validator on new page
+    jQuery('#SFDSWF-Container .form-section.active').validator()
+
+    //calculate progress
+    var percentProgress = Math.round(i / totalPages * 100)
+    jQuery('.progress-bar').attr('aria-valuenow', percentProgress)
+    jQuery('.progress-bar').css('width', percentProgress+'%')
+    jQuery('.progress-text').text(percentProgress+'% Complete')
+
+    //if not using browser buttons, make a new browser state
+    if (!browserHistory) history.pushState(i, null, "#page-" + (i + 1))
+  }
+
+  //bind browser history back button
   window.addEventListener('popstate', function(e) {
-    // Get the currently visible page index
-    visiblePageNum = ($('.form-section').index($('.active'))) + 1;
+    var i = e.state === null ? 0 : e.state
+    SFDSWF_paginate(i, true)
+  })
 
-    // Get the current URL's page number
-    url = window.location.href;
-    urlPageNum = parseInt(url.substring(url.length - 1));
-
-    // Paginate the difference
-    var count = urlPageNum - visiblePageNum;
-    paginate(count, false);
-
-  });
+  //navigate to the proper page/section for formbuilder authoring
+  skipToSectionId(SFDSWF_paginate)
 }
 
 function phoneIsValid(num) {
@@ -234,8 +251,8 @@ function skipToSectionId(callback) { //does not work for checkboxes and possibly
       document.getElementById(SFDSWFB.skipToSectionId).scrollIntoView()
       jQuery("#" + SFDSWFB.skipToSectionId).closest('.form-group').addClass('is-selected-in-editor')
     } else {
-      if (callback && jQuery("div[data-id=" + SFDSWFB.skipToSectionId + "]").is(":hidden")) callback(jQuery("div[data-id=" + SFDSWFB.skipToSectionId + "]").index('.form-section-header'))
-      jQuery("div.form-section-header[data-id=" + SFDSWFB.skipToSectionId + "]").addClass('is-selected-in-editor')
+      if (callback && jQuery(".form-section[data-id=" + SFDSWFB.skipToSectionId + "]").is(":hidden")) callback(jQuery(".form-section[data-id=" + SFDSWFB.skipToSectionId + "]").index())
+      jQuery(".form-section[data-id=" + SFDSWFB.skipToSectionId + "] .form-section-header").addClass('is-selected-in-editor')
     }
   }
 }
@@ -252,20 +269,6 @@ function submitPartial(formid){
 SFDSWFB.lastScript = function() {
 
   skipToSectionId(false)
-
-  jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
-      if (phoneIsValid(jQuery(this).val())) {
-        fieldValid(jQuery(this).attr('id'));
-      } else {
-        fieldInvalid(jQuery(this).attr('id'));
-      }
-    var key = event.keyCode || event.charCode;
-    if (key === 8 || key === 46) {
-      return;
-    } else {
-      jQuery(this).val(new libphonenumber.AsYouType('US').input(jQuery(this).val()));
-    }
-  });
 
 	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
 			if (phoneIsValid(jQuery(this).val())) {
@@ -297,9 +300,9 @@ SFDSWFB.lastScript = function() {
 				fieldInvalid(jQuery(this).attr('id'));
 			}
 		});
-		if (!formValid) {
-			e.preventDefault();
-		}
+    if (!formValid || !validPage()) {
+      e.preventDefault()
+    }
   });
 
   if(window.draftData !== undefined){
