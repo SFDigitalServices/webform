@@ -14,7 +14,7 @@
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 				<div class="panel">
-					<form class="panel-body" id="login-form" action="<?php if ((!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") && (substr($_SERVER["HTTP_HOST"], 0, 9) != "localhost" && $_SERVER["HTTP_HOST"] != "webform.test")) print ("https://" . $_SERVER["HTTP_HOST"]); ?>/home" method="POST">
+					<form class="panel-body" id="login-form" action="<?php if ((!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") && (substr($_SERVER["HTTP_HOST"], 0, 9) != "localhost" && $_SERVER["HTTP_HOST"] != "webform.test" && substr($_SERVER["HTTP_HOST"], 0, 7) != "0.0.0.0")) print ("https://" . $_SERVER["HTTP_HOST"]); ?>/home" method="POST">
 						<h2>Login</h2>
 
 						<div class="form-group">
