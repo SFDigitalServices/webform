@@ -202,12 +202,6 @@ function initSectional() {
     //initialize validator on new page
     jQuery('#SFDSWF-Container .form-section.active').validator()
 
-    //calculate progress
-    var percentProgress = Math.round(i / totalPages * 100)
-    jQuery('.progress-bar').attr('aria-valuenow', percentProgress)
-    jQuery('.progress-bar').css('width', percentProgress+'%')
-    jQuery('.progress-text').text(percentProgress+'% Complete')
-
     //if not using browser buttons, make a new browser state
     if (!browserHistory) history.pushState(i, null, "#page-" + (i + 1))
   }
