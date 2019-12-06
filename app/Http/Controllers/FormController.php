@@ -387,7 +387,7 @@ class FormController extends Controller
       $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
       //todo backend validation
 
-      if($this->dataStoreHelper->submitForm($form,$request)){
+      if($this->dataStoreHelper->submitForm($form, $request->all())){
         if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
           return redirect()->to($form['content']['settings']['confirmation']);
           //redirect($form['content']['settings']['confirmation']);
@@ -423,7 +423,7 @@ class FormController extends Controller
         $path = parse_url($referer, PHP_URL_PATH);
         $scheme = parse_url($referer, PHP_URL_SCHEME);
         $form['host'] = $host !== '' ? $scheme.'://'.$host.$path : '';
-        if ($response = $this->dataStoreHelper->submitForm($form, $request, 'partial')) {
+        if ($response = $this->dataStoreHelper->submitForm($form, $request->all(), 'partial')) {
             $data = $response['data'];
             $this->emailController->sendEmail($data, 'emails.saveForLater');
             return view('emails.saveForLater', ['data' => $data['body']]);

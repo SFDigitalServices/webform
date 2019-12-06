@@ -4,6 +4,7 @@ namespace tests;
 
 use Illuminate\Support\Facades\Schema;
 use App\Helpers\DataStoreHelper;
+use Illuminate\Foundation\Http\FormRequest;
 use Log;
 use DB;
 class DataStoreHelperTest extends \Codeception\Test\Unit
@@ -19,19 +20,67 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         $this->dataStoreHelperTester = new DataStoreHelper();
 
         $this->definitions = array(
-            array('type' => 'text', 'id' => 'firstname'),
-            array('type' => 'text', 'id' => 'lastname'),
-            array('type' => 'email', 'id' => 'email', 'maxlength' => '25', 'required' => 'true'),
-            array('type' => 'password', 'id'=> 'password'),
-            array('type' => 'tel', 'id' => 'phonenumber', 'required' => 'false'),
-            array('type' => 'date', 'id' => 'date_created'),
-            array('type' => 'url', 'id' => 'url'),
+            array('type' => 'text', 'id' => 'firstname', 'name' => 'firstname', 'label' => 'First Name', 'formtype' => 'c02'),
+            array('type' => 'text', 'id' => 'lastname', 'name' => 'lastname', 'label' => 'Last Name', 'formtype' => 'c02'),
+            array('type' => 'email', 'id' => 'email', 'name' => 'email', 'maxlength' => '25', 'required' => 'true', 'label' => 'Email', 'formtype' => 'c04'),
+            array('type' => 'password', 'id'=> 'password', 'name' => 'password', 'label' => 'Password', 'formtype' => 'c02'),
+            array('type' => 'tel', 'id' => 'phonenumber', 'name' => 'phonenumber', 'required' => 'false', 'label' => 'Tel', 'formtype' => 'c06'),
+            array('type' => 'date', 'id' => 'date_created', 'name' => 'date_created', 'label' => 'Date', 'formtype' => 'd02'),
+            array('type' => 'url', 'id' => 'url', 'name' => 'url', 'label' => 'URL', 'formtype' => 'd10'),
         );
     }
+    protected function createRequest(
+      $method,
+      $content,
+      $uri = '/test',
+      $server = ['CONTENT_TYPE' => 'application/json'],
+      $parameters = [],
+      $cookies = [],
+      $files = []
+     )
+     {
+         $request = new \Illuminate\Http\Request;
+         return $request->createFromBase(
+          \Symfony\Component\HttpFoundation\Request::create(
+              $uri,
+              $method,
+              $parameters,
+              $cookies,
+              $files,
+              $server,
+              $content
+          )
+      );
+     }
 
     /**
     *  Testing App\Helpers\DataStoreHelper
     **/
+    public function testSubmitForm(){
+      //submitForm($form, $request, $status = 'complete')
+      $tablename= 'forms_submitform';
+      $this->dataStoreHelperTester->createFormTable($tablename, $this->definitions);
+      $this->assertTrue(Schema::hasTable($tablename));
+      $form = array(
+          "host" => "",
+          "id" => 'submitform',
+          "content" => array(
+            "settings" => array("name" => ""),
+            "data" => $this->definitions
+          )
+        );
+      $requestData = array("form_id" => "submitform", "firstname" => 'firstname', "lastname" => "lastname", "email" => "test@test.gov", "phonenumber" => "12345678901", "password" => "", "date_created" => "", "url" => "");
+
+      //Test completed form
+      $response = $this->dataStoreHelperTester->submitForm($form, $requestData, 'complete');
+      $this->assertEquals($response['status'], 1);
+      $this->assertEquals($response['message'], "Successful");
+      //Test partially completed form
+      $response = $this->dataStoreHelperTester->submitForm($form, $requestData, 'partial');
+      $this->assertEquals($response['status'], 1);
+      $this->assertEquals(is_array($response['data']), true);
+
+    }
     public function testCreateFormTable()
     {
         $tablename= 'forms_form1';
@@ -206,5 +255,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         Schema::dropIfExists('forms_cloneme_archive');
         Schema::dropIfExists('forms_cloneme_clone');
         Schema::dropIfExists('forms_cloneme_clone_archive');
+        Schema::dropIfExists('forms_submitform');
+        Schema::dropIfExists('forms_submitform_archive');
     }
   }
