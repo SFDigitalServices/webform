@@ -460,7 +460,7 @@ class HTMLHelper
         $attributes = self::setAttributes($field);
         $prepended = self::getPrepended($field);
         $html = $prepended . "<input" . $attributes . "/>";
-        if (isset($field['unit']) && $field['formtype'] == "d06" && $field['unit'] != "") $html = $html . '<span class="unit">' . $field['unit'] . '</span>';
+        if (isset($field['unit']) && $field['formtype'] == "d06" && $field['unit'] != "") $html = $html . '<span class="units">' . $field['unit'] . '</span>';
         return $html;
     }
 
