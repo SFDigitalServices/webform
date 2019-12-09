@@ -4,6 +4,7 @@
     </IfModule>
 
     RewriteEngine On
+
     # Apache seems to discard the Authorization header if it is not a
     # base64 encoded user/pass combo
     RewriteCond %{HTTP:Authorization} ^(.*)
