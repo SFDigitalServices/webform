@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
     # Apache seems to discard the Authorization header if it is not a
     # base64 encoded user/pass combo
     RewriteCond %{HTTP:Authorization} ^(.*)
