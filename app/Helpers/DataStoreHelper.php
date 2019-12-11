@@ -9,6 +9,7 @@ use GuzzleHttp;
 use Log;
 use DB;
 use App\Form;
+use Exception;
 use App\Helpers\ControllerHelper;
 
 class DataStoreHelper extends Migration
@@ -308,23 +309,26 @@ class DataStoreHelper extends Migration
         $id = 0;
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
-            foreach($content as $key => $value){
-              if( ! Schema::hasColumn($tablename, $key)){
-                // if submitted data doesn't have a corresponding table column, don't insert.
-                unset($content[$key]);
-                continue;
-              }
-              //checkboxes, radio buttons, dropdowns are stored in the lookup table
-              if (is_array($value)) {
-                  $content[$key] = $this->findLookupID($key, $formid, $value);
-              }
+            foreach ($content as $key => $value) {
+                if (! Schema::hasColumn($tablename, $key)) {
+                    // if submitted data doesn't have a corresponding table column, don't insert.
+                    unset($content[$key]);
+                    continue;
+                }
+                //checkboxes, radio buttons, dropdowns are stored in the lookup table
+                if (is_array($value)) {
+                    $content[$key] = $this->findLookupID($key, $formid, $value);
+                }
             }
             try {
                 $id = DB::table($tablename)->insertGetId($content);
             } catch (\Illuminate\Database\QueryException $ex) {
-              $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
-              return 0;
-          }
+                $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
+                Log::info(print_r($ex->getMessage(),1));
+                return 0;
+            } catch (PDOException $e) {
+                Log::info(print_r($e->getMessage(), 1));
+            }
         }
         return $id;
     }
@@ -812,13 +816,15 @@ class DataStoreHelper extends Migration
                 }
                 foreach ($options as $option) {
                   $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
-                  if (is_array($request[$field['name']])) {
-                      $write['db'][$field['name']] = $request[$field['name']];
-                  } else {
-                      $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
+                  if (isset($request[$field['name']])) {
+                      if (is_array($request[$field['name']])) {
+                          $write['db'][$field['name']] = $request[$field['name']];
+                      } else {
+                          $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
                         array($request[$field['name']]) : $request[$field['name']];
+                      }
+                      $column++;
                   }
-                  $column++;
                 }
             }
             elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
@@ -832,7 +838,7 @@ class DataStoreHelper extends Migration
               }
             else {
                   // fixed bug: if 'name' attribute was not set, exception is thrown here.
-                  if (isset($field['name'])) {
+                  if (isset($field['name']) && isset($request[$field['name']]) ) {
                     $write['db'][$field['name']] = $write['csv'][$column] = $request[$field['name']];
                     if($field['formtype'] === 'c04'){
                       $write['db']['email_save_for_later'] = $request[$field['name']];
