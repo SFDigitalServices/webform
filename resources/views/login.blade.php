@@ -14,7 +14,7 @@
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 				<div class="panel">
-        <form class="panel-body" id="login-form" action="/home" method="POST">
+          <form class="panel-body" id="login-form" action="/home" method="POST">
 						<h2>Login</h2>
 
 						<div class="form-group">
