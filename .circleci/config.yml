@@ -1,4 +1,6 @@
-version: 2 # use CircleCI 2.0
+version: 2.1 # use CircleCI 2.1
+orbs:
+  puppeteer: threetreeslight/puppeteer@0.1.2
 
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
@@ -54,20 +56,6 @@ jobs: # a collection of steps
       - run:
           name: Configure & start Apache
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
-      - run:
-          name: Install Headless Chrome dependencies
-          command: >
-            sudo apt-get install -yq \
-            gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
-            libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 \
-            libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 \
-            libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1
-            libxtst6 ca-certificates \
-            fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
-      - run:
-          name: Install puppeteer with chronium
-          command: |
-            npm i puppeteer
       - run:
           name: run tests
           command: |
