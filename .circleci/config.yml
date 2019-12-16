@@ -66,7 +66,7 @@ jobs: # a collection of steps
             ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
             ./vendor/bin/codecept run # run unit/api/functional tests
             cd tests/frontend #run E2E tests
-            sh run_tests.sh
+            npx codeceptjs run
       - deploy:
           name: deploy builds to ${CIRCLE_BRANCH}
           working_directory: /home/circleci/project
