@@ -261,7 +261,7 @@ class DataStoreHelper extends Migration
             // if the magic link is clicked for the partially completed form, remove the record first.
             if (isset($requestData['magiclink'])) {
               try {
-                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $requestData['magiclink']);
+                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $requestData['magiclink'])->first();
                   if ($record) {
                       DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
                       DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
