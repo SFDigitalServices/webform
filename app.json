@@ -50,6 +50,30 @@
     "FILE_SALT": {
       "required": true
     },
+    "MAIL_DRIVER": {
+      "required": true
+    },
+    "MAIL_ENCRYPTION": {
+      "required": true
+    },
+    "MAIL_FROM_ADDRESS": {
+      "required": true
+    },
+    "MAIL_FROM_NAME": {
+      "required": true
+    },
+    "MAIL_HOST": {
+      "required": true
+    },
+    "MAIL_PASSWORD": {
+      "required": true
+    },
+    "MAIL_PORT": {
+      "required": true
+    },
+    "MAIL_USERNAME": {
+      "required": true
+    },
     "SENTRY_DSN": {
       "required": true
     }
