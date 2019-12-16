@@ -1,12 +1,13 @@
-version: 2.1 # use CircleCI 2.1
-orbs:
-  puppeteer: threetreeslight/puppeteer@0.1.2
+version: 2 # use CircleCI 2.0
 
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker
-      - image: circleci/php:7.2-apache # ...with this image as the primary container; this is where all `steps` will run
+      - image: circleci/php:7.2-apache-browsers # ...with this image as the primary container; this is where all `steps` will run
         environment:
+          APP_ENV: production
+          APP_DEBUG: true
+          APP_KEY: kjcndjjksddwdwdw
           DB_CONNECTION: mysql
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
@@ -15,14 +16,12 @@ jobs: # a collection of steps
           DB_PASSWORD: 1234
           CACHE_DRIVER: file
           QUEUE_DRIVER: sync
+          SENTRY_DSN: https://b53658ff4ec749719da39905217d41e0@sentry.io/1366253
       - image: circleci/mysql:5.6-ram
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: '1234'
           MYSQL_DATABASE: webform
-      - image: circleci/node:12 # Use your desired version
-        environment:
-          NODE_ENV: development # Only needed if puppeteer is in `devDependencies`
     working_directory: /home/circleci/project # directory where steps will run
     steps: # a set of executable commands
       - checkout # special step to check out source code to working directory
@@ -56,6 +55,16 @@ jobs: # a collection of steps
       - run:
           name: Configure & start Apache
           command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
+      # end to end testing
+      - run:
+          name: download nodejs
+          command: curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+      - run:
+          name: Install nodejs
+          command:  sudo apt-get install -y nodejs
+      - run:
+          name: Install node dependencies
+          command:  npm install
       - run:
           name: run tests
           command: |
@@ -66,7 +75,7 @@ jobs: # a collection of steps
             ./node_modules/stylelint/bin/stylelint.js public/assets/css/*.css --fix #lint compiled css
             ./vendor/bin/codecept run # run unit/api/functional tests
             cd tests/frontend #run E2E tests
-            npx codeceptjs run
+            sh run_tests.sh
       - deploy:
           name: deploy builds to ${CIRCLE_BRANCH}
           working_directory: /home/circleci/project
