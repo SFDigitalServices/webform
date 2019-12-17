@@ -6,7 +6,7 @@ exports.config = {
     Puppeteer: {
       ignoreHTTPSErrors: true,
       waitForNavigation: [ "domcontentloaded", "networkidle0" ],
-      url: process.env.CODECEPT_URL || 'http://webform.test',
+      url: process.env.CODECEPT_URL || 'https://webform.test',
       'chrome': {
         'headless': true,
         'args': [
