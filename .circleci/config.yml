@@ -54,8 +54,9 @@ jobs: # a collection of steps
       - run: php artisan db:seed --force
       - run:
           name: Configure & start Apache
-          command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf \
-          sudo mkdir /etc/apache2/ssl && sudo cp /home/circleci/project/docker/conf/ssl/ci-key-* /etc/apache2/ssl/ && sudo service apache2 start
+          command: |
+            sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf \
+            sudo mkdir /etc/apache2/ssl && sudo cp /home/circleci/project/docker/conf/ssl/ci-key-* /etc/apache2/ssl/ && sudo service apache2 start
       # end to end testing
       - run:
           name: download nodejs
