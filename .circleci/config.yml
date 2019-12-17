@@ -31,7 +31,7 @@ jobs: # a collection of steps
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
             sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts' #set url for test
-      - run: sudo a2enmod rewrite
+      - run: sudo a2enmod rewrite ssl
       - run: sudo docker-php-ext-install mysqli pdo_mysql
       - run:
           name: Install Project Dependencies
@@ -54,7 +54,8 @@ jobs: # a collection of steps
       - run: php artisan db:seed --force
       - run:
           name: Configure & start Apache
-          command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf && sudo service apache2 start
+          command: sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf \
+          sudo mkdir /etc/apache2/ssl && sudo cp /home/circleci/project/docker/conf/ssl/ci-key-* /etc/apache2/ssl/ && sudo service apache2 start
       # end to end testing
       - run:
           name: download nodejs
