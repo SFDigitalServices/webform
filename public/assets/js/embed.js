@@ -224,9 +224,10 @@ function phoneIsValid(num) {
 }
 
 function fieldInvalid(id) {
-  if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-error')) jQuery('.form-group[data-id=' + id + ']').addClass('has-error');
-  if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-danger')) jQuery('.form-group[data-id=' + id + ']').addClass('has-danger');
-  jQuery('.form-group[data-id=' + id + '] .with-errors').html('<ul class="list-unstyled"><li>' + jQuery('#' + id).data('required-error') + '</li></ul>');
+  if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-error')) jQuery('.form-group[data-id=' + id + ']').addClass('has-error')
+  if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-danger')) jQuery('.form-group[data-id=' + id + ']').addClass('has-danger')
+  var errorMsg = jQuery('#' + id).data('required-error') !== '' && jQuery('#' + id).data('required-error') !== undefined ? jQuery('#' + id).data('required-error') : jQuery('#' + id).data('error')
+  jQuery('.form-group[data-id=' + id + '] .with-errors').html('<ul class="list-unstyled"><li>' + errorMsg + '</li></ul>')
 }
 
 function fieldValid(id) {
