@@ -6,6 +6,8 @@
  * https://github.com/1000hz/bootstrap-validator
  */
 
+ //original file at https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.js
+
 +function ($) {
   'use strict';
 
@@ -52,7 +54,7 @@
 
   Validator.INPUT_SELECTOR = ':input:not([type="submit"], button):enabled:visible'
 
-  Validator.FOCUS_OFFSET = 5
+  Validator.FOCUS_OFFSET = 20
 
   Validator.DEFAULTS = {
     delay: 500,
@@ -186,9 +188,9 @@
   Validator.prototype.focusError = function () {
     if (!this.options.focus) return
 
-    var $input = $(".has-error:first")
+    var $input = $(".has-error:first :input")
 
-    $('html, body').animate({scrollTop: $input.offset().top - Validator.FOCUS_OFFSET}, 250)
+    $(document.body).animate({scrollTop: $input.offset().top - Validator.FOCUS_OFFSET}, 250)
     $input.focus()
   }
 
