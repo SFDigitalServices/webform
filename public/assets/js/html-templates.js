@@ -240,18 +240,18 @@ Fb.prototype.view.previewIframe = function(formId, scrollTo) {
 	return '<iframe src="/form/preview?id=' + formId + scrollTo + '">Your browser does not support iframes, <a href="/form/preview?id=' + formId + '" target="_blank">click here</a> to a view a preview.</iframe>'
 }
 
-Fb.prototype.view.listItem = function(id, num, numStr) {
+Fb.prototype.view.listItem = function(item, num, numStr) {
 	return "<div> \
-            <a href='javascript:void(0)' class='spacer item insert add move' data-index='" + num + "'' data-id='" + id + "'> \
+            <a href='javascript:void(0)' class='spacer item insert add move' data-index='" + num + "'' data-id='" + item.id + "'> \
               Click to add a field \
             </a> \
           </div> \
-          <div> \
-            <a href='javascript:void(0)' data-index='" + num + "' data-id='" + id + "' class='fa fa-sort'></a> \
-            <a href='javascript:void(0)' class='item field' data-index='" + num + "' data-id='" + id + "'> \
-              <span class='itemCount'>" + numStr + "</span>" + id + " \
+          <div" + (item.formtype == "m16" ? " class='page'" : "") + "> \
+            <a href='javascript:void(0)' data-index='" + num + "' data-id='" + item.id + "' class='fa fa-sort'></a> \
+            <a href='javascript:void(0)' class='item field' data-index='" + num + "' data-id='" + item.id + "'> \
+              <span class='itemCount'>" + numStr + "</span>" + item.id + " \
             </a> \
-            <a href='javascript:void(0)' data-index='" + num + "' data-id='" + id + "' class='fa fa-times'></a> \
+            <a href='javascript:void(0)' data-index='" + num + "' data-id='" + item.id + "' class='fa fa-times'></a> \
           </div>"
 }
 
