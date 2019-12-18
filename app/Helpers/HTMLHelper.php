@@ -105,7 +105,7 @@ class HTMLHelper
 
       $js = "var SFDSWFB = {};SFDSWFB.preRenderScripts = [" .
 		"'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js', " .
-		"'//cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.10.1/validator.min.js', " .
+		"'//" . $host . "/assets/js/validator.js', " .
 		"'//" . $host . "/assets/js/error-msgs.js'" .
 	  "];SFDSWFB.postRenderScripts = [" .
 		"'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js'" .
