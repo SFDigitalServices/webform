@@ -99,7 +99,7 @@ let Item = function(obj, idsArray, namesArray) {
 
     Object.assign(this, obj)
 
-	this.class = obj.class
+	this.class = typeof obj.class === "undefined" ? "" : obj.class
   if (this.codearea) this.codearea = this.htmlDecode(this.htmlDecode(this.codearea))
 
 	//for new items
@@ -184,7 +184,7 @@ let Item = function(obj, idsArray, namesArray) {
 			break
 		case 'm16': //page separator
 			this.removeSpecialValues()
-			this.removeSpecialFunctions(['validation', 'conditionals', 'calculations', 'webhooks'])
+			this.removeSpecialFunctions(['validation', 'calculations', 'webhooks'])
 			this.removeAttrs(['name','help','placeholder','type','value','unit'])
 			break
 		//case 'm14': //button
