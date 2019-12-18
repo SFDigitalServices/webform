@@ -54,7 +54,7 @@
 
   Validator.INPUT_SELECTOR = ':input:not([type="submit"], button):enabled:visible'
 
-  Validator.FOCUS_OFFSET = 20
+  Validator.FOCUS_OFFSET = 5
 
   Validator.DEFAULTS = {
     delay: 500,
@@ -188,9 +188,9 @@
   Validator.prototype.focusError = function () {
     if (!this.options.focus) return
 
-    var $input = $(".has-error:first :input")
+    var $input = $(".has-error:first")
 
-    $(document.body).animate({scrollTop: $input.offset().top - Validator.FOCUS_OFFSET}, 250)
+    $('html, body').animate({scrollTop: $input.offset().top - Validator.FOCUS_OFFSET}, 250)
     $input.focus()
   }
 
