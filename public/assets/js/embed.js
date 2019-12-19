@@ -255,10 +255,25 @@ function skipToSectionId(callback) { //does not work for checkboxes and possibly
 function submitPartial(formid){
   var formid = "SFDSWFB_forms_" + formid;
   var submitUrl = jQuery("#"+formid).attr('action');
+
   if(!submitUrl.includes('submitPartial'))
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
-  jQuery("#"+formid).attr('action', submitUrl);
-  document.forms[formid].submit.click();
+
+  var form_data = jQuery("#"+formid).serialize();
+  var settings = {
+    'async': true,
+    'crossDomain': true,
+    'url': submitUrl,
+    'method': 'POST',
+    'headers': {
+      'content-type': 'application/x-www-form-urlencoded',
+      'cache-control': 'no-cache'
+    },
+    'data':  form_data
+  }
+  jQuery.ajax(settings).done(function (response) {
+    jQuery("body").html(response);
+  })
 }
 
 SFDSWFB.lastScript = function() {
