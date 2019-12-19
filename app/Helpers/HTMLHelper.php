@@ -61,8 +61,8 @@ class HTMLHelper
             $sections[] = $field;
 
             // All other static / hidden field types start
-            // with the letter "m"
-          } else if ($field['formtype'][0] == "m") {
+            // with the letter "m", except for file uploads (m13)
+          } else if ($field['formtype'] !== "m13" && $field['formtype'][0] == "m") {
             $form_container .= $this->createContentAndHiddenFields($field);
           } else {
             $form_container .= $this->createEditableFields($field);

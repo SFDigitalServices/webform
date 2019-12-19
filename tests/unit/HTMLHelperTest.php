@@ -33,6 +33,48 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     }
 
     /**
+    * Testing App\Helpers\HTMLHelper\getHTML with different content
+    */
+    public function testGetHTMLFileUploads() {
+
+      $this->form = array(
+        "id" => "1",
+        "content" => array(
+          "settings" => array(
+            "action" => "",
+            "method" => "POST",
+            "name" => "Test",
+            "backend" => "csv",
+            "confirmation" => "",
+            "section1" => ""
+          ),
+          "data" => array(
+            0 => array(
+              "formtype" => "m13",
+              "class" => "",
+              "label" => "Upload File",
+              "id" => "upload_file",
+              "name" => "upload_file",
+              "type" => "file",
+              "required" => "false"
+            ),
+            1 => array(
+              "button" => "Submit",
+              "id" => "submit",
+              "formtype" => "m14",
+              "color" => "btn-primary",
+              "class" => ""
+            )
+          )
+        )
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><input type="hidden" name="form_id" value="1"/><div class="form-group form-group-field field-m13" data-id="upload_file"><div class="field-wrapper"><label><span class="label">Upload File</span><input data-formtype="m13" id="upload_file" name="upload_file" type="file"/><span class="file-custom" data-filename=""></span></label></div><div class="help-block with-errors"></div></div><div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    /**
     *  Testing App\Helpers\DataStoreHelper
     **/
     public function testFormRadio()
