@@ -71,12 +71,15 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         );
       $requestData = array("form_id" => "submitform", "firstname" => 'firstname', "lastname" => "lastname", "email" => "test@test.gov", "phonenumber" => "12345678901", "password" => "", "date_created" => "", "url" => "");
 
+      $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
+
+      Log::info(print_r($request,1));
       //Test completed form
-      $response = $this->dataStoreHelperTester->submitForm($form, $requestData, 'complete');
+      $response = $this->dataStoreHelperTester->submitForm($form, $request, 'complete');
       $this->assertEquals($response['status'], 1);
       $this->assertEquals($response['message'], "Successful");
       //Test partially completed form
-      $response = $this->dataStoreHelperTester->submitForm($form, $requestData, 'partial');
+      $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
       $this->assertEquals($response['status'], 1);
       $this->assertEquals(is_array($response['data']), true);
 

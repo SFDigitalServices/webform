@@ -248,20 +248,21 @@ class DataStoreHelper extends Migration
    /** Handles form submission
     *
     * @param $form
-    * @param $requestData
+    * @param $request
     * @param $status
     *
     * @return Array
     */
-    public function submitForm($form, $requestData, $status = 'complete')
+    public function submitForm($form, $request, $status = 'complete')
     {
         $ret = array();
-        $write = $this->parseSubmittedFormData($form, $requestData);
+    Log::info(print_r($request->all(),1));
+        $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
-            if (isset($requestData['magiclink'])) {
+            if ( $request->input('magiclink') ){
               try {
-                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $requestData['magiclink'])->first();
+                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
                   if ($record) {
                       DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
                       DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
@@ -283,7 +284,7 @@ class DataStoreHelper extends Migration
                         $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     }
                     else{
-                      $ret = $this->pushDataToADU($requestData);
+                      $ret = $this->pushDataToADU($request->all());
                       if($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')){
                         DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                       }
@@ -816,32 +817,32 @@ class DataStoreHelper extends Migration
                 }
                 foreach ($options as $option) {
                   $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
-                  if (isset($request[$field['name']])) {
-                      if (is_array($request[$field['name']])) {
-                          $write['db'][$field['name']] = $request[$field['name']];
+                  if ($request->input($field['name'])) {
+                      if (is_array($request->input($field['name']))) {
+                          $write['db'][$field['name']] = $request->input($field['name']);
                       } else {
                           $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
-                        array($request[$field['name']]) : $request[$field['name']];
+                        array($request->input($field['name'])) : $request->input($field['name']);
                       }
                       $column++;
                   }
                 }
             }
             elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-              if (isset($request['file']) && $request['file'][$field['name']] != null && $request['file'][$field['name']]->isValid()) { //checks if field is populated with an acceptable value
-                  $file = $request['file'][$field['name']];
-                  $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
-                  $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
-                  $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
+                if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                    $file = $request->file($field['name']);
+                    $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                    $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
+                    $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
                 }
                 $column++;
               }
             else {
-                  // fixed bug: if 'name' attribute was not set, exception is thrown here.
-                  if (isset($field['name']) && isset($request[$field['name']]) ) {
-                    $write['db'][$field['name']] = $write['csv'][$column] = $request[$field['name']];
+                 // fixed bug: if 'name' attribute was not set, exception is thrown here.
+                 if (isset($field['name'])) {
+                    $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
                     if($field['formtype'] === 'c04'){
-                      $write['db']['email_save_for_later'] = $request[$field['name']];
+                        $write['db']['email_save_for_later'] = $request->input($field['name']);
                     }
                   }
                   $column++;
