@@ -257,7 +257,7 @@ class DataStoreHelper extends Migration
     public function submitForm($form, $requestData, $status = 'complete')
     {
         $ret = array();
-        if($ret = validateFormRequest($requestData, $form['content']['data']))
+        if($ret = $this->validateFormRequest($requestData, $form['content']['data']))
           return $ret;
 
         $write = $this->parseSubmittedFormData($form, $requestData);
@@ -922,49 +922,16 @@ class DataStoreHelper extends Migration
     *
     * @return Array
     */
-    private function validateFormRequest($inputs, $formdefinition)
+    private function validateFormRequest($inputs, $definitions)
     {
       $ret = array();
-      $validation_rules = [];
+      $validation_rules = array();
 
       foreach ($definitions as $key => $definition) {
           if ($definition) {
-              if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
-                  $type = $definition['formtype'];
-              } else {
-                  $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
-              }
               $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
 
-              switch ($type) {
-                case 'text':
-                case 'email':
-                case 'password':
-                case 'search':
-                case 'url':
-                case 'tel':
-                case 's02':
-                case 's14':  //state dropdown
-                case 's15':  //state dropdown
-                case 's16':  //state dropdown
-                case 'file': //store file path only
-                    break;
-                case 'file':
-                case 's08': //radios
-                case 's06': //checkbox
-                    break;
-                case 'number':
-                    break;
-                case 'date':
-                    break;
-                case 'i14':
-                    break;
-                case 'd04': // Time
-                case 'time':
-                    break;
-                default:
-                    break;
-              }
+              $validation_rules[] = array($definition['name'] => $this->ValidationRules($definition, $inputs[$field['name']]));
           }
       }
 
@@ -977,4 +944,45 @@ class DataStoreHelper extends Migration
 
       return $ret;
     }
-}
+
+    /** sets validation rules for all input types
+    *
+    * @param $definition
+    * @param @field
+    *
+    * @return Array
+    */
+    private function setValidationRules($definition, $field)
+    {
+        $rules = array();
+        foreach($definition as $key => $value){
+            switch ($key) {
+                case "required": $rules[] = "required";
+                    break;
+                case "maxlength": $rules[] = "max:".$value;
+                    break;
+                case "minlength": $rules[] = "min:".$value;
+                    break;
+                case "maxlength": $rules[] = "max:".$value;
+                    break;
+                case "option": $rules[] = "Array";
+                    break;
+                case "type": 
+                    if($value === 'email'){ $rules[] = "email";}
+                    elseif($value === 'url'){ $rules[] = "url";}
+                    elseif($value == 'number'){ $rules[] = "numeric";}
+                    elseif($value == 'date'){ $rules[] = "date";}
+                    elseif($value == 'time'){ $rules[] = "date";}
+
+                    break;
+                case "formtype":
+                    if($value === 'i14'){ $rules[] = "string";}
+
+                    break;
+                default:
+                    break;
+                
+            }
+        }
+        return $rules;
+    }
