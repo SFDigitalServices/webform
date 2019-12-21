@@ -12,30 +12,24 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
     protected function _before()
     {
-        $this->htmlHelperTester = new HTMLHelper();
+      $this->htmlHelperTester = new HTMLHelper();
 
-        $this->attributes = array(
-            "label" => "",
-            "id" => "",
-            "name" => "",
-            "type" => "",
-            "formtype" => "",
-			"regex" => "",
-			"match" => "",
-            "required" => "",
-			"minlength" => "",
-			"maxlength" => "",
-			"min" => "",
-			"max" => "",
-            "class" => "",
-            "codearea" => "",
-        );
-    }
-
-    /**
-    * Testing App\Helpers\HTMLHelper\getHTML with different content
-    */
-    public function testGetHTMLFileUploads() {
+      $this->attributes = array(
+        "label" => "",
+        "id" => "",
+        "name" => "",
+        "type" => "",
+        "formtype" => "",
+        "regex" => "",
+        "match" => "",
+        "required" => "",
+        "minlength" => "",
+        "maxlength" => "",
+        "min" => "",
+        "max" => "",
+        "class" => "",
+        "codearea" => "",
+      );
 
       $this->form = array(
         "id" => "1",
@@ -49,15 +43,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
             "section1" => ""
           ),
           "data" => array(
-            0 => array(
-              "formtype" => "m13",
-              "class" => "",
-              "label" => "Upload File",
-              "id" => "upload_file",
-              "name" => "upload_file",
-              "type" => "file",
-              "required" => "false"
-            ),
+            0 => array(),
             1 => array(
               "button" => "Submit",
               "id" => "submit",
@@ -69,9 +55,11 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         )
       );
 
-      $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><input type="hidden" name="form_id" value="1"/><div class="form-group form-group-field field-m13" data-id="upload_file"><div class="field-wrapper"><label><span class="label">Upload File</span><input data-formtype="m13" id="upload_file" name="upload_file" type="file"/><span class="file-custom" data-filename=""></span></label></div><div class="help-block with-errors"></div></div><div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
-      $this->assertEquals($expected, $getHTML);
+      $this->formStart = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST" ><input type="hidden" name="form_id" value="1"/>';
+      $this->formStartFile = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><input type="hidden" name="form_id" value="1"/>';
+
+      $this->formEnd = '<div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
+
     }
 
     /**
@@ -1407,5 +1395,374 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->assertSame($expected, $multiWebhooks);
     }
 
+    /**
+    * Testing App\Helpers\HTMLHelper\getHTML with different content
+    */
+    public function testGetHTMLFileUploads() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "m13",
+        "class" => "",
+        "label" => "Upload File",
+        "id" => "upload_file",
+        "name" => "upload_file",
+        "type" => "file",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStartFile . '<div class="form-group form-group-field field-m13" data-id="upload_file"><div class="field-wrapper"><label><span class="label">Upload File</span><input data-formtype="m13" id="upload_file" name="upload_file" type="file"/><span class="file-custom" data-filename=""></span></label></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    /* something weird this is not working like it should?
+    public function testGetHTMLRadio() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "s06",
+        "class" => "",
+        "label" => "Radio",
+        "id" => "radio",
+        "name" => "radio",
+        "radios" => array("option one", "option two"),
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-s06" data-id="radio"><fieldset><legend class="control-label">Radio</legend><div class="field-wrapper"><label for="radio_option_one"><input type="radio" id="radio_option_one" value="option one" data-formtype="s06"/><span class="inline-label">option one</span></label><label for="radio_option_two"><input type="radio" id="radio_option_two" value="option two" data-formtype="s06"/><span class="inline-label">option two</span></label></div><div class="help-block with-errors"></div></fieldset></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLCheckbox() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "s08",
+        "class" => "",
+        "label" => "Checkbox",
+        "id" => "checkbox",
+        "name" => "checkbox",
+        "checkboxes" => array("option one", "option two"),
+        "required" => "false"
+      );
+
+      $expected = $this->formStart . '<div class="form-group form-group-field field-s08" data-id="checkbox"><fieldset><legend class="control-label">Checkbox</legend><div class="field-wrapper"><label for="test_option_one"><input type="checkbox" id="checkbox_option_one" value="option one" data-formtype="s08"/><span class="inline-label">option one</span></label><label for="checkbox_option_two"><input type="checkbox" id="test_option_two" value="option two" data-formtype="s08"/><span class="inline-label">option two</span></label></div><div class="help-block with-errors"></div></fieldset></div>' . $this->formEnd;
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+
+      $this->assertEquals($expected, $getHTML);
+    }
+    */
+
+    public function testGetHTMLName() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "c02",
+        "class" => "",
+        "label" => "Name",
+        "id" => "name",
+        "name" => "name",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c02" data-id="name"><label for="name" class="control-label">Name</label><div class="field-wrapper"><input data-formtype="c02" id="name" name="name"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLEmail() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "c04",
+        "class" => "",
+        "label" => "Email",
+        "id" => "email",
+        "name" => "email",
+        "type" => "email",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c04" data-id="email"><label for="email" class="control-label">Email</label><div class="field-wrapper"><input data-formtype="c04" id="email" name="email" type="email"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLPhone() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "c06",
+        "class" => "",
+        "label" => "Phone",
+        "id" => "phone",
+        "name" => "phone",
+        "type" => "tel",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c06" data-id="phone"><label for="phone" class="control-label">Phone</label><div class="field-wrapper"><input data-formtype="c06" id="phone" name="phone" type="tel"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLAddress() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "c08",
+        "class" => "",
+        "label" => "Address",
+        "id" => "address",
+        "name" => "address",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c08" data-id="address"><label for="address" class="control-label">Address</label><div class="field-wrapper"><input data-formtype="c08" id="address" name="address"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLCity() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "c10",
+        "class" => "",
+        "label" => "City",
+        "id" => "city",
+        "name" => "city",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c10" data-id="city"><label for="city" class="control-label">City</label><div class="field-wrapper"><input data-formtype="c10" id="city" name="city"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLZip() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "c14",
+        "class" => "",
+        "label" => "Zipcode",
+        "id" => "zip",
+        "name" => "zip",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c14" data-id="zip"><label for="zip" class="control-label">Zipcode</label><div class="field-wrapper"><input data-formtype="c14" id="zip" name="zip"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLDate() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "d02",
+        "class" => "",
+        "label" => "Date",
+        "id" => "date",
+        "name" => "date",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d02" data-id="date"><label for="date" class="control-label">Date</label><div class="field-wrapper"><input data-formtype="d02" id="date" name="date"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLTime() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "d04",
+        "class" => "",
+        "label" => "Time",
+        "id" => "time",
+        "name" => "time",
+        "type" => "time",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d04" data-id="time"><label for="time" class="control-label">Time</label><div class="field-wrapper"><input data-formtype="d04" id="time" name="time" type="time"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLNumber() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "d06",
+        "class" => "",
+        "label" => "Number",
+        "id" => "number",
+        "name" => "number",
+        "type" => "number",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d06" data-id="number"><label for="number" class="control-label">Number</label><div class="field-wrapper"><input data-formtype="d06" id="number" name="number" type="number" step="any"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLPrice() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "d08",
+        "class" => "",
+        "label" => "Price",
+        "id" => "price",
+        "name" => "price",
+        "type" => "number",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d08" data-id="price"><label for="price" class="control-label">Price</label><div class="field-wrapper"><div class="prepended dollar">$</div><input data-formtype="d08" id="price" name="price" type="number" step="0.01"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLURL() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "d10",
+        "class" => "",
+        "label" => "URL",
+        "id" => "url",
+        "name" => "url",
+        "type" => "url",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d10" data-id="url"><label for="url" class="control-label">URL</label><div class="field-wrapper"><input data-formtype="d10" id="url" name="url" type="url"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLText() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "i02",
+        "class" => "",
+        "label" => "Text",
+        "id" => "text",
+        "name" => "text",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-i02" data-id="text"><label for="text" class="control-label">Text</label><div class="field-wrapper"><input data-formtype="i02" id="text" name="text"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLTextArea() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "i14",
+        "class" => "",
+        "label" => "Text Area",
+        "id" => "text_area",
+        "name" => "text_area",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-i14" data-id="text_area"><label for="text_area" class="control-label">Text Area</label><div class="field-wrapper"><textarea data-formtype="i14" id="text_area" name="text_area"></textarea></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLSelect() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "s02",
+        "class" => "",
+        "label" => "Select",
+        "id" => "select",
+        "name" => "select",
+        "option" => array("option one", "option two"),
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group form-group-field field-s02" data-id="select"><label for="select" class="control-label">Select</label><div class="field-wrapper"><select data-formtype="s02" id="select" name="select"><option value="">Choose an option</option><option value="option one">option one</option><option value="option two">option two</option></select></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLHeader() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "m02",
+        "class" => "",
+        "label" => "H1",
+        "id" => "h1",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group field-m02" data-id="h1"><h1 data-formtype="m02" id="h1"></h1></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLParagraph() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "m08",
+        "class" => "",
+        "label" => "Paragraph",
+        "id" => "paragraph",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group field-m08" data-id="paragraph"><p data-formtype="m08" id="paragraph"></p></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLCode() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "m10",
+        "class" => "",
+        "label" => "Code Paragraph",
+        "id" => "code",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group field-m10" data-id="code"><p data-formtype="m10" id="code"></p></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetHTMLHidden() {
+
+      $this->form["content"]["data"][0] = array(
+        "formtype" => "m11",
+        "class" => "",
+        "label" => "Hidden",
+        "id" => "hidden",
+        "name" => "hidden",
+        "type" => "hidden",
+        "required" => "false"
+      );
+
+      $getHTML = $this->htmlHelperTester->getHTML($this->form);
+      $expected = $this->formStart . '<div class="form-group field-m11" data-id="hidden"><input data-formtype="m11" id="hidden" name="hidden" type="hidden"/></div>' . $this->formEnd;
+
+      $this->assertEquals($expected, $getHTML);
+    }
 
 }
