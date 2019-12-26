@@ -117,7 +117,7 @@ Fb.prototype.view.editItem = "\
 				<input type='hidden' name='formtype' id='formtype'/>\
 				<label class='control-label label-attribute'>Label Text</label> <input class='form-control label-attribute' type='text' name='label' id='label'> \
 				<label class='control-label placeholder-attribute'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control placeholder-attribute'> \
-				<label class='control-label help-attribute'>Help Text</label> <input type='text' name='help' id='help' class='form-control help-attribute'> \
+				<label class='control-label help-attribute'>Help Text</label> <textarea class='form-control help-attribute' name='help' id='help'></textarea> \
 				<label class='control-label option-attribute'>Options</label> <textarea class='form-control option-attribute' name='option' id='option'> </textarea> \
 				<label class='control-label checkboxes-attribute'>Checkboxes</label> <textarea class='form-control checkboxes-attribute' name='checkboxes' id='checkboxes'> </textarea> \
 				<label class='control-label radios-attribute'>Radios</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea> \
