@@ -204,8 +204,9 @@ Form.prototype.modifyItem = function() {
 	if (oldId !== newId) self.renameId(oldId, newId)
 
 	$('#SFDSWFB-attributes input, #SFDSWFB-attributes textarea').each(function(){
-		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined && $(this).val() !== "") {
-			self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1][$(this).attr('name')] = $(this).val().trim()
+		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined) {
+      var newVal = $(this).val() !== "" ? $(this).val().trim() : ""
+      self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1][$(this).attr('name')] = newVal
 		}
 	})
 
