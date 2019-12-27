@@ -142,7 +142,9 @@ FbView.prototype.startForm = function(id) {
  * @param {Integer} id
  */
 FbView.prototype.deleteForm = function(id) {
+  delete fb.fbView.formsCollection.forms[id]
 	$('.forms a[data-id=' + id + ']').remove()
+  fb.goHome()
 }
 
 /**

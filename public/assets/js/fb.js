@@ -101,6 +101,7 @@ Fb.prototype.startModal = function() {
   jQuery('.modal-dialog .modal-body p').append('<input type="text" class="form-control" value="My Form" id="formTitle"/>')
   //jQuery('.modal-dialog .btn-primary, .modal-backdrop, .close').on('click', function(){
   jQuery('.modal-dialog .btn-secondary').hide()
+  jQuery('.modal-dialog .btn-primary').off()
   jQuery('[data-dismiss=modal]').on('click', function(){
 	self.nameForm()
   })
