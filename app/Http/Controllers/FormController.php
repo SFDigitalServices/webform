@@ -387,7 +387,7 @@ class FormController extends Controller
       $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
       //todo backend validation
 
-      if($this->dataStoreHelper->submitForm($form, $request) ){
+      if($this->dataStoreHelper->submitForm($form,$request)){
         if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
           return redirect()->to($form['content']['settings']['confirmation']);
           //redirect($form['content']['settings']['confirmation']);

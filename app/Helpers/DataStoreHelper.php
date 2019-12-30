@@ -256,11 +256,10 @@ class DataStoreHelper extends Migration
     public function submitForm($form, $request, $status = 'complete')
     {
         $ret = array();
-    Log::info(print_r($request->all(),1));
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
-            if ( $request->input('magiclink') ){
+            if ($request->input('magiclink')){
               try {
                   $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
                   if ($record) {
@@ -311,24 +310,24 @@ class DataStoreHelper extends Migration
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
             foreach ($content as $key => $value) {
-                if (! Schema::hasColumn($tablename, $key)) {
-                    // if submitted data doesn't have a corresponding table column, don't insert.
-                    unset($content[$key]);
-                    continue;
-                }
-                //checkboxes, radio buttons, dropdowns are stored in the lookup table
-                if (is_array($value)) {
-                    $content[$key] = $this->findLookupID($key, $formid, $value);
-                }
+              if (! Schema::hasColumn($tablename, $key)) {
+                // if submitted data doesn't have a corresponding table column, don't insert.
+                unset($content[$key]);
+                continue;
+              }
+              //checkboxes, radio buttons, dropdowns are stored in the lookup table
+              if (is_array($value)) {
+                $content[$key] = $this->findLookupID($key, $formid, $value);
+              }
             }
             try {
-                $id = DB::table($tablename)->insertGetId($content);
+              $id = DB::table($tablename)->insertGetId($content);
             } catch (\Illuminate\Database\QueryException $ex) {
                 $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
-                Log::info(print_r($ex->getMessage(),1));
                 return 0;
             } catch (PDOException $e) {
-                Log::info(print_r($e->getMessage(), 1));
+              $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
+              return 0;
             }
         }
         return $id;
