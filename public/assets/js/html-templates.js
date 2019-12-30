@@ -115,14 +115,14 @@ Fb.prototype.view.editItem = "\
 			<div class='accordion-header'>Attributes</div> \
 			<div class='accordion'> \
 				<input type='hidden' name='formtype' id='formtype'/>\
-				<label class='control-label label-attribute'>Label</label> <input class='form-control label-attribute' type='text' name='label' id='label'> \
-        <label class='control-label textarea-attribute'>Content</label> <textarea class='form-control textarea-attribute' name='textarea' id='textarea'></textarea> \
-        <label class='control-label codearea-attribute'>Content</label> <textarea class='form-control codearea-attribute' name='codearea' id='codearea'></textarea> \
-        <label class='control-label unit-attribute'>Units</label> <input type='text' name='unit' id='unit' placeholder='%, feet, etc.'> \
-				<label class='control-label help-attribute'>Description</label> <textarea class='form-control help-attribute' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p>\
-				<label class='control-label option-attribute'>Options</label> <textarea class='form-control option-attribute' name='option' id='option'> </textarea> \
-				<label class='control-label checkboxes-attribute'>Options</label> <textarea class='form-control checkboxes-attribute' name='checkboxes' id='checkboxes'> </textarea> \
-				<label class='control-label radios-attribute'>Options</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea>"
+				<div class='form-group label-attribute'><label class='control-label'>Label</label> <input class='form-control' type='text' name='label' id='label'></div> \
+        <div class='form-group textarea-attribute'><label class='control-label'>Content</label> <textarea class='form-control' name='textarea' id='textarea'></textarea></div> \
+        <div class='form-group codearea-attribute'><label class='control-label'>Content</label> <textarea class='form-control' name='codearea' id='codearea'></textarea></div> \
+        <div class='form-group unit-attribute'><label class='control-label'>Units</label> <input type='text' name='unit' id='unit' placeholder='%, feet, etc.' class='form-control'></div> \
+				<div class='form-group help-attribute'><label class='control-label'>Description</label> <textarea class='form-control' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p></div>\
+				<div class='form-group option-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='option' id='option'> </textarea> <p class='help-block'>Enter one option per line.</p></div> \
+				<div class='form-group checkboxes-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='checkboxes' id='checkboxes'> </textarea><p class='help-block'>Enter one option per line.</p></div> \
+				<div class='form-group radios-attribute'><label class='control-label radios-attribute'>Options</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea><p class='help-block'>Enter one option per line.</p></div> \
       </div></div></div>" +
         fb.view.validation +
         fb.view.conditionals +
@@ -132,9 +132,9 @@ Fb.prototype.view.editItem = "\
         <div class='accordion-section markup'> \
           <div class='accordion-header'>Markup</div> \
           <div class='accordion'> \
-				<label class='control-label name-attribute'>Name attribute</label> <input class='form-control name-attribute' type='text' name='name' id='name'> <p class='help-block'>The field's label in your database. Users will never see this.</p>\
-				<label class='control-label id-attribute'>ID</label> <input class='form-control id-attribute' type='text' name='id' id='id'> \
-				<label class='control-label class-attribute'>CSS classes</label> <input class='form-control class-attribute' type='text' name='class' id='class'> <p class='help-block'>To add multiple classes, just add spaces.</p>\
+				<div class='form-group name-attribute'><label class='control-label'>Name attribute</label> <input class='form-control' type='text' name='name' id='name'> <p class='help-block'>The field's label in your database. Users will never see this.</p></div>\
+				<div class='form-group id-attribute'><label class='control-label id-attribute'>ID</label> <input class='form-control id-attribute' type='text' name='id' id='id'></div> \
+				<div class='form-group class-attribute'><label class='control-label'>CSS classes</label> <input class='form-control' type='text' name='class' id='class'> <p class='help-block'>To add multiple classes, just add spaces.</p></div>\
 			</div> \
 		</div> \
 	</div>" +
