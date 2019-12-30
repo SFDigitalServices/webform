@@ -112,7 +112,6 @@ Fb.prototype.view.applyRevertButtons = "\
 Fb.prototype.view.editItem = "\
 	<div class='accordion-attributes'> \
 		<div class='accordion-section attributes'> \
-			<div class='accordion-header'>Attributes</div> \
 			<div class='accordion'> \
 				<input type='hidden' name='formtype' id='formtype'/>\
 				<div class='form-group label-attribute'><label class='control-label'>Label</label> <input class='form-control' type='text' name='label' id='label'></div> \
