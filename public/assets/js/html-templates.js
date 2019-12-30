@@ -19,11 +19,11 @@ Fb.prototype.view.validation = "\
 Fb.prototype.view.conditionals = "\
 	<div class='accordion-conditionals'> \
 		<div class='accordion-section conditionals'> \
-			<div class='accordion-header'>Conditionals</div> \
+			<div class='accordion-header'>Show this field if&hellip;</div> \
 			<div class='accordion'> \
 				<div class='clonable addConditionalContainer'> \
 					<div class='addConditional' style=''> \
-						<a href='javascript:void(0)' class='addConditionalButton'>+Add A Condition</a> \
+						<a href='javascript:void(0)' class='addConditionalButton btn btn-primary btn-block'>Add a rule</a> \
 					</div> \
 				</div> \
 			</div> \
@@ -37,7 +37,7 @@ Fb.prototype.view.calculations = "\
 			<div class='accordion'> \
 				<div class='addCalculationContainer'> \
 					<div class='addCalculation'> \
-						<a class='addCalculationButton'>+Add A Calculation</a> \
+						<a class='addCalculationButton btn btn-primary btn-block'>Add a calculation</a> \
 					</div> \
 				</div> \
 			</div> \
