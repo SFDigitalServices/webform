@@ -123,16 +123,21 @@ Fb.prototype.view.editItem = "\
 				<label class='control-label textarea-attribute'>Content</label> <textarea class='form-control textarea-attribute' name='textarea' id='textarea'></textarea> \
 				<label class='control-label codearea-attribute'>Content</label> <textarea class='form-control codearea-attribute' name='codearea' id='codearea'></textarea> \
 				<label class='control-label unit-attribute'>Unit</label> <input type='text' name='unit' id='unit'> \
+      </div></div></div>" +
+        fb.view.validation +
+        fb.view.conditionals +
+        fb.view.calculations +
+        fb.view.webhooks +
+      "<div class='accordion-markup'> \
+        <div class='accordion-section markup'> \
+          <div class='accordion-header'>Markup</div> \
+          <div class='accordion'> \
 				<label class='control-label name-attribute'>Name attribute</label> <input class='form-control name-attribute' type='text' name='name' id='name'> <p class='help-block'>The field's label in your database. Users will never see this.</p>\
 				<label class='control-label id-attribute'>ID</label> <input class='form-control id-attribute' type='text' name='id' id='id'> \
 				<label class='control-label class-attribute'>CSS classes</label> <input class='form-control class-attribute' type='text' name='class' id='class'> <p class='help-block'>To add multiple classes, just add spaces.</p>\
 			</div> \
 		</div> \
 	</div>" +
-	fb.view.validation +
-	fb.view.conditionals +
-	fb.view.calculations +
-	fb.view.webhooks +
 	fb.view.applyRevertButtons
 
 Fb.prototype.view.addConditional = function() {
