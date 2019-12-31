@@ -26,4 +26,6 @@ FormsCollection.prototype.updateForms = function(response) {
       this.forms[response[i].id] = new Form(response[i])
     }
   }
+
+  if (typeof fb.fbView.formsCollection.forms[0] == "object") fb.fbView.formsCollection.forms.shift()
 }
