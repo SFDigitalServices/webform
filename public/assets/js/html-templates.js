@@ -12,7 +12,7 @@ Fb.prototype.view.conditionals = "\
 			<div class='accordion'> \
 				<div class='clonable addConditionalContainer'> \
 					<div class='addConditional' style=''> \
-						<a href='javascript:void(0)' class='addConditionalButton btn btn-primary btn-block'>Add a rule</a> \
+						<a href='javascript:void(0)' class='addConditionalButton btn btn-default btn-block'>Add a rule</a> \
 					</div> \
 				</div> \
 			</div> \
@@ -26,7 +26,7 @@ Fb.prototype.view.calculations = "\
 			<div class='accordion'> \
 				<div class='addCalculationContainer'> \
 					<div class='addCalculation'> \
-						<a class='addCalculationButton btn btn-primary btn-block'>Add a calculation</a> \
+						<a class='addCalculationButton btn btn-default btn-block'>Add a calculation</a> \
 					</div> \
 				</div> \
 			</div> \
