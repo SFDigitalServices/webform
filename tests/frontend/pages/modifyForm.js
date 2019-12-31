@@ -20,7 +20,6 @@ module.exports = {
       I.waitForText('Edit field', 2, '#SFDSWFB-attributes')
     })
     Then('I should be able modify the attributes',  () => {
-      I.fillField('placeholder', 'AUTOMATED PLACEHOLDER')
       I.fillField('name', 'AUTOMATED_NAME')
       I.fillField('id', 'AUTOMATED_ID')
       I.click('Save')
