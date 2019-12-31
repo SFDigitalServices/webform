@@ -663,7 +663,7 @@ function removeConditional (obj) {
   if ($(obj).parent().find('select.showHide').length) {
     if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
       $('#SFDSWFB-attributes .conditionalLabel:eq(1)').text(' ' + $(obj).parent().find('span.conditionalLabel').text())
-      $(obj).parent().find('select.showHide').insertBefore('#SFDSWFB-attributes .conditionalLabel:eq(1)')
+      $(obj).parent().find('.firstConditional').insertBefore('#SFDSWFB-attributes .conditionalLabel:eq(1)')
     }
   }
   $(obj).parent().remove()

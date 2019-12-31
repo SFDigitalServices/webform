@@ -198,8 +198,6 @@ Fb.prototype.view.firstConditional = function() {
     						<option>Hide</option> \
     					</select> \
               <span>this field if</span> \
-    				</div> \
-            <div class='clonable multipleConditionals form-inline'> \
               <select class='allAny form-control'> \
                 <option>all</option> \
                 <option>any</option> \
