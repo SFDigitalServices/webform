@@ -262,12 +262,34 @@ class DataStoreHelper extends Migration
         $write = $this->parseSubmittedFormData($form, $requestData);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
-            if ($request->input('magiclink')) {
+            if ($request->input('magiclink')){
+              try {
+                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $requestData['magiclink'])->first();
+                  if ($record) {
+                      DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
+                      DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
+                  }
+              } catch (\Illuminate\Database\QueryException $ex) {
+                 $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
+                 return $ret;
+             }
+            }
+            $id = $this->insertFormData($write['db'], $form['id']);
+            // update status if form is partially completed
+            if ($id) {
+                $ret = array("status" => 1, "message" => 'success' );
                 try {
-                    $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
-                    if ($record) {
-                        DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
-                        DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
+                    if ($status != 'complete') {
+                        $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                        $magiclink = Hash::make(time());
+                        DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
+                        $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
+                    }
+                    else{
+                      $ret = $this->pushDataToADU($request->all());
+                      if($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')){
+                        DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
+                      }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
@@ -796,45 +818,45 @@ class DataStoreHelper extends Migration
       $column = 0;
       if (! empty($content['content']['data'])) {
           foreach ($content['content']['data'] as $field) {
-              if ($this->controllerHelper->isNonInputField($field['formtype'])) {
-                  continue;
-              }
-              if ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
-                  if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
-                      $options = $field['option'];
-                  } elseif ($field['formtype'] == "s06") {
-                      $options = $field['checkboxes'];
-                  } elseif ($field['formtype'] == "s08") {
-                      $options = $field['radios'];
-                  }
-                  foreach ($options as $option) {
-                      $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
-                      if ($request->input($field['name'])) {
-                          if (is_array($request->input($field['name']))) {
-                              $write['db'][$field['name']] = $request->input($field['name']);
-                          } else {
-                              $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
+            if ($this->controllerHelper->isNonInputField($field['formtype'])){
+              continue;
+            }
+            if ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
+                if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
+                    $options = $field['option'];
+                } elseif ($field['formtype'] == "s06") {
+                    $options = $field['checkboxes'];
+                } elseif ($field['formtype'] == "s08") {
+                    $options = $field['radios'];
+                }
+                foreach ($options as $option) {
+                  $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
+                  if ($request->input($field['name'])) {
+                      if (is_array($request->input($field['name']))) {
+                          $write['db'][$field['name']] = $request->input($field['name']);
+                      } else {
+                          $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
                         array($request->input($field['name'])) : $request->input($field['name']);
-                          }
-                          $column++;
                       }
                   }
-              } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
+                }
+            }
+            elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
                 if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
                     $file = $request->file($field['name']);
                     $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
                     $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
                     $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
                 }
-                  $column++;
-              } else {
-                  // fixed bug: if 'name' attribute was not set, exception is thrown here.
-                  if (isset($field['name'])) {
-                      $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
-                      if ($field['formtype'] === 'c04') {
-                          $write['db']['email_save_for_later'] = $request->input($field['name']);
-                      }
-                      $column++;
+                $column++;
+              }
+            else {
+                 // fixed bug: if 'name' attribute was not set, exception is thrown here.
+                 if (isset($field['name'])) {
+                    $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
+                    if($field['formtype'] === 'c04'){
+                        $write['db']['email_save_for_later'] = $request->input($field['name']);
+                    }
                   }
               }
           }
