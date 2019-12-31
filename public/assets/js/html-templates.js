@@ -167,15 +167,15 @@ Fb.prototype.view.validateMinMax = function() {
 }
 
 Fb.prototype.view.validateRegex = function() {
-	return	"<div class='validate-regex' data-toggle='tooltip' title='For advanced users only'> \
-				<label class='control-label'>Regular Expression</label> <input class='form-control' type='text' name='regex' id='regex'> \
+	return	"<label class='accordion-header' for='regex'>Match the regular expression&hellip;</label> \
+				<div class='accordion'><input class='form-control' type='text' name='regex' id='regex'></div> \
 			</div>"
 }
 
 Fb.prototype.view.validateMatch = function() {
-	return 	"<div class='validate-match' data-toggle='tooltip' title='Use this to only accept a user response if the value matches a different field that you specify'> \
-				<label class='control-label'>Match Another</label> <select class='form-control' name='match' id='match'><option value=''></option></select> \
-			</div>"
+	return 	"<label class='accordion-header' for='match'>Match the answer to&hellip;</label> \
+				    <div class='accordion'><select class='form-control' name='match' id='match'><option value=''></option></select></div> \
+			     </div>"
 }
 
 Fb.prototype.view.validateLength = function() {
