@@ -109,10 +109,10 @@ Fb.prototype.view.editItem = "\
         <div class='form-group required-attribute'><label class='checkbox-inline' for='required'><input class='' type='checkbox' id='required' name='required'>Required</label></div> \
         <div class='form-group type-attribute'><label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select></div> \
         <div class='form-group unit-attribute'><label class='control-label'>Units</label> <input type='text' name='unit' id='unit' placeholder='%, feet, etc.' class='form-control'></div> \
-				<div class='form-group help-attribute'><label class='control-label'>Help text</label> <textarea class='form-control' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p></div>\
 				<div class='form-group option-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='option' id='option'> </textarea> <p class='help-block'>Enter one option per line.</p></div> \
 				<div class='form-group checkboxes-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='checkboxes' id='checkboxes'> </textarea><p class='help-block'>Enter one option per line.</p></div> \
 				<div class='form-group radios-attribute'><label class='control-label radios-attribute'>Options</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea><p class='help-block'>Enter one option per line.</p></div> \
+				<div class='form-group help-attribute'><label class='control-label'>Help text</label> <textarea class='form-control' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p></div>\
       </div></div></div>" +
         fb.view.validation +
         fb.view.conditionals +
