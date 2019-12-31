@@ -210,7 +210,7 @@ Fb.prototype.view.firstConditional = function() {
 
 Fb.prototype.view.firstCalculation = function() {
 		return	"<div class='firstCalculation'> \
-    					<label class='control-label calculationLabel'>Calculation</label> \
+    					<label class='control-label calculationLabel'>Autofill this field with the answer to&hellip;</label> \
     					<select class='allMathIds calculationId form-control'></select> \
     				</div>"
     }
@@ -225,6 +225,7 @@ Fb.prototype.view.calculationContainer = function() {
 							<option>Multiplied by</option> \
 							<option>Divided by</option> \
 						</select> \
+            <span>the answer to</span>\
 						<select class='allMathIds calculationId form-control'></select> \
 					</div> \
 				</div>"
