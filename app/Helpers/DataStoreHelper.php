@@ -5,9 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Migrations\Migration;
+use GuzzleHttp;
 use Log;
 use DB;
 use App\Form;
+use Exception;
 use App\Helpers\ControllerHelper;
 
 class DataStoreHelper extends Migration
@@ -39,6 +41,8 @@ class DataStoreHelper extends Migration
             if ($definitions) {
                 $class->upsertFields($table, $definitions);
             }
+            // add field for ADU dispatcher status
+            $table->boolean('ADU_POST');
             // add timestamps
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
@@ -255,7 +259,7 @@ class DataStoreHelper extends Migration
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
-            if ($request->input('magiclink')) {
+            if ($request->input('magiclink')){
               try {
                   $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
                   if ($record) {
@@ -276,8 +280,13 @@ class DataStoreHelper extends Migration
                         $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
                         $magiclink = Hash::make(time());
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                        //$ret = array("status" => 1, "magiclink" => $magiclink, 'email' => $email);
                         $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
+                    }
+                    else{
+                      $ret = $this->pushDataToADU($request->all());
+                      if($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')){
+                        DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
+                      }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
@@ -300,23 +309,26 @@ class DataStoreHelper extends Migration
         $id = 0;
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
-            foreach($content as $key => $value){
-              if( ! Schema::hasColumn($tablename, $key)){
+            foreach ($content as $key => $value) {
+              if (! Schema::hasColumn($tablename, $key)) {
                 // if submitted data doesn't have a corresponding table column, don't insert.
                 unset($content[$key]);
                 continue;
               }
               //checkboxes, radio buttons, dropdowns are stored in the lookup table
               if (is_array($value)) {
-                  $content[$key] = $this->findLookupID($key, $formid, $value);
+                $content[$key] = $this->findLookupID($key, $formid, $value);
               }
             }
             try {
-                $id = DB::table($tablename)->insertGetId($content);
+              $id = DB::table($tablename)->insertGetId($content);
             } catch (\Illuminate\Database\QueryException $ex) {
+                $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
+                return 0;
+            } catch (PDOException $e) {
               $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
               return 0;
-          }
+            }
         }
         return $id;
     }
@@ -804,32 +816,32 @@ class DataStoreHelper extends Migration
                 }
                 foreach ($options as $option) {
                   $field['name'] = isset($field['name']) ? $field['name'] : $field['id'];
-                  if (is_array($request->input($field['name']))) {
-                      //$write['csv'][$column] = in_array($option, $request->input($field['name'])) ? 1 : 0;
-                      $write['db'][$field['name']] = $request->input($field['name']);
-                  } else {
-                      //$write['csv'][$column] = $request->input($field['name']) == $option ? 1 : 0;
-                      $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
+                  if ($request->input($field['name'])) {
+                      if (is_array($request->input($field['name']))) {
+                          $write['db'][$field['name']] = $request->input($field['name']);
+                      } else {
+                          $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
                         array($request->input($field['name'])) : $request->input($field['name']);
+                      }
+                      $column++;
                   }
-                  $column++;
                 }
             }
             elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-              if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
-                  $file = $request->file($field['name']);
-                  $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
-                  $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
-                  $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
+                if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                    $file = $request->file($field['name']);
+                    $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                    $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
+                    $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
                 }
                 $column++;
               }
             else {
-                  // fixed bug: if 'name' attribute was not set, exception is thrown here.
-                  if (isset($field['name'])) {
+                 // fixed bug: if 'name' attribute was not set, exception is thrown here.
+                 if (isset($field['name'])) {
                     $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
                     if($field['formtype'] === 'c04'){
-                      $write['db']['email_save_for_later'] = $request->input($field['name']);
+                        $write['db']['email_save_for_later'] = $request->input($field['name']);
                     }
                   }
                   $column++;
@@ -839,6 +851,37 @@ class DataStoreHelper extends Migration
       return $write;
     }
 
+     /** Push data to the ADU Dispatcher
+    *
+    * @param $formdata
+    *
+    * @return array
+    */
+    private function pushDataToADU($formdata){
+      $ret = array();
+
+      if($formdata){
+        $api_key = getenv("ADU_DISPATCHER_KEY");
+        $endpoint = getenv("ADU_DISPATCHER_ENDPOINT");
+        $client = new GuzzleHttp\Client(['base_uri' => $endpoint]);
+
+        $res = $client->request('POST', '/adu/submissions', [
+          'headers' => [
+            'Accept-Encoding' => 'gzip'
+          ],
+          'query' => ['apikey' => $api_key],
+          'json' => $formdata,
+          'decode_content' => false
+        ]);
+        if ($res->getStatusCode() != 200) {
+            $ret = array("status" => 0, "message" => "Failed to push data to ADU, form -- " . $form['id']);
+        }
+        else{
+          $ret = array("status" => 1, "message" => "Successful", "data "=> $res->getBody()->getContents());
+        }
+      }
+      return $ret;
+    }
     /** Get form data for email templates
     *
     * @param $form

@@ -30,6 +30,9 @@ jobs: # a collection of steps
           command: |
             chmod -R 777 storage #apache needs to write to logs
             cp .env.example .env
+            echo -e "" >> .env
+            echo -e ADU_DISPATCHER_ENDPOINT=$ADU_DISPATCHER_ENDPOINT >> .env
+            echo -e ADU_DISPATCHER_KEY=$ADU_DISPATCHER_KEY >> .env
             sudo sh -c 'echo "127.0.0.1 webform.test" >> /etc/hosts' #set url for test
       - run: sudo a2enmod rewrite ssl
       - run: sudo docker-php-ext-install mysqli pdo_mysql
