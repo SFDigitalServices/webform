@@ -247,6 +247,7 @@ legend {
   .floatleft,
   .floatright {
     width: 45%;
+    margin-right: 5%;
   }
 }
 
@@ -262,18 +263,20 @@ legend {
 /* "Edit field" popovers */
 
 .accordion-header {
+  font-size: 1em;
+  border: 0;
   font-weight: bold;
-  background: $blue-2;
+  background: #e1f3f8;
   color: $slate-blue;
   padding: 0.5rem 1rem;
-  // 1px right margin prevents the header
-  // from overlapping the panel border
-  margin: 1.5rem 1px 1rem 0;
+  margin: 1.5rem 0 1rem;
+  // Prevent the header from overlapping with the panel border
+  width: calc(100% - 1px);
 }
 
 .accordion-section {
   clear: both;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
 
   .help-block {
     font-size: 0.875em;
@@ -290,6 +293,7 @@ legend {
   .floatleft,
   .floatright {
     width: 45%;
+    margin-right: 5%;
   }
 }
 
