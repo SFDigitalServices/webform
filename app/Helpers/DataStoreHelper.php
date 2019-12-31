@@ -11,10 +11,11 @@ use DB;
 use App\Form;
 use Exception;
 use App\Helpers\ControllerHelper;
+use Illuminate\Support\Facades\Validator;
 
 class DataStoreHelper extends Migration
 {
-  protected $controllerHelper;
+    protected $controllerHelper;
 
     /** Create a new controller instance.
      *
@@ -22,16 +23,16 @@ class DataStoreHelper extends Migration
      */
     public function __construct()
     {
-      $this->controllerHelper = new ControllerHelper();
+        $this->controllerHelper = new ControllerHelper();
     }
 
-   /** Creates database table for created form
-     *
-     * @param $tablename
-     * @param $definitions
-     *
-     * @return Blueprint
-     */
+    /** Creates database table for created form
+      *
+      * @param $tablename
+      * @param $definitions
+      *
+      * @return Blueprint
+      */
     public function createFormTable($tablename, $definitions = null)
     {
         $class = new DataStoreHelper();
@@ -71,35 +72,35 @@ class DataStoreHelper extends Migration
 
     public function cloneFormTable($tablename, $cloned)
     {
-       if ($tablename !== '' && $cloned !== '') {
-          try {
-              DB::transaction(function () use ($cloned, $tablename) {
-                $statement = "CREATE TABLE ". $cloned ." LIKE ". $tablename;
-                DB::statement($statement);
-                $indexes = "INSERT $cloned SELECT * FROM $tablename";
-                DB::statement($indexes);
+        if ($tablename !== '' && $cloned !== '') {
+            try {
+                DB::transaction(function () use ($cloned, $tablename) {
+                    $statement = "CREATE TABLE ". $cloned ." LIKE ". $tablename;
+                    DB::statement($statement);
+                    $indexes = "INSERT $cloned SELECT * FROM $tablename";
+                    DB::statement($indexes);
 
-                Schema::create($cloned .'_archive', function ($table) {
-                  $table->increments('id');
-                  $table->integer('record_id');
-                  $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
-                  $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
-              });
-            });
-           } catch (\Illuminate\Database\QueryException $ex) {
-               return false;
-           }
-           return true;
-       }
-       return false;
+                    Schema::create($cloned .'_archive', function ($table) {
+                        $table->increments('id');
+                        $table->integer('record_id');
+                        $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP(0)'));
+                        $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP(0)'));
+                    });
+                });
+            } catch (\Illuminate\Database\QueryException $ex) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
-   /** Deletes database table for deleted form
-    *
-    * @param $formId
-    *
-    * @return string
-    */
+    /** Deletes database table for deleted form
+     *
+     * @param $formId
+     *
+     * @return string
+     */
 
     public function deleteFormTable($formId)
     {
@@ -124,10 +125,9 @@ class DataStoreHelper extends Migration
      */
     public function dropFormTableColumn($tablename, $columns)
     {
-        if($columns){
+        if ($columns) {
             $_fluent = '';
-            Schema::table($tablename, function($table) use ($columns, &$_fluent, $tablename)
-            {
+            Schema::table($tablename, function ($table) use ($columns, &$_fluent, $tablename) {
                 if (Schema::hasColumns($tablename, $columns)) {
                     $formId= str_replace('forms_', '', $tablename);
                     //move deleted column and data to archive
@@ -144,23 +144,21 @@ class DataStoreHelper extends Migration
         return null;
     }
 
-   /** Adding form table columns
-     *
-     * @param @tablename
-     * @param $definitions
-     *
-     * @return bool
-     */
+    /** Adding form table columns
+      *
+      * @param @tablename
+      * @param $definitions
+      *
+      * @return bool
+      */
     public function saveFormTableColumn($tablename, $definitions)
     {
-       if ($definitions) {
+        if ($definitions) {
             $class = new DataStoreHelper();
             $columns = array();
             if (! Schema::hasTable($tablename)) {
-              $class->createFormTable($tablename, $definitions);
-            }
-            else{
-
+                $class->createFormTable($tablename, $definitions);
+            } else {
                 Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
                     $ret = $class->upsertFields($table, $definitions);
                     if (!$ret) {
@@ -227,7 +225,8 @@ class DataStoreHelper extends Migration
     *
     * @return Array
     */
-    public function getFormDraftList($hash){
+    public function getFormDraftList($hash)
+    {
         $list = array();
         try {
             $results = DB::table('form_table_drafts')
@@ -236,7 +235,7 @@ class DataStoreHelper extends Migration
                   ->get();
 
             foreach ($results as $result) {
-              $list[] = ['host' => $result->host, 'magiclink' => urlencode($result->magiclink), 'form_id' => $result->form_table_id];
+                $list[] = ['host' => $result->host, 'magiclink' => urlencode($result->magiclink), 'form_id' => $result->form_table_id];
             }
         } catch (\Illuminate\Database\QueryException $ex) {
             $ret = ['status' => 0, 'message' => $ex->getMessage()];
@@ -245,30 +244,34 @@ class DataStoreHelper extends Migration
         return $list;
     }
 
-   /** Handles form submission
-    *
-    * @param $form
-    * @param $request
-    * @param $status
-    *
-    * @return Array
-    */
+    /** Handles form submission
+     *
+     * @param $form
+     * @param $request
+     * @param $status
+     *
+     * @return Array
+     */
     public function submitForm($form, $request, $status = 'complete')
     {
         $ret = array();
-        $write = $this->parseSubmittedFormData($form, $request);
+        if ($ret = $this->validateFormRequest($requestData, $form['content']['data'])) {
+            return $ret;
+        }
+
+        $write = $this->parseSubmittedFormData($form, $requestData);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
             if ($request->input('magiclink')){
               try {
-                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
+                  $record = DB::table('form_table_drafts')->where('magiclink', '=', $requestData['magiclink'])->first();
                   if ($record) {
                       DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
                       DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
                   }
               } catch (\Illuminate\Database\QueryException $ex) {
                  $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
-                 return null;
+                 return $ret;
              }
             }
             $id = $this->insertFormData($write['db'], $form['id']);
@@ -289,67 +292,88 @@ class DataStoreHelper extends Migration
                       }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
-                    $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
+                    $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
+                    return null;
                 }
-                return $ret;
-            }
-        }
-        return $ret;
-    }
 
-   /** Inserts submitted form data into the form table
-    *
-    * @param $content
-    * @param $formid
-    *
-    * @return integer
-    */
+                $id = $this->insertFormData($write['db'], $form['id']);
+                // update status if form is partially completed
+                if ($id) {
+                    $ret = array("status" => 1, "message" => 'success' );
+                    try {
+                        if ($status != 'complete') {
+                            $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                            $magiclink = Hash::make(time());
+                            DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
+                            $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
+                        } else {
+                            $ret = $this->pushDataToADU($request->all());
+                            if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
+                                DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
+                            }
+                        }
+                    } catch (\Illuminate\Database\QueryException $ex) {
+                        $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
+                    }
+                    return $ret;
+                }
+            }
+            return $ret;
+        }
+    }
+    /** Inserts submitted form data into the form table
+     *
+     * @param $content
+     * @param $formid
+     *
+     * @return integer
+     */
     public function insertFormData($content, $formid)
     {
         $id = 0;
         $tablename = "forms_".$formid;
         if (Schema::hasTable($tablename)) {
             foreach ($content as $key => $value) {
-              if (! Schema::hasColumn($tablename, $key)) {
-                // if submitted data doesn't have a corresponding table column, don't insert.
-                unset($content[$key]);
-                continue;
-              }
-              //checkboxes, radio buttons, dropdowns are stored in the lookup table
-              if (is_array($value)) {
-                $content[$key] = $this->findLookupID($key, $formid, $value);
-              }
+                if (! Schema::hasColumn($tablename, $key)) {
+                    // if submitted data doesn't have a corresponding table column, don't insert.
+                    unset($content[$key]);
+                    continue;
+                }
+                //checkboxes, radio buttons, dropdowns are stored in the lookup table
+                if (is_array($value)) {
+                    $content[$key] = $this->findLookupID($key, $formid, $value);
+                }
             }
             try {
-              $id = DB::table($tablename)->insertGetId($content);
+                $id = DB::table($tablename)->insertGetId($content);
             } catch (\Illuminate\Database\QueryException $ex) {
                 $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
                 return 0;
             } catch (PDOException $e) {
-              $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
-              return 0;
+                $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
+                return 0;
             }
         }
         return $id;
     }
 
-  /** get submitted form data
-    *
-    * @param $formid
-    *
-    * @return array
-    */
+    /** get submitted form data
+      *
+      * @param $formid
+      *
+      * @return array
+      */
     public function getSubmittedFormData($formid)
     {
-      try {
-          $tablename = "forms_" . $formid;
-          $results = DB::table($tablename)
+        try {
+            $tablename = "forms_" . $formid;
+            $results = DB::table($tablename)
                       ->orderBy($tablename.'.id', 'asc')
                       ->get();
-      } catch (\Illuminate\Database\QueryException $ex) {
-        $results = ['status' => 0, 'message' => $ex->getMessage()];
-      }
-      return $results;
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $results = ['status' => 0, 'message' => $ex->getMessage()];
+        }
+        return $results;
     }
 
     /** get archived form data
@@ -360,15 +384,15 @@ class DataStoreHelper extends Migration
     */
     public function getArchivedFormData($formid)
     {
-      try {
-          $tablename = "forms_" . $formid. "_archive";
-          $results = DB::table($tablename)
+        try {
+            $tablename = "forms_" . $formid. "_archive";
+            $results = DB::table($tablename)
                       ->orderBy($tablename.'.id', 'asc')
                       ->get();
-      } catch (\Illuminate\Database\QueryException $ex) {
-        $results = ['status' => 0, 'message' => $ex->getMessage()];
-      }
-      return $results;
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $results = ['status' => 0, 'message' => $ex->getMessage()];
+        }
+        return $results;
     }
 
     /** get submitted form column names
@@ -379,15 +403,14 @@ class DataStoreHelper extends Migration
     */
     public function getFormTableColumns($formid)
     {
-      $tablename = "forms_" . $formid;
-      try {
-          $results = DB::select('SHOW COLUMNS FROM '. $tablename);
-          $columns = $this->transformColumns($results);
-      }
-      catch(\Illuminate\Database\QueryException $ex){
-        $results = ['status' => 0, 'message' => $ex->getMessage()];
-      }
-      return $results;
+        $tablename = "forms_" . $formid;
+        try {
+            $results = DB::select('SHOW COLUMNS FROM '. $tablename);
+            $columns = $this->transformColumns($results);
+        } catch (\Illuminate\Database\QueryException $ex) {
+            $results = ['status' => 0, 'message' => $ex->getMessage()];
+        }
+        return $results;
     }
 
     /** get submitted form column names
@@ -399,30 +422,29 @@ class DataStoreHelper extends Migration
 
     public function getLookupTable($formid)
     {
-      $results = array();
-      $form = Form::where('id', $formid)->first();
-      if ($form) {
-          $form['content'] = json_decode($form['content'], true);
-          try {
-              foreach ($form['content']['data'] as $field) {
-                  if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
-                      $options = DB::table('enum_mappings')
+        $results = array();
+        $form = Form::where('id', $formid)->first();
+        if ($form) {
+            $form['content'] = json_decode($form['content'], true);
+            try {
+                foreach ($form['content']['data'] as $field) {
+                    if (isset($field['formtype']) && ($field['formtype'] == 's06' || $field['formtype'] == 's08')) {
+                        $options = DB::table('enum_mappings')
                             ->where([
                               ['form_table_id', '=', $formid],
                               ['form_field_name', '=', $field['name'] ]
                               ])
                             ->get();
-                      foreach ($options as $op) {
-                          array_push($results, (array)$op);
-                      }
-                  }
-              }
-          } catch (\Illuminate\Database\QueryException $ex) {
-              $results = ['status' => 0, 'message' => $ex->getMessage()];
-          }
-      }
-      return $results;
-
+                        foreach ($options as $op) {
+                            array_push($results, (array)$op);
+                        }
+                    }
+                }
+            } catch (\Illuminate\Database\QueryException $ex) {
+                $results = ['status' => 0, 'message' => $ex->getMessage()];
+            }
+        }
+        return $results;
     }
 
     /** Archive a form table
@@ -433,20 +455,20 @@ class DataStoreHelper extends Migration
      */
     private function archiveFormTable($formId)
     {
-      // archive array of column names
-      $columns = Schema::getColumnListing("forms_".$formId);
-      if (count($columns) > 2 ) {
-          return $this->archiveFormTableColumn($formId, $columns);
-      }
-      return false;
+        // archive array of column names
+        $columns = Schema::getColumnListing("forms_".$formId);
+        if (count($columns) > 2) {
+            return $this->archiveFormTableColumn($formId, $columns);
+        }
+        return false;
     }
-     /** Archive a form table column
-     *
-     * @param @formId
-     * @param $columns
-     *
-     * @return bool
-     */
+    /** Archive a form table column
+    *
+    * @param @formId
+    * @param $columns
+    *
+    * @return bool
+    */
     private function archiveFormTableColumn($formId, $columns)
     {
         $tableName = "forms_".$formId;
@@ -494,39 +516,38 @@ class DataStoreHelper extends Migration
         return true;
     }
 
-     /** Rename a form table column and lookup table field name
-     *
-     * @param $tablename
-     * @param $definition
-     *
-     * @return array
-     */
+    /** Rename a form table column and lookup table field name
+    *
+    * @param $tablename
+    * @param $definition
+    *
+    * @return array
+    */
     private function renameFormTableColumn($tablename, $definition)
     {
-      $form_id = str_replace('forms_','', $tablename);
-      try {
-          Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
-              $_fluent = $table->renameColumn($definition['from'], $definition['to']);
-              // update form field name in lookup table
-              if ($_fluent) {
-                  try {
-                    DB::table('enum_mappings')
+        $form_id = str_replace('forms_', '', $tablename);
+        try {
+            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
+                $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+                // update form field name in lookup table
+                if ($_fluent) {
+                    try {
+                        DB::table('enum_mappings')
                     ->where([
                       ['form_table_id', $form_id],
                       ['form_field_name', $definition['from']]
                     ])
                     ->update(['form_field_name' => $definition['to']]);
-                  } catch (\Illuminate\Database\QueryException $ex) {
-                      //$ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
-                      return null;
-                  }
-              }
-          });
-          return (array) $definition['add'];
-      }
-      catch(\Doctrine\DBAL\Schema\SchemaException $ex){
-          return null;
-      }
+                    } catch (\Illuminate\Database\QueryException $ex) {
+                        //$ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                        return null;
+                    }
+                }
+            });
+            return (array) $definition['add'];
+        } catch (\Doctrine\DBAL\Schema\SchemaException $ex) {
+            return null;
+        }
     }
 
     /** Insert or update table definition.
@@ -542,10 +563,10 @@ class DataStoreHelper extends Migration
         if ($definitions) {
             $class = new DataStoreHelper();
             foreach ($definitions as $key => $definition) {
-              // filter out non-inputs
-              if( isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype']) ){
-                continue;
-              }
+                // filter out non-inputs
+                if (isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype'])) {
+                    continue;
+                }
                 if (strcmp($key, 'rename') == 0) { //rename the column, $definition holds any additional updates
                     $definition = $class->renameFormTableColumn($table->getTable(), $definition);
                 } elseif (strcmp($key, 'remove') == 0) {
@@ -614,12 +635,11 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $tablename = $table->getTable();
-        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
+        if (! Schema::hasColumn($tablename, $definition['name'])) {
             $table->$fieldType($definition['name']);
-        }
-        else{
+        } else {
             if (Schema::hasColumn($tablename, $definition['name'])) {
-                switch($fieldType){
+                switch ($fieldType) {
                     case 'string': $dataType = "varchar(255)"; break;
                     case 'number': $dataType = "Decimal(10,2)"; break;
                     case 'longText': $dataType = "Text"; break;
@@ -641,8 +661,7 @@ class DataStoreHelper extends Migration
                 }
                 try {
                     DB::statement($raw_statement);
-                }
-                catch(\Illuminate\Database\QueryException $ex){
+                } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
                 }
             }
@@ -650,25 +669,26 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
-   /** Map Radio buttons and Checkboxes to Database column.
-    * Opted to use a lookup table instead of the data type enum due to DBAL's defect.
-    *
-    * @param $table
-    * @param $definition
-    *
-    * @return array
-    */
+    /** Map Radio buttons and Checkboxes to Database column.
+     * Opted to use a lookup table instead of the data type enum due to DBAL's defect.
+     *
+     * @param $table
+     * @param $definition
+     *
+     * @return array
+     */
     private function createDatabaseEnumFields(&$table, $definition)
     {
         $ret = array();
         $definition['options'] = ($definition['formtype'] == 's08') ? ($definition['radios']) : ($definition['checkboxes']);
-        if( !is_array($definition['options']) )
-          $definition['options'] = json_decode($definition['options'], true);
+        if (!is_array($definition['options'])) {
+            $definition['options'] = json_decode($definition['options'], true);
+        }
 
-        $form_id = str_replace('forms_','', $table->getTable());
+        $form_id = str_replace('forms_', '', $table->getTable());
         $tablename = $table->getTable();
-        if ( ! Schema::hasColumn($tablename, $definition['name'])) {
-           foreach ($definition['options'] as $key => $value) {
+        if (! Schema::hasColumn($tablename, $definition['name'])) {
+            foreach ($definition['options'] as $key => $value) {
                 $inserted_id = DB::table('enum_mappings')->insertGetId([
                     'form_table_id' => $form_id,
                     'form_field_name' => $definition['name'],
@@ -676,9 +696,8 @@ class DataStoreHelper extends Migration
                     'type' => $definition['formtype'],
                 ]);
             }
-            $table->string($definition['name'],50)->default($inserted_id);
-        }
-        else{
+            $table->string($definition['name'], 50)->default($inserted_id);
+        } else {
             //check column, rename not allowed
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
@@ -697,8 +716,7 @@ class DataStoreHelper extends Migration
                     DB::statement($raw_statement);
                     //update the options lookup table
                     $ret = $this->updateLookupTable($definition, $form_id);
-                }
-                catch(\Illuminate\Database\QueryException $ex){
+                } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
                 }
             }
@@ -706,34 +724,32 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
-   /** Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
-    *
-    * @param $definition
-    * @param $form_id
-    *
-    * @return array
-    */
+    /** Lookup table to mimic enum data type, sort of like Drupal's Taxonomy.
+     *
+     * @param $definition
+     * @param $form_id
+     *
+     * @return array
+     */
     private function updateLookupTable($definition, $form_id)
     {
         $ret = array();
-        if($form_id && $definition){
+        if ($form_id && $definition) {
             $results = DB::select('select * from enum_mappings where form_table_id = ? AND form_field_name = ? ', array($form_id, $definition['name']));
-            foreach($results as $result){
-                if(!in_array($result->value, $definition['options'])){
-                  try {
-                      DB::delete('delete from enum_mappings where id = ?', array($result->id));
-                  }
-                  catch(\Illuminate\Database\QueryException $ex){
-                      $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
-                  }
-                }
-                else{ //if enum_mapping records is in $definitions['options], remove from $definition['option']
+            foreach ($results as $result) {
+                if (!in_array($result->value, $definition['options'])) {
+                    try {
+                        DB::delete('delete from enum_mappings where id = ?', array($result->id));
+                    } catch (\Illuminate\Database\QueryException $ex) {
+                        $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
+                    }
+                } else { //if enum_mapping records is in $definitions['options], remove from $definition['option']
                     if (($key = array_search($result->value, $definition['options'])) !== false) {
                         unset($definition['options'][$key]);
                     }
                 }
             }
-           if (! empty($definition['options'])) {
+            if (! empty($definition['options'])) {
                 // add record to enum_mappings one at a time, can we batch this?
                 try {
                     foreach ($definition['options'] as $option) {
@@ -741,10 +757,9 @@ class DataStoreHelper extends Migration
                             DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
                         }
                     }
+                } catch (\Illuminate\Database\QueryException $ex) {
+                    $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
                 }
-                catch(\Illuminate\Database\QueryException $ex){
-                  $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
-              }
             }
         }
     }
@@ -790,13 +805,13 @@ class DataStoreHelper extends Migration
             ];
         }, $columns);
     }
-   /** Parses submitted form data
-    *
-    * @param $content
-    * @param $request
-    *
-    * @return array
-    */
+    /** Parses submitted form data
+     *
+     * @param $content
+     * @param $request
+     *
+     * @return array
+     */
     private function parseSubmittedFormData($content, $request)
     {
       $write = array();
@@ -823,7 +838,6 @@ class DataStoreHelper extends Migration
                           $write['db'][$field['name']] = ($field['formtype'] == 's06' || $field['formtype'] == 's08') ?
                         array($request->input($field['name'])) : $request->input($field['name']);
                       }
-                      $column++;
                   }
                 }
             }
@@ -844,7 +858,6 @@ class DataStoreHelper extends Migration
                         $write['db']['email_save_for_later'] = $request->input($field['name']);
                     }
                   }
-                  $column++;
               }
           }
       }
@@ -892,21 +905,102 @@ class DataStoreHelper extends Migration
     */
     private function constructResumeDraftEmailData($form, $magiclink, $email)
     {
-      $ret = array();
-      if($form){
-        $data['body'] = array();
-        // Set email body variables
-        $ret['body']['formname'] = $form['content']['settings']['name'];
-        $ret['body']['message'] = 'To go back to your draft, visit the link below.';
-        $ret['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
-        // Set email header
-        $ret['emailInfo'] = array();
-        $ret['emailInfo']['address'] = $email;
-        //$data['emailInfo']['from_address'];
-        //$data['emailInfo']['replyto_address'];
-        $data['emailInfo']['subject'] = "Form submissions status";
-        $data['emailInfo']['name'] = 'City and County of San Francisco';
-      }
-      return $ret;
+        $ret = array();
+        if ($form) {
+            $data['body'] = array();
+            // Set email body variables
+            $ret['body']['formname'] = $form['content']['settings']['name'];
+            $ret['body']['message'] = 'To go back to your draft, visit the link below.';
+            $ret['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            // Set email header
+            $ret['emailInfo'] = array();
+            $ret['emailInfo']['address'] = $email;
+            //$data['emailInfo']['from_address'];
+            //$data['emailInfo']['replyto_address'];
+            $data['emailInfo']['subject'] = "Form submissions status";
+            $data['emailInfo']['name'] = 'City and County of San Francisco';
+        }
+        return $ret;
+    }
+
+    /** Validates form input against form definition
+    *
+    * @param $request
+    * @param @formdefintion
+    *
+    * @return Array
+    */
+    private function validateFormRequest($inputs, $definitions)
+    {
+        $ret = array();
+        $validation_rules = array();
+
+        foreach ($definitions as $key => $definition) {
+            if ($definition) {
+                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+
+                $validation_rules[] = array($definition['name'] => $this->ValidationRules($definition, $inputs[$field['name']]));
+            }
+        }
+
+        $validator = \Validator::make($inputs, $validation_rules);
+
+        if ($validator->fails()) {
+            $ret = array("status" => 0, "message" => "Failed to validate form inputes");
+            //return $validator->errors();
+        }
+
+        return $ret;
+    }
+
+    /** sets validation rules for all input types
+    *
+    * @param $definition
+    * @param @field
+    *
+    * @return Array
+    */
+    private function setValidationRules($definition, $field)
+    {
+        $rules = array();
+        foreach ($definition as $key => $value) {
+            switch ($key) {
+                case "required": $rules[] = "required";
+                    break;
+                case "maxlength": $rules[] = "max:".$value;
+                    break;
+                case "minlength": $rules[] = "min:".$value;
+                    break;
+                case "maxlength": $rules[] = "max:".$value;
+                    break;
+                case "option": $rules[] = "Array";
+                    break;
+                case "type":
+                    if ($value === 'email') {
+                        $rules[] = "email";
+                    } elseif ($value === 'url') {
+                        $rules[] = "url";
+                    } elseif ($value == 'number') {
+                        $rules[] = "numeric";
+                    } elseif ($value == 'date') {
+                        $rules[] = "date";
+                    } elseif ($value == 'time') {
+                        $rules[] = "date";
+                    }elseif ($value == 'tel') {
+                        //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
+                    }
+                    break;
+                case "formtype":
+                    if ($value === 'i14') { //textarea
+                        $rules[] = "string";
+                    } elseif($value === 'm10'){ //HTML code
+                        $rules[] = "string";
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $rules;
     }
 }
