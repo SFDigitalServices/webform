@@ -637,11 +637,9 @@ FbView.prototype.addConditional = function() {
     })
     // check if first conditional or not
     if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-      $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
       $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
-    } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
-      $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
     }
+
     if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
       $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
     }
@@ -663,10 +661,6 @@ function removeConditional (obj) {
     }
   }
   $(obj).parent().remove()
-  if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-    if ($('#SFDSWFB-attributes .allAny').length) $('#SFDSWFB-attributes .allAny').remove()
-    if ($('#SFDSWFB-attributes hr.and').length) $('#SFDSWFB-attributes hr.and').remove()
-  }
 }
 function conditionalSelect (obj) {
   var valueInput = $(obj).next('.conditionalValue')

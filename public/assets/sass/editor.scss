@@ -352,6 +352,17 @@ legend {
   }
 }
 
+.firstConditional,
+.multipleConditional {
+  margin-bottom: 0.5rem;
+
+  span {
+    display: inline-block;
+    height: 34px;
+    padding: 6px;
+  }
+}
+
 .addConditional {
   padding-top: 1em;
 }

@@ -17,7 +17,7 @@ Fb.prototype.view.validation = "\
 Fb.prototype.view.conditionals = "\
 	<div class='accordion-conditionals'> \
 		<div class='accordion-section conditionals'> \
-			<div class='accordion-header'>Show this field if&hellip;</div> \
+			<div class='accordion-header'>Conditionals</div> \
 			<div class='accordion'> \
 				<div class='clonable addConditionalContainer'> \
 					<div class='addConditional' style=''> \
@@ -193,21 +193,20 @@ Fb.prototype.view.validateLength = function() {
 }
 
 Fb.prototype.view.firstConditional = function() {
-		return	"<div class='clonable firstConditional'> \
+		return	"<div class='clonable firstConditional form-inline'> \
     					<select class='showHide form-control'> \
     						<option>Show</option> \
     						<option>Hide</option> \
     					</select> \
-    				</div>"
-}
-
-Fb.prototype.view.multipleConditionals = function() {
-		return "<div class='clonable multipleConditionals'> \
-    					<select class='allAny form-control'> \
-    						<option>All</option> \
-    						<option>Any</option> \
-    					</select> \
-    				</div>"
+              <span>this field if</span> \
+    				</div> \
+            <div class='clonable multipleConditionals form-inline'> \
+              <select class='allAny form-control'> \
+                <option>all</option> \
+                <option>any</option> \
+              </select> \
+              <span>of the following apply:</span> \
+            </div>"
 }
 
 Fb.prototype.view.firstCalculation = function() {
