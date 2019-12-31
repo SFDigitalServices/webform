@@ -122,9 +122,9 @@ Fb.prototype.view.editItem = "\
         <div class='accordion-section markup'> \
           <div class='accordion-header'>Markup</div> \
           <div class='accordion'> \
-				<div class='form-group name-attribute'><label class='control-label'>Name attribute</label> <input class='form-control' type='text' name='name' id='name'> <p class='help-block'>The field's label in your database. Users will never see this.</p></div>\
-				<div class='form-group id-attribute'><label class='control-label id-attribute'>ID</label> <input class='form-control id-attribute' type='text' name='id' id='id'></div> \
-				<div class='form-group class-attribute'><label class='control-label'>CSS classes</label> <input class='form-control' type='text' name='class' id='class'> <p class='help-block'>To add multiple classes, just add spaces.</p></div>\
+				<div class='form-group name-attribute'><label class='control-label'>Name attribute</label> <input class='form-control' type='text' name='name' id='name'> <p class='help-block'>The field's label in your database. Residents will never see this.</p></div>\
+				<div class='form-group id-attribute'><label class='control-label id-attribute'>ID attribute</label> <div class='input-group'><div class='input-group-addon'>#</div><input class='form-control id-attribute' type='text' name='id' id='id'></div></div> \
+				<div class='form-group class-attribute'><label class='control-label'>CSS classes</label> <input class='form-control' type='text' name='class' id='class'> <p class='help-block'>Separate multiple CSS classes with spaces.</p></div>\
 			</div> \
 		</div> \
 	</div>" +
