@@ -295,6 +295,12 @@ legend {
 	margin-bottom: 5rem;
 }
 
+.option-attribute textarea,
+.checkboxes-attribute textarea,
+.radios-attribute textarea {
+	height: 12rem;
+}
+
 .popover {
 	min-width: 245px;
 }
