@@ -61,8 +61,8 @@ class HTMLHelper
             $sections[] = $field;
 
             // All other static / hidden field types start
-            // with the letter "m"
-          } else if ($field['formtype'][0] == "m") {
+            // with the letter "m", except for file uploads (m13)
+          } else if ($field['formtype'] !== "m13" && $field['formtype'][0] == "m") {
             $form_container .= $this->createContentAndHiddenFields($field);
           } else {
             $form_container .= $this->createEditableFields($field);
@@ -653,7 +653,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.html_entity_decode($field['help']).'</p>' : '<div class="help-block with-errors"></div>';
+        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['help']))).'</p>' : '<div class="help-block with-errors"></div>';
         return $str;
     }
 

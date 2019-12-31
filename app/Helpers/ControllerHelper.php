@@ -54,6 +54,8 @@ class ControllerHelper
     */
     private function sanitizeOptions($field, $option)
     {
+      $search = array('&apos;', '&quot;', '&lt;', '&gt;', '&amp;');
+      $field[$option] = str_replace($search, "", $field[$option]);
       $field[$option] = explode("\n", $field[$option]);
       $field[$option] = array_map('trim', $field[$option]);
       return $field[$option] = array_values(array_filter($field[$option], function($value, $key) { return $value != ''; }, ARRAY_FILTER_USE_BOTH));
