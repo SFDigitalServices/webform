@@ -333,7 +333,8 @@ FbView.prototype.populateAttributes = function(item) {
 			if (item[i] === null) {
 				switch (i) {
 					case 'validation':
-						$('#SFDSWFB-attributes .accordion-validation').remove()
+						$('#SFDSWFB-attributes .type-attribute').remove();
+            $('#SFDSWFB-attributes .accordion-validation').remove();
 						break
 					case 'conditionals':
 						$('#SFDSWFB-attributes .accordion-conditionals').remove()
@@ -361,25 +362,30 @@ FbView.prototype.populateAttributes = function(item) {
  * @param {Item} item
  */
 FbView.prototype.populateValidation = function(item) {
+  function populateValidationWith(section) {
+    $('.accordion-validation .accordion-section').append(section);
+  }
+
 	switch (item.type) {
 		case "number":
 		case "date":
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
+			populateValidationWith(fb.view.validateMinMax());
 			break
 		case "match":
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			populateValidationWith(fb.view.validateMatch());
+			populateValidationWith(fb.view.validateLength());
 			break
 		case "regex":
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateRegex())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			populateValidationWith(fb.view.validateRegex());
+			populateValidationWith(fb.view.validateLength());
 			break
 		case "text":
 		case "email":
 		case "tel":
 		case "url":
-		default:
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			populateValidationWith(fb.view.validateLength());
+      break;
+    default:
 		//case "search":
 		//case "password":
 	}

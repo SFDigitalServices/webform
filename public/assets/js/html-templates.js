@@ -2,16 +2,7 @@ Fb.prototype.view = {}
 
 Fb.prototype.view.validation = "\
 	<div class='accordion-validation'> \
-		<div class='accordion-section validation'> \
-			<div class='accordion-header'>Validation</div> \
-			<div class='accordion'> \
-				<label class='checkbox-inline' for='required'><input class='' type='checkbox' id='required' name='required'>Required</label> \
-			  </div> \
-				<label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select> \
-			  </div> \
-			  <div class='clear'></div> \
-			</div> \
-		</div> \
+    <div class='accordion-section'></div> \
 	</div>"
 
 Fb.prototype.view.conditionals = "\
@@ -115,6 +106,8 @@ Fb.prototype.view.editItem = "\
 				<div class='form-group label-attribute'><label class='control-label'>Label</label> <input class='form-control' type='text' name='label' id='label'></div> \
         <div class='form-group textarea-attribute'><label class='control-label'>Content</label> <textarea class='form-control' name='textarea' id='textarea'></textarea></div> \
         <div class='form-group codearea-attribute'><label class='control-label'>Content</label> <textarea class='form-control' name='codearea' id='codearea'></textarea></div> \
+        <div class='form-group required-attribute'><label class='checkbox-inline' for='required'><input class='' type='checkbox' id='required' name='required'>Required</label></div> \
+        <div class='form-group type-attribute'><label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select></div> \
         <div class='form-group unit-attribute'><label class='control-label'>Units</label> <input type='text' name='unit' id='unit' placeholder='%, feet, etc.' class='form-control'></div> \
 				<div class='form-group help-attribute'><label class='control-label'>Help text</label> <textarea class='form-control' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p></div>\
 				<div class='form-group option-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='option' id='option'> </textarea> <p class='help-block'>Enter one option per line.</p></div> \
@@ -160,15 +153,17 @@ Fb.prototype.view.addConditional = function() {
 }
 
 Fb.prototype.view.validateMinMax = function() {
-	return	"<div class='validate-minmax'> \
-				  <div class='floatleft' data-toggle='tooltip' title='The lowest acceptable numerical value, leave blank if there is none'> \
-					<label class='control-label'>Min Value</label> <input class='form-control' type='text' name='min' id='min'> \
+	return	"<fieldset class='validate-minmax'> \
+          <legend class='accordion-header'>Allow numbers between&hellip;</legend> \
+          <div class='accordion'>\
+				  <div class='floatleft'> \
+					<label class='control-label'>Minimum</label> <input class='form-control' type='text' name='min' id='min' placeholder='0'> \
 				  </div> \
-				  <div class='floatright' data-toggle='tooltip' title='The highest acceptable numerical value, leave blank if there is none'> \
-					<label class='control-label'>Max Value</label> <input class='form-control' type='text' name='max' id='max'> \
+				  <div class='floatleft'> \
+					<label class='control-label'>Maximum</label> <input class='form-control' type='text' name='max' id='max' placeholder='&infin;'> \
 				  </div> \
-				  <div class='clear'></div> \
-			  </div>"
+          </div> \
+			  </fieldset>"
 }
 
 Fb.prototype.view.validateRegex = function() {
@@ -184,12 +179,16 @@ Fb.prototype.view.validateMatch = function() {
 }
 
 Fb.prototype.view.validateLength = function() {
-	return	"<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
-    				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
+	return	"<fieldset> \
+            <legend class='accordion-header'>Allow character lengths between&hellip;</legend>\
+            <div class='accordion'> \
+            <div class='floatleft'> \
+    				<label class='control-label'>Minimum</label> <input class='form-control' type='text' name='minlength' id='minlength' placeholder='0'> \
     			</div> \
-    			<div class='floatright' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
-    				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
-    			</div>"
+    			<div class='floatleft'> \
+    				<label class='control-label'>Maximum</label> <input class='form-control' type='text' name='maxlength' id='maxlength' placeholder='&infin;'> \
+    			</div> \
+          </fieldset>"
 }
 
 Fb.prototype.view.firstConditional = function() {
