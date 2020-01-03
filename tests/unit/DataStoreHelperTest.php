@@ -133,7 +133,6 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
                 case 'name':
                     $this->assertEquals($column['type'], 'text');
                     $this->assertEquals($column['name'], 'name');
-                    $this->assertEquals($column['length'], '255');
                     break;
                 case 'email': $this->assertEquals($column['type'], 'text');
                     break;
@@ -151,9 +150,9 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
                     break;
                 case 'my_textarea': $this->assertEquals($column['type'], 'longText');
                     break;
-                case 'my_radio': $this->assertEquals($column['type'], 'text');
+                case 'my_radio': $this->assertEquals($column['type'], 'string');
                     break;
-                case 'my_cb': $this->assertEquals($column['type'], 'text');
+                case 'my_cb': $this->assertEquals($column['type'], 'string');
                     break;
                 case 'my_file': $this->assertEquals($column['type'], 'text');
                     break;
