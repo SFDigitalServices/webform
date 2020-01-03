@@ -703,25 +703,55 @@ $editorHeight: calc(100vh - 4rem);
 }
 
 .field-item-group {
-  margin-bottom: 1em;
+  padding: 1.5rem;
   display: block;
+  border-bottom: 3px solid rgba($slate-blue, 0.3);
 }
 
+$formTypes: "c04",
+            "c06",
+            "c08",
+            "d02",
+            "d04",
+            "d06",
+            "d08",
+            "d10",
+            "i02",
+            "i14",
+            "m02",
+            "m08",
+            "m13",
+            "m16",
+            "s02",
+            "s06",
+            "s08";
+
 .field-item {
-  padding: 0.5em;
+  text-align: left;
   margin: 0 0.5rem 1rem 0;
-  border: 2px solid $bright-blue;
+  border: 0;
+  background: transparent;
   color: $bright-blue;
-  font-weight: bold;
-  border-radius: 5px;
   cursor: pointer;
-  display: inline-block;
+  display: block;
+  padding-left: 2.5rem;
   background: $white;
+
+  @each $type in $formTypes {
+    &[data-formtype="#{$type}"] {
+      background: transparent url('assets/images/field-#{$type}.svg') left center no-repeat;
+    }
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   &:hover {
     color: black;
     border-color: black;
   }
+
 }
 
 input, textarea {
