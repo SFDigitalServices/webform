@@ -333,7 +333,8 @@ FbView.prototype.populateAttributes = function(item) {
 			if (item[i] === null) {
 				switch (i) {
 					case 'validation':
-						$('#SFDSWFB-attributes .accordion-validation').remove()
+						$('#SFDSWFB-attributes .type-attribute').remove();
+            $('#SFDSWFB-attributes .accordion-validation').remove();
 						break
 					case 'conditionals':
 						$('#SFDSWFB-attributes .accordion-conditionals').remove()
@@ -361,25 +362,31 @@ FbView.prototype.populateAttributes = function(item) {
  * @param {Item} item
  */
 FbView.prototype.populateValidation = function(item) {
+  function populateValidationWith(section) {
+    $('.accordion-validation .accordion-section').append(section);
+  }
+
 	switch (item.type) {
 		case "number":
 		case "date":
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMinMax())
+			populateValidationWith(fb.view.validateMinMax());
 			break
 		case "match":
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateMatch())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			populateValidationWith(fb.view.validateMatch());
+			populateValidationWith(fb.view.validateLength());
 			break
 		case "regex":
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateRegex())
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			populateValidationWith(fb.view.validateRegex());
+			populateValidationWith(fb.view.validateLength());
 			break
 		case "text":
 		case "email":
 		case "tel":
 		case "url":
-		default:
-			$('#SFDSWFB-attributes .validation > .accordion').append(fb.view.validateLength())
+			populateValidationWith(fb.view.validateLength());
+      break
+    default:
+      break
 		//case "search":
 		//case "password":
 	}
@@ -637,11 +644,9 @@ FbView.prototype.addConditional = function() {
     })
     // check if first conditional or not
     if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-      $('#SFDSWFB-attributes .conditionalLabel').text($('#SFDSWFB-list .item.selected').eq(0).data('id') + ' if')
       $('#SFDSWFB-attributes .conditionalLabel').before(fb.view.firstConditional())
-    } else if ($('#SFDSWFB-attributes .conditionalLabel').length == 2) {
-      $('#SFDSWFB-attributes .allIds:eq(0)').before(fb.view.multipleConditionals())
     }
+
     if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
       $('#SFDSWFB-attributes .allIds:last').before('<hr class="and"/>')
     }
@@ -659,14 +664,10 @@ function removeConditional (obj) {
   if ($(obj).parent().find('select.showHide').length) {
     if ($('#SFDSWFB-attributes .conditionalLabel').length > 1) {
       $('#SFDSWFB-attributes .conditionalLabel:eq(1)').text(' ' + $(obj).parent().find('span.conditionalLabel').text())
-      $(obj).parent().find('select.showHide').insertBefore('#SFDSWFB-attributes .conditionalLabel:eq(1)')
+      $(obj).parent().find('.firstConditional').insertBefore('#SFDSWFB-attributes .conditionalLabel:eq(1)')
     }
   }
   $(obj).parent().remove()
-  if ($('#SFDSWFB-attributes .conditionalLabel').length == 1) {
-    if ($('#SFDSWFB-attributes .allAny').length) $('#SFDSWFB-attributes .allAny').remove()
-    if ($('#SFDSWFB-attributes hr.and').length) $('#SFDSWFB-attributes hr.and').remove()
-  }
 }
 function conditionalSelect (obj) {
   var valueInput = $(obj).next('.conditionalValue')
