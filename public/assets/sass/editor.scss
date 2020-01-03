@@ -247,6 +247,7 @@ legend {
   .floatleft,
   .floatright {
     width: 45%;
+    margin-right: 5%;
   }
 }
 
@@ -262,18 +263,49 @@ legend {
 /* "Edit field" popovers */
 
 .accordion-header {
-  font-size: 1.5em;
-  border-bottom: 1px solid $grey-3;
-  margin: 1em 0;
+  font-size: 1em;
+  border: 0;
+  font-weight: bold;
+  background: #e1f3f8;
+  color: $slate-blue;
+  padding: 0.5rem 1rem;
+  margin: 1.5rem 0 1rem;
+  // Prevent the header from overlapping with the panel border
+  width: calc(100% - 1px);
 }
 
 .accordion-section {
   clear: both;
-  margin-bottom: 2em;
+  margin-bottom: 1em;
+
+  .help-block {
+    font-size: 0.93em;
+  }
+
+  .form-control {
+    margin-bottom: 0;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
 
   .floatleft,
   .floatright {
     width: 45%;
+    margin-right: 5%;
+  }
+}
+
+.accordion-markup {
+  margin-bottom: 5rem;
+}
+
+.option-attribute,
+.checkboxes-attribute,
+.radios-attribute {
+  textarea {
+    height: 12rem;
   }
 }
 
@@ -307,28 +339,40 @@ legend {
 
 .fa-minus-circle.conditionIcon {
   position: absolute;
-  right: -1.2em;
+  right: -1.4em;
   font-size: 1.5em;
-  color: #eee;
+  color: #777;
   cursor: pointer;
 
   &:hover {
-    color: #aaa;
+    color: #555;
   }
 }
 
 .condition,
 .calculation {
   position: relative;
-  border-bottom: 1px solid transparent;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: #f7f7f7;
+  border: 1px solid #eee;
+  border-radius: $radius;
 
-  &:hover {
-    border-bottom: 1px solid $black;
+  .form-control {
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
+.firstCalculation {
+  margin-bottom: 0.5em;
+}
+
 .conditional,
-.addCalculationContainer {
+.calculationContainer {
   width: 90%;
   select,
   input {
@@ -336,12 +380,15 @@ legend {
   }
 }
 
-.addConditional {
-  padding-top: 1em;
-}
+.firstConditional,
+.multipleConditional {
+  margin-bottom: 0.5rem;
 
-.addCalculation {
-  padding-top: 1em;
+  span {
+    display: inline-block;
+    height: 34px;
+    padding: 6px;
+  }
 }
 
 hr.and::before {
@@ -461,11 +508,13 @@ $editorHeight: calc(100vh - 4rem);
 }
 
 .save-buttons {
-  position: sticky;
+  position: fixed;
   bottom: 0;
   background: #fff;
   box-shadow: 0 -1px 3px rgba($black, 0.2);
-  padding: 0.5rem 0;
+  padding: 0.5rem;
+  width: calc(20% - 1px);
+  left: 20%;
 }
 
 .leftPanel,
@@ -581,9 +630,17 @@ $editorHeight: calc(100vh - 4rem);
 }
 
 .panel-content {
-  padding: 0.5rem 1rem;
   min-height: calc(100vh - 12.5rem);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
+
+.leftPanel .panel-content,
+.middlePanel .accordion {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 
 .splitter {
   width: 10px;
