@@ -1375,3 +1375,19 @@ select option {
 	}
 }
 
+.form-group.field-m02,
+.form-group.field-m04,
+.form-group.field-m06,
+.form-group.field-m08,
+.form-group.field-m10 {
+	margin-bottom: 0;
+}
+
+.form-group.field-m02.is-selected-in-editor,
+.form-group.field-m04.is-selected-in-editor,
+.form-group.field-m06.is-selected-in-editor,
+.form-group.field-m08.is-selected-in-editor,
+.form-group.field-m10.is-selected-in-editor {
+	margin-bottom: 2rem;
+}
+
