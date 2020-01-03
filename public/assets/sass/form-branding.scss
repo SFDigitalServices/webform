@@ -15,3 +15,18 @@
 .form-content {
   @include contain-1090;
 }
+
+// Don't add extra margin to static content
+
+.form-group {
+  &.field-m02,
+  &.field-m04,
+  &.field-m06,
+  &.field-m08,
+  &.field-m10 {
+    margin-bottom: 0;
+    &.is-selected-in-editor {
+       margin-bottom: 2rem;
+    }
+  }
+}
