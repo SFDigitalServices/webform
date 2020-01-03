@@ -384,8 +384,9 @@ FbView.prototype.populateValidation = function(item) {
 		case "tel":
 		case "url":
 			populateValidationWith(fb.view.validateLength());
-      break;
+      break
     default:
+      break
 		//case "search":
 		//case "password":
 	}
