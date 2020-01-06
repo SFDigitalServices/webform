@@ -823,7 +823,7 @@ $formTypes: "c02",
   // Remove these styles as we remove these field types
 
   // City, state, and ZIP inputs
-  // (should be combined with Address)
+  // (should be combined with Address - see DFB-702)
   &[data-formtype="c10"],
   &[data-formtype="c14"],
   &[data-formtype="s14"] {
@@ -831,14 +831,14 @@ $formTypes: "c02",
   }
 
   // Block of HTML
-  // (should be combined with Block of text)
+  // (should be combined with Block of text - see DFB-705)
   &[data-formtype="m10"] {
      background-image: url('assets/images/field-m08.svg');
   }
 
   // Header 2, Header 3
   // (should be combined into a single
-  // "Header" field type)
+  // "Header" field type - see DFB-703)
   &[data-formtype="m04"],
   &[data-formtype="m06"] {
      background-image: url('assets/images/field-m02.svg');
