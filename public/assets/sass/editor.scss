@@ -795,11 +795,6 @@ $formTypes: "c04",
   padding: 0.625rem 0.5rem 0.625rem 4.5rem;
   width: calc(100% - 1px);
 
-  @each $type in $formTypes {
-    &[data-formtype="#{$type}"] {
-      background-image: url('assets/images/field-#{$type}.svg');
-    }
-  }
 
   &:last-child {
     margin-bottom: 0;
@@ -807,6 +802,38 @@ $formTypes: "c04",
 
   &:hover {
     background-color: rgba($bright-blue, 0.1);
+  }
+
+  @each $type in $formTypes {
+    &[data-formtype="#{$type}"] {
+      background-image: url('assets/images/field-#{$type}.svg');
+    }
+  }
+
+  // Extra field types
+  // Remove these styles as we remove
+  // these field types
+
+  // City, state, and ZIP inputs
+  // (should be combined with Address)
+  &[data-formtype="c10"],
+  &[data-formtype="c14"],
+  &[data-formtype="s14"] {
+     background-image: url('assets/images/field-c08.svg');
+  }
+
+  // Block of HTML
+  // (should be combined with Block of text)
+  &[data-formtype="m10"] {
+     background-image: url('assets/images/field-m08.svg');
+  }
+
+  // Header 2, Header 3
+  // (should be combined into a single
+  // "Header" field type)
+  &[data-formtype="m04"],
+  &[data-formtype="m06"] {
+     background-image: url('assets/images/field-m02.svg');
   }
 
 }
