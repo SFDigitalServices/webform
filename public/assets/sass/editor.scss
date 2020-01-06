@@ -802,9 +802,16 @@ $formTypes: "c02",
     margin-bottom: 0;
   }
 
-  &:hover {
+  &:hover,
+  &:focus {
     background-color: rgba($bright-blue, 0.1);
   }
+
+  &:active {
+    background-color: rgba($bright-blue, 0.15);
+  }
+
+
 
   @each $type in $formTypes {
     &[data-formtype="#{$type}"] {
@@ -813,8 +820,7 @@ $formTypes: "c02",
   }
 
   // Extra field types
-  // Remove these styles as we remove
-  // these field types
+  // Remove these styles as we remove these field types
 
   // City, state, and ZIP inputs
   // (should be combined with Address)
