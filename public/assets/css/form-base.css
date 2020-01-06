@@ -33,7 +33,7 @@ input[type="radio"] + label {
 input[type="checkbox"],
 input[type="radio"] {
 	margin-right: 1rem;
-  width: auto;
+	width: auto;
 }
 
 .help-text {
