@@ -34,10 +34,13 @@
       <button data-formtype="c10" class="field-item">City</button>
       <button data-formtype="s14" class="field-item">State</button>
       <button data-formtype="c14" class="field-item">Zip</button>
-      <button data-formtype="m13" class="field-item">Attachment</button>
       <button data-formtype="c04" class="field-item">Email</button>
       <button data-formtype="c06" class="field-item">Phone</button>
       <button data-formtype="d10" class="field-item">Webpage</button>
+    </div>
+
+    <div class="field-item-group">
+      <button data-formtype="m13" class="field-item">Attachment</button>
       <button data-formtype="m11" class="field-item">Hidden</button>
     </div>
 
