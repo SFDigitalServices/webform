@@ -653,9 +653,9 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-      $output = "";
+      $output = '<div class="help-block with-errors"></div>';
       if (isset($field['help']) && $field['help'] !== "") {
-        $output = '<div class="help-block with-errors"></div><p class="help-text">'.str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['help']))).'</p>';
+        $output .= '<p class="help-text">'.str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['help']))).'</p>';
       }
       return $output;
     }
