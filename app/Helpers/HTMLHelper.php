@@ -391,7 +391,7 @@ class HTMLHelper
       // - Open the next .form-section
       $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
 
-      $html .= self::formSectionHeader($name, $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
+      $html .= self::formSectionHeader($name, $field['id'], html_entity_decode($field['label']), ($pageNumber + 1), $pageCount);
 
       // - Open the next .form-content
       $html .= '<div class="form-content">';
