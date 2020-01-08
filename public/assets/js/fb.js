@@ -184,6 +184,8 @@ Fb.prototype.openPreviewWindow = function() {
 Fb.prototype.goHome = function() {
   jQuery('.editorContainer').hide()
   jQuery('.content').show()
+  $('.forms').html('<i class="fas fa-circle-notch fa-spin"></i>')
+	fb.callAPI("/form/getForms", {}, fb.fbView.populateForms)
 }
 
 /**
