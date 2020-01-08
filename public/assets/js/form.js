@@ -160,11 +160,7 @@ Form.prototype.confirmDelete = function() {
 	var msg = 'Are you sure you want to delete this form?'
 	var url = '/form/delete'
 	var callback = function () {
-    fb.callAPI(url, { 'id': fb.formId }, function() {
-      delete fb.fbView.formsCollection.forms[fb.formId]
-      fb.fbView.deleteForm(fb.formId)
-      fb.goHome()
-    })
+    fb.callAPI(url, { 'id': fb.formId }, fb.fbView.deleteForm(fb.formId))
   }
 	fb.loadConfirmModal('Warning!', msg, callback)
 }
