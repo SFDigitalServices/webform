@@ -631,9 +631,9 @@ class HTMLHelper
     {
         $legends = array('s06', 's08');
         $non_inputs = array('m02', 'm04', 'm06', 'm08', 'm10', 'm11', 'm14', 'm16'); //m13 is file upload
-        $label_for = isset($field['id']) ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
+        $label_for = isset($field['id']) && $field['id'] !== "" ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
         $label_text = isset($field['label']) ? html_entity_decode($field['label']) : "";
-        $optional = (!isset($field['required']) || $field['required'] === "false") && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
+        $optional = (!isset($field['required']) || $field['required'] === "" || $field['required'] === "false") && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
 
         if (in_array($field['formtype'], $legends)) {
           $start = '<legend class="control-label">';

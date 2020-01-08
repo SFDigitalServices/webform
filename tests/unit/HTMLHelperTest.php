@@ -1298,12 +1298,13 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     }
     public function testFieldLabel(){
         $emptyLabel = HTMLHelper::fieldLabel($this->attributes);
-        $expected = '<label for="" class="control-label"></label>';
+        $expected = '<label for="" class="control-label"> <span class="optional">(optional)</span></label>';
 
         $this->assertSame($expected, $emptyLabel);
 
         $this->attributes['name'] = 'form_name';
         $this->attributes['label'] = 'hello world';
+        $this->attributes['formtype'] = 'c02';
         $notEmptyLabel = HTMLHelper::fieldLabel($this->attributes);
         $expected = '<label for="form_name" class="control-label">hello world <span class="optional">(optional)</span></label>';
         $this->assertEquals($expected, $notEmptyLabel);
@@ -1311,6 +1312,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['id'] = 'form_id';
         $this->attributes['name'] = 'form_name';
         $this->attributes['label'] = 'hello world';
+        $this->attributes['formtype'] = 'c02';
         $idLabel = HTMLHelper::fieldLabel($this->attributes);
         $expected = '<label for="form_id" class="control-label">hello world <span class="optional">(optional)</span></label>';
         $this->assertEquals($expected, $idLabel);
@@ -1318,6 +1320,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['id'] = 'form_id';
         $this->attributes['name'] = 'form_name';
         $this->attributes['label'] = 'hello world';
+        $this->attributes['formtype'] = 'c02';
         $this->attributes['required'] = 'true';
         $reqLabel = HTMLHelper::fieldLabel($this->attributes);
         $expected = '<label for="form_id" class="control-label">hello world</label>';
@@ -1325,7 +1328,17 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
         $this->attributes['id'] = 'form_id';
         $this->attributes['name'] = 'form_name';
+        $this->attributes['label'] = 'hello world';
+        $this->attributes['formtype'] = 's06';
+        $this->attributes['required'] = 'true';
+        $reqLabel = HTMLHelper::fieldLabel($this->attributes);
+        $expected = '<legend class="control-label">hello world</legend>';
+        $this->assertEquals($expected, $reqLabel);
+
+        $this->attributes['id'] = 'form_id';
+        $this->attributes['name'] = 'form_name';
         $this->attributes['label'] = "wayne's world";
+        $this->attributes['formtype'] = 'c02';
         $this->attributes['required'] = 'true';
         $aposLabel = HTMLHelper::fieldLabel($this->attributes);
         $expected = '<label for="form_id" class="control-label">wayne\'s world</label>';
@@ -1334,6 +1347,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['id'] = 'form_id';
         $this->attributes['name'] = 'form_name';
         $this->attributes['label'] = 'wayne"s world';
+        $this->attributes['formtype'] = 'c02';
         $this->attributes['required'] = 'true';
         $quotLabel = HTMLHelper::fieldLabel($this->attributes);
         $expected = '<label for="form_id" class="control-label">wayne"s world</label>';
