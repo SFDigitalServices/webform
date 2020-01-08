@@ -131,21 +131,20 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             switch ($column['name']) {
                 case 'id': break;
                 case 'name':
-                    $this->assertEquals($column['type'], 'string');
+                    $this->assertEquals($column['type'], 'text');
                     $this->assertEquals($column['name'], 'name');
-                    $this->assertEquals($column['length'], '255');
                     break;
-                case 'email': $this->assertEquals($column['type'], 'string');
+                case 'email': $this->assertEquals($column['type'], 'text');
                     break;
-                case 'password': $this->assertEquals($column['type'], 'string');
+                case 'password': $this->assertEquals($column['type'], 'text');
                     break;
-                case 'phonenumber': $this->assertEquals($column['type'], 'string');
+                case 'phonenumber': $this->assertEquals($column['type'], 'text');
                     break;
                 case 'date_created': $this->assertEquals($column['type'], 'date');
                     break;
                 case 'my_time': $this->assertEquals($column['type'], 'time');
                     break;
-                case 'my_url': $this->assertEquals($column['type'], 'string');
+                case 'my_url': $this->assertEquals($column['type'], 'text');
                     break;
                 case 'my_number': $this->assertEquals($column['type'], 'decimal');
                     break;
@@ -155,7 +154,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
                     break;
                 case 'my_cb': $this->assertEquals($column['type'], 'string');
                     break;
-                case 'my_file': $this->assertEquals($column['type'], 'string');
+                case 'my_file': $this->assertEquals($column['type'], 'text');
                     break;
                 default:
                     break;
