@@ -255,16 +255,16 @@ class DataStoreHelper extends Migration
     public function submitForm($form, $request, $status = 'complete')
     {
         $ret = array();
-        if ($ret = $this->validateFormRequest($requestData, $form['content']['data'])) {
+        if ($ret = $this->validateFormRequest($request, $form['content']['data'])) {
             return $ret;
         }
 
-        $write = $this->parseSubmittedFormData($form, $requestData);
+        $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
             if ($request->input('magiclink')) {
                 try {
-                    $record = DB::table('form_table_drafts')->where('magiclink', '=', $requestData['magiclink'])->first();
+                    $record = DB::table('form_table_drafts')->where('magiclink', '=', $request->input('magiclink'))->first();
                     if ($record) {
                         DB::table('form_table_drafts')->where('id', '=', $record->id)->delete();
                         DB::table('forms_'.$form['id'])->where('id', '=', $record->form_record_id)->delete();
@@ -933,13 +933,13 @@ class DataStoreHelper extends Migration
         $validation_rules = array();
 
         foreach ($definitions as $key => $definition) {
-            if ($definition) {
+            if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
                 $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                $validation_rules[] = array($definition['name'] => $this->ValidationRules($definition, $inputs[$field['name']]));
+                $validation_rules[] = array($definition['name'] => $this->setValidationRules($definition, $inputs[$definition['name']]));
             }
         }
 
-        $validator = \Validator::make($inputs, $validation_rules);
+        $validator = \Validator::make((array)$inputs, $validation_rules);
 
         if ($validator->fails()) {
             $ret = array("status" => 0, "message" => "Failed to validate form inputes");
@@ -961,13 +961,18 @@ class DataStoreHelper extends Migration
         $rules = array();
         foreach ($definition as $key => $value) {
             switch ($key) {
-                case "required": $rules[] = "required";
+                case "required":
+                  if($value === 'true') {
+                    $rules[] = "required";
+                  }
                     break;
-                case "maxlength": $rules[] = "max:".$value;
+                case "maxlength":  if($value != '') {
+                    $rules[] = "max:".$value;
+                }
                     break;
-                case "minlength": $rules[] = "min:".$value;
-                    break;
-                case "maxlength": $rules[] = "max:".$value;
+                case "minlength":  if($value != '') {
+                    $rules[] = "min:".$value;
+                }
                     break;
                 case "option": $rules[] = "Array";
                     break;
