@@ -1147,6 +1147,25 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $entityParagraph = HTMLHelper::formParagraph($this->attributes);
         $expected = '<p id="foo" data-formtype="m10" class="large rounded">This is Jim&apos;s <b>"test"</b></p>';
         $this->assertEquals($expected, $entityParagraph);
+
+        $this->attributes['id'] = 'foo';
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = "<p>Here's a paragraph</p><ul><li>One</li>\n<br/><li>Two</li></ul>";
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+        $this->attributes['regex'] = 'invalid';
+        $this->attributes['match'] = 'invalid';
+        $this->attributes['minlength'] = 'invalid';
+        $this->attributes['maxlength'] = 'invalid';
+        $this->attributes['min'] = 'invalid';
+        $this->attributes['max'] = 'invalid';
+        $this->attributes['formtype'] = 'm10';
+        $this->attributes['textarea'] = 'invalid';
+        $newLinesParagraph = HTMLHelper::formParagraph($this->attributes);
+        $expected = "<p id=\"foo\" data-formtype=\"m10\" class=\"large rounded\"><p>Here's a paragraph</p><ul><li>One</li>\n<br/><li>Two</li></ul></p>";
+        $this->assertEquals($expected, $newLinesParagraph);
     }
 
     public function testFormTextArea(){
@@ -1363,6 +1382,11 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
         $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p>';
         $this->assertEquals($expected, $notEmptyBlock);
+
+        $this->attributes['help'] = 'help\nblock<br/>\nnew line';
+        $newLineBlock = HTMLHelper::helpBlock($this->attributes);
+        $expected = '<div class="help-block with-errors"></div><p class="help-text">help\nblock<br/>\nnew line</p>';
+        $this->assertEquals($expected, $newLineBlock);
 
         $this->attributes['help'] = 'bob\'s block';
         $aposBlock = HTMLHelper::helpBlock($this->attributes);
