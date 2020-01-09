@@ -17,6 +17,12 @@ legend {
 	clear: both;
 }
 
+input,
+select,
+textarea {
+	width: 100%;
+}
+
 input[type="checkbox"],
 input[type="radio"],
 input[type="checkbox"] + label,
@@ -27,26 +33,15 @@ input[type="radio"] + label {
 input[type="checkbox"],
 input[type="radio"] {
 	margin-right: 1rem;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="tel"],
-input[type="password"],
-input[type="time"],
-input[type="search"],
-input[type="date"],
-input[type="email"],
-input[type="url"],
-textarea {
-	width: 100%;
+	width: auto;
 }
 
 .help-text {
 	margin: 0.5rem 0 0;
 }
 
-.help-block:empty {
+.help-block:empty,
+.help-text:empty {
 	margin: 0;
 }
 
