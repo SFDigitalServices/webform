@@ -118,11 +118,11 @@ class ControllerHelper
     public function getOp($str)
     {
         $output = "";
-        switch ($str) {
-            case "Any":
+        switch (strtolower($str)) {
+            case "any":
                 $output = "||";
                 break;
-            case "All":
+            case "all":
                 $output = "&&";
                 break;
             case "matches":

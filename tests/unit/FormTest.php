@@ -119,6 +119,14 @@ class FormTest extends \Codeception\Test\Unit
         $expected = '&&';
         $this->assertEquals($expected, $allGetOp);
 
+        $anyGetOp = $this->controllerHelper->getOp("any");
+        $expected = '||';
+        $this->assertEquals($expected, $anyGetOp);
+
+        $allGetOp = $this->controllerHelper->getOp("all");
+        $expected = '&&';
+        $this->assertEquals($expected, $allGetOp);
+
         $matchesGetOp = $this->controllerHelper->getOp("matches");
         $expected = '==';
         $this->assertEquals($expected, $matchesGetOp);
