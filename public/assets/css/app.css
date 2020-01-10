@@ -243,6 +243,7 @@ legend {
 #SFDSWFB-target .floatleft,
 #SFDSWFB-target .floatright {
 	width: 45%;
+	margin-right: 5%;
 }
 
 /* "Ghost" field when dragging inputs */
@@ -257,19 +258,47 @@ legend {
 /* "Edit field" popovers */
 
 .accordion-header {
-	font-size: 1.5em;
-	border-bottom: 1px solid #e9e9e9;
-	margin: 1em 0;
+	font-size: 1em;
+	border: 0;
+	font-weight: bold;
+	background: #e1f3f8;
+	color: #1C3E57;
+	padding: 0.5rem 1rem;
+	margin: 1.5rem 0 1rem;
+	width: calc(100% - 1px);
 }
 
 .accordion-section {
 	clear: both;
-	margin-bottom: 2em;
+	margin-bottom: 1em;
+}
+
+.accordion-section .help-block {
+	font-size: 0.93em;
+}
+
+.accordion-section .form-control {
+	margin-bottom: 0;
+}
+
+.accordion-section .form-group {
+	margin-bottom: 1rem;
 }
 
 .accordion-section .floatleft,
 .accordion-section .floatright {
 	width: 45%;
+	margin-right: 5%;
+}
+
+.accordion-markup {
+	margin-bottom: 5rem;
+}
+
+.option-attribute textarea,
+.checkboxes-attribute textarea,
+.radios-attribute textarea {
+	height: 12rem;
 }
 
 .popover {
@@ -300,45 +329,62 @@ legend {
 
 .fa-minus-circle.conditionIcon {
 	position: absolute;
-	right: -1.2em;
+	right: -1.4em;
 	font-size: 1.5em;
-	color: #eee;
+	color: #777;
 	cursor: pointer;
 }
 
 .fa-minus-circle.conditionIcon:hover {
-	color: #aaa;
+	color: #555;
 }
 
 .condition,
 .calculation {
 	position: relative;
-	border-bottom: 1px solid transparent;
+	padding: 1rem;
+	margin: 1rem 0;
+	background: #f7f7f7;
+	border: 1px solid #eee;
+	border-radius: 8px;
 }
 
-.condition:hover,
-.calculation:hover {
-	border-bottom: 1px solid #212123;
+.condition .form-control,
+.calculation .form-control {
+	margin-bottom: 0.5rem;
+}
+
+.condition .form-control:last-child,
+.calculation .form-control:last-child {
+	margin-bottom: 0;
+}
+
+.firstCalculation {
+	margin-bottom: 0.5em;
 }
 
 .conditional,
-.addCalculationContainer {
+.calculationContainer {
 	width: 90%;
 }
 
 .conditional select,
 .conditional input,
-.addCalculationContainer select,
-.addCalculationContainer input {
+.calculationContainer select,
+.calculationContainer input {
 	margin-bottom: 0.5em;
 }
 
-.addConditional {
-	padding-top: 1em;
+.firstConditional,
+.multipleConditional {
+	margin-bottom: 0.5rem;
 }
 
-.addCalculation {
-	padding-top: 1em;
+.firstConditional span,
+.multipleConditional span {
+	display: inline-block;
+	height: 34px;
+	padding: 6px;
 }
 
 hr.and::before {
@@ -463,12 +509,13 @@ a:active {
 }
 
 .save-buttons {
-	position: -webkit-sticky;
-	position: sticky;
+	position: fixed;
 	bottom: 0;
 	background: #fff;
 	box-shadow: 0 -1px 3px rgba(33, 33, 35, 0.2);
-	padding: 0.5rem 0;
+	padding: 0.5rem;
+	width: calc(20% - 1px);
+	left: 20%;
 }
 
 .leftPanel,
@@ -584,8 +631,15 @@ a:active {
 }
 
 .panel-content {
-	padding: 0.5rem 1rem;
 	min-height: calc(100vh - 12.5rem);
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.leftPanel .panel-content,
+.middlePanel .accordion {
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 
 .splitter {
@@ -705,25 +759,126 @@ a:active {
 }
 
 .field-item-group {
-	margin-bottom: 1em;
+	padding: 0.5rem 0;
 	display: block;
+	border-bottom: 3px solid rgba(28, 62, 87, 0.3);
 }
 
 .field-item {
-	padding: 0.5em;
-	margin: 0 0.5rem 1rem 0;
-	border: 2px solid #4F66EE;
+	text-align: left;
+	border: 0;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	background-position: 1.5rem center;
 	color: #4F66EE;
-	font-weight: bold;
-	border-radius: 5px;
 	cursor: pointer;
-	display: inline-block;
-	background: #FFFFFF;
+	display: block;
+	padding: 0.625rem 0.5rem 0.625rem 4.5rem;
+	width: calc(100% - 1px);
 }
 
-.field-item:hover {
-	color: black;
-	border-color: black;
+.field-item:last-child {
+	margin-bottom: 0;
+}
+
+.field-item:hover,
+.field-item:focus {
+	background-color: rgba(79, 102, 238, 0.1);
+}
+
+.field-item:active {
+	background-color: rgba(79, 102, 238, 0.15);
+}
+
+.field-item[data-formtype=c02] {
+	background-image: url(/images/field-c02.svg?e4849865dde3b3d57a5c9fa46a136707);
+}
+
+.field-item[data-formtype=c04] {
+	background-image: url(/images/field-c04.svg?2b4dfd133e2891c32543eae751975d70);
+}
+
+.field-item[data-formtype=c06] {
+	background-image: url(/images/field-c06.svg?79b1a8c4d579a794420dd20a51011fb0);
+}
+
+.field-item[data-formtype=c08] {
+	background-image: url(/images/field-c08.svg?1b05ee407c288b9187b3f5640e831e27);
+}
+
+.field-item[data-formtype=d02] {
+	background-image: url(/images/field-d02.svg?452131133eafacbb70371e0c0af0b5f0);
+}
+
+.field-item[data-formtype=d04] {
+	background-image: url(/images/field-d04.svg?9e1fe6e2e10c475a8a5ba0e5d47c9aa2);
+}
+
+.field-item[data-formtype=d06] {
+	background-image: url(/images/field-d06.svg?a34d6c3b438c8c36d33ee849c32c5e04);
+}
+
+.field-item[data-formtype=d08] {
+	background-image: url(/images/field-d08.svg?f222c84c9f9c88edb8b9a3dda2103082);
+}
+
+.field-item[data-formtype=d10] {
+	background-image: url(/images/field-d10.svg?f6584513fbeed067f16889c738bf34e1);
+}
+
+.field-item[data-formtype=i02] {
+	background-image: url(/images/field-i02.svg?cb71f5c096ee96b10d62804e58dd5a81);
+}
+
+.field-item[data-formtype=i14] {
+	background-image: url(/images/field-i14.svg?0c8eb5d7c271e36883b65dad1b875d3b);
+}
+
+.field-item[data-formtype=m02] {
+	background-image: url(/images/field-m02.svg?15cf49d074807256841f9740f90cbef8);
+}
+
+.field-item[data-formtype=m08] {
+	background-image: url(/images/field-m08.svg?798bdc29a245ff338a67011136409ee1);
+}
+
+.field-item[data-formtype=m11] {
+	background-image: url(/images/field-m11.svg?3d83b33386947e5c30abcf04227d659b);
+}
+
+.field-item[data-formtype=m13] {
+	background-image: url(/images/field-m13.svg?33cc907e041e1abc51e4eac5e185b389);
+}
+
+.field-item[data-formtype=m16] {
+	background-image: url(/images/field-m16.svg?bd3137352d8714f500aa721f30a95287);
+}
+
+.field-item[data-formtype=s02] {
+	background-image: url(/images/field-s02.svg?35ebc9c8d89b16204ec1645c7d68479d);
+}
+
+.field-item[data-formtype=s06] {
+	background-image: url(/images/field-s06.svg?62c4358a58135bcaee5a83285133219d);
+}
+
+.field-item[data-formtype=s08] {
+	background-image: url(/images/field-s08.svg?740b63bd305822f9ba95f5773535f224);
+}
+
+.field-item[data-formtype=c10],
+.field-item[data-formtype=c14],
+.field-item[data-formtype=s14] {
+	background-image: url(/images/field-c08.svg?1b05ee407c288b9187b3f5640e831e27);
+}
+
+.field-item[data-formtype=m10] {
+	background-image: url(/images/field-m08.svg?798bdc29a245ff338a67011136409ee1);
+}
+
+.field-item[data-formtype=m04],
+.field-item[data-formtype=m06] {
+	background-image: url(/images/field-m02.svg?15cf49d074807256841f9740f90cbef8);
 }
 
 input,

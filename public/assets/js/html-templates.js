@@ -2,18 +2,7 @@ Fb.prototype.view = {}
 
 Fb.prototype.view.validation = "\
 	<div class='accordion-validation'> \
-		<div class='accordion-section validation'> \
-			<div class='accordion-header'>Validation</div> \
-			<div class='accordion'> \
-			  <div class='validate-required' data-toggle='tooltip' title='Check this to indicate the user must fill out this field'> \
-				<label class='control-label' for='required'>Required</label> &nbsp;<input class='' type='checkbox' id='required' name='required'><br/>  \
-			  </div> \
-			  <div class='validate-type' data-toggle='tooltip' title='This is to make sure the user response fits the field type'> \
-				<label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select> \
-			  </div> \
-			  <div class='clear'></div> \
-			</div> \
-		</div> \
+    <div class='accordion-section'></div> \
 	</div>"
 
 Fb.prototype.view.conditionals = "\
@@ -23,7 +12,7 @@ Fb.prototype.view.conditionals = "\
 			<div class='accordion'> \
 				<div class='clonable addConditionalContainer'> \
 					<div class='addConditional' style=''> \
-						<a href='javascript:void(0)' class='addConditionalButton'>+Add A Condition</a> \
+						<a href='javascript:void(0)' class='addConditionalButton btn btn-default btn-block'>Add a rule</a> \
 					</div> \
 				</div> \
 			</div> \
@@ -37,7 +26,7 @@ Fb.prototype.view.calculations = "\
 			<div class='accordion'> \
 				<div class='addCalculationContainer'> \
 					<div class='addCalculation'> \
-						<a class='addCalculationButton'>+Add A Calculation</a> \
+						<a class='addCalculationButton btn btn-default btn-block'>Add a calculation</a> \
 					</div> \
 				</div> \
 			</div> \
@@ -112,29 +101,33 @@ Fb.prototype.view.applyRevertButtons = "\
 Fb.prototype.view.editItem = "\
 	<div class='accordion-attributes'> \
 		<div class='accordion-section attributes'> \
-			<div class='accordion-header'>Attributes</div> \
 			<div class='accordion'> \
 				<input type='hidden' name='formtype' id='formtype'/>\
-				<label class='control-label label-attribute'>Label Text</label> <input class='form-control label-attribute' type='text' name='label' id='label'> \
-				<label class='control-label placeholder-attribute'>Placeholder</label> <input type='text' name='placeholder' id='placeholder' class='form-control placeholder-attribute'> \
-				<label class='control-label help-attribute'>Help Text</label> <textarea class='form-control help-attribute' name='help' id='help'></textarea> \
-				<label class='control-label option-attribute'>Options</label> <textarea class='form-control option-attribute' name='option' id='option'> </textarea> \
-				<label class='control-label checkboxes-attribute'>Checkboxes</label> <textarea class='form-control checkboxes-attribute' name='checkboxes' id='checkboxes'> </textarea> \
-				<label class='control-label radios-attribute'>Radios</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea> \
-				<label class='control-label textarea-attribute'>Text Area</label> <textarea class='form-control textarea-attribute' name='textarea' id='textarea'></textarea> \
-				<label class='control-label codearea-attribute'>Text Area</label> <textarea class='form-control codearea-attribute' name='codearea' id='codearea'></textarea> \
-				<label class='control-label unit-attribute'>Unit</label> <input data-toggle='tooltip' title='Use this to set the unit of the number, it is not required' class='form-control unit-attribute' type='text' name='unit' id='unit'> \
-				<label class='control-label value-attribute'>Default Value</label> <input data-toggle='tooltip' title='Use this to prefill this field with a value, otherwise this should be left blank' class='form-control value-attribute' type='text' name='value' id='value'> \
-				<label class='control-label name-attribute'>Name Attribute</label> <input data-toggle='tooltip' title='You must set a unique machine name for this field' class='form-control name-attribute' type='text' name='name' id='name'> \
-				<label class='control-label id-attribute'>Unique ID</label> <input data-toggle='tooltip' title='Use this to set the unique id of this field, it is good practice to use the same value as the name' class='form-control id-attribute' type='text' name='id' id='id'> \
-				<label class='control-label class-attribute'>Class Attribute</label> <input data-toggle='tooltip' title='Use this to set the css identifier, it is not required unless needed for styling' class='form-control class-attribute' type='text' name='class' id='class'> \
+				<div class='form-group label-attribute'><label class='control-label'>Label</label> <input class='form-control' type='text' name='label' id='label'></div> \
+        <div class='form-group textarea-attribute'><label class='control-label'>Content</label> <textarea class='form-control' name='textarea' id='textarea'></textarea></div> \
+        <div class='form-group codearea-attribute'><label class='control-label'>Content</label> <textarea class='form-control' name='codearea' id='codearea'></textarea></div> \
+        <div class='form-group required-attribute'><label class='checkbox-inline' for='required'><input class='' type='checkbox' id='required' name='required'>Required</label></div> \
+        <div class='form-group type-attribute'><label class='control-label'>Type</label> <select class='form-control' name='type' id='type'><option value='text'>Text</option><option value='email'>Email</option><option value='tel'>Phone</option><option value='url'>URL</option><option value='number'>Number</option><option value='date'>Date</option><option value='search'>Search</option><option value='password'>Password</option><option value='match'>Match</option><option value='regex'>Custom</option></select></div> \
+        <div class='form-group unit-attribute'><label class='control-label'>Units</label> <input type='text' name='unit' id='unit' placeholder='%, feet, etc.' class='form-control'></div> \
+				<div class='form-group option-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='option' id='option'> </textarea> <p class='help-block'>Enter one option per line.</p></div> \
+				<div class='form-group checkboxes-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='checkboxes' id='checkboxes'> </textarea><p class='help-block'>Enter one option per line.</p></div> \
+				<div class='form-group radios-attribute'><label class='control-label radios-attribute'>Options</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea><p class='help-block'>Enter one option per line.</p></div> \
+				<div class='form-group help-attribute'><label class='control-label'>Help text</label> <textarea class='form-control' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p></div>\
+      </div></div></div>" +
+        fb.view.validation +
+        fb.view.conditionals +
+        fb.view.calculations +
+        fb.view.webhooks +
+      "<div class='accordion-markup'> \
+        <div class='accordion-section markup'> \
+          <div class='accordion-header'>Markup</div> \
+          <div class='accordion'> \
+				<div class='form-group name-attribute'><label class='control-label'>Name attribute</label> <input class='form-control' type='text' name='name' id='name'> <p class='help-block'>The field's label in your database. Residents will never see this.</p></div>\
+				<div class='form-group id-attribute'><label class='control-label id-attribute'>ID attribute</label> <div class='input-group'><div class='input-group-addon'>#</div><input class='form-control id-attribute' type='text' name='id' id='id'></div></div> \
+				<div class='form-group class-attribute'><label class='control-label'>CSS classes</label> <input class='form-control' type='text' name='class' id='class'> <p class='help-block'>Separate multiple CSS classes with spaces.</p></div>\
 			</div> \
 		</div> \
 	</div>" +
-	fb.view.validation +
-	fb.view.conditionals +
-	fb.view.calculations +
-	fb.view.webhooks +
 	fb.view.applyRevertButtons
 
 Fb.prototype.view.addConditional = function() {
@@ -160,59 +153,62 @@ Fb.prototype.view.addConditional = function() {
 }
 
 Fb.prototype.view.validateMinMax = function() {
-	return	"<div class='validate-minmax'> \
-				  <div class='floatleft' data-toggle='tooltip' title='The lowest acceptable numerical value, leave blank if there is none'> \
-					<label class='control-label'>Min Value</label> <input class='form-control' type='text' name='min' id='min'> \
+	return	"<fieldset class='validate-minmax'> \
+          <legend class='accordion-header'>Allow numbers between&hellip;</legend> \
+          <div class='accordion'>\
+				  <div class='floatleft'> \
+					<label class='control-label'>Minimum</label> <input class='form-control' type='text' name='min' id='min' placeholder='0'> \
 				  </div> \
-				  <div class='floatright' data-toggle='tooltip' title='The highest acceptable numerical value, leave blank if there is none'> \
-					<label class='control-label'>Max Value</label> <input class='form-control' type='text' name='max' id='max'> \
+				  <div class='floatleft'> \
+					<label class='control-label'>Maximum</label> <input class='form-control' type='text' name='max' id='max' placeholder='&infin;'> \
 				  </div> \
-				  <div class='clear'></div> \
-			  </div>"
+          </div> \
+			  </fieldset>"
 }
 
 Fb.prototype.view.validateRegex = function() {
-	return	"<div class='validate-regex' data-toggle='tooltip' title='For advanced users only'> \
-				<label class='control-label'>Regular Expression</label> <input class='form-control' type='text' name='regex' id='regex'> \
+	return	"<label class='accordion-header' for='regex'>Match the regular expression&hellip;</label> \
+				<div class='accordion'><input class='form-control' type='text' name='regex' id='regex'></div> \
 			</div>"
 }
 
 Fb.prototype.view.validateMatch = function() {
-	return 	"<div class='validate-match' data-toggle='tooltip' title='Use this to only accept a user response if the value matches a different field that you specify'> \
-				<label class='control-label'>Match Another</label> <select class='form-control' name='match' id='match'><option value=''></option></select> \
-			</div>"
+	return 	"<label class='accordion-header' for='match'>Match the answer to&hellip;</label> \
+				    <div class='accordion'><select class='form-control' name='match' id='match'><option value=''></option></select></div> \
+			     </div>"
 }
 
 Fb.prototype.view.validateLength = function() {
-	return	"<div class='floatleft' data-toggle='tooltip' title='The minimum amount of characters allowed, leave blank if there is none'> \
-    				<label class='control-label'>Min Length</label> <input class='form-control' type='text' name='minlength' id='minlength'> \
+	return	"<fieldset> \
+            <legend class='accordion-header'>Allow character lengths between&hellip;</legend>\
+            <div class='accordion'> \
+            <div class='floatleft'> \
+    				<label class='control-label'>Minimum</label> <input class='form-control' type='text' name='minlength' id='minlength' placeholder='0'> \
     			</div> \
-    			<div class='floatright' data-toggle='tooltip' title='The maximum amount of characters allowed, leave blank if there is none'> \
-    				<label class='control-label'>Max Length</label> <input class='form-control' type='text' name='maxlength' id='maxlength'> \
-    			</div>"
+    			<div class='floatleft'> \
+    				<label class='control-label'>Maximum</label> <input class='form-control' type='text' name='maxlength' id='maxlength' placeholder='&infin;'> \
+    			</div> \
+          </fieldset>"
 }
 
 Fb.prototype.view.firstConditional = function() {
-		return	"<div class='clonable firstConditional'> \
+		return	"<div class='clonable firstConditional form-inline'> \
     					<select class='showHide form-control'> \
     						<option>Show</option> \
     						<option>Hide</option> \
     					</select> \
-    				</div>"
-}
-
-Fb.prototype.view.multipleConditionals = function() {
-		return "<div class='clonable multipleConditionals'> \
-    					<select class='allAny form-control'> \
-    						<option>All</option> \
-    						<option>Any</option> \
-    					</select> \
-    				</div>"
+              <span>this field if</span> \
+              <select class='allAny form-control'> \
+                <option>all</option> \
+                <option>any</option> \
+              </select> \
+              <span>of the following apply:</span> \
+            </div>"
 }
 
 Fb.prototype.view.firstCalculation = function() {
 		return	"<div class='firstCalculation'> \
-    					<label class='control-label calculationLabel'>Calculation</label> \
+    					<label class='control-label calculationLabel'>Autofill this field with the answer to&hellip;</label> \
     					<select class='allMathIds calculationId form-control'></select> \
     				</div>"
     }
@@ -227,6 +223,7 @@ Fb.prototype.view.calculationContainer = function() {
 							<option>Multiplied by</option> \
 							<option>Divided by</option> \
 						</select> \
+            <span>the answer to</span>\
 						<select class='allMathIds calculationId form-control'></select> \
 					</div> \
 				</div>"

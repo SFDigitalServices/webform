@@ -144,28 +144,34 @@ class DataStoreHelper extends Migration
         return null;
     }
 
-    /** Adding form table columns
-      *
-      * @param @tablename
-      * @param $definitions
-      *
-      * @return bool
-      */
+   /** Adding form table columns
+     *
+     * @param @tablename
+     * @param $definitions
+     *
+     * @return Array
+     */
+
     public function saveFormTableColumn($tablename, $definitions)
     {
         if ($definitions) {
             $class = new DataStoreHelper();
             $columns = array();
-            if (! Schema::hasTable($tablename)) {
-                $class->createFormTable($tablename, $definitions);
-            } else {
-                Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
-                    $ret = $class->upsertFields($table, $definitions);
-                    if (!$ret) {
-                        $columns = $ret;
-                    } // exception, return custom message
-                });
-                return $columns;
+            try {
+                if (! Schema::hasTable($tablename)) {
+                    $class->createFormTable($tablename, $definitions);
+                } else {
+                    Schema::table($tablename, function ($table) use ($definitions, $class, &$columns) {
+                        $ret = $class->upsertFields($table, $definitions);
+                        if (!$ret) {
+                            $columns = $ret;
+                        } // exception, return custom message
+                    });
+                    return $columns;
+                }
+            }
+            catch (\Doctrine\DBAL\Driver\PDOException $ex) {
+              return null;
             }
         }
     }
@@ -630,7 +636,7 @@ class DataStoreHelper extends Migration
     *
     * @return array
     */
-    private function createDatabaseFields(&$table, $definition, $fieldType = 'string')
+    private function createDatabaseFields(&$table, $definition, $fieldType = 'text')
     {
         $ret = array();
         $tablename = $table->getTable();
@@ -638,13 +644,14 @@ class DataStoreHelper extends Migration
             $table->$fieldType($definition['name']);
         } else {
             if (Schema::hasColumn($tablename, $definition['name'])) {
-                switch ($fieldType) {
-                    case 'string': $dataType = "varchar(255)"; break;
+
+                switch($fieldType){
+                    case 'string': $dataType = "text"; break;
                     case 'number': $dataType = "Decimal(10,2)"; break;
-                    case 'longText': $dataType = "Text"; break;
+                    case 'longText': $dataType = "longText"; break;
                     case 'time': $dataType = "Time"; break;
                     case 'date': $dataType = "Date"; break;
-                    default: $dataType = "varchar(100)"; break;
+                    default: $dataType = "text"; break;
                 }
                 $raw_statement = "ALTER TABLE ". $tablename .
                     " MODIFY ". $definition['name'] . " $dataType ";
