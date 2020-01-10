@@ -11,7 +11,7 @@ use DB;
 use App\Form;
 use Exception;
 use App\Helpers\ControllerHelper;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 
 class DataStoreHelper extends Migration
 {
@@ -927,7 +927,7 @@ class DataStoreHelper extends Migration
     *
     * @return Array
     */
-    private function validateFormRequest($inputs, $definitions)
+    private function validateFormRequest($request, $definitions)
     {
         $ret = array();
         $validation_rules = array();
@@ -935,17 +935,16 @@ class DataStoreHelper extends Migration
         foreach ($definitions as $key => $definition) {
             if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
                 $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                $validation_rules[] = array($definition['name'] => $this->setValidationRules($definition, $inputs[$definition['name']]));
+                $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
+                if($rule != '')
+                  $validation_rules[$definition['name']] = $rule;
             }
         }
-
-        $validator = \Validator::make((array)$inputs, $validation_rules);
+        $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
-            $ret = array("status" => 0, "message" => "Failed to validate form inputes");
-            //return $validator->errors();
+            $ret = array("status" => 0, "message" => json_decode( json_encode($validator->errors()), true));
         }
-
         return $ret;
     }
 
