@@ -391,7 +391,7 @@ class HTMLHelper
       // - Open the next .form-section
       $html .= '</div></div><div class="form-section" data-id="'.$field['id'].'">';
 
-      $html .= self::formSectionHeader($name, $field['id'], html_entity_decode($field['label']), ($pageNumber + 1), $pageCount);
+      $html .= self::formSectionHeader($name, $field['id'], $field['label'], ($pageNumber + 1), $pageCount);
 
       // - Open the next .form-content
       $html .= '<div class="form-content">';
@@ -570,9 +570,9 @@ class HTMLHelper
         $attributes = self::setAttributes($field);
 
         if ($field['formtype'] == "m08") {
-            $field_value = isset($field['textarea']) ? str_replace("\n", "<br/>", html_entity_decode($field['textarea'])) : "";
+            $field_value = isset($field['textarea']) ? str_replace("\n", "<br/>", $field['textarea']) : "";
         } elseif ($field['formtype'] == "m10") {
-            $field_value = isset($field['codearea']) ? str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['codearea']))) : "";
+            $field_value = isset($field['codearea']) ? str_replace("\n", "<br/>", html_entity_decode($field['codearea'])) : "";
         } else {
             $field_value = ''; //should not happen
         }
@@ -632,7 +632,7 @@ class HTMLHelper
         $legends = array('s06', 's08');
         $non_inputs = array('m02', 'm04', 'm06', 'm08', 'm10', 'm11', 'm14', 'm16'); //m13 is file upload
         $label_for = isset($field['id']) && $field['id'] !== "" ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
-        $label_text = isset($field['label']) ? html_entity_decode($field['label']) : "";
+        $label_text = isset($field['label']) ? $field['label'] : "";
         $optional = (!isset($field['required']) || $field['required'] === "" || $field['required'] === "false") && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
 
         if (in_array($field['formtype'], $legends)) {
@@ -654,7 +654,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['help']))).'</p>' : '<div class="help-block with-errors"></div>';
+        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.str_replace("\n", "<br/>", html_entity_decode($field['help'])).'</p>' : '<div class="help-block with-errors"></div>';
         return $str;
     }
 
