@@ -11,6 +11,6 @@ settings:
 modules:
     enabled:
         - Db:
-            dsn: 'mysql:host=docker_db_1;dbname=webform'
+            dsn: 'mysql:host=127.0.0.1;dbname=webform'
             user: 'root'
             password: '1234'
