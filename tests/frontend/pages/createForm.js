@@ -30,6 +30,16 @@ module.exports = {
       I.waitForText('Name', 3, '#SFDSWF-Container')
       await I.switchTo();
     })
+    When('I click to insert a multi field', async () => {
+        await I.click('Choose one')
+    });
+    Then('I should be able to see that field highlighted in the form', async() => {
+      I.switchTo('iframe');
+      I.wait(3)
+      I.waitForText('Radio', 3, '#SFDSWF-Container')
+      I.waitForElement('.form-group.is-selected-in-editor[data-id=radio]')
+      await I.switchTo();
+    })
     Then('I should see my form on the dashboard', async () => {
       await I.click('Digital Services Webform Builder')
       I.waitForText('Welcome back', 3, '.content')
