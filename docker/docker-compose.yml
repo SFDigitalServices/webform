@@ -20,5 +20,6 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
     volumes:
      - ./mysql-data:/docker-entrypoint-initdb.d
+     - ./conf/mariadb.conf.d:/etc/mysql/mariadb.conf.d
     ports:
      - 3307:3307

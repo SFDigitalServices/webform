@@ -1,0 +1,5 @@
+[mysqld]
+# Add new log file size
+innodb_log_file_size=512M
+# Disable strict mode
+innodb_strict_mode=0
