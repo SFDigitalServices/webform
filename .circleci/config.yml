@@ -17,6 +17,13 @@ jobs: # a collection of steps
           CACHE_DRIVER: file
           QUEUE_DRIVER: sync
       - image: circleci/mariadb:latest
+        command: |
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_bin
+          --innodb-large-prefix=true
+          --innodb-file-format=Barracuda
+          --innodb_log_file_size=512MB
+          --innodb_strict_mode=0
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: '1234'
@@ -60,7 +67,6 @@ jobs: # a collection of steps
             sudo cp /home/circleci/project/docker/conf/circleci-default.conf /etc/apache2/sites-available/000-default.conf
             sudo mkdir /etc/apache2/ssl
             sudo cp /home/circleci/project/docker/conf/ssl/ci-key-* /etc/apache2/ssl/ && sudo service apache2 start
-            sudo cp ~/project/docker/conf/mariadb.conf.d/custom.cnf /etc/mysql/mariadb.conf.d/custom.cnf
       # end to end testing
       - run:
           name: download nodejs
