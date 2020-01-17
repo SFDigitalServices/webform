@@ -205,11 +205,7 @@ class HTMLHelper
                   if (!in_array($condition['id'], $conditionIds)) {
                       $conditionIds[] = $condition['id'];
                   }
-                  if ($formtypes[$condition['id']] == "s06") { //exception case for checkboxes because they have multiple inputs per name
-                    $conditionSts[] = $this->getCheckboxConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val']);
-                  } else {
-                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
-                  }
+                  $conditionSts[] = $this->generateConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val'], $formtypes[$condition['id']]);
               }
               if ($fld['allAny']) {
                   //group multiple conditions
@@ -1019,15 +1015,27 @@ class HTMLHelper
       return $output;
   }
 
-    /** Formats form field conditionals
+  public function generateConditionalStatement($value1, $op, $value2, $ft) {
+    if ($ft === "s06") { //exception case for checkboxes because they have multiple inputs per name
+      $output = $this->getCheckboxConditionalStatement($value1, $op, $value2);
+    } else if ($ft === "d06" || $ft === "d08") {
+      $output = $this->getConditionalStatement("jQuery('".$value1."').val()", $this->controllerHelper->getOp($op), $value2, true);
+    } else {
+      $output = $this->getConditionalStatement("jQuery('".$value1."').val()", $this->controllerHelper->getOp($op), $value2);
+    }
+    return $output;
+  }
+
+  /** Formats form field conditionals
     *
     * @param $value1
     * @param $op
     * @param $value2
+    * @param $isNumber
     *
     * @return strings
   */
-  public function getConditionalStatement($value1, $op, $value2)
+  public function getConditionalStatement($value1, $op, $value2, $isNumber = false)
   {
       if (!$op) {
           return "";
@@ -1037,7 +1045,11 @@ class HTMLHelper
       } elseif ($op == "doesn't contain") {
           $output = "(".$value1.").search(/".$value2."/i) == -1";
       } else {
-          $output = $value1." ".$op." '".$value2."'";
+          if ($isNumber) {
+            $output = $value1." ".$op." ".$value2;
+          } else {
+            $output = $value1." ".$op." '".$value2."'";
+          }
       }
       return $output;
   }
