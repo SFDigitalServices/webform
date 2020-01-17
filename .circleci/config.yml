@@ -16,7 +16,7 @@ jobs: # a collection of steps
           DB_PASSWORD: 1234
           CACHE_DRIVER: file
           QUEUE_DRIVER: sync
-      - image: circleci/mariadb:latest
+      - image: circleci/mariadb:10.1.29
         command: |
           --character-set-server=utf8mb4
           --collation-server=utf8mb4_bin
@@ -47,11 +47,11 @@ jobs: # a collection of steps
           command: composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
-            - composer-v2.3-{{ checksum "composer.lock" }}
+            - composer-v2.4-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - composer-v2.3-
+            - composer-v2.4-
       - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
-          key: composer-v2.3-{{ checksum "composer.lock" }}
+          key: composer-v2.4-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:

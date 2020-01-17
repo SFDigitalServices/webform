@@ -15,7 +15,7 @@ services:
       - 80:80
       - 443:443
   db:
-    image: mariadb:latest
+    image: mariadb:10.1.19
     environment:
       MYSQL_ROOT_PASSWORD: 1234
     volumes:

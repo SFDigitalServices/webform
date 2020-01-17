@@ -123,7 +123,7 @@ CREATE TABLE `users` (
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
-INSERT INTO `users` VALUES (2,'jim.brodbeck@sfgov.org','Jim Brodbeck','$2y$10$A8uWeek29Fgm9Yitor8u.umwaNCsAxqEb86J9euSk6xB6./oSr0JC','16acbaa22dd3d420161fac92b649170dc2e26c88','2019-02-21 22:21:02','2019-02-14 00:28:58'),(2722,'johndoe@example.com','john doe','$2y$12$p2trm6hmAlAJTIgjh5rb3eR.CKD0p4S9k0Fhtsypbqf5u/Gr0t3zq','86df2695123b18c5332da299079f21af1126846f','2019-02-22 22:04:38',NULL);
+INSERT INTO `users` VALUES (2,'test@sf.gov','Test','$2y$12$p2trm6hmAlAJTIgjh5rb3eR.CKD0p4S9k0Fhtsypbqf5u/Gr0t3zq','86df2695123b18c5332da299079f21af1126846f','2019-02-22 22:04:38',NULL),(2722,'johndoe@example.com','john doe','$2y$12$p2trm6hmAlAJTIgjh5rb3eR.CKD0p4S9k0Fhtsypbqf5u/Gr0t3zq','86df2695123b18c5332da299079f21af1126846f','2019-02-22 22:04:38',NULL);
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
