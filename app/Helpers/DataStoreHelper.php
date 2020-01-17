@@ -679,16 +679,13 @@ class DataStoreHelper extends Migration
                     'type' => $definition['formtype'],
                 ]);
             }
-            $table->text($definition['name'])->default($inserted_id);
+            $table->text($definition['name']);
         }
         else{
             //check column, rename not allowed
             if (Schema::hasColumn($tablename, $definition['name'])) {
                 $raw_statement = "ALTER TABLE ". $tablename .
                     " MODIFY ". $definition['name'] . " text ";
-                if (isset($definition['value'])) { // need to get reference id from lookup table.
-                    $raw_statement .= " DEFAULT '" . $definition['value'] . "'";
-                }
                 if (isset($definition['required'])) {
                     if ($definition['required'] == 'true') {
                         $raw_statement .= " NOT NULL";
