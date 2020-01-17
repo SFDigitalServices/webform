@@ -16,8 +16,14 @@ jobs: # a collection of steps
           DB_PASSWORD: 1234
           CACHE_DRIVER: file
           QUEUE_DRIVER: sync
-          SENTRY_DSN: https://b53658ff4ec749719da39905217d41e0@sentry.io/1366253
-      - image: circleci/mysql:5.6-ram
+      - image: circleci/mariadb:latest
+        command: |
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_bin
+          --innodb-large-prefix=true
+          --innodb-file-format=Barracuda
+          --innodb_log_file_size=512MB
+          --innodb_strict_mode=0
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_ROOT_PASSWORD: '1234'
@@ -41,11 +47,11 @@ jobs: # a collection of steps
           command: composer install -n --prefer-dist
       - restore_cache: # special step to restore the dependency cache if `composer.lock` does not change
           keys:
-            - composer-v2.2-{{ checksum "composer.lock" }}
+            - composer-v2.3-{{ checksum "composer.lock" }}
             # fallback to using the latest cache if no exact match is found (See https://circleci.com/docs/2.0/caching/)
-            - composer-v2.2-
+            - composer-v2.3-
       - save_cache: # special step to save the dependency cache with the `composer.lock` cache key template
-          key: composer-v2.2-{{ checksum "composer.lock" }}
+          key: composer-v2.3-{{ checksum "composer.lock" }}
           paths:
             - vendor
       - run:

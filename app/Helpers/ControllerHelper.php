@@ -20,27 +20,32 @@ class ControllerHelper
         if(isset($content['settings']))
             $ret['settings'] = $content['settings'];
         $ret['data'] = array();
-        foreach ($content['data'] as $field) {
-            if (array_key_exists('option', $field)) {
-                if (!is_array($field['option'])) {
-                    $field['option'] = $this->sanitizeOptions($field, 'option');
+        if (!empty($content['data'])) {
+            foreach ($content['data'] as $field) {
+                if (array_key_exists('option', $field)) {
+                    if (!is_array($field['option'])) {
+                        $field['option'] = $this->sanitizeOptions($field, 'option');
+                    }
+                    if (strcmp($op, 'json') == 0) {
+                        $field['option'] = json_encode($field['option']);
+                    }
+                } elseif (array_key_exists('checkboxes', $field)) {
+                    if (!is_array($field['checkboxes'])) {
+                        $field['checkboxes'] = $this->sanitizeOptions($field, 'checkboxes');
+                    }
+                    if (strcmp($op, 'json') == 0) {
+                        $field['checkboxes'] = json_encode($field['checkboxes']);
+                    }
+                } elseif (array_key_exists('radios', $field)) {
+                    if (!is_array($field['radios'])) {
+                        $field['radios'] = $this->sanitizeOptions($field, 'radios');
+                    }
+                    if (strcmp($op, 'json') == 0) {
+                        $field['radios'] = json_encode($field['radios']);
+                    }
                 }
-                if(strcmp($op, 'json') == 0)
-                    $field['option'] = json_encode($field['option']);
-            } elseif (array_key_exists('checkboxes', $field) ) {
-                if (!is_array($field['checkboxes'])) {
-                    $field['checkboxes'] = $this->sanitizeOptions($field, 'checkboxes');
-                }
-                if(strcmp($op, 'json') == 0)
-                    $field['checkboxes'] = json_encode($field['checkboxes']);
-            } elseif (array_key_exists('radios', $field) ) {
-                if (!is_array($field['radios'])) {
-                    $field['radios'] = $this->sanitizeOptions($field, 'radios');
-                }
-                if(strcmp($op, 'json') == 0)
-                    $field['radios'] = json_encode($field['radios']);
+                $ret['data'][] = $field;
             }
-            $ret['data'][] = $field;
         }
         return $ret;
     }
