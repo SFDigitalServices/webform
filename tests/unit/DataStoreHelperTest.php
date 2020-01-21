@@ -109,6 +109,23 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
         }
         $this->assertTrue(Schema::hasColumns($tablename, $columns));
     }
+    public function testCreateFormTableMaxFields()
+    {
+        $tablename= 'forms_form_max';
+        // Test the max number fields that can be created, MySql has a limitation: https://dev.mysql.com/doc/refman/8.0/en/column-count-limit.html#row-size-limits
+         for($i = 0; $i < 1000; $i++){
+          $arr = array('type' => 'text', 'id' => 'text'.$i, 'name' => 'text'.$i, 'label' => 'TEST', 'formtype' => 'c02');
+          array_push($this->definitions, $arr);
+        }
+        $this->dataStoreHelperTester->createFormTable($tablename, $this->definitions);
+        $this->assertTrue(Schema::hasTable($tablename));
+        $this->assertTrue(Schema::hasTable($tablename."_archive"));
+        $columns = array();
+        foreach($this->definitions as $definition){
+            array_push($columns, $definition['id']);
+        }
+        $this->assertTrue(Schema::hasColumns($tablename, $columns));
+    }
     public function testCloneFormTable()
     {
         $tablename= 'forms_cloneme';
@@ -164,9 +181,9 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
                     break;
                 case 'my_textarea': $this->assertEquals($column['type'], 'longText');
                     break;
-                case 'my_radio': $this->assertEquals($column['type'], 'string');
+                case 'my_radio': $this->assertEquals($column['type'], 'text');
                     break;
-                case 'my_cb': $this->assertEquals($column['type'], 'string');
+                case 'my_cb': $this->assertEquals($column['type'], 'text');
                     break;
                 case 'my_file': $this->assertEquals($column['type'], 'text');
                     break;
@@ -254,6 +271,8 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
     {
         Schema::dropIfExists('forms_form1');
         Schema::dropIfExists('forms_form1_archive');
+        Schema::dropIfExists('forms_form_max');
+        Schema::dropIfExists('forms_form_max_archive');
         Schema::dropIfExists('forms_form2');
         Schema::dropIfExists('forms_form2_archive');
         Schema::dropIfExists('forms_form3');
