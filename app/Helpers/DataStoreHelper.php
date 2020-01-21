@@ -260,8 +260,10 @@ class DataStoreHelper extends Migration
      */
     public function submitForm($form, $request, $status = 'complete')
     {
-        $ret = array();
-        if ($ret = $this->validateFormRequest($request, $form['content']['data'])) {
+        // validate user inputs
+        $ret = $this->validateFormRequest($request, $form['content']['data']);
+        $ret = array("status" => 0, "message" => array('email' => array('validation.required', 'validation.length'), 'name' => array('validation.maxlength') ) );
+        if (! empty($ret) ) {
             return $ret;
         }
 
@@ -298,7 +300,6 @@ class DataStoreHelper extends Migration
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
-                    return null;
                 }
 
                 $id = $this->insertFormData($write['db'], $form['id']);
@@ -847,13 +848,13 @@ class DataStoreHelper extends Migration
                         }
                     }
                 } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-                if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
-                    $file = $request->file($field['name']);
-                    $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
-                    $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
-                    $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
-                }
-                    $column++;
+                  if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                      $file = $request->file($field['name']);
+                      $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                      $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
+                      $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
+                  }
+                  $column++;
                 } else {
                     // fixed bug: if 'name' attribute was not set, exception is thrown here.
                     if (isset($field['name'])) {
