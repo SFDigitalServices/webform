@@ -172,6 +172,7 @@ class ControllerHelper
         }
 
         $scrubbed = htmlspecialchars($str, ENT_NOQUOTES);
+        $scrubbed = str_replace("&amp;", "&", $scrubbed);
         $scrubbed = str_replace("'", "&apos;", $scrubbed);
         $scrubbed = str_replace('\"', "&quot;", $scrubbed);
         $scrubbed = json_encode($this->parseOptionValues(json_decode($scrubbed, true)));

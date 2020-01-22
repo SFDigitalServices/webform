@@ -1086,7 +1086,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['min'] = 'invalid';
 		$this->attributes['max'] = 'invalid';
         $this->attributes['formtype'] = 'm08';
-        $this->attributes['textarea'] = 'This is Jim&amp;apos;s &amp;lt;b&amp;gt;&amp;quot;test&amp;quot;&amp;lt;/b&amp;gt;';
+        $this->attributes['textarea'] = 'This is Jim&apos;s &lt;b&gt;&quot;test&quot;&lt;/b&gt;';
         $entityParagraph = HTMLHelper::formParagraph($this->attributes);
         $expected = '<p id="foo" data-formtype="m08" class="large rounded">This is Jim&apos;s &lt;b&gt;&quot;test&quot;&lt;/b&gt;</p>';
         $this->assertEquals($expected, $entityParagraph);
@@ -1131,7 +1131,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
         $this->attributes['id'] = 'foo';
         $this->attributes['label'] = 'test';
-        $this->attributes['codearea'] = 'This is Jim&amp;apos;s &amp;lt;b&amp;gt;&amp;quot;test&amp;quot;&amp;lt;/b&amp;gt;';
+        $this->attributes['codearea'] = 'This is Jim&apos;s &lt;b&gt;&quot;test&quot;&lt;/b&gt;';
         $this->attributes['name'] = 'bar';
         $this->attributes['class'] = 'large rounded';
         $this->attributes['type'] = 'invalid';
