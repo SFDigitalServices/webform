@@ -235,20 +235,16 @@ function fieldValid(id) {
   jQuery('.form-group[data-id=' + id + '] .with-errors').html('');
 }
 
-function skipToSectionId(callback) { //does not work for checkboxes and possibly radios and selects
+function skipToSectionId(callback) {
   if (!SFDSWFB.skipToSectionId) {
     var url = new URL(window.location.href)
     if (typeof url.searchParams.get("sectionId") != "undefined") SFDSWFB.skipToSectionId = url.searchParams.get("sectionId")
   }
   if (SFDSWFB.skipToSectionId) {
-    if (document.getElementById(SFDSWFB.skipToSectionId) != null) {
-      if (callback && jQuery("#" + SFDSWFB.skipToSectionId).is(":hidden")) callback(jQuery("#" + SFDSWFB.skipToSectionId).closest(".form-section").index('.form-section'))
-      document.getElementById(SFDSWFB.skipToSectionId).scrollIntoView()
-      jQuery("#" + SFDSWFB.skipToSectionId).closest('.form-group').addClass('is-selected-in-editor')
-    } else {
-      if (callback && jQuery(".form-section[data-id=" + SFDSWFB.skipToSectionId + "]").is(":hidden")) callback(jQuery(".form-section[data-id=" + SFDSWFB.skipToSectionId + "]").index())
-      jQuery(".form-section[data-id=" + SFDSWFB.skipToSectionId + "] .form-section-header").addClass('is-selected-in-editor')
-    }
+    var section = jQuery('div[data-id='+SFDSWFB.skipToSectionId+']')
+    if (callback && section.is(":hidden")) callback(section.closest(".form-section").index('.form-section'))
+    section[0].scrollIntoView()
+    section.addClass('is-selected-in-editor')
   }
 }
 
