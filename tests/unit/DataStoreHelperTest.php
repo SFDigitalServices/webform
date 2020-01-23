@@ -87,14 +87,14 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
       $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
       $this->assertEquals($response['status'], 0);
-      $this->assertEquals($response['message']['email'][0], 'validation.required');
+      $this->assertEquals($response['errors']['email'][0], 'validation.required');
 
       //Test validation: max length
       $requestData['email'] = 'abcdefg@hijklmnopqrstuvw.xyz';
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
       $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
       $this->assertEquals($response['status'], 0);
-      $this->assertEquals($response['message']['email'][0], 'validation.max.string');
+      $this->assertEquals($response['errors']['email'][0], 'validation.max.string');
     }
 
     public function testCreateFormTable()
