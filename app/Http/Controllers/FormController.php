@@ -388,13 +388,6 @@ class FormController extends Controller
                 if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
                 } else {
-                    /*print "<div style='padding:3em 4.5em'>";
-                    print "<h2>Please set a Confirmation Page before trying to embed your form.</h2>";
-                    print "<h3>Below is a summary of what you just submitted:</h3>";
-                    foreach ($_POST as $key => $value) {
-                        print $key . " = " . $value . "<br/>";
-                    }
-                    print "</div>";*/
                     foreach ($_POST as $key => $value) {
                         $submitted_data[] = array($key => $value);
                     }
