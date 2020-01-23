@@ -21,12 +21,15 @@
       <td align="center" valign="top" width="500">
       <![endif]-->
       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
+
         @component('emails.partial.title')
           We received your submission to "{{ $data['formname'] }}."
         @endcomponent
+
         <tr>
           <td align="left" style="font-size: 17px; line-height: 24px; font-family: 'Rubik', sans-serif; font-weight: 400;  color: #1C3E57; padding-top: 17px;">For your records, you can find a copy of your submission below.</td>
         </tr>
+
       </table>
       <!--[if (gte mso 9)|(IE)]>
       </td>
@@ -50,6 +53,10 @@
               <tr>
                 <td align="left" bgcolor="#9FAEB8" height="3" width="100%" style="mso-line-height-rule: exactly; height: 3px; line-height: 3px; font-size: 3px;">&nbsp;</td>
               </tr>
+
+              {{-- Loop through each field and, depending on its type,
+                   include the appropriate partial: field-attachment,
+                   field-email, field-link, field-multi, or field-default --}}
 
             </table>
           </td>
