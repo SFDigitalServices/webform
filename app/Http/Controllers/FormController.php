@@ -398,7 +398,7 @@ class FormController extends Controller
                     foreach ($_POST as $key => $value) {
                         $submitted_data[] = array($key => $value);
                     }
-                    return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => '', 'submitted_data' => $submitted_data]);
+                    return view('layouts.submission', ['data' => $submitted_data]);
                 }
             }
         }

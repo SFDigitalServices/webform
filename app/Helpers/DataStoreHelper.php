@@ -262,7 +262,7 @@ class DataStoreHelper extends Migration
     {
         // validate user inputs
         $ret = $this->validateFormRequest($request, $form['content']['data']);
-        $ret = array("status" => 0, "message" => array('email' => array('validation.required', 'validation.length'), 'name' => array('validation.maxlength') ) );
+        //$ret = array("status" => 0, "errors" => array('email' => array('validation.required', 'validation.length'), 'name' => array('validation.maxlength') ) );
         if (! empty($ret) ) {
             return $ret;
         }
@@ -951,7 +951,7 @@ class DataStoreHelper extends Migration
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
-            $ret = array("status" => 0, "message" => json_decode( json_encode($validator->errors()), true));
+            $ret = array("status" => 0, "errors" => json_decode( json_encode($validator->errors()), true));
         }
         return $ret;
     }
