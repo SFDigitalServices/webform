@@ -572,7 +572,7 @@ class HTMLHelper
         if ($field['formtype'] == "m08") {
             $field_value = isset($field['textarea']) ? str_replace("\n", "<br/>", html_entity_decode($field['textarea'])) : "";
         } elseif ($field['formtype'] == "m10") {
-            $field_value = isset($field['codearea']) ? str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['codearea']))) : "";
+            $field_value = isset($field['codearea']) ? html_entity_decode(html_entity_decode($field['codearea'])) : "";
         } else {
             $field_value = ''; //should not happen
         }
@@ -654,8 +654,11 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-        $str = array_key_exists('help', $field) ? '<div class="help-block with-errors"></div><p class="help-text">'.str_replace("\n", "<br/>", html_entity_decode(html_entity_decode($field['help']))).'</p>' : '<div class="help-block with-errors"></div>';
-        return $str;
+      $output = '<div class="help-block with-errors"></div>';
+      if (isset($field['help']) && $field['help'] !== "") {
+        $output .= '<p class="help-text">'.html_entity_decode(html_entity_decode($field['help'])).'</p>';
+      }
+      return $output;
     }
 
 
