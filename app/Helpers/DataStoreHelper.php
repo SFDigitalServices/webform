@@ -262,7 +262,6 @@ class DataStoreHelper extends Migration
     {
         // validate user inputs
         $ret = $this->validateFormRequest($request, $form['content']['data']);
-        //$ret = array("status" => 0, "errors" => array('email' => array('validation.required', 'validation.length'), 'name' => array('validation.maxlength') ) );
         if (! empty($ret) ) {
             return $ret;
         }
@@ -293,35 +292,15 @@ class DataStoreHelper extends Migration
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
                         $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     } else {
-                        $ret = $this->pushDataToADU($request->all());
+                        $write['db']['form_id'] = $form['id'];
+                        if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
+                        $ret = $this->pushDataToADU($write['db']);
                         if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
-                }
-
-                $id = $this->insertFormData($write['db'], $form['id']);
-                // update status if form is partially completed
-                if ($id) {
-                    $ret = array("status" => 1, "message" => 'success' );
-                    try {
-                        if ($status != 'complete') {
-                            $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                            $magiclink = Hash::make(time());
-                            DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                            $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
-                        } else {
-                            $ret = $this->pushDataToADU($request->all());
-                            if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
-                                DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
-                            }
-                        }
-                    } catch (\Illuminate\Database\QueryException $ex) {
-                        $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                    }
-                    return $ret;
                 }
             }
             return $ret;
@@ -876,7 +855,8 @@ class DataStoreHelper extends Migration
     private function pushDataToADU($formdata)
     {
         $ret = array();
-
+        $formdata = json_encode($formdata);
+        Log::info(print_r($formdata, 1));
         if ($formdata) {
             $api_key = getenv("ADU_DISPATCHER_KEY");
             $endpoint = getenv("ADU_DISPATCHER_ENDPOINT");
@@ -991,7 +971,7 @@ class DataStoreHelper extends Migration
                     } elseif ($value == 'date') {
                         $rules[] = "date";
                     } elseif ($value == 'time') {
-                        $rules[] = "date";
+                        $rules[] = "";
                     } elseif ($value == 'tel') {
                         //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
                     }

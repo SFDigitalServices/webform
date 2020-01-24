@@ -382,7 +382,7 @@ class FormController extends Controller
 
         if ($response = $this->dataStoreHelper->submitForm($form, $request)) {
             if (!empty($response) && $response['status'] == 0) {  //failed submissions
-                return response()->json($response);
+                return response()->json($response); // return an error page
             } else {
                 $submitted_data = array();
                 if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
@@ -411,7 +411,7 @@ class FormController extends Controller
         }
         $form = Form::where('id', $form_id)->first();
         $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-        //todo backend validation
+
         $referer = $request->headers->get('referer');
         $host = parse_url($referer, PHP_URL_HOST);
         $path = parse_url($referer, PHP_URL_PATH);

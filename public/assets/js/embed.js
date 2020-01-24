@@ -255,17 +255,16 @@ function submitPartial(formid, submitType = 'partial'){
   if(submitType !== 'complete' && !submitUrl.includes('submitPartial') )
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
 
-  var form_data = jQuery("#"+formid).serialize();
+  //var form_data = jQuery("#"+formid).serialize();
+  var form_data = new FormData(jQuery("#"+formid)[0]);
   var settings = {
     'async': true,
     'crossDomain': true,
     'url': submitUrl,
     'method': 'POST',
-    'headers': {
-      'content-type': 'application/x-www-form-urlencoded',
-      'cache-control': 'no-cache'
-    },
-    'data':  form_data
+    'data':  form_data,
+    'processData': false,
+    'contentType': false
   }
   if(submitType !== 'complete'){ //partial submit
     jQuery.ajax(settings).done(function (response) {
