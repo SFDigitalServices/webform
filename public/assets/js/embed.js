@@ -255,7 +255,6 @@ function submitPartial(formid, submitType = 'partial'){
   if(submitType !== 'complete' && !submitUrl.includes('submitPartial') )
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
 
-  //var form_data = jQuery("#"+formid).serialize();
   var form_data = new FormData(jQuery("#"+formid)[0]);
   var settings = {
     'async': true,
