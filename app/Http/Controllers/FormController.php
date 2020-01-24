@@ -382,7 +382,7 @@ class FormController extends Controller
 
         if ($response = $this->dataStoreHelper->submitForm($form, $request)) {
             if (!empty($response) && $response['status'] == 0) {  //failed submissions
-                return response()->json($response); // return an error page
+                return response()->json($response);
             } else {
                 $submitted_data = array();
                 if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
