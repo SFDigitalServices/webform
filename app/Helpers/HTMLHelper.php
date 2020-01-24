@@ -1037,27 +1037,27 @@ class HTMLHelper
 
   /** Formats form field conditionals
     *
-    * @param $value1
+    * @param $jqString
     * @param $op
-    * @param $value2
+    * @param $value
     * @param $isNumber
     *
     * @return strings
   */
-  public function getConditionalStatement($value1, $op, $value2, $isNumber = false)
+  public function getConditionalStatement($jqString, $op, $value, $isNumber = false)
   {
       if (!$op) {
           return "";
       }
       if ($op == "contains") {
-          $output = "(".$value1.").search(/".$value2."/i) != -1";
+          $output = "(".$jqString.").search(/".$value."/i) != -1";
       } elseif ($op == "doesn't contain") {
-          $output = "(".$value1.").search(/".$value2."/i) == -1";
+          $output = "(".$jqString.").search(/".$value."/i) == -1";
       } else {
           if ($isNumber) {
-            $output = $value1." ".$op." ".$value2;
+            $output = $jqString." ".$op." ".$value;
           } else {
-            $output = $value1." ".$op." '".$value2."'";
+            $output = $jqString." ".$op." '".$value."'";
           }
       }
       return $output;
@@ -1065,13 +1065,13 @@ class HTMLHelper
 
     /** Formats checkbox conditionals
     *
-    * @param $value1
+    * @param $sel
     * @param $op
-    * @param $value2
+    * @param $value
     *
     * @return strings
   */
-  public function getCheckboxConditionalStatement($value1, $op, $value2)
+  public function getCheckboxConditionalStatement($sel, $op, $value)
   {
 		$op = str_replace("&amp;apos;", "'", $op); //just in case apostrophe is encoded
 		switch ($op) {
@@ -1079,31 +1079,31 @@ class HTMLHelper
 				$output = "";
 				break;
 			case "matches":
-				$output = "jQuery('".$value1."[value=".$value2."]').length";
+				$output = "jQuery('".$sel."[value=".$value."]').length";
 				break;
 			case "doesn't match":
-				$output = "jQuery('".$value1."[value=".$value2."]').length === 0";
+				$output = "jQuery('".$sel."[value=".$value."]').length === 0";
 				break;
 			case "is less than": // will only check the first match, not sure how it would work with multiple
-				$output = "jQuery('".$value1."').val() < ".$value2;
+				$output = "jQuery('".$sel."').val() < ".$value;
 				break;
 			case "is more than": // will only check the first match, not sure how it would work with mutiple
-				$output = "jQuery('".$value1."').val() > ".$value2;
+				$output = "jQuery('".$sel."').val() > ".$value;
 				break;
 			case "contains anything":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) != ''";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()) != ''";
 				break;
 			case "is blank":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) == ''";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()) == ''";
 				break;
 			case "contains":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) != -1";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value."/i) != -1";
 				break;
 			case "doesn't contain":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) == -1";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value."/i) == -1";
 				break;
 			default:
-				$output = $value1." ".$op." '".$value2."'";
+				$output = $sel." ".$op." '".$value."'";
 				break;
 		}
 		return $output;
