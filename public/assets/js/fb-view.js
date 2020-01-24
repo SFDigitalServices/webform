@@ -348,6 +348,9 @@ FbView.prototype.populateAttributes = function(item) {
 					case 'webhooks':
 						$('#SFDSWFB-attributes .accordion-webhooks').remove()
 						break
+          case 'version':
+						$('#SFDSWFB-attributes .version-attribute').remove()
+            break
 					default:
 						$('#SFDSWFB-attributes .' + i + '-attribute').remove()
 						break
