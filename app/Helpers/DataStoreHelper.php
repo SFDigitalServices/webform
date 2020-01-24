@@ -856,7 +856,6 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $formdata = json_encode($formdata);
-        Log::info(print_r($formdata, 1));
         if ($formdata) {
             $api_key = getenv("ADU_DISPATCHER_KEY");
             $endpoint = getenv("ADU_DISPATCHER_ENDPOINT");
