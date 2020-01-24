@@ -1015,13 +1015,22 @@ class HTMLHelper
       return $output;
   }
 
-  public function generateConditionalStatement($value1, $op, $value2, $ft) {
+  /** Delegates which conditional function to use based on params
+    *
+    * @param $sel string the selector of the field being evaluated
+    * @param $op string the operator of the statement
+    * @param $value string/float the value to compare with the value of the field being evaluated
+    * @param $isNumber boolean to designate if the value should be interpreted as a string or float
+    *
+    * @return strings
+  */
+  public function generateConditionalStatement($sel, $op, $value, $ft) {
     if ($ft === "s06") { //exception case for checkboxes because they have multiple inputs per name
-      $output = $this->getCheckboxConditionalStatement($value1, $op, $value2);
+      $output = $this->getCheckboxConditionalStatement($sel, $op, $value);
     } else if ($ft === "d06" || $ft === "d08") {
-      $output = $this->getConditionalStatement("jQuery('".$value1."').val()", $this->controllerHelper->getOp($op), $value2, true);
+      $output = $this->getConditionalStatement("jQuery('".$sel."').val()", $this->controllerHelper->getOp($op), $value, true);
     } else {
-      $output = $this->getConditionalStatement("jQuery('".$value1."').val()", $this->controllerHelper->getOp($op), $value2);
+      $output = $this->getConditionalStatement("jQuery('".$sel."').val()", $this->controllerHelper->getOp($op), $value);
     }
     return $output;
   }
