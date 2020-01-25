@@ -78,7 +78,7 @@ class HTMLHelper
             $form_wrapper_bottom = self::pagination($pageCount, $pageCount).'</div></div>';
             $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
-            $form_container = $form_div. $form_container;
+            $form_container = $form_div . self::formHeader($content['settings']['name']) . $form_container;
         }
         $form_end = "";
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
@@ -313,6 +313,17 @@ class HTMLHelper
         $totalPages = 1;
       }
       return $totalPages;
+    }
+
+    /** Generate header
+     *
+     * @param $formName
+     *
+     * @return html
+     */
+
+    public static function formHeader($formName) {
+      return '<header class="hero-banner default"><div class="form-header-meta"><h2>'.$formName.'</h2></div></header>';
     }
 
     /** Generate section header
