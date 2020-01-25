@@ -397,6 +397,7 @@ FbView.prototype.populateValidation = function(item) {
 		//case "password":
 	}
 	if (item.required == "true") $('#SFDSWFB-attributes input[name=required]').prop('checked', true)
+	if (item.version == "other") $('#SFDSWFB-attributes input[name=version][value=other]').prop('checked', true)
 }
 
 /**

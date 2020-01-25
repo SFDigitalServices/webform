@@ -112,7 +112,7 @@ Fb.prototype.view.editItem = "\
 				<div class='form-group option-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='option' id='option'> </textarea> <p class='help-block'>Enter one option per line.</p></div> \
 				<div class='form-group checkboxes-attribute'><label class='control-label'>Options</label> <textarea class='form-control' name='checkboxes' id='checkboxes'> </textarea><p class='help-block'>Enter one option per line.</p></div> \
 				<div class='form-group radios-attribute'><label class='control-label radios-attribute'>Options</label> <textarea class='form-control radios-attribute' name='radios' id='radios'></textarea><p class='help-block'>Enter one option per line.</p></div> \
-        <div class='form-group version-radio version-checkbox version-attribute'><label class='checkbox-inline' for='version'><input class='' type='checkbox' id='version' name='version' value='other'>Include \"Other\" as an option</label></div> \
+        <div class='form-group version-radio version-checkbox version-select version-attribute'><label class='checkbox-inline' for='version'><input class='' type='checkbox' id='version' name='version' value='other'>Include \"Other\" as an option</label></div> \
 				<div class='form-group help-attribute'><label class='control-label'>Help text</label> <textarea class='form-control' name='help' id='help'></textarea> <p class='help-block'>Tell residents what they need to know to answer your question correctly.</p></div>\
       </div></div></div>" +
         fb.view.validation +
