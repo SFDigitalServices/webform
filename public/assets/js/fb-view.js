@@ -594,7 +594,8 @@ FbView.prototype.editItem = function(obj, skipPreview) {
  * @param {Integer} index
  */
 FbView.prototype.deleteItem = function(index) {
-	if (this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)) return fb.loadDialogModal('Error Removing Item', "This item is referenced by other items. Please remove all references to this item before deleting.")
+  var refIds = this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)
+	if (refIds.length) return fb.loadDialogModal('Error Removing Item', "This item is referenced by "+refIds.join(", ")+". Please remove all references to this item before deleting.")
 	this.formsCollection.forms[fb.formId].deleteItem(index)
 	this.populateList()
   if (!$('#SFDSWFB-list .item[data-id=' + $('#SFDSWFB-attributes #id').val() + ']').length) {
