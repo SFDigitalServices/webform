@@ -207,7 +207,12 @@ class FormTest extends \Codeception\Test\Unit
         $notContainGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "doesn't contain", "bar");
         $expected = "(foo).search(/bar/i) == -1";
         $this->assertEquals($expected, $notContainGetConditionalStatement);
-	}
+
+
+        $lessThanNumberGetConditionalStatement = $this->htmlHelper->getConditionalStatement($foo, "<", 5, true);
+        $expected = "foo < 5";
+        $this->assertEquals($expected, $lessThanNumberGetConditionalStatement);
+        }
 
 	public function testFormGetHTML()
     {
