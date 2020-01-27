@@ -316,6 +316,18 @@ SFDSWFB.lastScript = function() {
   }
 }
 
+function toggleOther(identifier) {
+  if (jQuery('#'+identifier+"_Other:checked").length) {
+    jQuery('.'+identifier+'_Other_input').show()
+  } else {
+    jQuery('.'+identifier+'_Other_input').hide()
+  }
+}
+
+function setOtherValue(obj) {
+  jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
+}
+
 function populateForm(formData){
   if(formData['formid'] === undefined) return false;
   var formid = 'SFDSWFB_forms_' + formData['formid'];

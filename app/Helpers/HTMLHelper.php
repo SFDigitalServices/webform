@@ -325,7 +325,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
       $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
       $html .= '<div class="form-header-meta">';
@@ -356,7 +355,6 @@ class HTMLHelper
     // *
     // * @return html
     // */
-
     public static function pagination($pageNumber, $pageCount) {
       $html = '<div class="form-group">';
 
@@ -383,7 +381,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSection($name, $field, $pageNumber, $pageCount) {
       $html = self::pagination($pageNumber, $pageCount);
 
@@ -399,16 +396,52 @@ class HTMLHelper
       return $html;
     }
 
+    /** Generate Other element
+     *
+     * @param $field
+     *
+     * @return html, will return empty string if "other" is not selected or null</select>
+     */
+    public static function formOther($field) {
+      $html = "";
+
+      if (isset($field['version']) && $field['version'] === "other") {
+        switch ($field['formtype']) {
+          case "s08": //radio
+            $type = "radio";
+            break;
+          case "s06": //checkbox
+            $type = "checkbox";
+            break;
+          case "s02": //select
+          case "s04": //select
+          case "s14": //select state
+          case "s15": //select state
+          case "s16": //select state
+            $type = "select";
+            break;
+        }
+        if ($type !== "select") {
+          //todo
+        } else if ($type !== "select") {
+          $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'" onchange="toggleOther(\\\''.$field['id'].'\\\')"><span class="inline-label">Other</span></label>';
+          $html .= '<div class="'.$field['id'].'_Other_input" style="display:none"><label for="'.$field['id'].'_Other_input" style="padding-left:0">Other</label><div class="field-wrapper"><input type="text" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" style="position:relative;width:100%;display:block;opacity:1;padding:0.64rem 1rem" /></div></div>';
+        }
+      }
+
+      return $html;
+    }
+
     /** Generate Radio input element
     *
     * @param $field
     *
     * @returns html
     */
-
     public static function formRadio($field)
     {
         $html = "";
+        $other = self::formOther($field);
 
         //id is set per option
         $field_id = isset($field['id']) ? $field['id'] : "";
@@ -418,13 +451,16 @@ class HTMLHelper
         unset($field['radios']);
         //get attributes
         $attributes = self::setAttributes($field);
+        //add onchange function to hide other if anything but other is selected
+        $onchange = $other !== "" ? ' onchange="toggleOther(\\\''.$field_id.'\\\').hide()"' : '';
         //construct radio inputs, one or more
         if (!empty($options)) {
             foreach ($options as $option) {
                 $id = str_replace(' ', '_', $field_id . '_' . $option);
-                $html .= '<label for="'.$id.'"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
+                $html .= '<label for="'.$id.'"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.$onchange.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -437,6 +473,7 @@ class HTMLHelper
     public static function formCheckbox($field)
     {
         $html = "";
+        $other = self::formOther($field);
         //name needs to be an array
         $field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
         //id is set per option
@@ -447,13 +484,16 @@ class HTMLHelper
         unset($field['checkboxes']);
         //get attributes
         $attributes = self::setAttributes($field);
+        //add onchange function to hide other if anything but other is selected
+        $onchange = $other !== "" ? ' onchange="toggleOther(\\\''.$field_id.'\\\').hide()"' : '';
         //construct checkbox inputs, one or more
         if (!empty($options)) {
             foreach ($options as $option) {
                 $id = str_replace(' ', '_', $field_id . '_' . $option);
-                $html .= '<label for="'.$id.'"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
+                $html .= '<label for="'.$id.'"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.$onchange.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -507,8 +547,8 @@ class HTMLHelper
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
-
-        $html .= "</select>";
+        $other = self::formOther($field);
+        $html .= $other === "" ? '</select>' : $other;
         return $html;
     }
     /**
@@ -1017,6 +1057,28 @@ class HTMLHelper
               $output = "#".$id;
       }
       return $output;
+  }
+
+   /** Checks if the formtype is a multi option field ie: radio, checkbox, dropdown
+    *
+    * @param $formtype
+    *
+    * @return boolean
+    */
+  public function isMulti($formtype)
+  {
+    switch ($formtype) {
+      case "s08": //radio
+      case "s06": //checkbox
+      case "s02": //select
+      case "s04": //select
+      case "s14": //select state
+      case "s15": //select state
+      case "s16": //select state
+        return true;
+      default:
+        return false;
+    }
   }
 
     /** Formats form field conditionals
