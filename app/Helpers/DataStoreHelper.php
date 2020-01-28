@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Migrations\Migration;
+use Symfony\Component\Yaml\Yaml;
 use GuzzleHttp;
 use Log;
 use DB;
@@ -62,6 +63,16 @@ class DataStoreHelper extends Migration
         return $object;
     }
 
+    /** Creates database table from Jekyll
+      *
+      * @param $definitions
+      *
+      * @return JSON
+      */
+    public function jekyllImport($definitions)
+    {
+      return Yaml::parse($definitions);
+    }
     /** Clone database table
     *
     * @param $tablename
@@ -69,7 +80,6 @@ class DataStoreHelper extends Migration
     *
     * @return bool
     */
-
     public function cloneFormTable($tablename, $cloned)
     {
         if ($tablename !== '' && $cloned !== '') {
@@ -946,6 +956,7 @@ class DataStoreHelper extends Migration
                   $validation_rules[$definition['name']] = $rule;
             }
         }
+        Log::info(print_r($validation_rules, 1));
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
@@ -979,6 +990,14 @@ class DataStoreHelper extends Migration
                     $rules[] = "min:".$value;
                 }
                     break;
+                case "max":  if($value != '') {
+                      $rules[] = "max:".$value;
+                  }
+                      break;
+                  case "min":  if($value != '') {
+                      $rules[] = "min:".$value;
+                  }
+                      break;
                 case "option": $rules[] = "Array";
                     break;
                 case "type":
