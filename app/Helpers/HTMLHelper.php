@@ -421,15 +421,19 @@ class HTMLHelper
             $type = "select";
             break;
         }
-        if ($type !== "select") {
-          //todo
-        } else if ($type !== "select") {
-          $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'" onchange="toggleOther(\\\''.$field['id'].'\\\')"><span class="inline-label">Other</span></label>';
-          $html .= '<div class="'.$field['id'].'_Other_input" style="display:none"><label for="'.$field['id'].'_Other_input" style="padding-left:0">Other</label><div class="field-wrapper"><input type="text" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" style="position:relative;width:100%;display:block;opacity:1;padding:0.64rem 1rem" /></div></div>';
+        if ($type === "select") {
+          $html .= '<option value="Other" id="'.$field['id'].'_Other">Other</option></select>';
+        } else {
+          $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'" '.self::toggleOther($field['id']).'><span class="inline-label">Other</span></label>';
         }
+        $html .= '<div class="'.$field['id'].'_Other_input" style="display:none"><label for="'.$field['id'].'_Other_input" style="padding-left:0">Other</label><div class="field-wrapper"><input type="text" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" style="position:relative;width:100%;display:block;opacity:1;padding:0.64rem 1rem" /></div></div>';
       }
 
       return $html;
+    }
+
+    public static function toggleOther($id) {
+      return ' onchange="toggleOther(\\\''.$id.'\\\')"';
     }
 
     /** Generate Radio input element
@@ -452,7 +456,7 @@ class HTMLHelper
         //get attributes
         $attributes = self::setAttributes($field);
         //add onchange function to hide other if anything but other is selected
-        $onchange = $other !== "" ? ' onchange="toggleOther(\\\''.$field_id.'\\\').hide()"' : '';
+        $onchange = $other !== "" ? self::toggleOther($field_id) : '';
         //construct radio inputs, one or more
         if (!empty($options)) {
             foreach ($options as $option) {
@@ -485,7 +489,7 @@ class HTMLHelper
         //get attributes
         $attributes = self::setAttributes($field);
         //add onchange function to hide other if anything but other is selected
-        $onchange = $other !== "" ? ' onchange="toggleOther(\\\''.$field_id.'\\\').hide()"' : '';
+        $onchange = $other !== "" ? self::toggleOther($field_id) : '';
         //construct checkbox inputs, one or more
         if (!empty($options)) {
             foreach ($options as $option) {
@@ -536,7 +540,10 @@ class HTMLHelper
     public static function formSelect($field)
     {
         $attributes = self::setAttributes($field);
-        $html = '<select'. $attributes .'>';
+        $other = self::formOther($field);
+        //add onchange function to hide other if anything but other is selected
+        $onchange = $other !== "" ? self::toggleOther($field['id']) : '';
+        $html = '<select'. $attributes . $onchange .'>';
 
         // need to check for formtypes: s02, s04, s14, s15, s16
         if ($field['formtype'] == "s14" || $field['formtype'] == "s15" || $field['formtype'] == "s16") {
@@ -547,7 +554,6 @@ class HTMLHelper
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
-        $other = self::formOther($field);
         $html .= $other === "" ? '</select>' : $other;
         return $html;
     }
