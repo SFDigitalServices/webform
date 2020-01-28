@@ -260,13 +260,14 @@ class DataStoreHelper extends Migration
      */
     public function submitForm($form, $request, $status = 'complete')
     {
-        // validate user inputs
-        $ret = $this->validateFormRequest($request, $form['content']['data']);
-        //$ret = array("status" => 0, "errors" => array('email' => array('validation.required', 'validation.length'), 'name' => array('validation.maxlength') ) );
-        if (! empty($ret) ) {
-            return $ret;
+        $ret = array();
+        if ($status !== 'partial') {
+            // validate user inputs
+            $ret = $this->validateFormRequest($request, $form['content']['data']);
+            if (! empty($ret)) {
+                return $ret;
+            }
         }
-
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
@@ -300,28 +301,6 @@ class DataStoreHelper extends Migration
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
-                }
-
-                $id = $this->insertFormData($write['db'], $form['id']);
-                // update status if form is partially completed
-                if ($id) {
-                    $ret = array("status" => 1, "message" => 'success' );
-                    try {
-                        if ($status != 'complete') {
-                            $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                            $magiclink = Hash::make(time());
-                            DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                            $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
-                        } else {
-                            $ret = $this->pushDataToADU($request->all());
-                            if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
-                                DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
-                            }
-                        }
-                    } catch (\Illuminate\Database\QueryException $ex) {
-                        $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                    }
-                    return $ret;
                 }
             }
             return $ret;
