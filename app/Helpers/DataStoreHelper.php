@@ -970,19 +970,19 @@ class DataStoreHelper extends Migration
                     $rules[] = "required";
                   }
                     break;
-                case "maxlength":  if($value != '') {
+                case "maxlength":  if($value !== '') {
                     $rules[] = "max:".$value;
                 }
                     break;
-                case "minlength":  if($value != '') {
+                case "minlength":  if($value !== '') {
                     $rules[] = "min:".$value;
                 }
                     break;
-                case "max":  if($value != '') {
+                case "max":  if($value !== '') {
                       $rules[] = "max:".$value;
                   }
                       break;
-                  case "min":  if($value != '') {
+                  case "min":  if($value !== '') {
                       $rules[] = "min:".$value;
                   }
                       break;
@@ -993,13 +993,13 @@ class DataStoreHelper extends Migration
                         $rules[] = "email";
                     } elseif ($value === 'url') {
                         $rules[] = "url";
-                    } elseif ($value == 'number') {
+                    } elseif ($value === 'number') {
                         $rules[] = "numeric";
-                    } elseif ($value == 'date') {
+                    } elseif ($value === 'date') {
                         $rules[] = "date";
-                    } elseif ($value == 'time') {
+                    } elseif ($value === 'time') {
                         $rules[] = "date";
-                    } elseif ($value == 'tel') {
+                    } elseif ($value === 'tel') {
                         //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
                     }
                     break;
