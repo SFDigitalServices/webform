@@ -5,6 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Migrations\Migration;
+use Symfony\Component\Yaml\Yaml;
 use GuzzleHttp;
 use Log;
 use DB;
@@ -60,6 +61,27 @@ class DataStoreHelper extends Migration
         }
 
         return $object;
+    }
+
+      /** Creates database table from jekyll import
+      *
+      * @param $definitions
+      *
+      * @return object
+      */
+    public function jekyllImport($definitions)
+    {
+        if ($definitions) {
+          $form = Yaml::parse($definitions);
+          // create form definition
+          $json_definition = array();
+          $json_definition['settings'] = array("action" => "", "method" => "POST", "name" => "", "backend" => "csv", "confirmation" => "");
+          $json_definition['data'] = $this->controllerHelper->createFormDefinition($form);
+          if($json_definition){
+            $nextID = DB::table('forms')->max('id') + 1;
+            return $this->createFormTable("forms_".$nextID, $json_definition);
+          }
+        }
     }
 
     /** Clone database table

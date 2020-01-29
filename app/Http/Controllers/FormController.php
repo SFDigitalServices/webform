@@ -424,6 +424,22 @@ class FormController extends Controller
         }
     }
 
+    /** Import form definition from jekyll
+    *
+    * @param $request
+    *
+    * @return redirect page
+    */
+    public function jekyllImport(Request $request)
+    {
+        $file = $request->file('upload_file');
+        $contents = file_get_contents($file->getRealPath());
+        if($contents !== '' && $response = $this->dataStoreHelper->jekyllImport($contents)){
+          //return view('editor',['user_id' => $login['id'], 'api_token' => $api_token, 'name' => $login['name']]);
+          return view('login');
+        }
+    }
+
     /** Determine form has been published
     *
     * @param $request

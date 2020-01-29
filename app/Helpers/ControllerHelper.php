@@ -326,4 +326,19 @@ class ControllerHelper
         }
         return $updates;
     }
+
+  /** Parse form definition from Jekyll import
+    *
+    * @param $definitions
+    *
+    * @return json
+    */
+    public function createFormDefinition($definitions)
+    {
+      if($definitions){
+          foreach ($definitions as $definition) {
+
+          }
+      }
+    }
 }
