@@ -294,7 +294,9 @@ class DataStoreHelper extends Migration
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
                         $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     } else {
-                        $ret = $this->pushDataToADU($request->all());
+                        $write['db']['form_id'] = $form['id'];
+                        if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
+                        $ret = $this->pushDataToADU($write['db']);
                         if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
@@ -855,7 +857,7 @@ class DataStoreHelper extends Migration
     private function pushDataToADU($formdata)
     {
         $ret = array();
-
+        $formdata = json_encode($formdata);
         if ($formdata) {
             $api_key = getenv("ADU_DISPATCHER_KEY");
             $endpoint = getenv("ADU_DISPATCHER_ENDPOINT");
@@ -970,7 +972,7 @@ class DataStoreHelper extends Migration
                     } elseif ($value == 'date') {
                         $rules[] = "date";
                     } elseif ($value == 'time') {
-                        $rules[] = "date";
+                        $rules[] = "";
                     } elseif ($value == 'tel') {
                         //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
                     }
