@@ -145,7 +145,7 @@ let Item = function(obj, idsArray, namesArray) {
 		case 's16': //state
 			this.removeSpecialValues('option')
       this.addOptions('option')
-			this.removeAttrs(['placeholder','type','unit'])
+			this.removeAttrs(['placeholder','type','unit','version'])
 			break
 		case 's06': //checkboxes
 			this.removeSpecialValues('checkboxes')
