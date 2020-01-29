@@ -63,16 +63,6 @@ class DataStoreHelper extends Migration
         return $object;
     }
 
-    /** Creates database table from Jekyll
-      *
-      * @param $definitions
-      *
-      * @return JSON
-      */
-    public function jekyllImport($definitions)
-    {
-      return Yaml::parse($definitions);
-    }
     /** Clone database table
     *
     * @param $tablename
