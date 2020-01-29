@@ -411,7 +411,7 @@ class FormController extends Controller
         }
         $form = Form::where('id', $form_id)->first();
         $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-        //todo backend validation
+
         $referer = $request->headers->get('referer');
         $host = parse_url($referer, PHP_URL_HOST);
         $path = parse_url($referer, PHP_URL_PATH);

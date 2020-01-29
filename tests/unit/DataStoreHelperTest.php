@@ -74,7 +74,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
 
       //Test completed form
-      $response = $this->dataStoreHelperTester->submitForm($form, $request, 'complete');
+      $response = $this->dataStoreHelperTester->submitForm($form, $request);
       $this->assertEquals($response['status'], 1);
       $this->assertEquals($response['message'], "Successful");
       //Test partially completed form
