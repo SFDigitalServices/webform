@@ -373,3 +373,19 @@ function getCheckedCheckboxesFor(elements, items) {
         }
     }
 }
+
+function toggleShowAllFields(set) {
+  if (set) {
+    jQuery('.form-content').addClass('displayOverride');
+  } else {
+    jQuery('.form-content').removeClass('displayOverride');
+  }
+}
+
+function toggleShowAllPages(set) {
+  if (set) {
+    jQuery('.form-section').addClass('displayOverride');
+  } else {
+    jQuery('.form-section').removeClass('displayOverride');
+  }
+}
