@@ -415,7 +415,7 @@ class HTMLHelper
             break;
         }
         //js added inline instead of from JS due to simplicity of binding
-        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'"><span class="inline-label" style="float:left">Other</span><input type="text" onclick="jQuery(\\\'#'.$field['id'].'_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" style="left:7rem;opacity:1;padding:0.64rem 1rem;width:calc(100% - 7rem)" /></label>';
+        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#'.$field['id'].'_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" /></label>';
       }
 
       return $html;
