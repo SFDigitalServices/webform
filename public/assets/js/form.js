@@ -395,19 +395,20 @@ Form.prototype.doesItExist = function(value, type, skipIndex) {
  *
  * @param {String} myId
  *
- * @returns {Boolean}
+ * @returns {Array}
  */
 Form.prototype.isReferenced = function(myId) {
 	var specialFunctionIds = this.getSpecialFunctionIds()
+  var idArray = []
 
   for (c in specialFunctionIds) {
     for (i in specialFunctionIds[c]) {
       for (d in specialFunctionIds[c][i]) {
-        if (specialFunctionIds[c][i][d].includes(myId)) return true
+        if (specialFunctionIds[c][i][d].includes(myId)) idArray.push(this.content.data[i].id)
       }
     }
   }
-	return false
+	return idArray
 }
 
 /**

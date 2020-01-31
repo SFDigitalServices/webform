@@ -248,28 +248,46 @@ function skipToSectionId(callback) {
   }
 }
 
-function submitPartial(formid){
+function submitPartial(formid, submitType = 'partial'){
   var formid = "SFDSWFB_forms_" + formid;
   var submitUrl = jQuery("#"+formid).attr('action');
 
-  if(!submitUrl.includes('submitPartial'))
+  if(submitType !== 'complete' && !submitUrl.includes('submitPartial') )
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
 
-  var form_data = jQuery("#"+formid).serialize();
+  var form_data = new FormData(jQuery("#"+formid)[0]);
   var settings = {
     'async': true,
     'crossDomain': true,
     'url': submitUrl,
     'method': 'POST',
-    'headers': {
-      'content-type': 'application/x-www-form-urlencoded',
-      'cache-control': 'no-cache'
-    },
-    'data':  form_data
+    'data':  form_data,
+    'processData': false,
+    'contentType': false
   }
-  jQuery.ajax(settings).done(function (response) {
-    jQuery("body").html(response);
-  })
+  if(submitType !== 'complete'){ //partial submit
+    jQuery.ajax(settings).done(function (response) {
+      jQuery("body").html(response);
+    })
+  }
+  else{ //complete submit
+    jQuery.ajax(settings).done(function (response) {
+      if(response.status !== undefined ){
+        if(response.status == 0){
+          var errors = response['errors'];
+          Object.keys(errors).forEach(function(item){
+            fieldInvalid(item);
+          })
+        }
+        else if(response['redirect_url'] != ''){
+          window.location.href = response['redirect_url'];
+        }
+    }
+    else{ //show user their submitted data
+        jQuery("body").html(response);
+      }
+    })
+  }
 }
 
 SFDSWFB.lastScript = function() {
@@ -297,17 +315,24 @@ SFDSWFB.lastScript = function() {
   });
 
 	jQuery('#SFDSWF-Container form').submit(function(e) {
-		var formValid = true;
-		jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
-			if (phoneIsValid(jQuery(this).val())) {
-				fieldValid(jQuery(this).attr('id'));
-			} else {
-				formValid = false;
-				fieldInvalid(jQuery(this).attr('id'));
-			}
-		});
-    if (!formValid || !validPage()) {
-      e.preventDefault()
+    e.preventDefault(); // let ajax handles the form submit
+    var form_id = jQuery(this.form_id).val();
+    if( !form_id ){
+      return false;
+    }
+    // UI validation
+    var formValid = true;
+    jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
+      if (phoneIsValid(jQuery(this).val())) {
+          fieldValid(jQuery(this).attr('id'));
+        } else {
+          formValid = false;
+          fieldInvalid(jQuery(this).attr('id'));
+        }
+    });
+    // If UI validation passed, perfrom back end validation
+    if (formValid && validPage()) {
+      submitPartial(form_id, 'complete');
     }
   });
 
