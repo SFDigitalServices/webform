@@ -130,7 +130,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $otherRadio = HTMLHelper::formRadio($this->attributes);
         $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option one</span></label>';
         $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option two" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option two</span></label>';
-        $expected .= '<label class="other-label radio" for="foo_Other"><input type="radio" value="Other" id="foo_Other" name="bar" data-formtype="s08"><span class="inline-label" style="float:left">Other</span><input type="text" onclick="jQuery(\\\'#foo_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="foo_Other_input" style="left:7rem;opacity:1;padding:0.64rem 1rem;width:calc(100% - 7rem)" /></label>';
+        $expected .= '<label class="other-label radio" for="foo_Other"><input type="radio" value="Other" id="foo_Other" name="bar" data-formtype="s08"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#foo_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="foo_Other_input" /></label>';
         $this->assertEquals($expected, $otherRadio);
     }
 
@@ -198,7 +198,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $otherCheckBox = HTMLHelper::formCheckbox($this->attributes);
         $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option one</span></label>';
         $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option two</span></label>';
-        $expected .= '<label class="other-label checkbox" for="foo_Other"><input type="checkbox" value="Other" id="foo_Other" name="bar" data-formtype="s06"><span class="inline-label" style="float:left">Other</span><input type="text" onclick="jQuery(\\\'#foo_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="foo_Other_input" style="left:7rem;opacity:1;padding:0.64rem 1rem;width:calc(100% - 7rem)" /></label>';
+        $expected .= '<label class="other-label checkbox" for="foo_Other"><input type="checkbox" value="Other" id="foo_Other" name="bar" data-formtype="s06"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#foo_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="foo_Other_input" /></label>';
         $this->assertEquals($expected, $otherCheckBox);
     }
     public function testFormText(){
