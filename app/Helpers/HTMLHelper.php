@@ -78,7 +78,7 @@ class HTMLHelper
             $form_wrapper_bottom = self::pagination($pageCount, $pageCount).'</div></div>';
             $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
-            $form_container = $form_div. $form_container;
+            $form_container = $form_div . self::formHeader($content['settings']['name']) . $form_container;
         }
         $form_end = "";
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
@@ -205,11 +205,7 @@ class HTMLHelper
                   if (!in_array($condition['id'], $conditionIds)) {
                       $conditionIds[] = $condition['id'];
                   }
-                  if ($formtypes[$condition['id']] == "s06") { //exception case for checkboxes because they have multiple inputs per name
-                    $conditionSts[] = $this->getCheckboxConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val']);
-                  } else {
-                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
-                  }
+                  $conditionSts[] = $this->generateConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val'], $formtypes[$condition['id']]);
               }
               if ($fld['allAny']) {
                   //group multiple conditions
@@ -317,6 +313,17 @@ class HTMLHelper
         $totalPages = 1;
       }
       return $totalPages;
+    }
+
+    /** Generate header
+     *
+     * @param $formName
+     *
+     * @return html
+     */
+
+    public static function formHeader($formName) {
+      return '<header class="hero-banner default"><div class="form-header-meta"><h2>'.$formName.'</h2></div></header>';
     }
 
     /** Generate section header
@@ -1067,38 +1074,63 @@ class HTMLHelper
     }
   }
 
-    /** Formats form field conditionals
+  /** Delegates which conditional function to use based on params
     *
-    * @param $value1
-    * @param $op
-    * @param $value2
+    * @param $sel string the selector of the field being evaluated
+    * @param $op string the operator of the statement
+    * @param $value string/float the value to compare with the value of the field being evaluated
+    * @param $isNumber boolean to designate if the value should be interpreted as a string or float
     *
     * @return strings
   */
-  public function getConditionalStatement($value1, $op, $value2)
+  public function generateConditionalStatement($sel, $op, $value, $ft) {
+    if ($ft === "s06") { //exception case for checkboxes because they have multiple inputs per name
+      $output = $this->getCheckboxConditionalStatement($sel, $op, $value);
+    } else if ($ft === "d06" || $ft === "d08") {
+      $output = $this->getConditionalStatement("jQuery('".$sel."').val()", $this->controllerHelper->getOp($op), $value, true);
+    } else {
+      $output = $this->getConditionalStatement("jQuery('".$sel."').val()", $this->controllerHelper->getOp($op), $value);
+    }
+    return $output;
+  }
+
+  /** Formats form field conditionals
+    *
+    * @param $jqString
+    * @param $op
+    * @param $value
+    * @param $isNumber
+    *
+    * @return strings
+  */
+  public function getConditionalStatement($jqString, $op, $value, $isNumber = false)
   {
       if (!$op) {
           return "";
       }
       if ($op == "contains") {
-          $output = "(".$value1.").search(/".$value2."/i) != -1";
+          $output = "(".$jqString.").search(/".$value."/i) != -1";
       } elseif ($op == "doesn't contain") {
-          $output = "(".$value1.").search(/".$value2."/i) == -1";
+          $output = "(".$jqString.").search(/".$value."/i) == -1";
       } else {
-          $output = $value1." ".$op." '".$value2."'";
+          if ($isNumber) {
+            $output = $jqString." ".$op." ".$value;
+          } else {
+            $output = $jqString." ".$op." '".$value."'";
+          }
       }
       return $output;
   }
 
     /** Formats checkbox conditionals
     *
-    * @param $value1
+    * @param $sel
     * @param $op
-    * @param $value2
+    * @param $value
     *
     * @return strings
   */
-  public function getCheckboxConditionalStatement($value1, $op, $value2)
+  public function getCheckboxConditionalStatement($sel, $op, $value)
   {
 		$op = str_replace("&amp;apos;", "'", $op); //just in case apostrophe is encoded
 		switch ($op) {
@@ -1106,31 +1138,31 @@ class HTMLHelper
 				$output = "";
 				break;
 			case "matches":
-				$output = "jQuery('".$value1."[value=".$value2."]').length";
+				$output = "jQuery('".$sel."[value=".$value."]').length";
 				break;
 			case "doesn't match":
-				$output = "jQuery('".$value1."[value=".$value2."]').length === 0";
+				$output = "jQuery('".$sel."[value=".$value."]').length === 0";
 				break;
 			case "is less than": // will only check the first match, not sure how it would work with multiple
-				$output = "jQuery('".$value1."').val() < ".$value2;
+				$output = "jQuery('".$sel."').val() < ".$value;
 				break;
 			case "is more than": // will only check the first match, not sure how it would work with mutiple
-				$output = "jQuery('".$value1."').val() > ".$value2;
+				$output = "jQuery('".$sel."').val() > ".$value;
 				break;
 			case "contains anything":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) != ''";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()) != ''";
 				break;
 			case "is blank":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) == ''";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()) == ''";
 				break;
 			case "contains":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) != -1";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value."/i) != -1";
 				break;
 			case "doesn't contain":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) == -1";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value."/i) == -1";
 				break;
 			default:
-				$output = $value1." ".$op." '".$value2."'";
+				$output = $sel." ".$op." '".$value."'";
 				break;
 		}
 		return $output;

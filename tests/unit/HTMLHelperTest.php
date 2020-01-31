@@ -55,8 +55,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         )
       );
 
-      $this->formStart = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST" ><input type="hidden" name="form_id" value="1"/>';
-      $this->formStartFile = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><input type="hidden" name="form_id" value="1"/>';
+      $this->formStart = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST" ><header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header><input type="hidden" name="form_id" value="1"/>';
+      $this->formStartFile = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header><input type="hidden" name="form_id" value="1"/>';
 
       $this->formEnd = '<div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
 
@@ -1317,6 +1317,13 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
 
     }
+
+    public function testFormHeader() {
+      $header = HTMLHelper::formHeader($this->form['content']['settings']['name']);
+      $expected = '<header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header>';
+      $this->assertEquals($expected, $header);
+    }
+
     public function testFormHidden(){
         $emptyHidden = HTMLHelper::formHidden($this->attributes);
         $expected =  '<input/>';
