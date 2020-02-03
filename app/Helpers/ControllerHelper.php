@@ -353,7 +353,7 @@ class ControllerHelper
                   }
                   foreach ($field_def['fields'] as $group_field) {
                       $def = $this->createFormFields($group_field);
-                      if (isset($def['address-fields'])) { //only works for 2d array
+                      if (isset($def['address-fields'])) { //Address fields are a group of fields, need to flatten it.
                           foreach ($def['address-fields'] as $field_def) {
                               $form[] = $field_def;
                           }
