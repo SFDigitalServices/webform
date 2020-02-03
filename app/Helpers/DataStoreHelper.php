@@ -75,11 +75,12 @@ class DataStoreHelper extends Migration
           $form = Yaml::parse($definitions);
           // create form definition
           $json_definition = array();
-          $json_definition['settings'] = array("action" => "", "method" => "POST", "name" => "", "backend" => "csv", "confirmation" => "");
+          //$json_definition['settings'] = array("action" => "", "method" => "POST", "name" => "", "backend" => "csv", "confirmation" => "");
           $json_definition['data'] = $this->controllerHelper->createFormDefinition($form);
           if($json_definition){
             $nextID = DB::table('forms')->max('id') + 1;
-            return $this->createFormTable("forms_".$nextID, $json_definition);
+            $this->createFormTable("forms_".$nextID, $json_definition['data']);
+            return $json_definition['data'];
           }
         }
     }

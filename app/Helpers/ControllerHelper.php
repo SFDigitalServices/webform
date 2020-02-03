@@ -106,7 +106,7 @@ class ControllerHelper
     {
         if ($data) {
             foreach ($data as $field) {
-                if ($field['formtype'] == "m13") {
+                if ($field['formtype'] === "m13") {
                     return true;
                 }
             }
@@ -327,7 +327,7 @@ class ControllerHelper
         return $updates;
     }
 
-  /** Parse form definition from Jekyll import
+    /** Parse form definition from Jekyll import
     *
     * @param $definitions
     *
@@ -335,10 +335,91 @@ class ControllerHelper
     */
     public function createFormDefinition($definitions)
     {
-      if($definitions){
+      $form = array();
+      if ($definitions) {
           foreach ($definitions as $definition) {
-
+              if (count($form) > 1) {
+                  $page_title = $definition['title'];
+                  $form[] = array("formtype" => "m16", "label" => $page_title, "id" => "page_separator");
+              }
+              foreach ($definition['fields'] as $field){
+                  $group = isset($field['group']) ? $field['group'] : "";
+                  if($group !== ""){
+                    foreach($field['fields'] as $group_field){
+                      $form[] = $this->createFormFields($group_field);
+                    }
+                  }
+                  else{
+                    $form[] = $this->createFormFields($field);
+                  }
+              }
           }
       }
+      return $form;
+    }
+
+    /** Create form field based on field type
+    *
+    * @param $field
+    *
+    * @return array
+    */
+    private function createFormFields($field){
+      $label = isset($field['label']) ? $field['label'] : "";
+      $type = isset($field['type']) ? $field['type'] : "";
+      $id = $name = uniqid($type."_");
+      $ret = array();
+      switch ($type)
+      {
+        case "header":
+          switch($field['level']){
+            case 1: $h = "m02"; break;
+            case 1: $h = "m04"; break;
+            case 1: $h = "m06"; break;
+            default: $h = "m02"; break;
+          }
+          $ret = array("formtype" => $h, "id" => "header_".$field['level']);
+          break;
+        case "paragraph": $ret = array("formtype" => "m08", "id" => $id, "textarea" => $label);
+          break;
+        case "number": $ret = array("formtype" => "d06", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "email": $ret = array("formtype" => "c04", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "file": $ret = array("formtype" => "m13", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "phone": $ret = array("formtype" => "c06", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "radio": $ret = array("formtype" => "s08", "id" => $id, "name" => $name,"label" => $label, "radios" => $this->createOptions($field['options']));
+          break;
+        case "checkbox":
+          if (! isset($field['options'])) {
+              $field['options'][]['label'] = $label;
+          }
+          $ret = array("formtype" => "s06", "id" => $id, "name" => $name, "label" => $label, "checkboxes" => $this->createOptions($field['options']));
+          break;
+        case "select": $ret = array("formtype" => "s02", "id" => $id, "name" => $name, "label" => $label, "option" => $this->createOptions($field['options']));
+          break;
+        case "textarea": $ret = array("formtype" => "i14", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+          // TODO:
+        /*case "address":
+          break;
+        case "group":
+          break;*/
+        default: $ret = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $label, "type" => "text");
+          break;
+      }
+      return $ret;
+    }
+
+    private function createOptions($options){
+      $ret = array();
+      foreach($options as $option){
+        $ret[] = $option['label'];
+      }
+      $content['data'][0]['option'] = $ret;
+      $ret = $this->parseOptionValues($content);
+      return $ret['data'][0]['option'];
     }
 }
