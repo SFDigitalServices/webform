@@ -342,15 +342,24 @@ class ControllerHelper
                   $page_title = $definition['title'];
                   $form[] = array("formtype" => "m16", "label" => $page_title, "id" => "page_separator");
               }
-              foreach ($definition['fields'] as $field){
+              foreach ($definition['fields'] as $field) {
                   $group = isset($field['group']) ? $field['group'] : "";
-                  if($group !== ""){
-                    foreach($field['fields'] as $group_field){
-                      $form[] = $this->createFormFields($group_field);
-                    }
+                  $field_def = array();
+                  if ($group === "") {
+                    $field_def['fields'][] = $field;
                   }
                   else{
-                    $form[] = $this->createFormFields($field);
+                    $field_def['fields'][] = $field['fields'];
+                  }
+                  foreach ($field_def['fields'] as $group_field) {
+                      $def = $this->createFormFields($group_field);
+                      if (isset($def['address-fields'])) { //only works for 2d array
+                          foreach ($def['address-fields'] as $field_def) {
+                              $form[] = $field_def;
+                          }
+                      } else {
+                          $form[] = $def;
+                      }
                   }
               }
           }
@@ -403,14 +412,36 @@ class ControllerHelper
         case "textarea": $ret = array("formtype" => "i14", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
           break;
           // TODO:
-        /*case "address":
+        case "address": $ret = $this->buildAddressFields($field);
           break;
-        case "group":
-          break;*/
         default: $ret = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $label, "type" => "text");
           break;
       }
       return $ret;
+    }
+
+    private function buildAddressFields($field){
+        $ret = array();
+        if (! isset($field['address-fields'])) {
+            $field['address-fields'] = array('street', 'city', 'state', 'zip');
+        }
+        foreach ($field['address-fields'] as $address_field) {
+            $id = $name = uniqid($address_field."_");
+            switch ($address_field) {
+              case "street": $ret['address-fields'][] = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+              $ret['address-fields'][] = array("formtype" => "i02", "id" => $id."-line2", "name" => $name."-line2", "label" => $address_field, "type" => "text");
+                break;
+              case "city": $ret['address-fields'][] = array("formtype" => "c10", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+                break;
+              case "state": $ret['address-fields'][] = array("formtype" => "s14", "id" => $id, "name" => $name, "label" => $address_field);
+                break;
+              case "zip": $ret['address-fields'][] = array("formtype" => "c14", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+                break;
+              default: $ret['address-fields'][] = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+                break;
+          }
+        }
+        return $ret;
     }
 
     private function createOptions($options){
