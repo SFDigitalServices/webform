@@ -425,13 +425,13 @@ FbView.prototype.populateCalculations = function(item) {
 		var calCount = 0
 		for (l in item.calculations) {
 			if (l == 1) {
-				addCalculation(item.id)
+				this.addCalculation(item.id)
 				$('#SFDSWFB-attributes .calculationId').eq(0).val(item.calculations[0])
 				$('#SFDSWFB-attributes .calculationId').eq(1).val(item.calculations[2])
 				$('#SFDSWFB-attributes .calculationOperator').eq(0).val(item.calculations[1])
 			} else if (Math.abs(l % 2) == 1) { // every odd number after 1
 				calCount++
-				addCalculation(item.id)
+				this.addCalculation(item.id)
 				$('#SFDSWFB-attributes .calculationOperator').eq(calCount).val(item.calculations[l])
 				$('#SFDSWFB-attributes .calculationId').eq(calCount + 1).val(item.calculations[parseInt(l) + 1])
 			}
