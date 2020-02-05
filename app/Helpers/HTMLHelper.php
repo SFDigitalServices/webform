@@ -332,7 +332,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
       $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
       $html .= '<div class="form-header-meta">';
@@ -363,7 +362,6 @@ class HTMLHelper
     // *
     // * @return html
     // */
-
     public static function pagination($pageNumber, $pageCount) {
       $html = '<div class="form-group">';
 
@@ -390,7 +388,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSection($name, $field, $pageNumber, $pageCount) {
       $html = self::pagination($pageNumber, $pageCount);
 
@@ -406,16 +403,42 @@ class HTMLHelper
       return $html;
     }
 
+    /** Generate Other element
+     *
+     * @param $field
+     *
+     * @return html, will return empty string if "other" is not selected or null</select>
+     */
+    public static function formOther($field) {
+      $html = "";
+
+      if (isset($field['version']) && $field['version'] === "other") {
+        switch ($field['formtype']) {
+          case "s08": //radio
+            $type = "radio";
+            break;
+          case "s06": //checkbox
+            $type = "checkbox";
+            break;
+        }
+        //js added inline instead of from JS due to simplicity of binding
+        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#'.$field['id'].'_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" /></label>';
+      }
+
+      return $html;
+    }
+
     /** Generate Radio input element
     *
     * @param $field
     *
     * @returns html
     */
-
     public static function formRadio($field)
     {
         $html = "";
+        $other = self::formOther($field);
+        unset($field['version']);
 
         //id is set per option
         $field_id = isset($field['id']) ? $field['id'] : "";
@@ -432,6 +455,7 @@ class HTMLHelper
                 $html .= '<label for="'.$id.'"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -444,6 +468,8 @@ class HTMLHelper
     public static function formCheckbox($field)
     {
         $html = "";
+        $other = self::formOther($field);
+        unset($field['version']);
         //name needs to be an array
         $field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
         //id is set per option
@@ -461,6 +487,7 @@ class HTMLHelper
                 $html .= '<label for="'.$id.'"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -514,8 +541,7 @@ class HTMLHelper
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
-
-        $html .= "</select>";
+        $html .= '</select>';
         return $html;
     }
     /**
@@ -1024,6 +1050,28 @@ class HTMLHelper
               $output = "#".$id;
       }
       return $output;
+  }
+
+   /** Checks if the formtype is a multi option field ie: radio, checkbox, dropdown
+    *
+    * @param $formtype
+    *
+    * @return boolean
+    */
+  public function isMulti($formtype)
+  {
+    switch ($formtype) {
+      case "s08": //radio
+      case "s06": //checkbox
+      case "s02": //select
+      case "s04": //select
+      case "s14": //select state
+      case "s15": //select state
+      case "s16": //select state
+        return true;
+      default:
+        return false;
+    }
   }
 
   /** Delegates which conditional function to use based on params

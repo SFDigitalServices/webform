@@ -110,6 +110,28 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option one</span></label>';
         $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option two" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyRadio);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'invalid';
+        $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+        $this->attributes['regex'] = 'invalid';
+        $this->attributes['match'] = 'invalid';
+        $this->attributes['minlength'] = 'invalid';
+        $this->attributes['maxlength'] = 'invalid';
+        $this->attributes['min'] = 'invalid';
+        $this->attributes['max'] = 'invalid';
+        $this->attributes['radios'] = array("option one", "option two");
+        $this->attributes['version'] = "other";
+        $this->attributes['formtype'] = 's08';
+        $otherRadio = HTMLHelper::formRadio($this->attributes);
+        $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option two" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option two</span></label>';
+        $expected .= '<label class="other-label radio" for="foo_Other"><input type="radio" value="Other" id="foo_Other" name="bar" data-formtype="s08"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#foo_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="foo_Other_input" /></label>';
+        $this->assertEquals($expected, $otherRadio);
     }
 
     public function testFormCheckbox(){
@@ -156,6 +178,28 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option one</span></label>';
         $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyCheckBox);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'invalid';
+        $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+        $this->attributes['regex'] = 'invalid';
+        $this->attributes['match'] = 'invalid';
+        $this->attributes['minlength'] = 'invalid';
+        $this->attributes['maxlength'] = 'invalid';
+        $this->attributes['min'] = 'invalid';
+        $this->attributes['max'] = 'invalid';
+        $this->attributes['checkboxes'] = array("option one", "option two");
+        $this->attributes['version'] = 'other';
+        $this->attributes['formtype'] = 's06';
+        $otherCheckBox = HTMLHelper::formCheckbox($this->attributes);
+        $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option two</span></label>';
+        $expected .= '<label class="other-label checkbox" for="foo_Other"><input type="checkbox" value="Other" id="foo_Other" name="bar" data-formtype="s06"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#foo_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="foo_Other_input" /></label>';
+        $this->assertEquals($expected, $otherCheckBox);
     }
     public function testFormText(){
         // test each type of text inputs: search, address, email...etc

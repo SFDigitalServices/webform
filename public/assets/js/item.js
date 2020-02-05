@@ -124,19 +124,20 @@ let Item = function(obj, idsArray, namesArray) {
 		case 'm13': //file
 			this.removeSpecialValues()
 			this.removeSpecialFunctions(['calculations'])
-			this.removeAttrs(['unit'])
+			this.removeAttrs(['unit','version'])
 			break
 		case 'd06': //numbers
+			this.removeAttrs(['version'])
 			this.removeSpecialValues()
 			break
 		case 'd08': //price
-			this.removeAttrs(['unit'])
+			this.removeAttrs(['unit','version'])
 			this.removeSpecialValues()
 			break
 		case 'i14': //textarea
 			this.removeSpecialValues('textarea')
 			this.removeSpecialFunctions(['calculations'])
-			this.removeAttrs(['type','value','unit'])
+			this.removeAttrs(['type','value','unit','version'])
 			break
 		case 's02': //select
 		case 's14': //state
@@ -144,7 +145,7 @@ let Item = function(obj, idsArray, namesArray) {
 		case 's16': //state
 			this.removeSpecialValues('option')
       this.addOptions('option')
-			this.removeAttrs(['placeholder','type','unit'])
+			this.removeAttrs(['placeholder','type','unit','version'])
 			break
 		case 's06': //checkboxes
 			this.removeSpecialValues('checkboxes')
@@ -159,20 +160,20 @@ let Item = function(obj, idsArray, namesArray) {
 		case 'm11': //hidden
 			this.removeSpecialValues()
 			this.removeSpecialFunctions(['validation'])
-			this.removeAttrs(['label','help','placeholder','unit'])
+			this.removeAttrs(['label','help','placeholder','unit','version'])
 			this.type = 'hidden'
 			break
 		case 'm08': //paragraph
 			this.removeSpecialValues('textarea')
 			this.removeSpecialFunctions(['validation', 'calculations'])
       this.swapLabel()
-			this.removeAttrs(['name','label','help','placeholder','type','value','unit'])
+			this.removeAttrs(['name','label','help','placeholder','type','value','unit','version'])
 			break
 		case 'm10': //html
 			this.removeSpecialValues('codearea')
 			this.removeSpecialFunctions(['validation', 'calculations'])
       this.swapLabel()
-			this.removeAttrs(['name','label','help','placeholder','type','value','unit'])
+			this.removeAttrs(['name','label','help','placeholder','type','value','unit','version'])
 			break
 		case 'm02': //h1
 		case 'm04': //h2
@@ -180,12 +181,12 @@ let Item = function(obj, idsArray, namesArray) {
 			this.removeSpecialValues('textarea')
 			this.removeSpecialFunctions(['validation', 'calculations'])
       this.swapLabel()
-			this.removeAttrs(['name','label','help','placeholder','type','value','unit'])
+			this.removeAttrs(['name','label','help','placeholder','type','value','unit','version'])
 			break
 		case 'm16': //page separator
 			this.removeSpecialValues()
 			this.removeSpecialFunctions(['validation', 'calculations', 'webhooks'])
-			this.removeAttrs(['name','help','placeholder','type','value','unit'])
+			this.removeAttrs(['name','help','placeholder','type','value','unit','version'])
 			break
 		//case 'm14': //button
 	}

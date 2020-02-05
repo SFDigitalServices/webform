@@ -341,6 +341,10 @@ SFDSWFB.lastScript = function() {
   }
 }
 
+function setOtherValue(obj) {
+  jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
+}
+
 function populateForm(formData){
   if(formData['formid'] === undefined) return false;
   var formid = 'SFDSWFB_forms_' + formData['formid'];
