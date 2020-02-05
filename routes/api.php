@@ -40,6 +40,7 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('submit',['as' => 'submit', 'uses' => 'FormController@submitForm']);
     $router->post('submitPartial',['as' => 'submitPartial', 'uses' => 'FormController@submitPartialForm']);
     $router->post('jekyllImport',['as' => 'jekyllImport', 'uses' => 'FormController@jekyllImport']);
+    $router->post('formioImport',['as' => 'formioImport', 'uses' => 'FormController@formioImport']);
     $router->get('retrieveDraft',['as' => 'retrieveDraft', 'uses' => 'FormController@retrieveFormDraft']);
 	  $router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
     $router->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);

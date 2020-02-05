@@ -75,7 +75,6 @@ class DataStoreHelper extends Migration
           $form = Yaml::parse($definitions);
           // create form definition
           $json_definition = array();
-          //$json_definition['settings'] = array("action" => "", "method" => "POST", "name" => "", "backend" => "csv", "confirmation" => "");
           $json_definition['data'] = $this->controllerHelper->createFormDefinition($form);
           if($json_definition){
             $nextID = DB::table('forms')->max('id') + 1;
@@ -84,6 +83,21 @@ class DataStoreHelper extends Migration
           }
         }
     }
+
+    /** Creates form in Form.io
+      *
+      * @param $definitions
+      *
+      * @return object
+      */
+      public function formioImport($definitions)
+      {
+          if ($definitions) {
+            $form = Yaml::parse($definitions);
+            return $this->createFormIoForm($form);
+          }
+          return null;
+      }
 
     /** Clone database table
     *
@@ -921,6 +935,53 @@ class DataStoreHelper extends Migration
         }
         return $ret;
     }
+
+     /** Call Form.io API to create form
+    *
+    * @param $form
+    *
+    * @return array
+    */
+    private function createFormIoForm($form)
+    {
+        $ret = array();
+
+        if ($form) {
+            $username = getenv("FORMIO_USERNAME");
+            $password = getenv("FORMIO_PASSWORD");
+            $endpoint = getenv("FORMIO_API_ENDPOINT");
+
+            //$client = new GuzzleHttp\Client(['base_uri' => $endpoint]);
+            $client = new GuzzleHttp\Client([
+              'headers' => [ 'Content-Type' => 'application/json' ]
+            ]);
+
+          $response = $client->post($endpoint.'/user/login',
+              ['body' => json_encode(
+                ['data' => ['email' => $username, 'password' => $password]]
+              )]
+          );
+          $res = json_decode($response->getBody()->getContents(), true);
+          $x_jwt_token = $response->getHeader('x-jwt-token')[0];
+
+          if($x_jwt_token){
+              $definitions = array( "_id" => $res['_id'], "type" => "form", "tags" => [], "owner" => $res['owner']);
+              $form_data = $this->controllerHelper->createFormIoFields($form);
+              $definitions['components'] = $form_data;
+              $definitions = json_encode($definitions);
+              Log::info(print_r($definitions, 1));
+              $ret = $client->request('POST', 'https://fqtaijwddbqnnjy.form.io/form', [
+                'headers' => [
+                  'x-jwt-token' => $x_jwt_token,
+                  'Content-Type' => 'application/json'
+                ],
+                'body' => $definitions
+              ]);
+            }
+        }
+        return json_decode($ret->getBody()->getContents(), true);
+    }
+
     /** Get form data for email templates
     *
     * @param $form
@@ -969,6 +1030,7 @@ class DataStoreHelper extends Migration
                   $validation_rules[$definition['name']] = $rule;
             }
         }
+        Log::info(print_r($validation_rules,1));
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {

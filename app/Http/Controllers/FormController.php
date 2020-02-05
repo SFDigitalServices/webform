@@ -449,6 +449,23 @@ class FormController extends Controller
         }
     }
 
+     /** Create form on Form.io
+    *
+    * @param $request
+    *
+    * @return redirect page
+    */
+    public function formioImport(Request $request)
+    {
+        $file = $request->file('upload_file1');
+        $contents = file_get_contents($file->getRealPath());
+
+        if ($contents !== '' && ($response = $this->dataStoreHelper->formioImport($contents) ) ){
+          Log::info(print_r($response, 1));
+        }
+
+    }
+
     /** Determine form has been published
     *
     * @param $request
