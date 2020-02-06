@@ -251,6 +251,29 @@ legend {
   }
 }
 
+#SFDSWFB-admin {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  border: 2px solid #1c3e57;
+  border-width: 2px 2px 0;
+  border-radius: 8px 8px 0 0;
+  text-align:right;
+
+  .header {
+    padding: 1em;
+    cursor: pointer;
+  }
+
+  .content {
+    padding: 1em;
+  }
+}
+
+.displayOverride {
+  display: block !important;
+}
+
 /* "Ghost" field when dragging inputs */
 #SFDSWFB-temp {
   width: 500px;
@@ -849,3 +872,4 @@ $formTypes: "c02",
 input, textarea {
   margin-bottom: 1em;
 }
+
