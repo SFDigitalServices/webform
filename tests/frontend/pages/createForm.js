@@ -40,6 +40,20 @@ module.exports = {
       I.waitForElement('.form-group.is-selected-in-editor[data-id=radio]')
       await I.switchTo();
     })
+    When('I click to insert a number field', async () => {
+        await I.click('Number')
+    });
+    Then('I should see the field created in the navigation and an edit panel', async () => {
+      I.waitForText('Edit field', 2, '#SFDSWFB-attributes')
+      I.waitForElement('.save-buttons')
+      I.wait(1)
+    })
+    Then('I should be able to edit that field to the form', async() => {
+      I.click('Add a rule')
+      I.fillField('.conditionalValue', 'Test')
+      I.click('Save')
+      I.wait(2)
+    })
     Then('I should see my form on the dashboard', async () => {
       await I.click('Digital Services Webform Builder')
       I.waitForText('Welcome back', 3, '.content')
