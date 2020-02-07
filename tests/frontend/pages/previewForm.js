@@ -13,6 +13,12 @@ module.exports = {
     })
     Then('I should see a new window with rendered html', () => {
       I.waitForVisible('#SFDSWF-Container')
+      I.click('Administrative Tools')
+    })
+    When('I click on Administrative Tools', () => {
+      I.waitForText('Show All Questions', 3, '.content')
+      I.click('#SFDSWFB-admin input[type=checkbox][0]')
+      I.waitForVisible('#number')
       I.closeCurrentTab()
     })
   },
