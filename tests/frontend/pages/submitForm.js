@@ -6,7 +6,7 @@ module.exports = {
     Given(/I navigate to a published form/, async () => {
       I.click('TESTING FORM CREATION'+sessid)
       I.waitForElement('.editorContainer')
-      I.click('full_id', '#SFDSWFB-list')
+      I.click('number_id', '#SFDSWFB-list')
       I.waitForText('Settings', 3, '#SFDSWFB-settings')
       await I.click('#SFDSWFB-attributes button.settings-toggle')
       I.selectOption('Backend','csv');
