@@ -11,6 +11,35 @@ module.exports = {
       await I.fillField({id: 'formTitle'}, 'TESTING FORM CREATION'+sessid)
       await I.click('Ok')
     })
+    When('I click to insert a number field', async () => {
+        await I.click('Number')
+    });
+    Then('I should see the number field created in the navigation and an edit panel', async () => {
+      I.waitForText('Edit field', 2, '#SFDSWFB-attributes')
+      I.waitForElement('.save-buttons')
+      I.wait(1)
+    })
+    Then('I should be able to edit that number field to the form', async() => {
+      I.fillField('label', 'Number')
+      I.fillField('name', 'number_name')
+      I.fillField('id', 'number_id')
+      I.click('Save')
+      I.wait(2)
+      I.switchTo('iframe');
+      I.wait(3)
+      I.waitForText('Number', 3, '#SFDSWF-Container')
+      await I.switchTo();
+    })
+    When('I click to insert a multi field', async () => {
+        await I.click('Choose one')
+    });
+    Then('I should be able to see that field highlighted in the form', async() => {
+      I.switchTo('iframe');
+      I.wait(3)
+      I.waitForText('Radio', 3, '#SFDSWF-Container')
+      I.waitForElement('.form-group.is-selected-in-editor[data-id=radio]')
+      await I.switchTo();
+    })
     When('I click to insert a field', async () => {
         await I.click('Name')
     });
@@ -28,35 +57,6 @@ module.exports = {
       I.switchTo('iframe');
       I.wait(3)
       I.waitForText('Name', 3, '#SFDSWF-Container')
-      await I.switchTo();
-    })
-    When('I click to insert a multi field', async () => {
-        await I.click('Choose one')
-    });
-    Then('I should be able to see that field highlighted in the form', async() => {
-      I.switchTo('iframe');
-      I.wait(3)
-      I.waitForText('Radio', 3, '#SFDSWF-Container')
-      I.waitForElement('.form-group.is-selected-in-editor[data-id=radio]')
-      await I.switchTo();
-    })
-    When('I click to insert a number field', async () => {
-        await I.click('Number')
-    });
-    Then('I should see the field created in the navigation and an edit panel', async () => {
-      I.waitForText('Edit field', 2, '#SFDSWFB-attributes')
-      I.waitForElement('.save-buttons')
-      I.wait(1)
-    })
-    Then('I should be able to edit that field to the form', async() => {
-      I.fillField('label', 'Number')
-      I.fillField('name', 'number_name')
-      I.fillField('id', 'number_id')
-      I.click('Save')
-      I.wait(2)
-      I.switchTo('iframe');
-      I.wait(3)
-      I.waitForText('Number', 3, '#SFDSWF-Container')
       await I.switchTo();
     })
     Then('I should see my form on the dashboard', async () => {
