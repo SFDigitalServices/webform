@@ -49,6 +49,9 @@ module.exports = {
       I.wait(1)
     })
     Then('I should be able to edit that field to the form', async() => {
+      I.fillField('label', 'Number')
+      I.fillField('name', 'number_name')
+      I.fillField('id', 'number_id')
       I.click('Add a rule')
       I.click('Save')
       I.wait(2)
