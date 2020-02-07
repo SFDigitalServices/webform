@@ -50,7 +50,6 @@ module.exports = {
     })
     Then('I should be able to edit that field to the form', async() => {
       I.click('Add a rule')
-      I.fillField('.conditionalValue', 'Test')
       I.click('Save')
       I.wait(2)
     })
