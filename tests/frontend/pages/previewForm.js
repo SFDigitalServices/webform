@@ -17,8 +17,6 @@ module.exports = {
     })
     When('I click on Administrative Tools', () => {
       I.waitForText('Show All Questions', 3, '.content')
-      I.click('#SFDSWFB-admin input[type=checkbox][0]')
-      I.waitForVisible('#number')
       I.closeCurrentTab()
     })
   },
