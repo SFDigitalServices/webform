@@ -52,8 +52,6 @@ module.exports = {
       I.fillField('label', 'Number')
       I.fillField('name', 'number_name')
       I.fillField('id', 'number_id')
-      I.click('Add a rule')
-      I.wait(2)
       I.click('Save')
       I.wait(2)
       I.switchTo('iframe');
