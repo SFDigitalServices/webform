@@ -47,7 +47,7 @@ module.exports = {
     Then('I should see the field created in the navigation and an edit panel', async () => {
       I.waitForText('Edit field', 2, '#SFDSWFB-attributes')
       I.click('Add a rule')
-      I.fillField('#SFDSWFB-attributes input.conditionalValue.form-control', 'test')
+      I.fillField({css: '#SFDSWFWB-attributes input.conditionalValue'}, 'test')
       I.waitForElement('.save-buttons')
       I.click('Save')
       I.wait(2)
