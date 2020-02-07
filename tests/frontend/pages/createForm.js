@@ -48,7 +48,7 @@ module.exports = {
       I.waitForText('Edit field', 2, '#SFDSWFB-attributes')
       I.click('Add a rule')
       I.wait(1)
-      I.fillField('.conditionalValue', 'test')
+      I.fillField({class: 'conditionalValue'}, 'test')
       I.waitForElement('.save-buttons')
       I.click('Save')
       I.wait(2)
