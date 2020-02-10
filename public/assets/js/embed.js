@@ -6,12 +6,14 @@ if (typeof jQuery === "function") {
 
 SFDSWFB.loadRemainingScripts = function() {
   if (SFDSWFB.preRenderScripts.length) {
-    SFDSWFB.loadScript('pre', SFDSWFB.loadRemainingScripts);
+    SFDSWFB.loadScript('pre', SFDSWFB.loadRemainingScripts)
   } else {
     if (SFDSWFB.postRenderScripts.length) {
-      SFDSWFB.loadScript('post', SFDSWFB.loadRemainingScripts);
+      SFDSWFB.loadScript('post', SFDSWFB.loadRemainingScripts)
+      jQuery('#SFDSWFB-admin .content').hide()
+      jQuery('#SFDSWFB-admin input[type=checkbox]').prop('checked', false)
     } else {
-      SFDSWFB.lastScript();
+      SFDSWFB.lastScript()
     }
   }
 }
@@ -243,8 +245,10 @@ function skipToSectionId(callback) {
   if (SFDSWFB.skipToSectionId) {
     var section = jQuery('div[data-id='+SFDSWFB.skipToSectionId+']')
     if (callback && section.is(":hidden")) callback(section.closest(".form-section").index('.form-section'))
-    section[0].scrollIntoView()
-    section.addClass('is-selected-in-editor')
+    if (typeof section[0] !== "undefined") {
+      section[0].scrollIntoView()
+      section.addClass('is-selected-in-editor')
+    }
   }
 }
 
@@ -376,4 +380,32 @@ function getCheckedCheckboxesFor(elements, items) {
           elements[i].checked = true;
         }
     }
+}
+
+function toggleAdminTab() {
+  if (jQuery('#SFDSWFB-admin .content').is(':visible')) {
+    jQuery('#SFDSWFB-admin .content').hide();
+    jQuery('#SFDSWFB-admin .adminTabArrow').prop('class', 'adminTabArrow fa fa-angle-up')
+  } else {
+    jQuery('#SFDSWFB-admin .content').show();
+    jQuery('#SFDSWFB-admin .adminTabArrow').prop('class', 'adminTabArrow fa fa-angle-down')
+  }
+}
+
+function toggleShowAllFields(obj) {
+  if (obj.checked) {
+    jQuery('.form-content').addClass('displayOverride');
+    jQuery('.form-group').addClass('displayOverride');
+  } else {
+    jQuery('.form-content').removeClass('displayOverride');
+    jQuery('.form-group').removeClass('displayOverride');
+  }
+}
+
+function toggleShowAllPages(obj) {
+  if (obj.checked) {
+    jQuery('.form-section').addClass('displayOverride');
+  } else {
+    jQuery('.form-section').removeClass('displayOverride');
+  }
 }
