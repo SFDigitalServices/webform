@@ -5,7 +5,7 @@ html {
 }
 
 body {
-	line-height: 1.6470588235rem;
+	line-height: px-to-rem(28);
 }
 
 h1,
@@ -13,8 +13,8 @@ h1,
 	color: #1c3e57;
 	font-weight: 500;
 	margin: 1.75rem 0 0;
-	font-size: 1.9411764706rem;
-	line-height: 2.5882352941rem;
+	font-size: px-to-rem(33);
+	line-height: px-to-rem(44);
 }
 
 h1.title,
@@ -26,14 +26,14 @@ h1.title,
 @media screen and (min-width: 40rem) {
 	h1,
 	.h1 {
-		font-size: 3.6470588235rem;
+		font-size: px-to-rem(62);
 		line-height: normal;
 		letter-spacing: -0.3px;
 	}
 
 	h1.title,
 	.h1.title {
-		font-size: 2.9411764706rem;
+		font-size: px-to-rem(50);
 		letter-spacing: 0;
 	}
 }
@@ -43,7 +43,7 @@ h2,
 	color: #1c3e57;
 	font-weight: 500;
 	margin: 1.25rem 0 0.875rem;
-	font-size: 2.3529411765rem;
+	font-size: px-to-rem(40);
 	line-height: normal;
 }
 
@@ -51,25 +51,33 @@ h3,
 .h3 {
 	color: #1c3e57;
 	font-weight: 500;
+	font-size: px-to-rem(24);
+	line-height: px-to-rem(30);
 	margin: 1.25rem 0 0.875rem;
-	font-size: 1.7647058824rem;
-	line-height: 2.4705882353rem;
+}
+
+@media screen and (min-width: 48.063rem) {
+	h3,
+	.h3 {
+		font-size: px-to-rem(30);
+		line-height: px-to-rem(42);
+	}
 }
 
 h4,
 .h4 {
 	font-weight: 400;
 	margin: 1.25rem 0 0.875rem;
-	font-size: 1.4117647059rem;
-	line-height: 2rem;
+	font-size: px-to-rem(24);
+	line-height: px-to-rem(34);
 }
 
 h5,
 .h5 {
 	margin: 1rem 0 0.875rem;
 	font-weight: 500;
-	font-size: 1.1764705882rem;
-	line-height: 1.5882352941rem;
+	font-size: px-to-rem(20);
+	line-height: px-to-rem(27);
 }
 
 html {
@@ -293,12 +301,9 @@ body {
 	}
 }
 
-.form-progress-bar-1::before {
-	width: 1%;
-}
-
-.form-progress-bar-2::before {
-	width: 2%;
+.form-progress-bar-1,
+.form-progress-bar-2 {
+	width: 3%;
 }
 
 .form-progress-bar-3::before {
@@ -1206,6 +1211,18 @@ legend {
 	border-style: solid;
 	border-radius: 8px;
 	background-color: #fff;
+}
+
+.other-label .inline-label {
+	float: left;
+}
+
+.other-label input[type=text] {
+	left: 7rem;
+	filter: alpha(opacity=1);
+	opacity: 1;
+	padding: 0.64rem 1rem;
+	width: calc(100% - 7rem);
 }
 
 .field-s08 .inline-label::before,
