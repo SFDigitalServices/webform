@@ -373,6 +373,7 @@ function requireCheckboxGroup(obj) {
     if (jQuery(obj).parents('.form-group').find('input[type=checkbox]:checked').length) {
       jQuery(obj).parents('.form-group').find('input[type=checkbox]').prop('required', false)
       jQuery(obj).parents('.form-group').validator('destroy')
+      jQuery('#SFDSWF-Container').validator('validate')
     } else {
       jQuery(obj).parents('.form-group').find('input[type=checkbox]').prop('required', true)
       jQuery(obj).parents('.form-group').validator('destroy')
