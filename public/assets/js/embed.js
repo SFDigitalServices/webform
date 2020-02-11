@@ -319,7 +319,6 @@ SFDSWFB.lastScript = function() {
   });
 
 	jQuery('#SFDSWF-Container form').submit(function(e) {
-    /*
     e.preventDefault(); // let ajax handles the form submit
     var form_id = jQuery(this.form_id).val();
     if( !form_id ){
@@ -340,8 +339,7 @@ SFDSWFB.lastScript = function() {
       submitPartial(form_id, 'complete');
     }
   });
-  */
-
+/*
 		var formValid = true;
 		jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
 			if (phoneIsValid(jQuery(this).val())) {
@@ -355,7 +353,7 @@ SFDSWFB.lastScript = function() {
       e.preventDefault()
     }
   });
-
+*/
   if(window.draftData !== undefined){
     populateForm(window.draftData);
   }
