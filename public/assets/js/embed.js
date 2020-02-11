@@ -314,7 +314,12 @@ SFDSWFB.lastScript = function() {
     jQuery(this).next('.file-custom').attr('data-filename', file);
   });
 
+  jQuery('#SFDSWF-Container input[type=checkbox]').on('click', function() {
+    requireCheckboxGroup(this)
+  });
+
 	jQuery('#SFDSWF-Container form').submit(function(e) {
+    /*
     e.preventDefault(); // let ajax handles the form submit
     var form_id = jQuery(this.form_id).val();
     if( !form_id ){
@@ -335,9 +340,44 @@ SFDSWFB.lastScript = function() {
       submitPartial(form_id, 'complete');
     }
   });
+  */
+
+		var formValid = true;
+		jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
+			if (phoneIsValid(jQuery(this).val())) {
+				fieldValid(jQuery(this).attr('id'));
+			} else {
+				formValid = false;
+				fieldInvalid(jQuery(this).attr('id'));
+			}
+		});
+    if (!formValid || !validPage()) {
+      e.preventDefault()
+    }
+  });
 
   if(window.draftData !== undefined){
     populateForm(window.draftData);
+  }
+}
+
+function insertOtherTextInput(obj) {
+  if (!jQuery(obj).find("input[type=text]").length) {
+    var labelId = jQuery(obj).attr('for')
+    jQuery(obj).append('<input type="text" onclick="jQuery(\'#'+labelId+'\').prop(\'checked\', true)" onchange="setOtherValue(this)" id="'+labelId+'_input" />');
+  }
+}
+
+function requireCheckboxGroup(obj) {
+  if (jQuery(obj).data('required')) {
+    if (jQuery(obj).parents('.form-group').find('input[type=checkbox]:checked').length) {
+      jQuery(obj).parents('.form-group').find('input[type=checkbox]').prop('required', false)
+      jQuery(obj).parents('.form-group').validator('destroy')
+    } else {
+      jQuery(obj).parents('.form-group').find('input[type=checkbox]').prop('required', true)
+      jQuery(obj).parents('.form-group').validator('destroy')
+      jQuery(obj).parents('.form-group').validator('validate')
+    }
   }
 }
 

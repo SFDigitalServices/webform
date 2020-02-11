@@ -416,13 +416,17 @@ class HTMLHelper
         switch ($field['formtype']) {
           case "s08": //radio
             $type = "radio";
+            $array = "";
+            $extra = "";
             break;
           case "s06": //checkbox
             $type = "checkbox";
+            $array = "[]";
+            $extra = $field['required'] ? ' data-required="true"' : '';
             break;
         }
         //js added inline instead of from JS due to simplicity of binding
-        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].'" data-formtype="'.$field['formtype'].'"><span class="inline-label">Other</span><input type="text" onclick="jQuery(\\\'#'.$field['id'].'_Other\\\').prop(\\\'checked\\\', true)" onchange="setOtherValue(this)" id="'.$field['id'].'_Other_input" /></label>';
+        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other" onclick="insertOtherTextInput(this)"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].$array.'" data-formtype="'.$field['formtype'].'"'.$extra.'><span class="inline-label">Other</span></label>';
       }
 
       return $html;
@@ -478,6 +482,7 @@ class HTMLHelper
         //convert checkboxes to options and remove them from fields
         $options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
         unset($field['checkboxes']);
+        if ($field['required']) $field['data-required'] = true;
         //get attributes
         $attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
