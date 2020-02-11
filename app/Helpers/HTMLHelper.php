@@ -422,7 +422,7 @@ class HTMLHelper
           case "s06": //checkbox
             $type = "checkbox";
             $array = "[]";
-            $extra = $field['required'] ? ' data-required="true"' : '';
+            $extra = $field['required'] ? ' data-required="1" data-error="This field cannot be blank."' : '';
             break;
         }
         //js added inline instead of from JS due to simplicity of binding

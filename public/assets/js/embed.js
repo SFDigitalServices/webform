@@ -336,24 +336,11 @@ SFDSWFB.lastScript = function() {
     });
     // If UI validation passed, perfrom back end validation
     if (formValid && validPage()) {
-      submitPartial(form_id, 'complete');
+      if (!jQuery('#SFDSWF-Container .has-error:visible').length) submitPartial(form_id, 'complete');
+
     }
   });
-/*
-		var formValid = true;
-		jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
-			if (phoneIsValid(jQuery(this).val())) {
-				fieldValid(jQuery(this).attr('id'));
-			} else {
-				formValid = false;
-				fieldInvalid(jQuery(this).attr('id'));
-			}
-		});
-    if (!formValid || !validPage()) {
-      e.preventDefault()
-    }
-  });
-*/
+
   if(window.draftData !== undefined){
     populateForm(window.draftData);
   }
