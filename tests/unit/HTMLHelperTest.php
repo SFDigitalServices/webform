@@ -198,7 +198,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $otherCheckBox = HTMLHelper::formCheckbox($this->attributes);
         $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded" data-required="1"/><span class="inline-label">option one</span></label>';
         $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded" data-required="1"/><span class="inline-label">option two</span></label>';
-        $expected .= '<label class="other-label checkbox" for="foo_Other" onclick="insertOtherTextInput(this)"><input type="checkbox" value="Other" id="foo_Other" name="bar[]" data-formtype="s06" data-required="true"><span class="inline-label">Other</span></label>';
+        $expected .= '<label class="other-label checkbox" for="foo_Other" onclick="insertOtherTextInput(this)"><input type="checkbox" value="Other" id="foo_Other" name="bar[]" data-formtype="s06" data-required="1" data-error="This field cannot be blank."><span class="inline-label">Other</span></label>';
         $this->assertEquals($expected, $otherCheckBox);
     }
     public function testFormText(){
