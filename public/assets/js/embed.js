@@ -295,6 +295,10 @@ SFDSWFB.lastScript = function() {
   skipToSectionId(false)
 
 	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
+      if (!jQuery(this).prop('required') && jQuery(this).val() === "") {
+        fieldValid(jQuery(this).attr('id'));
+        return
+      }
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));
 			} else {
@@ -327,7 +331,7 @@ SFDSWFB.lastScript = function() {
     // UI validation
     var formValid = true;
     jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
-      if (phoneIsValid(jQuery(this).val())) {
+      if ((!jQuery(this).prop('required') && jQuery(this).val() === "") || (phoneIsValid(jQuery(this).val()))) {
           fieldValid(jQuery(this).attr('id'));
         } else {
           formValid = false;
@@ -336,8 +340,7 @@ SFDSWFB.lastScript = function() {
     });
     // If UI validation passed, perfrom back end validation
     if (formValid && validPage()) {
-      if (!jQuery('#SFDSWF-Container .has-error:visible').length) submitPartial(form_id, 'complete');
-
+      if (!jQuery('#SFDSWF-Container .has-error:visible').length) submitPartial(form_id, 'complete')
     }
   });
 
