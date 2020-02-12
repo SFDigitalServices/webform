@@ -969,18 +969,6 @@ legend {
 	display: block;
 }
 
-.other-label .inline-label {
-  float:left;
-}
-
-.other-label input[type=text] {
-  left:7rem;
-  filter: alpha(opacity=1);
-  opacity: 1;
-  padding:0.64rem 1rem;
-  width:calc(100% - 7rem);
-}
-
 .field-d06 input,
 .field-d06 .units {
 	display: inline-block;
