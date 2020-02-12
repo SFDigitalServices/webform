@@ -18,10 +18,9 @@ module.exports = {
     })
     Then('I should be redirected back to the dashboard', () => {
       I.waitForText('Welcome back,', 3, '.content')
-      I.wait(10)
     })
-    Then('I should not see the deleted form', () => {
-      I.dontSee('TESTING FORM CREATION'+sessid)
+    Then('I should not see the deleted form', async () => {
+      await I.dontSee('TESTING FORM CREATION'+sessid)
     })
     When('I create a new form', async () => {
       I.waitForText('Please enter the name of your form')
