@@ -348,9 +348,6 @@ FbView.prototype.populateAttributes = function(item) {
 					case 'webhooks':
 						$('#SFDSWFB-attributes .accordion-webhooks').remove()
 						break
-          case 'version':
-						$('#SFDSWFB-attributes .version-attribute').remove()
-            break
 					default:
 						$('#SFDSWFB-attributes .' + i + '-attribute').remove()
 						break
@@ -397,7 +394,6 @@ FbView.prototype.populateValidation = function(item) {
 		//case "password":
 	}
 	if (item.required == "true") $('#SFDSWFB-attributes input[name=required]').prop('checked', true)
-	if (item.version == "other") $('#SFDSWFB-attributes input[name=version][value=other]').prop('checked', true)
 }
 
 /**
