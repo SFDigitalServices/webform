@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "This is the source for the web form builder, cloned from https://github.com/krisanalfa/lumen-jwt as a starting point. Decided to not implement jwt at this point.",
   "main": "codecept.conf.js",
+  "require": {
+    "php": "~7.3.14"
+  },
   "directories": {
     "doc": "docs",
     "test": "tests\frontend"
