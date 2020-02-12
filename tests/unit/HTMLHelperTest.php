@@ -1860,16 +1860,4 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       $this->assertEquals($expected, $getHTML);
     }
 
-    public function testGetAdminTab() {
-      $adminTab = $this->htmlHelperTester->adminTab();
-      $expected = '<div id="SFDSWFB-admin">'.
-          '<div class="header" onclick="toggleAdminTab()">Administrative Tools <i class="adminTabArrow fa fa-angle-up"></i></div>'.
-          '<div class="content">'.
-            'Show All Questions &nbsp; <input type="checkbox" onclick="toggleShowAllFields(this)"/><br/>'.
-            'Show all Pages &nbsp; <input type="checkbox" onclick="toggleShowAllPages(this)"/>'.
-          '</div>'.
-        '</div>';
-      $this->assertEquals($expected, $adminTab);
-    }
-
 }

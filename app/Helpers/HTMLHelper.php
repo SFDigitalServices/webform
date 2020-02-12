@@ -89,22 +89,6 @@ class HTMLHelper
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
 
-    /**
-    * Creates an admin tab for the form preview
-    *
-    * @return HTML
-    */
-    public function adminTab()
-    {
-        $html = '<div id="SFDSWFB-admin">'.
-          '<div class="header" onclick="toggleAdminTab()">Administrative Tools <i class="adminTabArrow fa fa-angle-up"></i></div>'.
-          '<div class="content">'.
-            'Show All Questions &nbsp; <input type="checkbox" onclick="toggleShowAllFields(this)"/><br/>'.
-            'Show all Pages &nbsp; <input type="checkbox" onclick="toggleShowAllPages(this)"/>'.
-          '</div>'.
-        '</div>';
-        return $html;
-    }
 
     /** Create js string for embed code
     *
