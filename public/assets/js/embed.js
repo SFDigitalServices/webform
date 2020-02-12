@@ -2,7 +2,7 @@ if (typeof libphonenumber === "object") SFDSWFB.postRenderScripts.shift();
 if (typeof jQuery === "function") {
   if (typeof jQuery().validator === "function") SFDSWFB.preRenderScripts.splice(1, 1);
   SFDSWFB.preRenderScripts.shift();
-}
+}//test
 
 SFDSWFB.loadRemainingScripts = function() {
   if (SFDSWFB.preRenderScripts.length) {
