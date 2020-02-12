@@ -3,7 +3,7 @@ if (typeof jQuery === "function") {
   if (typeof jQuery().validator === "function") SFDSWFB.preRenderScripts.splice(1, 1);
   SFDSWFB.preRenderScripts.shift();
 }
-//test
+
 SFDSWFB.loadRemainingScripts = function() {
   if (SFDSWFB.preRenderScripts.length) {
     SFDSWFB.loadScript('pre', SFDSWFB.loadRemainingScripts)
