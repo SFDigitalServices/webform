@@ -18,6 +18,7 @@ module.exports = {
     })
     Then('I should be redirected back to the dashboard', () => {
       I.waitForText('Welcome back,', 3, '.content')
+      I.wait(10)
     })
     Then('I should not see the deleted form', () => {
       I.dontSee('TESTING FORM CREATION'+sessid)
