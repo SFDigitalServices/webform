@@ -920,9 +920,6 @@ class DataStoreHelper extends Migration
 
         foreach ($definitions as $key => $definition) {
             if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
-
-                if (isset($definition['conditions'])) break; //temporarily do not validate fields that may be hidden in conditionals
-
                 $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
                 $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
                 if($rule != '')
