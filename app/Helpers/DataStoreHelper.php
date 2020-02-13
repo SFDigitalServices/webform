@@ -11,6 +11,7 @@ use DB;
 use App\Form;
 use Exception;
 use App\Helpers\ControllerHelper;
+use App\Helpers\HTMLHelper;
 use Validator;
 
 class DataStoreHelper extends Migration
@@ -921,7 +922,36 @@ class DataStoreHelper extends Migration
         foreach ($definitions as $key => $definition) {
             if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
 
-                if (isset($definition['conditions'])) break; //temporarily do not validate fields that may be hidden in conditionals
+                if (isset($definition['conditions'])) {
+
+                  foreach ($definition['conditions'] as $id => $fld) {
+                    //set default visibility
+                    if ($definition['formtype'] == "m16") {
+                    } else {
+                    }
+
+                    $conditionIds = [];
+                    $conditionSts = [];
+                    //loop through each condition
+                    foreach ($fld['condition'] as $index => $condition) {
+                        $conditionSts[] = $this->generateConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val'], $formtypes[$condition['id']]);
+                    }
+                    if ($fld['allAny']) {
+                        //group multiple conditions
+                        $allConditionSts = implode(" ".$this->HTMLHelper->controllerHelper->getOp($fld['allAny'])." ", $conditionSts);
+                    } else {
+                        //or just assign single statement
+                        $allConditionSts = $conditionSts[0];
+                    }
+                  }
+                  if ($fld['showHide'] == "Show") {
+                    //if conditions match, validate this field
+                  } elseif ($fld['showHide'] == "Hide") {
+                    //if conditions match, discard this field
+                    break;
+                  }
+
+                }
 
                 $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
                 $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
