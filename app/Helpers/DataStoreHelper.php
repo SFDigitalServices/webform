@@ -920,51 +920,56 @@ class DataStoreHelper extends Migration
         $validation_rules = array();
 
         foreach ($definitions as $key => $definition) {
-            if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
+          if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
+            $rule = '';
 
-                if (isset($definition['conditions'])) {
+            if (isset($definition['conditions'])) {
+              // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
 
-                  foreach ($definition['conditions'] as $id => $fld) {
-                    //set default visibility
-                    if ($definition['formtype'] == "m16") {
-                    } else {
-                    }
-
-                    $conditionIds = [];
-                    $conditionSts = [];
-                    //loop through each condition
-                    foreach ($fld['condition'] as $index => $condition) {
-                        $conditionSts[] = $this->generateConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val'], $formtypes[$condition['id']]);
-                    }
-                    if ($fld['allAny']) {
-                        //group multiple conditions
-                        $allConditionSts = implode(" ".$this->HTMLHelper->controllerHelper->getOp($fld['allAny'])." ", $conditionSts);
-                    } else {
-                        //or just assign single statement
-                        $allConditionSts = $conditionSts[0];
-                    }
+              foreach ($definition['conditions'] as $id => $fld) {
+                //check if it's related to a page or a field
+                if ($definition['formtype'] == "m16") {
+                  //todo page conditional validation
+                  //todo skip for everything until the next page break
+                } else {
+                  //check if the requirements are met
+                  $qualify = $this->HTMLHelper->checkManyConditions($definitions, $fld['allAny'], $conditions);
+                  if (($fld['showHide'] == "Show" && $qualify || ($fld['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, validate this field
+                    $rule = $this->getValidationRule($definition, $request);
                   }
-                  if ($fld['showHide'] == "Show") {
-                    //if conditions match, validate this field
-                  } elseif ($fld['showHide'] == "Hide") {
-                    //if conditions match, discard this field
-                    break;
-                  }
-
+                  // else mismatch, leave rule empty, field is not visible and should be discarded from validation
                 }
+              }
 
-                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
-                if($rule != '')
-                  $validation_rules[$definition['name']] = $rule;
+            } else {
+              $rule = $this->getValidationRule($definition, $request);
             }
+
+            if($rule !== '')
+              $validation_rules[$definition['name']] = $rule;
+          }
         }
+
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
             $ret = array("status" => 0, "errors" => json_decode( json_encode($validator->errors()), true));
         }
         return $ret;
+    }
+
+    /** gets validation rule for single input
+    *
+    * @param $definition
+    * @param $request
+    *
+    * @return String
+    */
+    private function getValidationRule($definition, $request)
+    {
+      $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+      return implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
     }
 
     /** sets validation rules for all input types

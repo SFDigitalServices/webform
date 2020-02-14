@@ -1095,6 +1095,38 @@ class HTMLHelper
     }
   }
 
+  /** Checks condition as a statement
+    *
+    * @param $formData obj the entire form data submission
+    * @param $condition array consisting of conditional statement params
+    *
+    * @return bool
+  */
+  public function checkCondition($formData, $condition) {
+    return true/false;
+  }
+
+  /** Checks condition as a statement
+    *
+    * @param $formData obj the entire form data submission
+    * @param $anyAll string either any or all
+    * @param $conditions array of conditions consisting of conditional statement params
+    *
+    * @return bool
+  */
+  public function checkManyConditions($formData, $allAny, $conditions) {
+    //loop through each condition
+    foreach ($conditions as $index => $condition) {
+      $thisCondition = $this->checkCondition($formData, $condition);
+      if ($thisCondition && $allAny === "any") {
+        return true;
+      } else if (!$thisCondition && $allAny === "all") {
+        return false;
+      }
+    }
+    return $anyAll === "any" ? false : true;
+  }
+
   /** Delegates which conditional function to use based on params
     *
     * @param $sel string the selector of the field being evaluated
