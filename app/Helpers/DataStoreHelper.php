@@ -933,7 +933,7 @@ class DataStoreHelper extends Migration
                   //todo skip for everything until the next page break
                 } else {
                   //check if the requirements are met
-                  $qualify = $this->HTMLHelper->checkManyConditions($definitions, $fld['allAny'], $conditions);
+                  $qualify = $this->HTMLHelper->checkManyConditions($request, $fld['allAny'], $conditions);
                   if (($fld['showHide'] == "Show" && $qualify || ($fld['showHide'] == "Hide" && !$qualify)) {
                     //if conditions match and show or conditions don't match and hide, validate this field
                     $rule = $this->getValidationRule($definition, $request);
