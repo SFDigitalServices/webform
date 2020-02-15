@@ -1095,56 +1095,6 @@ class HTMLHelper
     }
   }
 
-  /** Checks condition as a statement
-    *
-    * @param $request obj the entire form data submission
-    * @param $condition array consisting of conditional statement params ( [id] => checkboxes [op] => matches [val] => Maybe )
-    *
-    * @return bool
-  */
-  public function checkCondition($request, $condition) {
-		switch ($condition['op']) {
-			case "matches":
-        if ($request->input($condition['id']) == $condition['val']) return true;
-			case "doesn't match":
-        if ($request->input($condition['id']) != $condition['val']) return true;
-			case "is less than":
-        if ($request->input($condition['id']) < $condition['val']) return true;
-			case "is more than":
-        if ($request->input($condition['id']) > $condition['val']) return true;
-			case "contains anything":
-        if ($request->input($condition['id']) != '') return true;
-			case "is blank":
-        if ($request->input($condition['id']) === '') return true;
-			case "contains":
-        if (strpos($request->input($condition['id']), $condition['val']) !== false) return true;
-			case "doesn't contain":
-        if (strpos($request->input($condition['id']), $condition['val']) === false) return true;
-    }
-    return false;
-  }
-
-  /** Checks collection of conditions
-    *
-    * @param $request obj the entire form data submission
-    * @param $anyAll string either any or all
-    * @param $conditions array of conditions consisting of conditional statement params
-    *
-    * @return bool
-  */
-  public function checkManyConditions($request, $allAny, $conditions) {
-    //loop through each condition
-    foreach ($conditions as $index => $condition) {
-      $thisCondition = $this->checkCondition($request, $condition);
-      if ($thisCondition && $allAny === "any") {
-        return true;
-      } else if (!$thisCondition && $allAny === "all") {
-        return false;
-      }
-    }
-    return $anyAll === "any" ? false : true;
-  }
-
   /** Delegates which conditional function to use based on params
     *
     * @param $sel string the selector of the field being evaluated

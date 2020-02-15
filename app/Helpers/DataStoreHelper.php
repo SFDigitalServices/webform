@@ -918,6 +918,11 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $validation_rules = array();
+        $formtypes = array();
+
+        foreach ($definitions as $key => $definition) {
+          $formtypes[$definition['id']] = $definition['formtype'];
+        }
 
         foreach ($definitions as $key => $definition) {
           if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
@@ -926,20 +931,18 @@ class DataStoreHelper extends Migration
             if (isset($definition['conditions'])) {
               // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
 
-              foreach ($definition['conditions'] as $id => $fld) {
-                //check if it's related to a page or a field
-                if ($definition['formtype'] == "m16") {
-                  //todo page conditional validation
-                  //todo skip for everything until the next page break
-                } else {
-                  //check if the requirements are met
-                  $qualify = $this->HTMLHelper->checkManyConditions($request, $fld['allAny'], $conditions);
-                  if (($fld['showHide'] == "Show" && $qualify || ($fld['showHide'] == "Hide" && !$qualify)) {
-                    //if conditions match and show or conditions don't match and hide, validate this field
-                    $rule = $this->getValidationRule($definition, $request);
-                  }
-                  // else mismatch, leave rule empty, field is not visible and should be discarded from validation
+              //check if it's related to a page or a field
+              if ($definition['formtype'] == "m16") {
+                //todo page conditional validation
+                //todo skip for everything until the next page break
+              } else {
+                //check if the requirements are met
+                $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                  //if conditions match and show or conditions don't match and hide, validate this field
+                  $rule = $this->getValidationRule($definition, $request);
                 }
+                // else mismatch, leave rule empty, field is not visible and should be discarded from validation
               }
 
             } else {
@@ -957,6 +960,70 @@ class DataStoreHelper extends Migration
             $ret = array("status" => 0, "errors" => json_decode( json_encode($validator->errors()), true));
         }
         return $ret;
+    }
+
+    /** Checks condition as a statement
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $condition array consisting of conditional statement params ( [id] => checkboxes [op] => matches [val] => Maybe )
+      *
+      * @return bool
+    */
+    public function checkCondition($request, $formtypes, $condition) {
+      if ($formtypes[$condition['id']] == 's06') {
+        $val = $request->input($condition['id'])[0];
+      } else {
+        $val = $request->input($condition['id']);
+      }
+      switch ($condition['op']) {
+        case "matches":
+          if ($val == $condition['val']) return true;
+          break;
+        case "doesn't match":
+          if ($val != $condition['val']) return true;
+          break;
+        case "is less than":
+          if ($val < $condition['val']) return true;
+          break;
+        case "is more than":
+          if ($val > $condition['val']) return true;
+          break;
+        case "contains anything":
+          if ($val != '') return true;
+          break;
+        case "is blank":
+          if ($val === '') return true;
+          break;
+        case "contains":
+          if (strpos($val, $condition['val']) !== false) return true;
+          break;
+        case "doesn't contain":
+          if (strpos($val, $condition['val']) === false) return true;
+          break;
+      }
+      return false;
+    }
+
+    /** Checks collection of conditions
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $conditions array of conditions consisting of conditional statement params
+      *
+      * @return bool
+    */
+    public function checkManyConditions($request, $formtypes, $conditions) {
+      //loop through each condition
+      foreach ($conditions['condition'] as $index => $condition) {
+        $thisCondition = $this->checkCondition($request, $formtypes, $condition);
+        if ($thisCondition && $conditions['allAny'] === "any") {
+          return true;
+        } else if (!$thisCondition && $conditions['allAny'] === "all") {
+          return false;
+        }
+      }
+      return $conditions['allAny'] === "any" ? false : true;
     }
 
     /** gets validation rule for single input
