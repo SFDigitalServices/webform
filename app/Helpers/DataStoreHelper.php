@@ -1100,8 +1100,6 @@ class DataStoreHelper extends Migration
                       $rules[] = "min:".$value;
                   }
                       break;
-                case "option": $rules[] = "Array";
-                    break;
                 case "type":
                     if ($value === 'email') {
                         $rules[] = "email";
@@ -1122,6 +1120,8 @@ class DataStoreHelper extends Migration
                         $rules[] = "string";
                     } elseif ($value === 'm10') { //HTML code
                         $rules[] = "string";
+                    } elseif ($value === 's06') {
+                        $rules[] = "Array";
                     }
                     break;
                 default:
