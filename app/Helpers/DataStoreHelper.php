@@ -919,34 +919,62 @@ class DataStoreHelper extends Migration
         $ret = array();
         $validation_rules = array();
         $formtypes = array();
+        $pages = array();
+        $currentPage = '';
+        $skip = array();
 
         foreach ($definitions as $key => $definition) {
+          //populate formtypes array with $formtypes[id] = formtype
           $formtypes[$definition['id']] = $definition['formtype'];
+          //for page separators, get a list of pages and their fields
+          if ($definition['formtype'] === "m16") {
+            if (isset($definition['conditions'])) {
+              //populate pages array as $pages[page id] = array('name','phone','email')
+              $pages[$definition['id']] = array();
+              //set currentPage as the last known page container
+              $currentPage = $definition['id'];
+            } else {
+              $currentPage = '';
+            }
+          } else if ($currentPage !== '') {
+            //if currentPage is set, add new ids as children of that page
+            $pages[$currentPage][] = $definition['id'];
+          }
         }
 
         foreach ($definitions as $key => $definition) {
-          if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
+          if ($definition && (!$this->controllerHelper->isNonInputField($definition['formtype']) || $definition['formtype'] === "m16")) {
             $rule = '';
 
-            if (isset($definition['conditions'])) {
-              // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
+            if (!in_array($definition['id'], $skip)) {
+              if (isset($definition['conditions'])) {
+                // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
 
-              //check if it's related to a page or a field
-              if ($definition['formtype'] == "m16") {
-                //todo page conditional validation
-                //todo skip for everything until the next page break
-              } else {
-                //check if the requirements are met
-                $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
-                if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
-                  //if conditions match and show or conditions don't match and hide, validate this field
-                  $rule = $this->getValidationRule($definition, $request);
+                //check if it's related to a page or a field
+                if ($definition['formtype'] == "m16") {
+
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, do nothing; leave fields in definitions array to be validated normally
+                  } else {
+                    //otherwise, remove all fields related to this page
+                    $skip = $pages[$definition['id']];
+                  }
+
+                } else {
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, validate this field
+                    $rule = $this->getValidationRule($definition, $request);
+                  }
+                  // else mismatch, leave rule empty, field is not visible and should be discarded from validation
                 }
-                // else mismatch, leave rule empty, field is not visible and should be discarded from validation
-              }
 
-            } else {
-              $rule = $this->getValidationRule($definition, $request);
+              } else {
+                $rule = $this->getValidationRule($definition, $request);
+              }
             }
 
             if($rule !== '')
