@@ -1061,20 +1061,19 @@ class DataStoreHelper extends Migration
     *
     * @return String
     */
-    private function getValidationRule($definition, $request)
+    public function getValidationRule($definition, $request)
     {
       $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-      return implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
+      return implode('|', $this->setValidationRules($definition));
     }
 
     /** sets validation rules for all input types
     *
     * @param $definition
-    * @param @field
     *
     * @return Array
     */
-    private function setValidationRules($definition, $field)
+    public function setValidationRules($definition)
     {
         $rules = array();
         foreach ($definition as $key => $value) {
