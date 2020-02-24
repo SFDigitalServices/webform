@@ -1073,7 +1073,7 @@ class DataStoreHelper extends Migration
     *
     * @return Array
     */
-    public function setValidationRules($definition)
+    public function setValidationRules($definition, $field = null)
     {
         $rules = array();
         foreach ($definition as $key => $value) {
