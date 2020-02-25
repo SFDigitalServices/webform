@@ -254,10 +254,11 @@ class DataStoreHelper extends Migration
      * @param $form
      * @param $request
      * @param $status
+     * @param $push_to_adu
      *
      * @return Array
      */
-    public function submitForm($form, $request, $status = 'complete')
+    public function submitForm($form, $request, $status = 'complete', $push_to_adu = true)
     {
         $ret = array();
         if ($status !== 'partial') {
@@ -295,8 +296,11 @@ class DataStoreHelper extends Migration
                     } else {
                         $write['db']['form_id'] = $form['id'];
                         if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
-                        $ret = $this->pushDataToADU($write['db']);
-                        if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
+
+                        if($push_to_adu)
+                          $ret = $this->pushDataToADU($write['db']);
+
+                          if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
                     }
