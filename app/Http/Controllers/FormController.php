@@ -278,6 +278,7 @@ class FormController extends Controller
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-base.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-branding.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
+        '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/dropzone.css" />'.
         '</head>'.
         '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>'.$this->htmlHelper->adminTab().'</body></html>';
     }

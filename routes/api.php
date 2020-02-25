@@ -41,6 +41,7 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('submitPartial',['as' => 'submitPartial', 'uses' => 'FormController@submitPartialForm']);
     $router->get('submitPartial',['as' => 'submitPartial', 'uses' => 'FormController@submitPartialForm']);
     $router->get('retrieveDraft',['as' => 'retrieveDraft', 'uses' => 'FormController@retrieveFormDraft']);
+    $router->post('uploadFile',['as' => 'uploadFile', 'uses' => 'FormController@uploadFile']);
 	  $router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
     $router->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
 	  $router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
