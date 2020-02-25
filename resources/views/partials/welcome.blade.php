@@ -18,7 +18,7 @@
         </div>
       </div>
     </form>
-    <form id="formio_import" class="form-horizontal" action="/form/formioImport" method="POST"
+    <!--form id="formio_import" class="form-horizontal" action="/form/formioImport" method="POST"
       enctype="multipart/form-data">
       <div class="form-group form-group-field field-m13" data-id="upload_file">
         <div class="field-wrapper">
@@ -26,7 +26,7 @@
           <input type="submit" value="Create Form.io" id="submit-formio" data-formtype="m14" class="btn-primary">
         </div>
       </div>
-    </form>
+    </form-->
     <div class="welcomeBox">
       <div>
         <a href="javascript:void(0)" class="btn btn-info btn-lg">Create a New Form</a>

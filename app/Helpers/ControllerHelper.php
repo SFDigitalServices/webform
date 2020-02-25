@@ -106,7 +106,7 @@ class ControllerHelper
     {
         if ($data) {
             foreach ($data as $field) {
-                if ($field['formtype'] === "m13") {
+                if (isset($field['formtype']) && $field['formtype'] === "m13") {
                     return true;
                 }
             }
@@ -500,7 +500,7 @@ class ControllerHelper
           break;
         case "textarea": $ret = array("formtype" => "i14", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
           break;
-        case "date": $ret = array("key" => $id, "name" => $name, "label" => $label, "type" => $type);
+        case "date": $ret = array("id" => $id, "name" => $name, "label" => $label, "type" => $type, "formtype" => "d02");
           break;
           // TODO:
         case "address": $ret = $this->buildAddressFields($field);
