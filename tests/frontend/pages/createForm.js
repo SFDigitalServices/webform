@@ -23,11 +23,20 @@ module.exports = {
       I.fillField('label', 'Number')
       I.fillField('name', 'number_name')
       I.fillField('id', 'number_id')
+      I.fillField('min', '10')
+      I.fillField('max', '20')
       I.click('Save')
       I.wait(2)
       I.switchTo('iframe');
       I.wait(3)
       I.waitForText('Number', 3, '#SFDSWF-Container')
+    })
+    When('I fill out the wrong number and click submit',  () => {
+      I.fillField('Number', '5')
+      I.click('Submit')
+    })
+    Then('I should see an error message',  () => {
+      I.waitForText('Please select a value that is no less than 10.', 2, '#SFDSWFB-Container')
       await I.switchTo();
     })
     When('I click to insert a multi field', async () => {
