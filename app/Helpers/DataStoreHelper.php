@@ -11,7 +11,6 @@ use DB;
 use App\Form;
 use Exception;
 use App\Helpers\ControllerHelper;
-use App\Helpers\HTMLHelper;
 use Validator;
 
 class DataStoreHelper extends Migration
