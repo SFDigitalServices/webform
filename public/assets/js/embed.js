@@ -13,47 +13,28 @@ SFDSWFB.loadRemainingScripts = function() {
       jQuery('#SFDSWFB-admin .content').hide()
       jQuery('#SFDSWFB-admin input[type=checkbox]').prop('checked', false)
     } else {
-
-jQuery('#upload_file').dropzone( {
-    url: jQuery('#SFDSWF-Container form').prop('action'),
-    autoProcessQueue: true,
-    uploadMultiple: true,
-    params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+jQuery('#upload_file').prop('name')+'" }' ),
-    parallelUploads: 2,
-    maxFiles: 10,
-    maxFilesize: 5,
-    acceptedFiles: 'image/*,application/pdf',
-    addRemoveLinks: true,
-        /*
-    init: function() {
-        dzClosure = this; // Makes sure that 'this' is understood inside the functions below.
-        // for Dropzone to process the queue (instead of default form behavior):
-        document.getElementById("submit-all").addEventListener("click", function(e) {
-            // Make sure that the form isn't actually being sent.
-            e.preventDefault();
-            e.stopPropagation();
-            dzClosure.processQueue();
-        });
-
-        //send all the form data along with the files:
-        this.on("sendingmultiple", function(data, xhr, formData) {
-            formData.append("firstname", jQuery("#firstname").val());
-            formData.append("lastname", jQuery("#lastname").val());
-        });
-    },
-        */
-        success: function (file, response) {
+      jQuery('div[data-formtype=m13]').each(function(){
+        jQuery(this).dropzone( {
+          url: jQuery('#SFDSWF-Container form').prop('action').replace('\/submit', '\/uploadFile'),
+          autoProcessQueue: true,
+          uploadMultiple: true,
+          params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+jQuery(this).attr('name')+'" }' ),
+          parallelUploads: 1,
+          maxFiles: 1,
+          maxFilesize: 5,
+          acceptedFiles: 'image/*,application/pdf',
+          addRemoveLinks: false,
+          success: function (file, response) {
             var imgName = response;
             file.previewElement.classList.add("dz-success");
             console.log("Successfully uploaded :" + imgName);
-        },
-        error: function (file, response) {
+            jQuery('#SFDSWFB-Container .file-custom[name='+response.field_name+']').append('<input type="hidden" name="'+response.field_name+'" value="'+response.filename+'"/>');
+          },
+          error: function (file, response) {
             file.previewElement.classList.add("dz-error");
-        }
-} );
-//jQuery('.form-group.field-m13').dropzone({ url: jQuery('#SFDSWF-Container form').prop('action') })
-
-
+          }
+        } );
+      });
       SFDSWFB.lastScript()
     }
   }
