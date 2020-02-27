@@ -831,6 +831,8 @@ class DataStoreHelper extends Migration
                       $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
                       $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
                       $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
+                  } else if ($request->file($field['name']) == null && $request->input($field['name']) != "") {
+                      $write['db'][$field['name']] = $request->input($field['name']);
                   }
                   $column++;
                 } else {

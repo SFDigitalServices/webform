@@ -575,10 +575,10 @@ class HTMLHelper
     {
 		$attributes = self::setAttributes($field);
 		$prepended = self::getPrepended($field);
-        $html = $prepended . '<label style="height:auto">';
+        $html = $prepended . '<label>';
         $html .= '<span class="label">'. $field['label'] . '</span>';
         //$html .= '<input' . $attributes . '/><span class="file-custom" data-filename=""></span>';
-        $html .= '<div'. $attributes.'class="dz-message file-custom" style="position:relative;width:auto;padding:2rem 0 1rem;border: 3px dashed #4f66ee; text-align:center; border-radius:8px; margin:0.5rem 0"><span class="dragndrop">Drop files here or click to upload.</span></div>';
+        $html .= '<div'. $attributes.' class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div>';
         $html .= '</label>';
         return $html;
     }
