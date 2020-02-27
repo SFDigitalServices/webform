@@ -313,7 +313,6 @@ function submitPartial(formid, submitType = 'partial'){
   }
   else{ //complete submit
     jQuery.ajax(settings).done(function (response) {
-      console.log(response);
       if(response.status !== undefined ){
         if(response.status == 0){
           var errors = response['errors'];

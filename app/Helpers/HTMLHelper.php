@@ -577,7 +577,6 @@ class HTMLHelper
 		$prepended = self::getPrepended($field);
         $html = $prepended . '<label>';
         $html .= '<span class="label">'. $field['label'] . '</span>';
-        //$html .= '<input' . $attributes . '/><span class="file-custom" data-filename=""></span>';
         $html .= '<div'. $attributes.' class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div>';
         $html .= '</label>';
         return $html;

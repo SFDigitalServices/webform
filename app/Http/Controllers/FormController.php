@@ -456,18 +456,15 @@ class FormController extends Controller
     */
     public function uploadFile(Request $request)
     {
+        $ret = response()->json(['status' => 0, 'message' => 'Error, file did not upload.']);
         $form_id = $request->input('form_id');
-        if (!$form_id) {
-          return response()->json(['status' => 0, 'message' => 'Error, file did not upload.']);
+        if ($form_id) {
+          $form = Form::where('id', $form_id)->first();
+          if ($filename = $this->dataStoreHelper->parseUploadedFile($form, $request->input('field_name'), $request->file()['file'][0])) {
+            $ret = response()->json(['status' => 1, 'message' => 'Success, file uploaded.', 'filename' => $filename, 'field_name' => $request->input('field_name')]);
+          }
         }
-        $form = Form::where('id', $form_id)->first();
-        $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-
-        if ($filename = $this->dataStoreHelper->parseUploadedFile($form, $request->input('field_name'), $request->file()['file'][0])) {
-          return response()->json(['status' => 1, 'message' => 'Success, file uploaded.', 'filename' => $filename, 'field_name' => $request->input('field_name')]);
-        } else {
-          return response()->json(['status' => 0, 'message' => 'Error, file did not upload.']);
-        }
+        return $ret;
     }
 
   /** Gets S3 unique filename
