@@ -989,7 +989,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     public function testFormFile(){
         // test file uploads
         $emptyFile = HTMLHelper::formFile($this->attributes);
-        $expected = '<label><span class="label"></span><input/><span class="file-custom" data-filename=""></span></label>';
+        $expected = '<label><span class="label"></span><div class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div></label>';
         $this->assertSame($expected, $emptyFile);
 
         $this->attributes['label'] = 'test';
@@ -1506,7 +1506,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStartFile . '<div class="form-group form-group-field field-m13" data-id="upload_file"><div class="field-wrapper"><label><span class="label">Upload File</span><input data-formtype="m13" id="upload_file" name="upload_file" type="file"/><span class="file-custom" data-filename=""></span></label></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStartFile . '<div class="form-group form-group-field field-m13" data-id="upload_file"><div class="field-wrapper"><label><span class="label">Upload File</span><div data-formtype="m13" id="upload_file" name="upload_file" type="file" class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div></label></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
