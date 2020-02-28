@@ -1908,7 +1908,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       $this->assertEquals($expected, $spaces);
 
       $notmatch = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "doesn't match", "bar");
-      $expected = "jQuery('#foo[value=\"this has spaces\"]').length === 0";
+      $expected = "jQuery('#foo[value=\"bar\"]').length === 0";
       $this->assertEquals($expected, $notmatch);
     }
 
