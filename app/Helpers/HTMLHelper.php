@@ -1159,10 +1159,10 @@ class HTMLHelper
 				$output = "";
 				break;
 			case "matches":
-				$output = "jQuery('".$sel."[value=".$value."]').length";
+				$output = "jQuery('".$sel."[value=\"".$value."\"]').length";
 				break;
 			case "doesn't match":
-				$output = "jQuery('".$sel."[value=".$value."]').length === 0";
+				$output = "jQuery('".$sel."[value=\"".$value."\"]').length === 0";
 				break;
 			case "is less than": // will only check the first match, not sure how it would work with multiple
 				$output = "jQuery('".$sel."').val() < ".$value;
