@@ -1007,7 +1007,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = '';
         $this->attributes['formtype'] = 'm13';
         $notEmptyFile = HTMLHelper::formFile($this->attributes);
-        $expected = '<label><span class="label">test</span><input id="test" type="file" data-formtype="m13"/><span class="file-custom" data-filename=""></span></label>';
+        $expected = '<label><span class="label">test</span><div id="test" type="file" data-formtype="m13" class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div></label>';
         $this->assertEquals($expected, $notEmptyFile);
 
         $this->attributes['label'] = 'test';
@@ -1025,7 +1025,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 		$this->attributes['max'] = 'invalid';
         $this->attributes['formtype'] = 'm13';
         $notEmptyFile = HTMLHelper::formFile($this->attributes);
-        $expected = '<label><span class="label">test</span><input id="foo" name="bar" type="file" data-formtype="m13" required class="large rounded"/><span class="file-custom" data-filename=""></span></label>';
+        $expected = '<label><span class="label">test</span><div id="foo" name="bar" type="file" data-formtype="m13" required class="large rounded dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div></label>';
         $this->assertEquals($expected, $notEmptyFile);
     }
     public function testFormButton(){
