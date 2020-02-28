@@ -438,7 +438,7 @@ class HTMLHelper
           case "s06": //checkbox
             $type = "checkbox";
             $array = "[]";
-            $extra = (isset($field['required']) && $field['required'] !== "" && $field['required'] !== "false" && $field['required'] !== false) ? ' data-required="1" data-error="This field cannot be blank."' : '';
+            $extra = self::isRequired($field) ? ' data-required="1" data-error="This field cannot be blank."' : '';
             break;
         }
         //js added inline instead of from JS due to simplicity of binding
@@ -498,7 +498,7 @@ class HTMLHelper
         //convert checkboxes to options and remove them from fields
         $options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
         unset($field['checkboxes']);
-        if (isset($field['required']) && $field['required'] !== "" && $field['required'] !== "false" && $field['required'] !== false) $field['data-required'] = true;
+        if (self::isRequired($field)) $field['data-required'] = true;
         //get attributes
         $attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
@@ -687,7 +687,7 @@ class HTMLHelper
         $non_inputs = array('m02', 'm04', 'm06', 'm08', 'm10', 'm11', 'm14', 'm16'); //m13 is file upload
         $label_for = isset($field['id']) && $field['id'] !== "" ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
         $label_text = isset($field['label']) ? $field['label'] : "";
-        $optional = (!isset($field['required']) || $field['required'] === "" || $field['required'] === "false") && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
+        $optional = !self::isRequired($field) && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
 
         if (in_array($field['formtype'], $legends)) {
           $start = '<legend class="control-label">';
@@ -700,6 +700,14 @@ class HTMLHelper
         return $start . $label_text . $optional . $end;
     }
 
+    public static function isRequired($field) {
+      $ret = false;
+      if (isset($field['required'])) {
+        if ($field['required'] === true || $field['required'] === "true" || $field['required'] === "1" || $field['required'] === 1) $ret = true;
+      }
+      return $ret;
+    }
+
    /** Constructs help text block
      *
      * @param $field
@@ -708,7 +716,7 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-      $output = '<div class="help-block with-errors"></div>';
+      $output = '<div class="help-block with-errors" id="SFDSWF-'.$field['id'].'-with-errors"></div>';
       if (isset($field['help']) && $field['help'] !== "") {
         $output .= '<p class="help-text">'.html_entity_decode($field['help']).'</p>';
       }
@@ -973,6 +981,9 @@ class HTMLHelper
       if($field['formtype'] !== "m13") {
         $html .= self::fieldLabel($field);
       }
+
+      //add aria invalid attributes to required forms
+      if (self::isRequired($field)) $field['aria-invalid'] = "false";
 
       $html .= '<div class="field-wrapper">';
 
