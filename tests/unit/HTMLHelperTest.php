@@ -1881,33 +1881,35 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       $expected = '(jQuery(\'#foo\').val()).search(/bar/i) == -1';
       $this->assertEquals($expected, $doesnot);
 
-      $matches = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "matches", "bar", false);
+      $matches = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "==", "bar", false);
       $expected = "jQuery('#foo').val() == 'bar'";
       $this->assertEquals($expected, $matches);
 
-      $number = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "greater than", 2, false);
+      $number = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", ">", 2, false);
       $expected = "jQuery('#foo').val() > 2";
       $this->assertEquals($expected, $number);
     }
 
     public function testGetCheckboxConditionalStatement() {
-      $blank = $this->htmlHelperTester->getConditionalStatement($sel, $op, $value);
-
-      $contains = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "contains", "bar");
+      $contains = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "contains", "bar");
       $expected = "(jQuery('#foo').val()).map(function() {return jQuery(this).val();}).get().join()).search(/bar/i) != -1";
       $this->assertEquals($expected, $contains);
 
-      $doesnot = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "contains", "bar");
+      $doesnot = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "doesn't contain", "bar");
       $expected = "(jQuery('#foo').val()).map(function() {return jQuery(this).val();}).get().join()).search(/bar/i) == -1";
       $this->assertEquals($expected, $doesnot);
 
-      $matches = $this->htmlHelperTester->getConditionalStatement("#foo", "matches", "bar", false);
+      $matches = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "matches", "bar");
       $expected = "jQuery('#foo[value=\"bar\"]').length";
       $this->assertEquals($expected, $matches);
 
-      $spaces = $this->htmlHelperTester->getConditionalStatement("#foo", "matches", "this has spaces", false);
+      $spaces = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "matches", "this has spaces");
       $expected = "jQuery('#foo[value=\"this has spaces\"]').length";
       $this->assertEquals($expected, $spaces);
+
+      $notmatch = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "doesn't match", "bar");
+      $expected = "jQuery('#foo[value=\"this has spaces\"]').length === 0";
+      $this->assertEquals($expected, $notmatch);
     }
 
 }
