@@ -922,18 +922,70 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $validation_rules = array();
+        $formtypes = array();
+        $pages = array();
+        $currentPage = '';
+        $skip = array();
 
         foreach ($definitions as $key => $definition) {
-            if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
-
-                if (isset($definition['conditions'])) break; //temporarily do not validate fields that may be hidden in conditionals
-
-                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
-                if($rule != '')
-                  $validation_rules[$definition['name']] = $rule;
+          //populate formtypes array with $formtypes[id] = formtype
+          $formtypes[$definition['id']] = $definition['formtype'];
+          //for page separators, get a list of pages and their fields
+          if ($definition['formtype'] === "m16") {
+            if (isset($definition['conditions'])) {
+              //populate pages array as $pages[page id] = array('name','phone','email')
+              $pages[$definition['id']] = array();
+              //set currentPage as the last known page container
+              $currentPage = $definition['id'];
+            } else {
+              $currentPage = '';
             }
+          } else if ($currentPage !== '') {
+            //if currentPage is set, add new ids as children of that page
+            $pages[$currentPage][] = $definition['id'];
+          }
         }
+
+        foreach ($definitions as $key => $definition) {
+          if ($definition && (!$this->controllerHelper->isNonInputField($definition['formtype']) || $definition['formtype'] === "m16")) {
+            $rule = '';
+
+            if (!in_array($definition['id'], $skip)) {
+              if (isset($definition['conditions'])) {
+                // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
+
+                //check if it's related to a page or a field
+                if ($definition['formtype'] == "m16") {
+
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, do nothing; leave fields in definitions array to be validated normally
+                  } else {
+                    //otherwise, remove all fields related to this page
+                    $skip = $pages[$definition['id']];
+                  }
+
+                } else {
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, validate this field
+                    $rule = $this->getValidationRule($definition, $request);
+                  }
+                  // else mismatch, leave rule empty, field is not visible and should be discarded from validation
+                }
+
+              } else {
+                $rule = $this->getValidationRule($definition, $request);
+              }
+            }
+
+            if($rule !== '')
+              $validation_rules[$definition['name']] = $rule;
+          }
+        }
+
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
@@ -942,14 +994,90 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
+    /** Checks condition as a statement
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $condition array consisting of conditional statement params ( [id] => checkboxes [op] => matches [val] => Maybe )
+      *
+      * @return bool
+    */
+    public function checkCondition($request, $formtypes, $condition) {
+      if ($formtypes[$condition['id']] == 's06') {
+        $val = $request->input($condition['id'])[0];
+      } else {
+        $val = $request->input($condition['id']);
+      }
+      switch ($condition['op']) {
+        case "matches":
+          if ($val == $condition['val']) return true;
+          break;
+        case "doesn't match":
+          if ($val != $condition['val']) return true;
+          break;
+        case "is less than":
+          if ($val < $condition['val']) return true;
+          break;
+        case "is more than":
+          if ($val > $condition['val']) return true;
+          break;
+        case "contains anything":
+          if ($val != '') return true;
+          break;
+        case "is blank":
+          if ($val === '') return true;
+          break;
+        case "contains":
+          if (strpos($val, $condition['val']) !== false) return true;
+          break;
+        case "doesn't contain":
+          if (strpos($val, $condition['val']) === false) return true;
+          break;
+      }
+      return false;
+    }
+
+    /** Checks collection of conditions
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $conditions array of conditions consisting of conditional statement params
+      *
+      * @return bool
+    */
+    public function checkManyConditions($request, $formtypes, $conditions) {
+      //loop through each condition
+      foreach ($conditions['condition'] as $index => $condition) {
+        $thisCondition = $this->checkCondition($request, $formtypes, $condition);
+        if ($thisCondition && $conditions['allAny'] === "any") {
+          return true;
+        } else if (!$thisCondition && $conditions['allAny'] === "all") {
+          return false;
+        }
+      }
+      return $conditions['allAny'] === "any" ? false : true;
+    }
+
+    /** gets validation rule for single input
+    *
+    * @param $definition
+    * @param $request
+    *
+    * @return String
+    */
+    public function getValidationRule($definition, $request)
+    {
+      $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+      return implode('|', $this->setValidationRules($definition));
+    }
+
     /** sets validation rules for all input types
     *
     * @param $definition
-    * @param @field
     *
     * @return Array
     */
-    private function setValidationRules($definition, $field)
+    public function setValidationRules($definition, $field = null)
     {
         $rules = array();
         foreach ($definition as $key => $value) {
@@ -975,8 +1103,6 @@ class DataStoreHelper extends Migration
                       $rules[] = "min:".$value;
                   }
                       break;
-                case "option": $rules[] = "Array";
-                    break;
                 case "type":
                     if ($value === 'email') {
                         $rules[] = "email";
@@ -997,6 +1123,8 @@ class DataStoreHelper extends Migration
                         $rules[] = "string";
                     } elseif ($value === 'm10') { //HTML code
                         $rules[] = "string";
+                    } elseif ($value === 's06') {
+                        $rules[] = "Array";
                     }
                     break;
                 default:
