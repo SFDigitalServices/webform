@@ -1874,11 +1874,11 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
     public function testGetConditionalStatement() {
       $contains = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "contains", "bar", false);
-      $expected = '("jQuery(\'#foo\').val()").search(/bar/i) != -1';
+      $expected = '(jQuery(\'#foo\').val()).search(/bar/i) != -1';
       $this->assertEquals($expected, $contains);
 
       $doesnot = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "doesn't contain", "bar", false);
-      $expected = '("jQuery(\'#foo\').val()").search(/bar/i) == -1';
+      $expected = '(jQuery(\'#foo\').val()).search(/bar/i) == -1';
       $this->assertEquals($expected, $doesnot);
 
       $matches = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "matches", "bar", false);
