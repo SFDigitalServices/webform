@@ -254,6 +254,7 @@ class DataStoreHelper extends Migration
      * @param $form
      * @param $request
      * @param $status
+     * @param $push_to_adu
      *
      * @return Array
      */
@@ -295,8 +296,12 @@ class DataStoreHelper extends Migration
                     } else {
                         $write['db']['form_id'] = $form['id'];
                         if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
-                        $ret = $this->pushDataToADU($write['db']);
-                        if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
+                        // get push_to_adu from environment variable
+                        $push_to_adu = getenv("ADU_DISPATCHER_ENABLE");
+                        if( filter_var($push_to_adu, FILTER_VALIDATE_BOOLEAN))
+                          $ret = $this->pushDataToADU($write['db']);
+
+                          if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
                     }
@@ -889,7 +894,7 @@ class DataStoreHelper extends Migration
             $endpoint = getenv("ADU_DISPATCHER_ENDPOINT");
             $client = new GuzzleHttp\Client(['base_uri' => $endpoint]);
 
-            $res = $client->request('POST', '/adu/submissions', [
+            $res = $client->request('POST', '', [
           'headers' => [
             'Accept-Encoding' => 'gzip'
           ],
