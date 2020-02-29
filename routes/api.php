@@ -48,6 +48,7 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('export-csv', ['as' => 'export-csv', 'uses' => 'FormController@exportFormData']);
     $router->get('resume-draft', ['as' => 'resume-draft', 'uses' => 'FormController@resumeDraft']);
     $router->post('draft-list', ['as' => 'draft-list', 'uses' => 'FormController@getFormDraftList']);
+    $router->post('getPreviewPage', ['as' => 'getPreviewPage', 'uses' => 'FormController@getPreviewPage']);
 });
 
 $router->group(['prefix' => 'api'], function($router) {

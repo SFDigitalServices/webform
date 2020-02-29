@@ -397,6 +397,18 @@ class FormController extends Controller
         }
     }
 
+    public function getPreviewPage(Request $request){
+      $form_id = $request->input('form_id');
+      $form = Form::where('id', $form_id)->first();
+      $form['content'] = json_decode($form['content'], true);
+
+      if ($form_id) {
+          $submitted_data = $this->htmlHelper->formatSubmittedData($request->all(), $form['content']['data']);
+          Log::info(print_r($submitted_data, 1));
+          return view('layouts.submission', ['data' => $submitted_data]);
+      }
+    }
+
     /** Save partial form data
     *
     * @param $request

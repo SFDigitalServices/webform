@@ -121,7 +121,7 @@ div[style*="margin: 16px 0;"] {
 <h3>Below is a summary of what you just submitted:</h3>
   <ul>
     @foreach ($data as $field)
-      <li><{{ $field }}/li>
+      <li>{{ $field }}</li>
     @endforeach
   </ul>
 </div>
