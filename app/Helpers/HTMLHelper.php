@@ -390,7 +390,6 @@ class HTMLHelper
       if ($pageNumber == $pageCount) {
         // insert Preivew page, move submit button to the Preview page
         $html .= '<button id="preview_submit_page" class="btn btn-lg form-section-next">Next</button>';
-        //$html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
       } else {
         $html .= '<button class="btn btn-lg form-section-next">Next</button>';
       }
