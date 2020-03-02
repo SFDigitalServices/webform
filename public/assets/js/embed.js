@@ -13,6 +13,7 @@ SFDSWFB.loadRemainingScripts = function() {
       jQuery('#SFDSWFB-admin .content').hide()
       jQuery('#SFDSWFB-admin input[type=checkbox]').prop('checked', false)
     } else {
+      bindAriaValidation();
       SFDSWFB.lastScript()
     }
   }
@@ -139,6 +140,18 @@ function respondWebhook(response, data, populateField, endPoint, ids, responseIn
     //if (typeof parsedData == "object")
     jQuery('#'+populateField).val(parsedData);
   }
+}
+
+function bindAriaValidation() {
+  jQuery('#SFDSWF-Container form').on('invalid.bs.validator', function(e) {
+    var fieldId = jQuery(e.relatedTarget).attr('id');
+    jQuery(e.relatedTarget).attr('aria-invalid', true);
+    jQuery(e.relatedTarget).attr('aria-describedby', 'SFDSWF-'+fieldId+'-with-errors');
+  });
+  jQuery('#SFDSWF-Container form').on('valid.bs.validator', function(e) {
+    jQuery(e.relatedTarget).attr('aria-invalid', false);
+    jQuery(e.relatedTarget).removeAttr('aria-describedby');
+  });
 }
 
 function prefill(arr) {
