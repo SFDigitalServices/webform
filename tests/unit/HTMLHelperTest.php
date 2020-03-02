@@ -1488,7 +1488,6 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $expected = "jQuery('#address, #apikey').on('change',function(){if (jQuery('#address').val() != '' && jQuery('#apikey').val() != '') callWebhook('testid', 'https://sfds-prod.apigee.net/v1/PIM/parcels', Array('address','apikey'), 'data/parcels/0/attributes/blklot', 'get', false, null, null);});";
 
         $this->assertSame($expected, $multiWebhooks);
-
     }
 
     /**
