@@ -35,7 +35,7 @@ module.exports = {
       I.fillField('Number', '5')
       I.click('Submit')
     })
-    Then('I should see an error message',  () => {
+    Then('I should see an error message', async () => {
       I.waitForText('Please select a value that is no less than 10.', 2, '#SFDSWFB-Container')
       await I.switchTo();
     })
