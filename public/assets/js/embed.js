@@ -184,7 +184,6 @@ function initSectional() {
 
   //go to page by index
   var SFDSWF_paginate = function(i, browserHistory) {
-    console.log(i);
     browserHistory = typeof browserHistory === "undefined" ? false : true
     var forward = i > SFDSWF_currentPage() ? true : false
     var totalPages = jQuery('#SFDSWF-Container .form-section').length
@@ -416,7 +415,7 @@ function loadPreviewPage(formid){
 
   previewPageURL = previewPageURL.replace('\/submit', '\/getPreviewPage');
   var form_data = new FormData(jQuery("#"+formid)[0]);
-  console.log(form_data);
+  console.log(form_data)
   var settings = {
     'async': true,
     'crossDomain': true,

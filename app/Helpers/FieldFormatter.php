@@ -9,11 +9,11 @@ class FieldFormatter
     * @param $name
     * @param $value
     *
-    * @return HTML
+    * @return array
     */
     public static function formatEmail($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+        $html = array($name => $value);
         return $html;
     }
 
@@ -23,11 +23,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatPhone($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -36,11 +36,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatURL($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -49,12 +49,12 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatOptions($name, $value)
     {
         //$html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
-        $html = "";
+        $html = array($name => $value);
         return $html;
     }
     /**
@@ -67,7 +67,7 @@ class FieldFormatter
     */
     public static function formatFile($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -76,11 +76,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatNumber($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -89,11 +89,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatPrice($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -102,11 +102,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatDate($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -115,11 +115,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatTime($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = $value;
         return $html;
     }
     /**
@@ -128,11 +128,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatTextArea($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
     /**
@@ -141,11 +141,11 @@ class FieldFormatter
       * @param $name
       * @param $value
       *
-      * @return HTML
+      * @return array
     */
     public static function formatText($name, $value)
     {
-        $html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+      $html = array($name => $value);
         return $html;
     }
 }

@@ -718,7 +718,7 @@ class HTMLHelper
       return $output;
     }
 
-     /** Constructs help text block
+     /** Formats submitted data for preview
      *
      * @param $data
      * @param @definitions
@@ -736,53 +736,54 @@ class HTMLHelper
             if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
                 $type = $definition['formtype'];
             } else {
-                Log::info(print_r($definition, 1));
                 $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
             }
             $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
             $value = isset($data[$name]) ? $data[$name] : "";
 
-            switch ($type) {
-            case 'email': // format emals
-              $ret[] = FieldFormatter::formatEmail($name, $value);
-              break;
-            case 'url': // format url
-              $ret[] = FieldFormatter::formatURL($name, $value);
-              break;
-            case 'tel': // format phone
-              $ret[] = FieldFormatter::formatPhone($name, $value);
-              break;
-            case 's02':
-            case 's14':
-            case 's15':
-            case 's16': // dropdowns, radios, checkbox put a check mark before the value
-            case 's08':
-            case 's06':
-              $ret[] = FieldFormatter::formatOptions($name, $value);
-              break;
-            case 'file': // format name and size
-              $ret[] = FieldFormatter::formatFile($name, $value);
-              break;
-            case 'number': // format number, append units
-              $ret[] = FieldFormatter::formatNumber($name, $value);
-              break;
-            case 'd08':
-            case 'price': // format currency
-              $ret[] = FieldFormatter::formatPrice($name, $value);
-              break;
-            case 'date': // format date
-              $ret[] = FieldFormatter::formatDate($name, $value);
-              break;
-            case 'i14': // format textarea, strip all html
-              $ret[] = FieldFormatter::formatTextArea($name, $value);
-              break;
-            case 'd04': // format Time
-            case 'time':
-              $ret[] = FieldFormatter::formatTime($name, $value);
-              break;
-            default: //format all other inputs as text
-            $ret[] = FieldFormatter::formatText($name, $value);
-              break;
+            if ($value != "") {
+                switch ($type) {
+                  case 'email': // format emals
+                    $ret[] = FieldFormatter::formatEmail($name, $value);
+                    break;
+                  case 'url': // format url
+                    $ret[] = FieldFormatter::formatURL($name, $value);
+                    break;
+                  case 'tel': // format phone
+                    $ret[] = FieldFormatter::formatPhone($name, $value);
+                    break;
+                  case 's02':
+                  case 's14':
+                  case 's15':
+                  case 's16': // dropdowns, radios, checkbox put a check mark before the value
+                  case 's08':
+                  case 's06':
+                    $ret[] = FieldFormatter::formatOptions($name, $value);
+                    break;
+                  case 'file': // format name and size
+                    $ret[] = FieldFormatter::formatFile($name, $value);
+                    break;
+                  case 'number': // format number, append units
+                    $ret[] = FieldFormatter::formatNumber($name, $value);
+                    break;
+                  case 'd08':
+                  case 'price': // format currency
+                    $ret[] = FieldFormatter::formatPrice($name, $value);
+                    break;
+                  case 'date': // format date
+                    $ret[] = FieldFormatter::formatDate($name, $value);
+                    break;
+                  case 'i14': // format textarea, strip all html
+                    $ret[] = FieldFormatter::formatTextArea($name, $value);
+                    break;
+                  case 'd04': // format Time
+                  case 'time':
+                    $ret[] = FieldFormatter::formatTime($name, $value);
+                    break;
+                  default: //format all other inputs as text
+                  $ret[] = FieldFormatter::formatText($name, $value);
+                    break;
+              }
             }
         }
       }
