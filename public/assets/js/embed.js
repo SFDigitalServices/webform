@@ -172,7 +172,7 @@ function getDataInPath(obj, path) {
 //returns boolean
 function validPage() {
   jQuery('#SFDSWF-Container .form-section.active').validator('validate');
-  return jQuery('#SFDSWF-Container .form-section.active .has-error').length === 0 ? true : false
+  return jQuery('#SFDSWF-Container .form-section.active .has-error:visible').length === 0 ? true : false
 }
 
 function initSectional() {
