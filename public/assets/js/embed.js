@@ -172,7 +172,7 @@ function getDataInPath(obj, path) {
 //returns boolean
 function validPage() {
   jQuery('#SFDSWF-Container .form-section.active').validator('validate');
-  return jQuery('#SFDSWF-Container .form-section.active .has-error').length === 0 ? true : false
+  return jQuery('#SFDSWF-Container .form-section.active .has-error:visible').length === 0 ? true : false
 }
 
 function initSectional() {
@@ -347,7 +347,7 @@ SFDSWFB.lastScript = function() {
     }
     // UI validation
     var formValid = true;
-    jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
+    jQuery('#SFDSWF-Container input[data-formtype=c06]:visible').each(function() {
       if ((!jQuery(this).prop('required') && jQuery(this).val() === "") || (phoneIsValid(jQuery(this).val()))) {
           fieldValid(jQuery(this).attr('id'));
         } else {
