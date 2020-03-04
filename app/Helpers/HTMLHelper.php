@@ -746,7 +746,7 @@ class HTMLHelper
             } else {
                 $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
             }
-            $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
+            $name= isset($definition['name']) ? ucfirst($definition['name']) : ucfirst($definition['id']);
             $value = isset($data[$name]) ? $data[$name] : "";
 
             if ($value != "") {

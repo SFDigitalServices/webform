@@ -404,8 +404,8 @@ class FormController extends Controller
 
       if ($form_id) {
           $submitted_data = $this->htmlHelper->formatSubmittedData($request->all(), $form['content']['data']);
-          Log::info(print_r($submitted_data, 1));
-          return view('layouts.submission', ['data' => $submitted_data]);
+          $source = "preview_page";
+          return view('layouts.submission', ['data' => $submitted_data, 'source' => $source]);
       }
     }
 

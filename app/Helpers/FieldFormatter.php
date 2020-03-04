@@ -13,6 +13,7 @@ class FieldFormatter
     */
     public static function formatEmail($name, $value)
     {
+        $value = '<a href="mailto:'.$value.'">'.$value.'</a>';
         $html = array($name => $value);
         return $html;
     }
@@ -40,7 +41,7 @@ class FieldFormatter
     */
     public static function formatURL($name, $value)
     {
-      $html = array($name => $value);
+        $value = '<a href="'.$value.'" target="_blank" >'.$value.'</a>';
         return $html;
     }
     /**
@@ -106,7 +107,8 @@ class FieldFormatter
     */
     public static function formatDate($name, $value)
     {
-      $html = array($name => $value);
+        $value = date("F j, Y", strtotime($value));
+        $html = array($name => $value);
         return $html;
     }
     /**
@@ -119,7 +121,7 @@ class FieldFormatter
     */
     public static function formatTime($name, $value)
     {
-      $html = $value;
+        $value = date("g:i a", strtotime($value));
         return $html;
     }
     /**
