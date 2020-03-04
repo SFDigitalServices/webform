@@ -347,7 +347,7 @@ SFDSWFB.lastScript = function() {
     }
     // UI validation
     var formValid = true;
-    jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
+    jQuery('#SFDSWF-Container input[data-formtype=c06]:visible').each(function() {
       if ((!jQuery(this).prop('required') && jQuery(this).val() === "") || (phoneIsValid(jQuery(this).val()))) {
           fieldValid(jQuery(this).attr('id'));
         } else {
