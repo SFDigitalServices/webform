@@ -1,5 +1,6 @@
 <?php
 namespace App\Helpers;
+use Log;
 
 class FieldFormatter
 {
@@ -28,7 +29,7 @@ class FieldFormatter
     */
     public static function formatPhone($name, $value)
     {
-      $html = array($name => $value);
+        $html = array($name => $value);
         return $html;
     }
     /**
@@ -54,7 +55,17 @@ class FieldFormatter
     */
     public static function formatOptions($name, $value)
     {
-        //$html = '<div class="field-value"><label>'.$name.'</label><span>'.$value.'</span></div>';
+        $checklist = '';
+        $checkmark = '<img src="https://svgsilh.com/svg/40319.svg" height="25px" width="25px" />';
+        if(is_array($value)){
+          foreach($value as $option){
+            $checklist .= $checkmark . " " . $option;
+          }
+        }
+        else{
+          $checklist = $checkmark . " " . $value;
+        }
+        $value = $checklist;
         $html = array($name => $value);
         return $html;
     }
@@ -62,13 +73,18 @@ class FieldFormatter
       * Formats file field
       *
       * @param $name
+      * @param $file
       * @param $value
       *
       * @return HTML
     */
-    public static function formatFile($name, $value)
+    public static function formatFile($name, $file, $value)
     {
-      $html = array($name => $value);
+        $unit = ["B", "KB", "MB", "GB"];
+        $exp = floor(log($file->getSize(), 1024)) | 0;
+        $size = round($file->getSize() / (pow(1024, $exp)), 2).$unit[$exp];
+        $value = $file->getClientOriginalName() .": (". $size .")";
+        $html = array($name => $value);
         return $html;
     }
     /**
@@ -79,9 +95,9 @@ class FieldFormatter
       *
       * @return array
     */
-    public static function formatNumber($name, $value)
+    public static function formatNumber($name, $value, $unit)
     {
-      $html = array($name => $value);
+      $html = array($name => $value . " ". $unit);
         return $html;
     }
     /**
@@ -94,7 +110,7 @@ class FieldFormatter
     */
     public static function formatPrice($name, $value)
     {
-      $html = array($name => $value);
+        $html = array($name => '$'. $value.'');
         return $html;
     }
     /**
@@ -122,6 +138,7 @@ class FieldFormatter
     public static function formatTime($name, $value)
     {
         $value = date("g:i a", strtotime($value));
+        $html = array($name => $value);
         return $html;
     }
     /**

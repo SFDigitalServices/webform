@@ -116,7 +116,6 @@ div[style*="margin: 16px 0;"] {
 </style>
 </head>
 <body style="margin: 0 !important; padding: 0 !important;">
-<div>
 @if ($source == "preview_page")
   <h2>Preview your submission</h2>
 @else
@@ -126,7 +125,7 @@ div[style*="margin: 16px 0;"] {
   <ul>
     @foreach ($data as $k => $v)
       @foreach ($v as $key => $value)
-        <li> <label> {{ $key }}: <span class="form-field"> {!! $value !!}</span></label>  </li>
+        <li> <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </li>
       @endforeach
     @endforeach
   </ul>

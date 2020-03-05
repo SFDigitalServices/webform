@@ -403,7 +403,7 @@ class FormController extends Controller
       $form['content'] = json_decode($form['content'], true);
 
       if ($form_id) {
-          $submitted_data = $this->htmlHelper->formatSubmittedData($request->all(), $form['content']['data']);
+          $submitted_data = $this->htmlHelper->formatSubmittedData($request, $form['content']['data']);
           $source = "preview_page";
           return view('layouts.submission', ['data' => $submitted_data, 'source' => $source]);
       }
