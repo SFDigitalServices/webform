@@ -58,8 +58,13 @@ class FieldFormatter
         $checklist = '';
         $checkmark = '<img src="https://svgsilh.com/svg/40319.svg" height="25px" width="25px" />';
         if(is_array($value)){
+          $count = 0;
           foreach($value as $option){
-            $checklist .= $checkmark . " " . $option;
+            if($count > 0 )
+              $checklist .= '<div>' . $checkmark . " " . $option . '</div>';
+            else
+              $checklist .= $checkmark . " " . $option;
+            $count++;
           }
         }
         else{
