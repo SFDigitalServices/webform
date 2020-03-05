@@ -6,12 +6,14 @@ if (typeof jQuery === "function") {
 
 SFDSWFB.loadRemainingScripts = function() {
   if (SFDSWFB.preRenderScripts.length) {
-    SFDSWFB.loadScript('pre', SFDSWFB.loadRemainingScripts);
+    SFDSWFB.loadScript('pre', SFDSWFB.loadRemainingScripts)
   } else {
     if (SFDSWFB.postRenderScripts.length) {
-      SFDSWFB.loadScript('post', SFDSWFB.loadRemainingScripts);
+      SFDSWFB.loadScript('post', SFDSWFB.loadRemainingScripts)
+      jQuery('#SFDSWFB-admin .content').hide()
+      jQuery('#SFDSWFB-admin input[type=checkbox]').prop('checked', false)
     } else {
-      SFDSWFB.lastScript();
+      SFDSWFB.lastScript()
     }
   }
 }
@@ -243,33 +245,53 @@ function skipToSectionId(callback) {
   if (SFDSWFB.skipToSectionId) {
     var section = jQuery('div[data-id='+SFDSWFB.skipToSectionId+']')
     if (callback && section.is(":hidden")) callback(section.closest(".form-section").index('.form-section'))
-    section[0].scrollIntoView()
-    section.addClass('is-selected-in-editor')
+    if (typeof section[0] !== "undefined") {
+      section[0].scrollIntoView()
+      section.addClass('is-selected-in-editor')
+    }
   }
 }
 
-function submitPartial(formid){
+function submitPartial(formid, submitType = 'partial'){
   var formid = "SFDSWFB_forms_" + formid;
   var submitUrl = jQuery("#"+formid).attr('action');
 
-  if(!submitUrl.includes('submitPartial'))
+  if(submitType !== 'complete' && !submitUrl.includes('submitPartial') )
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
 
-  var form_data = jQuery("#"+formid).serialize();
+  var form_data = new FormData(jQuery("#"+formid)[0]);
   var settings = {
     'async': true,
     'crossDomain': true,
     'url': submitUrl,
     'method': 'POST',
-    'headers': {
-      'content-type': 'application/x-www-form-urlencoded',
-      'cache-control': 'no-cache'
-    },
-    'data':  form_data
+    'data':  form_data,
+    'processData': false,
+    'contentType': false
   }
-  jQuery.ajax(settings).done(function (response) {
-    jQuery("body").html(response);
-  })
+  if(submitType !== 'complete'){ //partial submit
+    jQuery.ajax(settings).done(function (response) {
+      jQuery("body").html(response);
+    })
+  }
+  else{ //complete submit
+    jQuery.ajax(settings).done(function (response) {
+      if(response.status !== undefined ){
+        if(response.status == 0){
+          var errors = response['errors'];
+          Object.keys(errors).forEach(function(item){
+            fieldInvalid(item);
+          })
+        }
+        else if(response['redirect_url'] != ''){
+          window.location.href = response['redirect_url'];
+        }
+    }
+    else{ //show user their submitted data
+        jQuery("body").html(response);
+      }
+    })
+  }
 }
 
 SFDSWFB.lastScript = function() {
@@ -277,6 +299,10 @@ SFDSWFB.lastScript = function() {
   skipToSectionId(false)
 
 	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
+      if (!jQuery(this).prop('required') && jQuery(this).val() === "") {
+        fieldValid(jQuery(this).attr('id'));
+        return
+      }
 			if (phoneIsValid(jQuery(this).val())) {
 				fieldValid(jQuery(this).attr('id'));
 			} else {
@@ -296,24 +322,60 @@ SFDSWFB.lastScript = function() {
     jQuery(this).next('.file-custom').attr('data-filename', file);
   });
 
+  jQuery('#SFDSWF-Container input[type=checkbox]').on('click', function() {
+    requireCheckboxGroup(this)
+  });
+
 	jQuery('#SFDSWF-Container form').submit(function(e) {
-		var formValid = true;
-		jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
-			if (phoneIsValid(jQuery(this).val())) {
-				fieldValid(jQuery(this).attr('id'));
-			} else {
-				formValid = false;
-				fieldInvalid(jQuery(this).attr('id'));
-			}
-		});
-    if (!formValid || !validPage()) {
-      e.preventDefault()
+    e.preventDefault(); // let ajax handles the form submit
+    var form_id = jQuery(this.form_id).val();
+    if( !form_id ){
+      return false;
+    }
+    // UI validation
+    var formValid = true;
+    jQuery('#SFDSWF-Container input[data-formtype=c06]').each(function() {
+      if ((!jQuery(this).prop('required') && jQuery(this).val() === "") || (phoneIsValid(jQuery(this).val()))) {
+          fieldValid(jQuery(this).attr('id'));
+        } else {
+          formValid = false;
+          fieldInvalid(jQuery(this).attr('id'));
+        }
+    });
+    // If UI validation passed, perfrom back end validation
+    if (formValid && validPage()) {
+      if (!jQuery('#SFDSWF-Container .has-error:visible').length) submitPartial(form_id, 'complete')
     }
   });
 
   if(window.draftData !== undefined){
     populateForm(window.draftData);
   }
+}
+
+function insertOtherTextInput(obj) {
+  if (!jQuery(obj).find("input[type=text]").length) {
+    var labelId = jQuery(obj).attr('for')
+    jQuery(obj).append('<input type="text" onclick="jQuery(\'#'+labelId+'\').prop(\'checked\', true)" onchange="setOtherValue(this)" id="'+labelId+'_input" />');
+  }
+}
+
+function requireCheckboxGroup(obj) {
+  if (jQuery(obj).data('required')) {
+    if (jQuery(obj).parents('.form-group').find('input[type=checkbox]:checked').length) {
+      jQuery(obj).parents('.form-group').find('input[type=checkbox]').prop('required', false)
+      jQuery(obj).parents('.form-group').validator('destroy')
+      jQuery('#SFDSWF-Container').validator('validate')
+    } else {
+      jQuery(obj).parents('.form-group').find('input[type=checkbox]').prop('required', true)
+      jQuery(obj).parents('.form-group').validator('destroy')
+      jQuery(obj).parents('.form-group').validator('validate')
+    }
+  }
+}
+
+function setOtherValue(obj) {
+  jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
 }
 
 function populateForm(formData){
@@ -347,4 +409,32 @@ function getCheckedCheckboxesFor(elements, items) {
           elements[i].checked = true;
         }
     }
+}
+
+function toggleAdminTab() {
+  if (jQuery('#SFDSWFB-admin .content').is(':visible')) {
+    jQuery('#SFDSWFB-admin .content').hide();
+    jQuery('#SFDSWFB-admin .adminTabArrow').prop('class', 'adminTabArrow fa fa-angle-up')
+  } else {
+    jQuery('#SFDSWFB-admin .content').show();
+    jQuery('#SFDSWFB-admin .adminTabArrow').prop('class', 'adminTabArrow fa fa-angle-down')
+  }
+}
+
+function toggleShowAllFields(obj) {
+  if (obj.checked) {
+    jQuery('.form-content').addClass('displayOverride');
+    jQuery('.form-group').addClass('displayOverride');
+  } else {
+    jQuery('.form-content').removeClass('displayOverride');
+    jQuery('.form-group').removeClass('displayOverride');
+  }
+}
+
+function toggleShowAllPages(obj) {
+  if (obj.checked) {
+    jQuery('.form-section').addClass('displayOverride');
+  } else {
+    jQuery('.form-section').removeClass('displayOverride');
+  }
 }

@@ -240,30 +240,24 @@ class FormController extends Controller
     */
     public function create(Request $request)
     {
-        // validate form data
-        if ($this->validateForm($request)) {
-            $form = Form::create(['content' => $this->controllerHelper->scrubString($request->input('content'))]);
-            if ($form) {
-                // create entry in user_form
-                $user_id = $request->input('user_id');
-                $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
-                if ($user_form) {
-                    $returnForm = Form::where('id', $form->id)->first();
-                    $returnForm['content'] = json_decode($returnForm['content'], true);
-                    // create the form table
-                    //if (isset($returnForm['content']['settings']['backend']) && $returnForm['content']['settings']['backend'] == "csv") {
-                        $created_table = $this->dataStoreHelper->createFormTable('forms_'.$form->id, $returnForm['content']['data']);
-                        if ($created_table) {
-                            return response()->json($returnForm);
-                        } else {
-                            return response()->json(['status' => 0, 'message' => 'Created form but failed to create form table']);
-                        }
-                    //}
-                    //return response()->json($returnForm);
+        $form = Form::create(['content' => $this->controllerHelper->scrubString($request->input('content'))]);
+        if ($form) {
+            // create entry in user_form
+            $user_id = $request->input('user_id');
+            $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
+            if ($user_form) {
+                $returnForm = Form::where('id', $form->id)->first();
+                $returnForm['content'] = json_decode($returnForm['content'], true);
+                // create the form table
+                $created_table = $this->dataStoreHelper->createFormTable('forms_'.$form->id, $returnForm['content']['data']);
+                if ($created_table) {
+                    return response()->json($returnForm);
+                } else {
+                    return response()->json(['status' => 0, 'message' => 'Created form but failed to create form table']);
                 }
             }
-            return response()->json(['status' => 0, 'message' => 'Failed to create form']);
         }
+        return response()->json(['status' => 0, 'message' => 'Failed to create form']);
     }
 
 
@@ -285,7 +279,7 @@ class FormController extends Controller
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-branding.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
         '</head>'.
-        '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
+        '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>'.$this->htmlHelper->adminTab().'</body></html>';
     }
 
     /** Creates an embed JS for the form
@@ -379,28 +373,28 @@ class FormController extends Controller
     */
     public function submitForm(Request $request)
     {
-      $form_id = $request->input('form_id');
-      if (!$form_id) {
-          return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
-      }
-      $form = Form::where('id', $form_id)->first();
-      $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-      //todo backend validation
+        $form_id = $request->input('form_id');
+        if (!$form_id) {
+            return "<h1>Oops! Something went wrong.</h1>Please contact SFDS to fix your form.";
+        }
+        $form = Form::where('id', $form_id)->first();
+        $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
 
-      if($this->dataStoreHelper->submitForm($form,$request)){
-        if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
-          return redirect()->to($form['content']['settings']['confirmation']);
-          //redirect($form['content']['settings']['confirmation']);
-		    } else {
-			    print "<div style='padding:3em 4.5em'>";
-				  print "<h2>Please set a Confirmation Page before trying to embed your form.</h2>";
-				  print "<h3>Below is a summary of what you just submitted:</h3>";
-				  foreach ($_POST as $key => $value) {
-					  print $key . " = " . $value . "<br/>";
-          }
-          print "</div>";
-		    }
-      }
+        if ($response = $this->dataStoreHelper->submitForm($form, $request)) {
+            if (!empty($response) && $response['status'] == 0) {  //failed submissions
+                return response()->json($response);
+            } else {
+                $submitted_data = array();
+                if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
+                    return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
+                } else {
+                    foreach ($_POST as $key => $value) {
+                        $submitted_data[] = array($key => $value);
+                    }
+                    return view('layouts.submission', ['data' => $submitted_data]);
+                }
+            }
+        }
     }
 
     /** Save partial form data
@@ -417,7 +411,7 @@ class FormController extends Controller
         }
         $form = Form::where('id', $form_id)->first();
         $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-        //todo backend validation
+
         $referer = $request->headers->get('referer');
         $host = parse_url($referer, PHP_URL_HOST);
         $path = parse_url($referer, PHP_URL_PATH);
@@ -440,18 +434,6 @@ class FormController extends Controller
     {
         return 0;
         //return $this->dataStoreHelper->isCSVPublished($this->getFilename($request)) ? 1 : 0;
-    }
-
-
-    /** validates form data
-    *
-    * @param $request
-    *
-    * @return json response
-    */
-    protected function validateForm(Request $request)
-    {
-        return response()->json(['status' => 0, 'message' => 'Failed to delete form']);
     }
 
     /** Purges submitted form data

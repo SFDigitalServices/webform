@@ -78,7 +78,7 @@ class HTMLHelper
             $form_wrapper_bottom = self::pagination($pageCount, $pageCount).'</div></div>';
             $form_container = $form_div. $form_wrapper_top. $form_container. $form_wrapper_bottom;
         } else {
-            $form_container = $form_div. $form_container;
+            $form_container = $form_div . self::formHeader($content['settings']['name']) . $form_container;
         }
         $form_end = "";
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
@@ -89,6 +89,22 @@ class HTMLHelper
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
 
+    /**
+    * Creates an admin tab for the form preview
+    *
+    * @return HTML
+    */
+    public function adminTab()
+    {
+        $html = '<div id="SFDSWFB-admin">'.
+          '<div class="header" onclick="toggleAdminTab()">Administrative Tools <i class="adminTabArrow fa fa-angle-up"></i></div>'.
+          '<div class="content">'.
+            'Show All Questions &nbsp; <input type="checkbox" onclick="toggleShowAllFields(this)"/><br/>'.
+            'Show all Pages &nbsp; <input type="checkbox" onclick="toggleShowAllPages(this)"/>'.
+          '</div>'.
+        '</div>';
+        return $html;
+    }
 
     /** Create js string for embed code
     *
@@ -205,11 +221,7 @@ class HTMLHelper
                   if (!in_array($condition['id'], $conditionIds)) {
                       $conditionIds[] = $condition['id'];
                   }
-                  if ($formtypes[$condition['id']] == "s06") { //exception case for checkboxes because they have multiple inputs per name
-                    $conditionSts[] = $this->getCheckboxConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val']);
-                  } else {
-                    $conditionSts[] = $this->getConditionalStatement("jQuery('".$this->getInputSelector($condition['id'], $formtypes, true)."').val()", $this->controllerHelper->getOp($condition['op']), $condition['val']);
-                  }
+                  $conditionSts[] = $this->generateConditionalStatement($this->getInputSelector($condition['id'], $formtypes, true), $condition['op'], $condition['val'], $formtypes[$condition['id']]);
               }
               if ($fld['allAny']) {
                   //group multiple conditions
@@ -319,13 +331,23 @@ class HTMLHelper
       return $totalPages;
     }
 
+    /** Generate header
+     *
+     * @param $formName
+     *
+     * @return html
+     */
+
+    public static function formHeader($formName) {
+      return '<header class="hero-banner default"><div class="form-header-meta"><h2>'.$formName.'</h2></div></header>';
+    }
+
     /** Generate section header
      *
      * @param $formName, $id, $pageName, $pageNumber, $pageCount
      *
      * @return html
      */
-
     public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
       $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
       $html .= '<div class="form-header-meta">';
@@ -356,7 +378,6 @@ class HTMLHelper
     // *
     // * @return html
     // */
-
     public static function pagination($pageNumber, $pageCount) {
       $html = '<div class="form-group">';
 
@@ -383,7 +404,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSection($name, $field, $pageNumber, $pageCount) {
       $html = self::pagination($pageNumber, $pageCount);
 
@@ -399,16 +419,46 @@ class HTMLHelper
       return $html;
     }
 
+    /** Generate Other element
+     *
+     * @param $field
+     *
+     * @return html, will return empty string if "other" is not selected or null</select>
+     */
+    public static function formOther($field) {
+      $html = "";
+
+      if (isset($field['version']) && $field['version'] === "other") {
+        switch ($field['formtype']) {
+          case "s08": //radio
+            $type = "radio";
+            $array = "";
+            $extra = "";
+            break;
+          case "s06": //checkbox
+            $type = "checkbox";
+            $array = "[]";
+            $extra = (isset($field['required']) && $field['required'] !== "" && $field['required'] !== "false" && $field['required'] !== false) ? ' data-required="1" data-error="This field cannot be blank."' : '';
+            break;
+        }
+        //js added inline instead of from JS due to simplicity of binding
+        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other" onclick="insertOtherTextInput(this)"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].$array.'" data-formtype="'.$field['formtype'].'"'.$extra.'><span class="inline-label">Other</span></label>';
+      }
+
+      return $html;
+    }
+
     /** Generate Radio input element
     *
     * @param $field
     *
     * @returns html
     */
-
     public static function formRadio($field)
     {
         $html = "";
+        $other = self::formOther($field);
+        unset($field['version']);
 
         //id is set per option
         $field_id = isset($field['id']) ? $field['id'] : "";
@@ -425,6 +475,7 @@ class HTMLHelper
                 $html .= '<label for="'.$id.'"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -437,6 +488,8 @@ class HTMLHelper
     public static function formCheckbox($field)
     {
         $html = "";
+        $other = self::formOther($field);
+        unset($field['version']);
         //name needs to be an array
         $field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
         //id is set per option
@@ -445,6 +498,7 @@ class HTMLHelper
         //convert checkboxes to options and remove them from fields
         $options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
         unset($field['checkboxes']);
+        if (isset($field['required']) && $field['required'] !== "" && $field['required'] !== "false" && $field['required'] !== false) $field['data-required'] = true;
         //get attributes
         $attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
@@ -454,6 +508,7 @@ class HTMLHelper
                 $html .= '<label for="'.$id.'"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -507,8 +562,7 @@ class HTMLHelper
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
-
-        $html .= "</select>";
+        $html .= '</select>';
         return $html;
     }
     /**
@@ -1019,38 +1073,85 @@ class HTMLHelper
       return $output;
   }
 
-    /** Formats form field conditionals
+   /** Checks if the formtype is a multi option field ie: radio, checkbox, dropdown
     *
-    * @param $value1
-    * @param $op
-    * @param $value2
+    * @param $formtype
+    *
+    * @return boolean
+    */
+  public function isMulti($formtype)
+  {
+    switch ($formtype) {
+      case "s08": //radio
+      case "s06": //checkbox
+      case "s02": //select
+      case "s04": //select
+      case "s14": //select state
+      case "s15": //select state
+      case "s16": //select state
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /** Delegates which conditional function to use based on params
+    *
+    * @param $sel string the selector of the field being evaluated
+    * @param $op string the operator of the statement
+    * @param $value string/float the value to compare with the value of the field being evaluated
+    * @param $isNumber boolean to designate if the value should be interpreted as a string or float
     *
     * @return strings
   */
-  public function getConditionalStatement($value1, $op, $value2)
+  public function generateConditionalStatement($sel, $op, $value, $ft) {
+    if ($ft === "s06") { //exception case for checkboxes because they have multiple inputs per name
+      $output = $this->getCheckboxConditionalStatement($sel, $op, $value);
+    } else if ($ft === "d06" || $ft === "d08") {
+      $output = $this->getConditionalStatement("jQuery('".$sel."').val()", $this->controllerHelper->getOp($op), $value, true);
+    } else {
+      $output = $this->getConditionalStatement("jQuery('".$sel."').val()", $this->controllerHelper->getOp($op), $value);
+    }
+    return $output;
+  }
+
+  /** Formats form field conditionals
+    *
+    * @param $jqString
+    * @param $op
+    * @param $value
+    * @param $isNumber
+    *
+    * @return strings
+  */
+  public function getConditionalStatement($jqString, $op, $value, $isNumber = false)
   {
       if (!$op) {
           return "";
       }
       if ($op == "contains") {
-          $output = "(".$value1.").search(/".$value2."/i) != -1";
+          $output = "(".$jqString.").search(/".$value."/i) != -1";
       } elseif ($op == "doesn't contain") {
-          $output = "(".$value1.").search(/".$value2."/i) == -1";
+          $output = "(".$jqString.").search(/".$value."/i) == -1";
       } else {
-          $output = $value1." ".$op." '".$value2."'";
+          if ($isNumber) {
+            $output = $jqString." ".$op." ".$value;
+          } else {
+            $output = $jqString." ".$op." '".$value."'";
+          }
       }
       return $output;
   }
 
     /** Formats checkbox conditionals
     *
-    * @param $value1
+    * @param $sel
     * @param $op
-    * @param $value2
+    * @param $value
     *
     * @return strings
   */
-  public function getCheckboxConditionalStatement($value1, $op, $value2)
+  public function getCheckboxConditionalStatement($sel, $op, $value)
   {
 		$op = str_replace("&amp;apos;", "'", $op); //just in case apostrophe is encoded
 		switch ($op) {
@@ -1058,31 +1159,31 @@ class HTMLHelper
 				$output = "";
 				break;
 			case "matches":
-				$output = "jQuery('".$value1."[value=".$value2."]').length";
+				$output = "jQuery('".$sel."[value=".$value."]').length";
 				break;
 			case "doesn't match":
-				$output = "jQuery('".$value1."[value=".$value2."]').length === 0";
+				$output = "jQuery('".$sel."[value=".$value."]').length === 0";
 				break;
 			case "is less than": // will only check the first match, not sure how it would work with multiple
-				$output = "jQuery('".$value1."').val() < ".$value2;
+				$output = "jQuery('".$sel."').val() < ".$value;
 				break;
 			case "is more than": // will only check the first match, not sure how it would work with mutiple
-				$output = "jQuery('".$value1."').val() > ".$value2;
+				$output = "jQuery('".$sel."').val() > ".$value;
 				break;
 			case "contains anything":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) != ''";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()) != ''";
 				break;
 			case "is blank":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()) == ''";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()) == ''";
 				break;
 			case "contains":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) != -1";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value."/i) != -1";
 				break;
 			case "doesn't contain":
-				$output = "(jQuery('".$value1."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value2."/i) == -1";
+				$output = "(jQuery('".$sel."').map(function() {return jQuery(this).val();}).get().join()).search(/".$value."/i) == -1";
 				break;
 			default:
-				$output = $value1." ".$op." '".$value2."'";
+				$output = $sel." ".$op." '".$value."'";
 				break;
 		}
 		return $output;

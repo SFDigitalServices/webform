@@ -55,8 +55,8 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         )
       );
 
-      $this->formStart = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST" ><input type="hidden" name="form_id" value="1"/>';
-      $this->formStartFile = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><input type="hidden" name="form_id" value="1"/>';
+      $this->formStart = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST" ><header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header><input type="hidden" name="form_id" value="1"/>';
+      $this->formStartFile = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header><input type="hidden" name="form_id" value="1"/>';
 
       $this->formEnd = '<div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
 
@@ -110,6 +110,28 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option one</span></label>';
         $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option two" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyRadio);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'invalid';
+        $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+        $this->attributes['regex'] = 'invalid';
+        $this->attributes['match'] = 'invalid';
+        $this->attributes['minlength'] = 'invalid';
+        $this->attributes['maxlength'] = 'invalid';
+        $this->attributes['min'] = 'invalid';
+        $this->attributes['max'] = 'invalid';
+        $this->attributes['radios'] = array("option one", "option two");
+        $this->attributes['version'] = "other";
+        $this->attributes['formtype'] = 's08';
+        $otherRadio = HTMLHelper::formRadio($this->attributes);
+        $expected = '<label for="foo_option_one"><input type="radio" id="foo_option_one" value="option one" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="foo_option_two"><input type="radio" id="foo_option_two" value="option two" name="bar" data-formtype="s08" required class="large rounded"/><span class="inline-label">option two</span></label>';
+        $expected .= '<label class="other-label radio" for="foo_Other" onclick="insertOtherTextInput(this)"><input type="radio" value="Other" id="foo_Other" name="bar" data-formtype="s08"><span class="inline-label">Other</span></label>';
+        $this->assertEquals($expected, $otherRadio);
     }
 
     public function testFormCheckbox(){
@@ -153,9 +175,31 @@ class HTMLHelperTest extends \Codeception\Test\Unit
         $this->attributes['checkboxes'] = array("option one", "option two");
         $this->attributes['formtype'] = 's06';
         $notEmptyCheckBox= HTMLHelper::formCheckbox($this->attributes);
-        $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option one</span></label>';
-        $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded"/><span class="inline-label">option two</span></label>';
+        $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded" data-required="1"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded" data-required="1"/><span class="inline-label">option two</span></label>';
         $this->assertEquals($expected, $notEmptyCheckBox);
+
+        $this->attributes['label'] = 'test';
+        $this->attributes['codearea'] = 'invalid';
+        $this->attributes['id'] = 'foo';
+        $this->attributes['name'] = 'bar';
+        $this->attributes['class'] = 'large rounded';
+        $this->attributes['type'] = 'invalid';
+        $this->attributes['required'] = 'true';
+        $this->attributes['regex'] = 'invalid';
+        $this->attributes['match'] = 'invalid';
+        $this->attributes['minlength'] = 'invalid';
+        $this->attributes['maxlength'] = 'invalid';
+        $this->attributes['min'] = 'invalid';
+        $this->attributes['max'] = 'invalid';
+        $this->attributes['checkboxes'] = array("option one", "option two");
+        $this->attributes['version'] = 'other';
+        $this->attributes['formtype'] = 's06';
+        $otherCheckBox = HTMLHelper::formCheckbox($this->attributes);
+        $expected = '<label for="foo_option_one"><input type="checkbox" id="foo_option_one" value="option one" name="bar[]" data-formtype="s06" required class="large rounded" data-required="1"/><span class="inline-label">option one</span></label>';
+        $expected .= '<label for="foo_option_two"><input type="checkbox" id="foo_option_two" value="option two" name="bar[]" data-formtype="s06" required class="large rounded" data-required="1"/><span class="inline-label">option two</span></label>';
+        $expected .= '<label class="other-label checkbox" for="foo_Other" onclick="insertOtherTextInput(this)"><input type="checkbox" value="Other" id="foo_Other" name="bar[]" data-formtype="s06" data-required="1" data-error="This field cannot be blank."><span class="inline-label">Other</span></label>';
+        $this->assertEquals($expected, $otherCheckBox);
     }
     public function testFormText(){
         // test each type of text inputs: search, address, email...etc
@@ -1273,6 +1317,13 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
 
     }
+
+    public function testFormHeader() {
+      $header = HTMLHelper::formHeader($this->form['content']['settings']['name']);
+      $expected = '<header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header>';
+      $this->assertEquals($expected, $header);
+    }
+
     public function testFormHidden(){
         $emptyHidden = HTMLHelper::formHidden($this->attributes);
         $expected =  '<input/>';
@@ -1807,6 +1858,18 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       $expected = $this->formStart . '<div class="form-group field-m11" data-id="hidden"><input data-formtype="m11" id="hidden" name="hidden" type="hidden"/></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
+    }
+
+    public function testGetAdminTab() {
+      $adminTab = $this->htmlHelperTester->adminTab();
+      $expected = '<div id="SFDSWFB-admin">'.
+          '<div class="header" onclick="toggleAdminTab()">Administrative Tools <i class="adminTabArrow fa fa-angle-up"></i></div>'.
+          '<div class="content">'.
+            'Show All Questions &nbsp; <input type="checkbox" onclick="toggleShowAllFields(this)"/><br/>'.
+            'Show all Pages &nbsp; <input type="checkbox" onclick="toggleShowAllPages(this)"/>'.
+          '</div>'.
+        '</div>';
+      $this->assertEquals($expected, $adminTab);
     }
 
 }

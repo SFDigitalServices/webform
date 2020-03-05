@@ -348,6 +348,9 @@ FbView.prototype.populateAttributes = function(item) {
 					case 'webhooks':
 						$('#SFDSWFB-attributes .accordion-webhooks').remove()
 						break
+          case 'version':
+						$('#SFDSWFB-attributes .version-attribute').remove()
+            break
 					default:
 						$('#SFDSWFB-attributes .' + i + '-attribute').remove()
 						break
@@ -394,6 +397,7 @@ FbView.prototype.populateValidation = function(item) {
 		//case "password":
 	}
 	if (item.required == "true") $('#SFDSWFB-attributes input[name=required]').prop('checked', true)
+	if (item.version == "other") $('#SFDSWFB-attributes input[name=version][value=other]').prop('checked', true)
 }
 
 /**
@@ -425,13 +429,13 @@ FbView.prototype.populateCalculations = function(item) {
 		var calCount = 0
 		for (l in item.calculations) {
 			if (l == 1) {
-				addCalculation(item.id)
+				this.addCalculation(item.id)
 				$('#SFDSWFB-attributes .calculationId').eq(0).val(item.calculations[0])
 				$('#SFDSWFB-attributes .calculationId').eq(1).val(item.calculations[2])
 				$('#SFDSWFB-attributes .calculationOperator').eq(0).val(item.calculations[1])
 			} else if (Math.abs(l % 2) == 1) { // every odd number after 1
 				calCount++
-				addCalculation(item.id)
+				this.addCalculation(item.id)
 				$('#SFDSWFB-attributes .calculationOperator').eq(calCount).val(item.calculations[l])
 				$('#SFDSWFB-attributes .calculationId').eq(calCount + 1).val(item.calculations[parseInt(l) + 1])
 			}
@@ -594,7 +598,8 @@ FbView.prototype.editItem = function(obj, skipPreview) {
  * @param {Integer} index
  */
 FbView.prototype.deleteItem = function(index) {
-	if (this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)) return fb.loadDialogModal('Error Removing Item', "This item is referenced by other items. Please remove all references to this item before deleting.")
+  var refIds = this.formsCollection.forms[fb.formId].isReferenced(this.formsCollection.forms[fb.formId].content.data[index].id)
+	if (refIds.length) return fb.loadDialogModal('Error Removing Item', "This item is referenced by "+refIds.join(", ")+". Please remove all references to this item before deleting.")
 	this.formsCollection.forms[fb.formId].deleteItem(index)
 	this.populateList()
   if (!$('#SFDSWFB-list .item[data-id=' + $('#SFDSWFB-attributes #id').val() + ']').length) {

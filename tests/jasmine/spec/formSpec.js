@@ -274,11 +274,11 @@ describe("Form", function() {
     })
 
     it('should be able to see if an id is referenced in a special function', function() {
-      expect(form.isReferenced('test1')).toBeFalsy()
+      expect(form.isReferenced('test1').length).toBeFalsy()
       form.applyConditionals()
       expect(form.content.data[0].conditions.condition[0]).toEqual({id:'test1',op:'test2',val:'test3'})
-      expect(form.isReferenced('test1')).toBeTruthy()
-      expect(form.isReferenced('test100')).toBeFalsy()
+      expect(form.isReferenced('test1').length).toBeTruthy()
+      expect(form.isReferenced('test100').length).toBeFalsy()
     })
 
     it('should be able to rename ids across the object', function() {

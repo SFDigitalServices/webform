@@ -207,6 +207,7 @@ Form.prototype.modifyItem = function() {
 	})
 
   if ($('#required').length) self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].required = $('#required').prop('checked') ? 'true' : 'false';
+  if ($('#version').length) self.content.data[$('#SFDSWFB-list .item.selected').eq(0).data('index') - 1].version = $('#version').prop('checked') ? $('#version').val() : '';
 	self.applyConditionals()
 	self.applyCalculations()
 	self.applyWebhooks()
@@ -394,19 +395,20 @@ Form.prototype.doesItExist = function(value, type, skipIndex) {
  *
  * @param {String} myId
  *
- * @returns {Boolean}
+ * @returns {Array}
  */
 Form.prototype.isReferenced = function(myId) {
 	var specialFunctionIds = this.getSpecialFunctionIds()
+  var idArray = []
 
   for (c in specialFunctionIds) {
     for (i in specialFunctionIds[c]) {
       for (d in specialFunctionIds[c][i]) {
-        if (specialFunctionIds[c][i][d].includes(myId)) return true
+        if (specialFunctionIds[c][i][d].includes(myId)) idArray.push(this.content.data[i].id)
       }
     }
   }
-	return false
+	return idArray
 }
 
 /**
