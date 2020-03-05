@@ -361,6 +361,12 @@ SFDSWFB.lastScript = function() {
     }
   });
 
+  // bind preview page action
+  jQuery('#preview_submit_page').on('click', function(){
+      var form_id = (jQuery("input[name='form_id']").val());
+      loadPreviewPage(form_id);
+  })
+
   if(window.draftData !== undefined){
     populateForm(window.draftData);
   }
@@ -414,6 +420,27 @@ function populateForm(formData){
   else{
     document.forms[formid]['magiclink'].value = formData['magiclink'];
   }
+}
+
+function loadPreviewPage(formid){
+  var formid = "SFDSWFB_forms_" + formid;
+  var previewPageURL = jQuery("#"+formid).attr('action');
+
+  previewPageURL = previewPageURL.replace('\/submit', '\/getPreviewPage');
+  var form_data = new FormData(jQuery("#"+formid)[0]);
+  console.log(form_data)
+  var settings = {
+    'async': true,
+    'crossDomain': true,
+    'url': previewPageURL,
+    'method': 'POST',
+    'data':  form_data,
+    'processData': false,
+    'contentType': false
+  }
+  jQuery.ajax(settings).done(function (response) {
+      jQuery("#preview_submitted_data").html(response);
+    })
 }
 
 function getCheckedCheckboxesFor(elements, items) {

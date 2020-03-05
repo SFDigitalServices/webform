@@ -68,8 +68,6 @@ class HTMLHelper
             $form_container .= $this->createEditableFields($field);
           }
         }
-
-
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
@@ -80,9 +78,13 @@ class HTMLHelper
         } else {
             $form_container = $form_div . self::formHeader($content['settings']['name']) . $form_container;
         }
+        // add preview page place holder
         $form_end = "";
+        if($pageCount > 1)
+          $form_end = self::addPreviewPage($content['settings']['name']);
+
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+          $form_end .= '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
@@ -386,7 +388,8 @@ class HTMLHelper
       }
 
       if ($pageNumber == $pageCount) {
-        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
+        // insert Preivew page, move submit button to the Preview page
+        $html .= '<button id="preview_submit_page" class="btn btn-lg form-section-next">Next</button>';
       } else {
         $html .= '<button class="btn btn-lg form-section-next">Next</button>';
       }
@@ -721,6 +724,101 @@ class HTMLHelper
         $output .= '<p class="help-text">'.html_entity_decode($field['help']).'</p>';
       }
       return $output;
+    }
+
+     /** Formats submitted data for preview
+     *
+     * @param $data
+     * @param @definitions
+     *
+     * @return html
+     */
+    public function formatSubmittedData($data, $definitions)
+    {
+      $ret = array();
+      foreach($definitions as $definition){
+        if (isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype'])) {
+            continue;
+        }
+        if ($definition) {
+            if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
+                $type = $definition['formtype'];
+            } else {
+                $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+            }
+            $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
+            $value = isset($data[$name]) ? $data[$name] : "";
+
+            if ($value != "") {
+                switch ($type) {
+                  case 'email': // format emals
+                    $ret[] = FieldFormatter::formatEmail($name, $value);
+                    break;
+                  case 'url': // format url
+                    $ret[] = FieldFormatter::formatURL($name, $value);
+                    break;
+                  case 'tel': // format phone
+                    $ret[] = FieldFormatter::formatPhone($name, $value);
+                    break;
+                  case 's02':
+                  case 's14':
+                  case 's15':
+                  case 's16': // dropdowns, radios, checkbox put a check mark before the value
+                  case 's08':
+                  case 's06':
+                    $ret[] = FieldFormatter::formatOptions($name, $value);
+                    break;
+                  case 'file': // format name and size
+                    $ret[] = FieldFormatter::formatFile($name, $value);
+                    break;
+                  case 'number': // format number, append units
+                    $ret[] = FieldFormatter::formatNumber($name, $value);
+                    break;
+                  case 'd08':
+                  case 'price': // format currency
+                    $ret[] = FieldFormatter::formatPrice($name, $value);
+                    break;
+                  case 'date': // format date
+                    $ret[] = FieldFormatter::formatDate($name, $value);
+                    break;
+                  case 'i14': // format textarea, strip all html
+                    $ret[] = FieldFormatter::formatTextArea($name, $value);
+                    break;
+                  case 'd04': // format Time
+                  case 'time':
+                    $ret[] = FieldFormatter::formatTime($name, $value);
+                    break;
+                  default: //format all other inputs as text
+                  $ret[] = FieldFormatter::formatText($name, $value);
+                    break;
+              }
+            }
+        }
+      }
+      return $ret;
+    }
+
+    /**
+    * adds a preview page to the last page
+    *
+    * @param $formname
+    *
+    * @return HTML
+    */
+    private static function addPreviewPage($formname)
+    {
+        $html = '<div class="form-section" data-id="page_separator">'.self::formHeader($formname).'<div class="form-content">';
+        // add place holders for preview page
+        $html .= '<div class="form-group">';
+        $html .= '<div id="preview_submitted_data"></div>';
+        $html .= '</div>';
+        // add buttons
+        $html .= '<div class="form-group">';
+        $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
+        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
+        $html .= '</div></div>';
+
+        return $html;
     }
 
 
