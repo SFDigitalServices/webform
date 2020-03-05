@@ -36,7 +36,8 @@
     </td>
   </tr>
 
-  @component('emails.partial.button', ['link' => {{ $data['host'] }}])
+  @php $host = $data['host']; @endphp
+  @component('emails.partial.button', ['link' => $host ])
     Resume your draft
   @endcomponent
 
