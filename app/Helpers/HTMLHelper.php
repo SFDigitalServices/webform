@@ -728,14 +728,16 @@ class HTMLHelper
 
      /** Formats submitted data for preview
      *
-     * @param $data
+     * @param $request
      * @param @definitions
      *
      * @return html
      */
-    public function formatSubmittedData($data, $definitions)
+    public function formatSubmittedData($request, $definitions)
     {
       $ret = array();
+      $data = $request->all();
+
       foreach($definitions as $definition){
         if (isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype'])) {
             continue;
@@ -744,21 +746,23 @@ class HTMLHelper
             if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
                 $type = $definition['formtype'];
             } else {
-                $type = isset($definition['type']) ? $definition['type'] : $definition['formtype'];
+                $type = isset($definition['formtype']) ? $definition['formtype'] : $definition['type'];
             }
             $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
             $value = isset($data[$name]) ? $data[$name] : "";
+            $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
 
             if ($value != "") {
+                //Log::info($type. " " . $label);
                 switch ($type) {
                   case 'email': // format emals
-                    $ret[] = FieldFormatter::formatEmail($name, $value);
+                    $ret[] = FieldFormatter::formatEmail($label, $value);
                     break;
                   case 'url': // format url
-                    $ret[] = FieldFormatter::formatURL($name, $value);
+                    $ret[] = FieldFormatter::formatURL($label, $value);
                     break;
                   case 'tel': // format phone
-                    $ret[] = FieldFormatter::formatPhone($name, $value);
+                    $ret[] = FieldFormatter::formatPhone($label, $value);
                     break;
                   case 's02':
                   case 's14':
@@ -766,35 +770,43 @@ class HTMLHelper
                   case 's16': // dropdowns, radios, checkbox put a check mark before the value
                   case 's08':
                   case 's06':
-                    $ret[] = FieldFormatter::formatOptions($name, $value);
+                    $ret[] = FieldFormatter::formatOptions($label, $value);
                     break;
+                  case 'm13':
                   case 'file': // format name and size
-                    $ret[] = FieldFormatter::formatFile($name, $value);
+                      if ($request->file($name) != null && $request->file($name)->isValid()) {
+                          $file = $request->file($name);
+                          $ret[] = FieldFormatter::formatFile($label, $file, $value);
+                      }
                     break;
+                  case 'd06':
                   case 'number': // format number, append units
-                    $ret[] = FieldFormatter::formatNumber($name, $value);
+                    $unit = isset($definition['unit']) ? $definition['unit'] : "";
+                    $ret[] = FieldFormatter::formatNumber($label, $value, $unit);
                     break;
                   case 'd08':
                   case 'price': // format currency
-                    $ret[] = FieldFormatter::formatPrice($name, $value);
+                    $ret[] = FieldFormatter::formatPrice($label, $value);
                     break;
+                  case 'd02':
                   case 'date': // format date
-                    $ret[] = FieldFormatter::formatDate($name, $value);
+                    $ret[] = FieldFormatter::formatDate($label, $value);
                     break;
                   case 'i14': // format textarea, strip all html
-                    $ret[] = FieldFormatter::formatTextArea($name, $value);
+                    $ret[] = FieldFormatter::formatTextArea($label, $value);
                     break;
                   case 'd04': // format Time
                   case 'time':
-                    $ret[] = FieldFormatter::formatTime($name, $value);
+                    $ret[] = FieldFormatter::formatTime($label, $value);
                     break;
                   default: //format all other inputs as text
-                  $ret[] = FieldFormatter::formatText($name, $value);
+                    $ret[] = FieldFormatter::formatText($label, $value);
                     break;
               }
             }
         }
       }
+      //Log::info(print_r($ret, 1));
       return $ret;
     }
 

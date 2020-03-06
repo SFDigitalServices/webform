@@ -116,13 +116,16 @@ div[style*="margin: 16px 0;"] {
 </style>
 </head>
 <body style="margin: 0 !important; padding: 0 !important;">
-<div>
-<h2>Please set a Confirmation Page before trying to embed your form.</h2>
-<h3>Below is a summary of what you just submitted:</h3>
+@if ($source == "preview_page")
+  <h2>Preview your submission</h2>
+@else
+  <h2>Please set a Confirmation Page before trying to embed your form.</h2>
+  <h3>Below is a summary of what you just submitted:</h3>
+@endif
   <ul>
     @foreach ($data as $k => $v)
       @foreach ($v as $key => $value)
-        <li> <label> {{ $key }}: <span> {{ $value }}</span></label>  </li>
+        <li> <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </li>
       @endforeach
     @endforeach
   </ul>
