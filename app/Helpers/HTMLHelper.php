@@ -770,7 +770,7 @@ class HTMLHelper
                   case 's16': // dropdowns, radios, checkbox put a check mark before the value
                   case 's08':
                   case 's06':
-                    $ret[] = FieldFormatter::formatOptions($label, $value);
+                    $ret[] = FieldFormatter::formatOptions($label, $value, $request->getSchemeAndHttpHost());
                     break;
                   case 'm13':
                   case 'file': // format name and size

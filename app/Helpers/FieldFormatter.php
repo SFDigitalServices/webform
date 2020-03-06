@@ -50,14 +50,15 @@ class FieldFormatter
       *
       * @param $name
       * @param $value
+      * @param $host
       *
       * @return array
     */
-    public static function formatOptions($name, $value)
+    public static function formatOptions($name, $value, $host)
     {
         $checklist = '';
         // need to move this to the design system
-        $checkmark = '<img src="https://svgsilh.com/svg/40319.svg" height="25px" width="25px" />';
+        $checkmark = '<img src="'.$host.'/images/email-checkbox.jpg" height="25px" width="25px" />';
         if(is_array($value)){
           $count = 0;
           foreach($value as $option){

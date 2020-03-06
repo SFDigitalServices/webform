@@ -384,13 +384,18 @@ class FormController extends Controller
             if (!empty($response) && $response['status'] == 0) {  //failed submissions
                 return response()->json($response);
             } else {
-                $submitted_data = array();
+                $submitted_data = $this->htmlHelper->formatSubmittedData($request, $form['content']['data']);
+                Log::info(print_r($submitted_data, 1));
+                /*foreach ($_POST as $key => $value) {
+                    $submitted_data[] = array($key => $value);
+                }*/
                 if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
+                    $data = $response['data'];
+                    $data['body']['source'] = "confirmation";
+                    $data['body']['submitted'] = $submitted_data;
+                    $this->emailController->sendEmail($data, 'emails.confirmation');
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
                 } else {
-                    foreach ($_POST as $key => $value) {
-                        $submitted_data[] = array($key => $value);
-                    }
                     return view('layouts.submission', ['data' => $submitted_data]);
                 }
             }
