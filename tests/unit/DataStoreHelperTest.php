@@ -27,7 +27,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             array('type' => 'tel', 'id' => 'phonenumber', 'name' => 'phonenumber', 'required' => 'false', 'label' => 'Tel', 'formtype' => 'c06'),
             array('type' => 'date', 'id' => 'date_created', 'name' => 'date_created', 'label' => 'Date', 'formtype' => 'd02'),
             array('type' => 'url', 'id' => 'url', 'name' => 'url', 'label' => 'URL', 'formtype' => 'd10'),
-            array('type' => 'date', 'id' => 'time', 'name' => 'time', 'label' => 'Time', 'formtype' => 'd04'),
+            array('type' => 'time', 'id' => 'time', 'name' => 'time', 'label' => 'Time', 'formtype' => 'd04'),
         );
 
         $this->definitions2 = array(
