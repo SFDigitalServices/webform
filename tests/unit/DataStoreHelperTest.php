@@ -27,6 +27,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             array('type' => 'tel', 'id' => 'phonenumber', 'name' => 'phonenumber', 'required' => 'false', 'label' => 'Tel', 'formtype' => 'c06'),
             array('type' => 'date', 'id' => 'date_created', 'name' => 'date_created', 'label' => 'Date', 'formtype' => 'd02'),
             array('type' => 'url', 'id' => 'url', 'name' => 'url', 'label' => 'URL', 'formtype' => 'd10'),
+            array('type' => 'date', 'id' => 'time', 'name' => 'time', 'label' => 'Time', 'formtype' => 'd04'),
         );
 
         $this->definitions2 = array(
@@ -165,6 +166,9 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       //Test optional date field
       $response = $this->dataStoreHelperTester->setValidationRules($this->definitions[5]);
       $this->assertContains("date", $response);
+      //Test optional time field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions[7]);
+      $this->assertContains("date_format:H:i", $response);
       //Test required field
       $response = $this->dataStoreHelperTester->setValidationRules($this->definitions2[1]);
       $this->assertContains("required", $response);
