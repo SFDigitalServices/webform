@@ -54,13 +54,13 @@
                 <td align="left" bgcolor="#9FAEB8" height="3" width="100%" style="mso-line-height-rule: exactly; height: 3px; line-height: 3px; font-size: 3px;">&nbsp;</td>
               </tr>
               <tr>
-                <ul>
+                <div>
                   @foreach ($data['submitted'] as $k => $v)
                     @foreach ($v as $key => $value)
-                      <li> <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </li>
+                      <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </<label>
                     @endforeach
                   @endforeach
-              </ul>
+              </div>
             </tr>
             </table>
           </td>

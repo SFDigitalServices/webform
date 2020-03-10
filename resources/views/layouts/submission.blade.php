@@ -122,13 +122,13 @@ div[style*="margin: 16px 0;"] {
   <h2>Please set a Confirmation Page before trying to embed your form.</h2>
   <h3>Below is a summary of what you just submitted:</h3>
 @endif
-  <ul>
+  <div>
     @foreach ($data as $k => $v)
       @foreach ($v as $key => $value)
-        <li> <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </li>
+        <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </<label>
       @endforeach
     @endforeach
-  </ul>
+  </div>
 </div>
 </body>
 </html>
