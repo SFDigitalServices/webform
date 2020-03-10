@@ -368,7 +368,6 @@ SFDSWFB.lastScript = function() {
   // bind preview page action
   jQuery('#preview_submit_page').on('click', function(){
       var form_id = jQuery("#SFDSWF-Container input[name='form_id']").val();
-      console.log(form_id)
       loadPreviewPage(form_id);
   })
 
@@ -431,10 +430,9 @@ function loadPreviewPage(formid){
   if(formid === undefined) return false;
   var form_id = "SFDSWFB_forms_" + formid;
   var previewPageURL = jQuery("#"+form_id).attr('action');
-console.log(previewPageURL)
+
   previewPageURL = previewPageURL.replace('\/submit', '\/getPreviewPage');
   var form_data = new FormData(jQuery("#"+form_id)[0]);
-  console.log(form_data)
   var settings = {
     'async': true,
     'crossDomain': true,
