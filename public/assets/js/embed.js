@@ -367,7 +367,7 @@ SFDSWFB.lastScript = function() {
 
   // bind preview page action
   jQuery('#preview_submit_page').on('click', function(){
-      var form_id = jQuery("input[name='form_id']").val();
+      var form_id = jQuery("#SFDSWF-Container input[name='form_id']").val();
       console.log(form_id)
       loadPreviewPage(form_id);
   })
