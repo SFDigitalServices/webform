@@ -1113,7 +1113,7 @@ class DataStoreHelper extends Migration
                     } elseif ($value === 'date') {
                         $rules[] = "date";
                     } elseif ($value === 'time') {
-                        $rules[] = "date";
+                        $rules[] = "date_format:H:i";
                     } elseif ($value === 'tel') {
                         //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
                     }
