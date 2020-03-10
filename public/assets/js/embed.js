@@ -367,7 +367,8 @@ SFDSWFB.lastScript = function() {
 
   // bind preview page action
   jQuery('#preview_submit_page').on('click', function(){
-      var form_id = (jQuery("input[name='form_id']").val());
+      var form_id = jQuery("input[name='form_id']").val();
+      console.log(form_id)
       loadPreviewPage(form_id);
   })
 
@@ -427,11 +428,12 @@ function populateForm(formData){
 }
 
 function loadPreviewPage(formid){
-  var formid = "SFDSWFB_forms_" + formid;
-  var previewPageURL = jQuery("#"+formid).attr('action');
-
+  if(formid === undefined) return false;
+  var form_id = "SFDSWFB_forms_" + formid;
+  var previewPageURL = jQuery("#"+form_id).attr('action');
+console.log(previewPageURL)
   previewPageURL = previewPageURL.replace('\/submit', '\/getPreviewPage');
-  var form_data = new FormData(jQuery("#"+formid)[0]);
+  var form_data = new FormData(jQuery("#"+form_id)[0]);
   console.log(form_data)
   var settings = {
     'async': true,

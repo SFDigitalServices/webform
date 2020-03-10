@@ -57,7 +57,7 @@
                 <div>
                   @foreach ($data['submitted'] as $k => $v)
                     @foreach ($v as $key => $value)
-                      <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </<label>
+                      <label> {!! $key !!}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </<label>
                     @endforeach
                   @endforeach
               </div>
