@@ -1,6 +1,6 @@
 
 @component('emails.partial.header')
-  We received your submission to "[[ formTitle ]]"
+  We received your submission to "{{ $data['formname'] }}" on {{ $data['date'] }} at {{ $data['time'] }}
 @endcomponent
 
 @component('emails.partial.preview_text')
@@ -23,7 +23,7 @@
       <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
 
         @component('emails.partial.title')
-          We received your submission to "{{ $data['formname'] }}."
+          We received your submission to "{{ $data['formname'] }}" on {{ $data['date'] }} at {{ $data['time'] }}
         @endcomponent
 
         <tr>
@@ -53,11 +53,15 @@
               <tr>
                 <td align="left" bgcolor="#9FAEB8" height="3" width="100%" style="mso-line-height-rule: exactly; height: 3px; line-height: 3px; font-size: 3px;">&nbsp;</td>
               </tr>
-
-              {{-- Loop through each field and, depending on its type,
-                   include the appropriate partial: field-attachment,
-                   field-email, field-link, field-multi, or field-default --}}
-
+              <tr>
+                <div>
+                  @foreach ($data['submitted'] as $k => $v)
+                    @foreach ($v as $key => $value)
+                      <label> {{ $key }}: <span class="form-field"> <div class="form-field-value"> {!! $value !!}  </div></span></label>  </<label>
+                    @endforeach
+                  @endforeach
+              </div>
+            </tr>
             </table>
           </td>
         </tr>

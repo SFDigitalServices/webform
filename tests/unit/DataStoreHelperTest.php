@@ -200,7 +200,7 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       //Test completed form
       $response = $this->dataStoreHelperTester->submitForm($form, $request);
       $this->assertEquals($response['status'], 1);
-      $this->assertEquals($response['message'], "success");
+      $this->assertEquals(is_array($response['data']), true);
       //Test partially completed form
       $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
       $this->assertEquals($response['status'], 1);

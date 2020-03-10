@@ -286,22 +286,21 @@ class DataStoreHelper extends Migration
             $id = $this->insertFormData($write['db'], $form['id']);
             // update status if form is partially completed
             if ($id) {
-                $ret = array("status" => 1, "message" => 'success' );
                 try {
+                    $magiclink = Hash::make(time());
+                    $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                    $email_data = $this->constructResumeDraftEmailData($form, $magiclink, $email);
+                    $ret = array("status" => 1, 'data' => $email_data);
                     if ($status != 'complete') {
-                        $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                        $magiclink = Hash::make(time());
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                        $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     } else {
                         $write['db']['form_id'] = $form['id'];
                         if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
                         // get push_to_adu from environment variable
                         $push_to_adu = getenv("ADU_DISPATCHER_ENABLE");
-                        if( filter_var($push_to_adu, FILTER_VALIDATE_BOOLEAN))
-                          $ret = $this->pushDataToADU($write['db']);
-
-                          if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
+                        if( $push_to_adu !== '' && filter_var($push_to_adu, FILTER_VALIDATE_BOOLEAN)){
+                          $response = $this->pushDataToADU($write['db']);
+                          if ($response['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST'))
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
                     }
@@ -744,7 +743,7 @@ class DataStoreHelper extends Migration
                 try {
                     foreach ($definition['options'] as $option) {
                         if (trim($option) != '') {
-                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value, type) values (?, ?, ?, ?)', array($form_id, $definition['name'], $option, $definition['formtype']));
                         }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
@@ -897,18 +896,18 @@ class DataStoreHelper extends Migration
         if ($form) {
             $data['body'] = array();
             // Set email body variables
-            $ret['body']['formname'] = $form['content']['settings']['name'];
-            $ret['body']['message'] = 'To go back to your draft, visit the link below.';
-            $ret['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            $data['body']['formname'] = $form['content']['settings']['name'];
+            $data['body']['message'] = 'To go back to your draft, visit the link below.';
+            $data['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            $data['body']['date'] = date("F j, Y");
+            $data['body']['time'] = date("g:i a");
             // Set email header
-            $ret['emailInfo'] = array();
-            $ret['emailInfo']['address'] = $email;
-            //$data['emailInfo']['from_address'];
-            //$data['emailInfo']['replyto_address'];
+            $data['emailInfo'] = array();
+            $data['emailInfo']['address'] = $email;
             $data['emailInfo']['subject'] = "Form submissions status";
             $data['emailInfo']['name'] = 'City and County of San Francisco';
         }
-        return $ret;
+        return $data;
     }
 
     /** Validates form input against form definition

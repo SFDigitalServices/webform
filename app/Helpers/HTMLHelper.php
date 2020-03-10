@@ -753,14 +753,16 @@ class HTMLHelper
             $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
 
             if ($value != "") {
-                //Log::info($type. " " . $label);
                 switch ($type) {
+                  case 'c04':
                   case 'email': // format emals
                     $ret[] = FieldFormatter::formatEmail($label, $value);
                     break;
+                  case 'd10':
                   case 'url': // format url
                     $ret[] = FieldFormatter::formatURL($label, $value);
                     break;
+                  case 'c06':
                   case 'tel': // format phone
                     $ret[] = FieldFormatter::formatPhone($label, $value);
                     break;
@@ -770,7 +772,7 @@ class HTMLHelper
                   case 's16': // dropdowns, radios, checkbox put a check mark before the value
                   case 's08':
                   case 's06':
-                    $ret[] = FieldFormatter::formatOptions($label, $value);
+                    $ret[] = FieldFormatter::formatOptions($label, $value, $request->getSchemeAndHttpHost());
                     break;
                   case 'm13':
                   case 'file': // format name and size
