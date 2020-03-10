@@ -743,7 +743,7 @@ class DataStoreHelper extends Migration
                 try {
                     foreach ($definition['options'] as $option) {
                         if (trim($option) != '') {
-                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value, type) values (?, ?, ?, ?)', array($form_id, $definition['name'], $option, $definition['formtype']));
                         }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {

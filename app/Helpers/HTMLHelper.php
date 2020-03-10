@@ -755,12 +755,15 @@ class HTMLHelper
             if ($value != "") {
                 //Log::info($type. " " . $label);
                 switch ($type) {
+                  case 'c04':
                   case 'email': // format emals
                     $ret[] = FieldFormatter::formatEmail($label, $value);
                     break;
+                  case 'd10':
                   case 'url': // format url
                     $ret[] = FieldFormatter::formatURL($label, $value);
                     break;
+                  case 'c06':
                   case 'tel': // format phone
                     $ret[] = FieldFormatter::formatPhone($label, $value);
                     break;

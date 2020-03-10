@@ -43,6 +43,7 @@ class FieldFormatter
     public static function formatURL($name, $value)
     {
         $value = '<a href="'.$value.'" target="_blank" >'.$value.'</a>';
+        $html = array($name => $value);
         return $html;
     }
     /**
