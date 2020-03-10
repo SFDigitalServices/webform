@@ -175,60 +175,60 @@ function validPage() {
   return jQuery('#SFDSWF-Container .form-section.active .has-error:visible').length === 0 ? true : false
 }
 
+//returns the current page
+SFDSWFB.currentPage = function() {
+  return jQuery('#SFDSWF-Container .form-section.active').prevAll('#SFDSWF-Container .form-section').length
+}
+
+//go to page by index
+SFDSWFB.paginate = function(i, browserHistory) {
+  browserHistory = typeof browserHistory === "undefined" ? false : true
+  var forward = i > SFDSWFB.currentPage() ? true : false
+  var totalPages = jQuery('#SFDSWF-Container .form-section').length
+
+  //update page/section
+  jQuery('#SFDSWF-Container .form-section').removeClass('active')
+  jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active')
+
+  //check if page is not the first or last page and the one we're navigating to is empty
+  if (i > 0 && i < totalPages - 1 && jQuery('#SFDSWF-Container .form-section.active .form-group:visible').length < 2) {
+    //skip to next page in direction of travel
+    return SFDSWFB.paginate(forward ? i+1 : i-1)
+  }
+
+  //scroll to top
+  document.getElementById("SFDSWF-Container").scrollIntoView();
+
+  //initialize validator on new page
+  jQuery('#SFDSWF-Container .form-section.active').validator()
+
+  //if not using browser buttons, make a new browser state
+  if (!browserHistory) history.pushState(i, null, "#page-" + (i + 1))
+}
+
 function initSectional() {
   //bind previous button
   jQuery('#SFDSWF-Container .form-section-prev').click(function(e) {
-    SFDSWF_paginate(SFDSWF_currentPage()-1)
+    SFDSWFB.paginate(SFDSWFB.currentPage()-1)
     e.preventDefault()
   });
 
   //bind next button
   jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
     if (validPage()) {
-      SFDSWF_paginate(SFDSWF_currentPage()+1)
+      SFDSWFB.paginate(SFDSWFB.currentPage()+1)
       e.preventDefault()
     }
   });
 
-  //returns the current page
-  var SFDSWF_currentPage = function() {
-    return jQuery('#SFDSWF-Container .form-section.active').prevAll('#SFDSWF-Container .form-section').length
-  }
-
-  //go to page by index
-  var SFDSWF_paginate = function(i, browserHistory) {
-    browserHistory = typeof browserHistory === "undefined" ? false : true
-    var forward = i > SFDSWF_currentPage() ? true : false
-    var totalPages = jQuery('#SFDSWF-Container .form-section').length
-
-    //update page/section
-    jQuery('#SFDSWF-Container .form-section').removeClass('active')
-    jQuery('#SFDSWF-Container .form-section').eq(i).addClass('active')
-
-    //check if page is not the first or last page and the one we're navigating to is empty
-    if (i > 0 && i < totalPages - 1 && jQuery('#SFDSWF-Container .form-section.active .form-group:visible').length < 2) {
-      //skip to next page in direction of travel
-      return SFDSWF_paginate(forward ? i+1 : i-1)
-    }
-
-    //scroll to top
-    document.getElementById("SFDSWF-Container").scrollIntoView();
-
-    //initialize validator on new page
-    jQuery('#SFDSWF-Container .form-section.active').validator()
-
-    //if not using browser buttons, make a new browser state
-    if (!browserHistory) history.pushState(i, null, "#page-" + (i + 1))
-  }
-
   //bind browser history back button
   window.addEventListener('popstate', function(e) {
     var i = e.state === null ? 0 : e.state
-    SFDSWF_paginate(i, true)
+    SFDSWFB.paginate(i, true)
   })
 
   //navigate to the proper page/section for formbuilder authoring
-  skipToSectionId(SFDSWF_paginate)
+  skipToSectionId(SFDSWFB.paginate)
 }
 
 function phoneIsValid(num) {
@@ -238,10 +238,12 @@ function phoneIsValid(num) {
   return phoneNumber.isValid() === true ? true : false;
 }
 
-function fieldInvalid(id) {
+function fieldInvalid(id, errorMsg) {
   if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-error')) jQuery('.form-group[data-id=' + id + ']').addClass('has-error')
   if (!jQuery('.form-group[data-id=' + id + ']').hasClass('has-danger')) jQuery('.form-group[data-id=' + id + ']').addClass('has-danger')
-  var errorMsg = jQuery('#' + id).data('required-error') !== '' && jQuery('#' + id).data('required-error') !== undefined ? jQuery('#' + id).data('required-error') : jQuery('#' + id).data('error')
+  if (typeof errorMsg == "undefined") {
+    errorMsg = jQuery('#' + id).data('required-error') !== '' && jQuery('#' + id).data('required-error') !== undefined ? jQuery('#' + id).data('required-error') : jQuery('#' + id).data('error')
+  }
   jQuery('.form-group[data-id=' + id + '] .with-errors').html('<ul class="list-unstyled"><li>' + errorMsg + '</li></ul>')
 }
 
@@ -293,7 +295,9 @@ function submitPartial(formid, submitType = 'partial'){
         if(response.status == 0){
           var errors = response['errors'];
           Object.keys(errors).forEach(function(item){
-            fieldInvalid(item);
+            fieldInvalid(item, errors[item][0]);
+            SFDSWFB.paginate(jQuery('#SFDSWF-Container #'+item).closest('.form-section').prevAll('.form-section').length)
+            document.getElementById(item).scrollIntoView()
           })
         }
         else if(response['redirect_url'] != ''){
