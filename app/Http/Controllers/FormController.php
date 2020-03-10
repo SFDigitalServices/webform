@@ -385,7 +385,6 @@ class FormController extends Controller
                 return response()->json($response);
             } else {
                 $submitted_data = $this->htmlHelper->formatSubmittedData($request, $form['content']['data']);
-                Log::info(print_r($submitted_data, 1));
                 /*foreach ($_POST as $key => $value) {
                     $submitted_data[] = array($key => $value);
                 }*/

@@ -753,7 +753,6 @@ class HTMLHelper
             $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
 
             if ($value != "") {
-                //Log::info($type. " " . $label);
                 switch ($type) {
                   case 'c04':
                   case 'email': // format emals
