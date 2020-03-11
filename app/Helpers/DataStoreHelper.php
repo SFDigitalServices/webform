@@ -264,11 +264,13 @@ class DataStoreHelper extends Migration
         if ($status !== 'partial') {
             // validate user inputs
             $ret = $this->validateFormRequest($request, $form['content']['data']);
+            Log::info(print_r($ret, 1));
             if (! empty($ret)) {
                 return $ret;
             }
         }
         $write = $this->parseSubmittedFormData($form, $request);
+        Log::info(print_r($write, 1));
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
             if ($request->input('magiclink')) {
@@ -841,8 +843,11 @@ class DataStoreHelper extends Migration
                     // fixed bug: if 'name' attribute was not set, exception is thrown here.
                     if (isset($field['name'])) {
                         $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
+
                         if ($field['formtype'] === 'c04') {
-                            $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            if (!isset($write['db']['email_save_for_later']) || $write['db']['email_save_for_later'] === '') {
+                                $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            }
                         }
                     }
                 }
