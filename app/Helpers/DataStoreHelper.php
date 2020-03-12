@@ -841,8 +841,11 @@ class DataStoreHelper extends Migration
                     // fixed bug: if 'name' attribute was not set, exception is thrown here.
                     if (isset($field['name'])) {
                         $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
+
                         if ($field['formtype'] === 'c04') {
-                            $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            if (!isset($write['db']['email_save_for_later']) || $write['db']['email_save_for_later'] === '') {
+                                $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            }
                         }
                     }
                 }
