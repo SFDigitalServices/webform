@@ -227,8 +227,10 @@ class DataStoreHelper extends Migration
             }
         }
         // remove unnecessary checkboxes
-        foreach($removals as $key => $value){
-          unset($data[$key]);
+        if (isset($removals)) {
+            foreach ($removals as $key => $value) {
+                unset($data[$key]);
+            }
         }
         return $data;
     }
