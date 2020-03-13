@@ -407,20 +407,27 @@ function populateForm(formData){
   var formid = 'SFDSWFB_forms_' + formData['formid'];
   //console.log(document.forms[formid]);
   for(element in formData){
-    if(document.forms[formid][element] !== undefined){
+    if(document.forms[formid][element] !== undefined && formData[element] !== ""){
       if(document.forms[formid][element] instanceof RadioNodeList){
         getCheckedCheckboxesFor(document.forms[formid][element], formData[element])
       }
       try{
-
         if(document.forms[formid][element].type !== undefined && (document.forms[formid][element].type === 'radio' || document.forms[formid][element].type === 'checkbox')){
-          //console.log( document.forms[formid][element].name + ": " + document.forms[formid][element].type + ": " + formData[element] )
           getSingleCheckedCheckboxesFor(document.forms[formid][element], formData[element])
         }
-        else
-          document.forms[formid][element].value = formData[element];
+        else{
+          if(document.forms[formid][element].type === 'file' && document.forms[formid][element].required){
+            document.forms[formid][element].required = false;
+            document.forms[formid][element].value = formData[element];
+            console.log(document.forms[formid][element].required)
+          }
+          else{
+            document.forms[formid][element].value = formData[element];
+          }
+        }
       }
       catch(errors){
+        console.log(errors.name)
         console.log(errors)
       }
     }

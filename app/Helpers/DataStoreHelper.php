@@ -998,7 +998,7 @@ class DataStoreHelper extends Migration
               $validation_rules[$definition['name']] = $rule;
           }
         }
-
+Log::info(print_r($validation_rules, 1));
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
