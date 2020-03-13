@@ -287,8 +287,14 @@ class ControllerHelper
         if (!empty($originalFormData['data'])) {
             $originalFormData = $this->parseOptionValues($originalFormData);
             $originalFormData = $this->parseOptionValues($originalFormData, 'json');
+            $checkboxes = $radios = '';
             foreach ($newFormData['data'] as $key => $value) {
+                if (isset($value['formtype']) && $this->isNonInputField($value['formtype'])) {
+                    unset($newFormData['data'][$key]);
+                    continue;
+                }
                 foreach ($originalFormData['data'] as $originalKey => $originalValue) {
+
                     if (strcmp($value['name'], $originalValue['name']) === 0) {
                         //unset multi-dimensional array values because their existence does not change the database structure
                         unset($value['conditions']);
@@ -298,7 +304,8 @@ class ControllerHelper
                         unset($value['webhooks']);
                         unset($originalValue['webhooks']);
 
-                        $diff = array_diff($value, $originalValue);
+                        //$diff = array_diff($value, $originalValue);
+                        $diff = $this->check_diff_multi($value, $originalValue);
                         if (count($diff) != 0) { // key and value matches
                           $updates['update'] = $value; // key found, value doesn't match, this is an update.
                         }
@@ -326,4 +333,28 @@ class ControllerHelper
         }
         return $updates;
     }
+
+    private function check_diff_multi($array1, $array2){
+      $result = array();
+      foreach ($array1 as $key => $val) {
+          if (is_array($val) && isset($array2[$key])) {
+              $tmp = check_diff_multi($val, $array2[$key]);
+              if ($tmp) {
+                  $result[$key] = $tmp;
+              }
+          } elseif (!isset($array2[$key])) {
+              $result[$key] = null;
+          } elseif (md5($val) !== md5($array2[$key])) { // compare hash, string may include html
+              $result[$key] = $array2[$key];
+          }
+
+          if (isset($array2[$key])) {
+              unset($array2[$key]);
+          }
+      }
+
+      $result = array_merge($result, $array2);
+
+      return $result;
+  }
 }
