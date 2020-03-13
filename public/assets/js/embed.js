@@ -372,6 +372,7 @@ SFDSWFB.lastScript = function() {
   })
 
   if(window.draftData !== undefined){
+    console.log(window.draftData);
     populateForm(window.draftData);
   }
 }
@@ -410,7 +411,18 @@ function populateForm(formData){
       if(document.forms[formid][element] instanceof RadioNodeList){
         getCheckedCheckboxesFor(document.forms[formid][element], formData[element])
       }
-      document.forms[formid][element].value = formData[element];
+      try{
+
+        if(document.forms[formid][element].type !== undefined && (document.forms[formid][element].type === 'radio' || document.forms[formid][element].type === 'checkbox')){
+          //console.log( document.forms[formid][element].name + ": " + document.forms[formid][element].type + ": " + formData[element] )
+          getSingleCheckedCheckboxesFor(document.forms[formid][element], formData[element])
+        }
+        else
+          document.forms[formid][element].value = formData[element];
+      }
+      catch(errors){
+        console.log(errors)
+      }
     }
   };
    // inject hidden input for magiclink
@@ -449,10 +461,15 @@ function loadPreviewPage(formid){
 
 function getCheckedCheckboxesFor(elements, items) {
     for (var i = 0; i < elements.length; i++) {
-        if (elements[i].type == 'checkbox' && items.includes(elements[i].value) ){
+        if (elements[i].type === 'checkbox' && items.includes(elements[i].value) ){
           elements[i].checked = true;
         }
     }
+}
+function getSingleCheckedCheckboxesFor(elements, items) {
+      if (( elements.type === 'checkbox' || elements.type === 'radio') && items.includes(elements.value) ){
+        elements.checked = true;
+      }
 }
 
 function toggleAdminTab() {

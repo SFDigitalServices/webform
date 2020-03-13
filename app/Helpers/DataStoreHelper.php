@@ -199,6 +199,7 @@ class DataStoreHelper extends Migration
                     ->first();
 
                     $data = (array) $results;
+                    $removals = array();
                     $data['formid'] = $formid;
                     $data['magiclink'] = $draft;
                     $lookups = $this->getLookupTable($formid);
@@ -210,6 +211,10 @@ class DataStoreHelper extends Migration
                                     $data[$lookup['form_field_name']."[]"] = array();
                                 }
                                 array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
+                                // mark this field for unset later
+                                if (!isset($removals[$lookup['form_field_name']])) {
+                                    $removals[$lookup['form_field_name']] = $lookup['form_field_name'];
+                                }
                             } else {
                                 $data[$lookup['form_field_name']] = $lookup['value'];
                             }
@@ -219,6 +224,12 @@ class DataStoreHelper extends Migration
             } catch (\Illuminate\Database\QueryException $ex) {
                 $results = ['status' => 0, 'message' => $ex->getMessage()];
                 return null;
+            }
+        }
+        // remove unnecessary checkboxes
+        if (isset($removals)) {
+            foreach ($removals as $key => $value) {
+                unset($data[$key]);
             }
         }
         return $data;
