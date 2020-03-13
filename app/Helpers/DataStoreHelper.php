@@ -863,21 +863,15 @@ class DataStoreHelper extends Migration
      */
     public function parseUploadedFile($content, $fieldName, $file)
     {
-
-//$content['content'] = json_decode($content['content'], true);
-return $fieldName;
-
-
       $filename = '';
       if (! empty($content['content']['data'])) {
         foreach ($content['content']['data'] as $field) {
           if ($field['formtype'] === "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
             if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
-      return       $this->controllerHelper->getBucketPath().$this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
               //$file = $fieldName;
               $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
-              $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
               $filename = $this->controllerHelper->getBucketPath().$newFilename;
+              $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
             }
           }
         }

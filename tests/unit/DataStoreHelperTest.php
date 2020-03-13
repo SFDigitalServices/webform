@@ -70,31 +70,8 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
           )
         );
       $requestData = array("form_id" => "submitform", "firstname" => 'firstname', "lastname" => "lastname", "email" => "test@test.gov", "phonenumber" => "12345678901", "password" => "", "date_created" => "", "url" => "");
-      $requestDataFile = array_merge($requestData, array("upload_file" => UploadedFile::fake()->image('test.jpg')));
 
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
-      $requestFile = $this->createRequest("POST", json_encode($requestDataFile), '/test', ['CONTENT_TYPE' => 'application/json']);
-
-      /*
-      //Test parsing uploaded file
-      $form = [];
-      $form["content"] = [];
-      $form["content"]["id"] = 0;
-      $form["content"]["data"] = [];
-      $form["content"]["data"][0] = array(
-        "formtype" => "m13",
-        "class" => "",
-        "label" => "Upload File",
-        "id" => "upload_file",
-        "name" => "upload_file",
-        "type" => "file",
-        "required" => "false"
-      );
-
-      $response = $this->dataStoreHelper->parseUploadedFile($form, $requestFile->input('upload_file'), $requestFile->file()['file'][0]));
-      $newFilename = $this->controllerHelper->generateUploadedFilename($form['content']['id'], $form['content']['data'][0]['name'], $file->getClientOriginalName());
-      $this->assertEquals($response, $this->controllerHelper->getBucketPath().$newFilename);
-      */
 
       //Test completed form
       $response = $this->dataStoreHelperTester->submitForm($form, $request);

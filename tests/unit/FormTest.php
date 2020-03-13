@@ -66,29 +66,11 @@ class FormTest extends \Codeception\Test\Unit
      }
 
   public function testUploadFile() {
-      $request = $this->createRequest("POST", json_encode(array("form_id" => "4480", "upload_file" => "document.pdf")), '/test', ['CONTENT_TYPE' => 'application/json'], array(), array(), array("file" => array(UploadedFile::fake()->create('document.pdf', 1000))));
-
-      //Test parsing uploaded file
-      /*
-      $form = [];
-      $form["content"] = [];
-      $form["content"]["id"] = 0;
-      $form["content"]["data"] = [];
-      $form["content"]["data"][0] = array(
-        "formtype" => "m13",
-        "class" => "",
-        "label" => "Upload File",
-        "id" => "upload_file",
-        "name" => "upload_file",
-        "type" => "file",
-        "required" => "false"
-      );
-      */
-
-      $response = $this->formTester->uploadFile($request);
-      //$response = $this->dataStoreHelper->parseUploadedFile($form, $requestFile->input('upload_file'), $requestFile->file()['file'][0]));
+      $request = $this->createRequest("POST", json_encode(array("form_id" => "4480", "field_name" => "upload_file")), '/test', ['CONTENT_TYPE' => 'application/json'], array(), array(), array("file" => array(UploadedFile::fake()->create('document.pdf', 1000))));
       $newFilename = $this->controllerHelper->generateUploadedFilename(4480, 'upload_file', $request->file()['file'][0]->getClientOriginalName());
-      $this->assertEquals($response, $this->controllerHelper->getBucketPath().$newFilename);
+      $response = $this->formTester->uploadFile($request);
+      $this->assertEquals($this->controllerHelper->getBucketPath().$newFilename, json_decode($response->getContent())->filename);
+      $this->assertEquals('upload_file', json_decode($response->getContent())->field_name);
   }
 
 	public function testFormIsSectional()
