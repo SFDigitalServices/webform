@@ -54,7 +54,7 @@ function initUploaders() {
         params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+jQuery(this).attr('name')+'" }' ),
         parallelUploads: 1,
         maxFiles: 1,
-        maxFilesize: 15,
+        maxFilesize: 20,
         acceptedFiles: 'image/*,application/pdf',
         addRemoveLinks: false,
         init: function() {
