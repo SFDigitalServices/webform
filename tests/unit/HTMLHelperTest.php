@@ -58,7 +58,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       $this->formStart = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST" ><header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header><input type="hidden" name="form_id" value="1"/>';
       $this->formStartFile = '<form id="SFDSWFB_forms_1" class="form-horizontal" action="" method="POST"  enctype="multipart/form-data"><header class="hero-banner default"><div class="form-header-meta"><h2>Test</h2></div></header><input type="hidden" name="form_id" value="1"/>';
 
-      $this->formEnd = '<div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
+      $this->formEnd = '<div class="form-group form-group-field field-m14" data-id="submit"><label for="submit" class="control-label"></label><div class="field-wrapper"><input type="submit" value="Submit" id="submit" data-formtype="m14" class=" btn-primary"/></div><div class="help-block with-errors" id="SFDSWF-submit-with-errors"></div></div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial(1)" >Save For Later</a></div></div></form>';
 
     }
 
@@ -1425,29 +1425,29 @@ class HTMLHelperTest extends \Codeception\Test\Unit
     }
     public function testHelpBlock(){
         $emptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div>';
+        $expected = '<div class="help-block with-errors" id="SFDSWF--with-errors"></div>';
 
         $this->assertSame($expected, $emptyBlock);
 
         $this->attributes['help'] = '';
         $emptyBlock2 = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div>';
+        $expected = '<div class="help-block with-errors" id="SFDSWF--with-errors"></div>';
 
         $this->assertSame($expected, $emptyBlock2);
 
         $this->attributes['help'] = 'help block';
         $notEmptyBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div><p class="help-text">help block</p>';
+        $expected = '<div class="help-block with-errors" id="SFDSWF--with-errors"></div><p class="help-text">help block</p>';
         $this->assertEquals($expected, $notEmptyBlock);
 
         $this->attributes['help'] = 'help\nblock<br/>\nnew line';
         $newLineBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div><p class="help-text">help\nblock<br/>\nnew line</p>';
+        $expected = '<div class="help-block with-errors" id="SFDSWF--with-errors"></div><p class="help-text">help\nblock<br/>\nnew line</p>';
         $this->assertEquals($expected, $newLineBlock);
 
         $this->attributes['help'] = 'bob\'s block';
         $aposBlock = HTMLHelper::helpBlock($this->attributes);
-        $expected = '<div class="help-block with-errors"></div><p class="help-text">bob\'s block</p>';
+        $expected = '<div class="help-block with-errors" id="SFDSWF--with-errors"></div><p class="help-text">bob\'s block</p>';
         $this->assertEquals($expected, $aposBlock);
     }
 
@@ -1507,7 +1507,6 @@ class HTMLHelperTest extends \Codeception\Test\Unit
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
       $expected = $this->formStartFile . '<div class="form-group form-group-field field-m13" data-id="upload_file"><div class="field-wrapper"><label><span class="label">Upload File</span><div data-formtype="m13" id="upload_file" name="upload_file" type="file" class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div></label></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
-
       $this->assertEquals($expected, $getHTML);
     }
 
@@ -1561,7 +1560,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-c02" data-id="name"><label for="name" class="control-label">Name <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c02" id="name" name="name"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c02" data-id="name"><label for="name" class="control-label">Name <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c02" id="name" name="name"/></div><div class="help-block with-errors" id="SFDSWF-name-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1579,7 +1578,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-c04" data-id="email"><label for="email" class="control-label">Email <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c04" id="email" name="email" type="email"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c04" data-id="email"><label for="email" class="control-label">Email <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c04" id="email" name="email" type="email"/></div><div class="help-block with-errors" id="SFDSWF-email-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1597,7 +1596,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-c06" data-id="phone"><label for="phone" class="control-label">Phone <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c06" id="phone" name="phone" type="tel"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c06" data-id="phone"><label for="phone" class="control-label">Phone <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c06" id="phone" name="phone" type="tel"/></div><div class="help-block with-errors" id="SFDSWF-phone-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1614,7 +1613,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-c08" data-id="address"><label for="address" class="control-label">Address <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c08" id="address" name="address"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c08" data-id="address"><label for="address" class="control-label">Address <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c08" id="address" name="address"/></div><div class="help-block with-errors" id="SFDSWF-address-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1631,7 +1630,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-c10" data-id="city"><label for="city" class="control-label">City <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c10" id="city" name="city"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c10" data-id="city"><label for="city" class="control-label">City <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c10" id="city" name="city"/></div><div class="help-block with-errors" id="SFDSWF-city-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1648,7 +1647,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-c14" data-id="zip"><label for="zip" class="control-label">Zipcode <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c14" id="zip" name="zip"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-c14" data-id="zip"><label for="zip" class="control-label">Zipcode <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="c14" id="zip" name="zip"/></div><div class="help-block with-errors" id="SFDSWF-zip-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1665,7 +1664,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-d02" data-id="date"><label for="date" class="control-label">Date <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d02" id="date" name="date"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d02" data-id="date"><label for="date" class="control-label">Date <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d02" id="date" name="date"/></div><div class="help-block with-errors" id="SFDSWF-date-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1683,7 +1682,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-d04" data-id="time"><label for="time" class="control-label">Time <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d04" id="time" name="time" type="time"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d04" data-id="time"><label for="time" class="control-label">Time <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d04" id="time" name="time" type="time"/></div><div class="help-block with-errors" id="SFDSWF-time-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1701,7 +1700,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-d06" data-id="number"><label for="number" class="control-label">Number <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d06" id="number" name="number" type="number" step="any"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d06" data-id="number"><label for="number" class="control-label">Number <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d06" id="number" name="number" type="number" step="any"/></div><div class="help-block with-errors" id="SFDSWF-number-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1719,7 +1718,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-d08" data-id="price"><label for="price" class="control-label">Price <span class="optional">(optional)</span></label><div class="field-wrapper"><div class="prepended dollar">$</div><input data-formtype="d08" id="price" name="price" type="number" step="0.01"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d08" data-id="price"><label for="price" class="control-label">Price <span class="optional">(optional)</span></label><div class="field-wrapper"><div class="prepended dollar">$</div><input data-formtype="d08" id="price" name="price" type="number" step="0.01"/></div><div class="help-block with-errors" id="SFDSWF-price-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1737,7 +1736,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-d10" data-id="url"><label for="url" class="control-label">URL <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d10" id="url" name="url" type="url"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-d10" data-id="url"><label for="url" class="control-label">URL <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="d10" id="url" name="url" type="url"/></div><div class="help-block with-errors" id="SFDSWF-url-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1754,7 +1753,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-i02" data-id="text"><label for="text" class="control-label">Text <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="i02" id="text" name="text"/></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-i02" data-id="text"><label for="text" class="control-label">Text <span class="optional">(optional)</span></label><div class="field-wrapper"><input data-formtype="i02" id="text" name="text"/></div><div class="help-block with-errors" id="SFDSWF-text-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1771,7 +1770,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-i14" data-id="text_area"><label for="text_area" class="control-label">Text Area <span class="optional">(optional)</span></label><div class="field-wrapper"><textarea data-formtype="i14" id="text_area" name="text_area"></textarea></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-i14" data-id="text_area"><label for="text_area" class="control-label">Text Area <span class="optional">(optional)</span></label><div class="field-wrapper"><textarea data-formtype="i14" id="text_area" name="text_area"></textarea></div><div class="help-block with-errors" id="SFDSWF-text_area-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1789,7 +1788,7 @@ class HTMLHelperTest extends \Codeception\Test\Unit
       );
 
       $getHTML = $this->htmlHelperTester->getHTML($this->form);
-      $expected = $this->formStart . '<div class="form-group form-group-field field-s02" data-id="select"><label for="select" class="control-label">Select <span class="optional">(optional)</span></label><div class="field-wrapper"><select data-formtype="s02" id="select" name="select"><option value="">Choose an option</option><option value="option one">option one</option><option value="option two">option two</option></select></div><div class="help-block with-errors"></div></div>' . $this->formEnd;
+      $expected = $this->formStart . '<div class="form-group form-group-field field-s02" data-id="select"><label for="select" class="control-label">Select <span class="optional">(optional)</span></label><div class="field-wrapper"><select data-formtype="s02" id="select" name="select"><option value="">Choose an option</option><option value="option one">option one</option><option value="option two">option two</option></select></div><div class="help-block with-errors" id="SFDSWF-select-with-errors"></div></div>' . $this->formEnd;
 
       $this->assertEquals($expected, $getHTML);
     }
@@ -1870,6 +1869,46 @@ class HTMLHelperTest extends \Codeception\Test\Unit
           '</div>'.
         '</div>';
       $this->assertEquals($expected, $adminTab);
+    }
+
+    public function testGetConditionalStatement() {
+      $contains = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "contains", "bar", false);
+      $expected = '(jQuery(\'#foo\').val()).search(/bar/i) != -1';
+      $this->assertEquals($expected, $contains);
+
+      $doesnot = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "doesn't contain", "bar", false);
+      $expected = '(jQuery(\'#foo\').val()).search(/bar/i) == -1';
+      $this->assertEquals($expected, $doesnot);
+
+      $matches = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", "==", "bar", false);
+      $expected = "jQuery('#foo').val() == 'bar'";
+      $this->assertEquals($expected, $matches);
+
+      $number = $this->htmlHelperTester->getConditionalStatement("jQuery('#foo').val()", ">", 2, true);
+      $expected = "jQuery('#foo').val() > 2";
+      $this->assertEquals($expected, $number);
+    }
+
+    public function testGetCheckboxConditionalStatement() {
+      $contains = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "contains", "bar");
+      $expected = "(jQuery('#foo').map(function() {return jQuery(this).val();}).get().join()).search(/bar/i) != -1";
+      $this->assertEquals($expected, $contains);
+
+      $doesnot = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "doesn't contain", "bar");
+      $expected = "(jQuery('#foo').map(function() {return jQuery(this).val();}).get().join()).search(/bar/i) == -1";
+      $this->assertEquals($expected, $doesnot);
+
+      $matches = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "matches", "bar");
+      $expected = "jQuery('#foo[value=\"bar\"]').length";
+      $this->assertEquals($expected, $matches);
+
+      $spaces = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "matches", "this has spaces");
+      $expected = "jQuery('#foo[value=\"this has spaces\"]').length";
+      $this->assertEquals($expected, $spaces);
+
+      $notmatch = $this->htmlHelperTester->getCheckboxConditionalStatement("#foo", "doesn't match", "bar");
+      $expected = "jQuery('#foo[value=\"bar\"]').length === 0";
+      $this->assertEquals($expected, $notmatch);
     }
 
 }

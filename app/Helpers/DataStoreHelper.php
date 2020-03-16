@@ -199,6 +199,7 @@ class DataStoreHelper extends Migration
                     ->first();
 
                     $data = (array) $results;
+                    $removals = array();
                     $data['formid'] = $formid;
                     $data['magiclink'] = $draft;
                     $lookups = $this->getLookupTable($formid);
@@ -210,6 +211,10 @@ class DataStoreHelper extends Migration
                                     $data[$lookup['form_field_name']."[]"] = array();
                                 }
                                 array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
+                                // mark this field for unset later
+                                if (!isset($removals[$lookup['form_field_name']])) {
+                                    $removals[$lookup['form_field_name']] = $lookup['form_field_name'];
+                                }
                             } else {
                                 $data[$lookup['form_field_name']] = $lookup['value'];
                             }
@@ -219,6 +224,12 @@ class DataStoreHelper extends Migration
             } catch (\Illuminate\Database\QueryException $ex) {
                 $results = ['status' => 0, 'message' => $ex->getMessage()];
                 return null;
+            }
+        }
+        // remove unnecessary checkboxes
+        if (isset($removals)) {
+            foreach ($removals as $key => $value) {
+                unset($data[$key]);
             }
         }
         return $data;
@@ -286,22 +297,21 @@ class DataStoreHelper extends Migration
             $id = $this->insertFormData($write['db'], $form['id']);
             // update status if form is partially completed
             if ($id) {
-                $ret = array("status" => 1, "message" => 'success' );
                 try {
+                    $magiclink = Hash::make(time());
+                    $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                    $email_data = $this->constructResumeDraftEmailData($form, $magiclink, $email);
+                    $ret = array("status" => 1, 'data' => $email_data);
                     if ($status != 'complete') {
-                        $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                        $magiclink = Hash::make(time());
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                        $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     } else {
                         $write['db']['form_id'] = $form['id'];
                         if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
                         // get push_to_adu from environment variable
                         $push_to_adu = getenv("ADU_DISPATCHER_ENABLE");
-                        if( filter_var($push_to_adu, FILTER_VALIDATE_BOOLEAN))
-                          $ret = $this->pushDataToADU($write['db']);
-
-                          if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
+                        if( $push_to_adu !== '' && filter_var($push_to_adu, FILTER_VALIDATE_BOOLEAN)){
+                          $response = $this->pushDataToADU($write['db']);
+                          if ($response['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST'))
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
                     }
@@ -744,7 +754,7 @@ class DataStoreHelper extends Migration
                 try {
                     foreach ($definition['options'] as $option) {
                         if (trim($option) != '') {
-                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value, type) values (?, ?, ?, ?)', array($form_id, $definition['name'], $option, $definition['formtype']));
                         }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
@@ -844,8 +854,11 @@ class DataStoreHelper extends Migration
                     // fixed bug: if 'name' attribute was not set, exception is thrown here.
                     if (isset($field['name'])) {
                         $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
+
                         if ($field['formtype'] === 'c04') {
-                            $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            if (!isset($write['db']['email_save_for_later']) || $write['db']['email_save_for_later'] === '') {
+                                $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            }
                         }
                     }
                 }
@@ -924,18 +937,18 @@ class DataStoreHelper extends Migration
         if ($form) {
             $data['body'] = array();
             // Set email body variables
-            $ret['body']['formname'] = $form['content']['settings']['name'];
-            $ret['body']['message'] = 'To go back to your draft, visit the link below.';
-            $ret['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            $data['body']['formname'] = $form['content']['settings']['name'];
+            $data['body']['message'] = 'To go back to your draft, visit the link below.';
+            $data['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            $data['body']['date'] = date("F j, Y");
+            $data['body']['time'] = date("g:i a");
             // Set email header
-            $ret['emailInfo'] = array();
-            $ret['emailInfo']['address'] = $email;
-            //$data['emailInfo']['from_address'];
-            //$data['emailInfo']['replyto_address'];
+            $data['emailInfo'] = array();
+            $data['emailInfo']['address'] = $email;
             $data['emailInfo']['subject'] = "Form submissions status";
             $data['emailInfo']['name'] = 'City and County of San Francisco';
         }
-        return $ret;
+        return $data;
     }
 
     /** Validates form input against form definition
@@ -949,18 +962,70 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $validation_rules = array();
+        $formtypes = array();
+        $pages = array();
+        $currentPage = '';
+        $skip = array();
 
         foreach ($definitions as $key => $definition) {
-            if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
-
-                if (isset($definition['conditions'])) break; //temporarily do not validate fields that may be hidden in conditionals
-
-                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
-                if($rule != '')
-                  $validation_rules[$definition['name']] = $rule;
+          //populate formtypes array with $formtypes[id] = formtype
+          $formtypes[$definition['id']] = $definition['formtype'];
+          //for page separators, get a list of pages and their fields
+          if ($definition['formtype'] === "m16") {
+            if (isset($definition['conditions'])) {
+              //populate pages array as $pages[page id] = array('name','phone','email')
+              $pages[$definition['id']] = array();
+              //set currentPage as the last known page container
+              $currentPage = $definition['id'];
+            } else {
+              $currentPage = '';
             }
+          } else if ($currentPage !== '') {
+            //if currentPage is set, add new ids as children of that page
+            $pages[$currentPage][] = $definition['id'];
+          }
         }
+
+        foreach ($definitions as $key => $definition) {
+          if ($definition && (!$this->controllerHelper->isNonInputField($definition['formtype']) || $definition['formtype'] === "m16")) {
+            $rule = '';
+
+            if (!in_array($definition['id'], $skip)) {
+              if (isset($definition['conditions'])) {
+                // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
+
+                //check if it's related to a page or a field
+                if ($definition['formtype'] == "m16") {
+
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, do nothing; leave fields in definitions array to be validated normally
+                  } else {
+                    //otherwise, remove all fields related to this page
+                    $skip = $pages[$definition['id']];
+                  }
+
+                } else {
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, validate this field
+                    $rule = $this->getValidationRule($definition, $request);
+                  }
+                  // else mismatch, leave rule empty, field is not visible and should be discarded from validation
+                }
+
+              } else {
+                $rule = $this->getValidationRule($definition, $request);
+              }
+            }
+
+            if($rule !== '')
+              $validation_rules[$definition['name']] = $rule;
+          }
+        }
+
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
@@ -969,14 +1034,90 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
+    /** Checks condition as a statement
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $condition array consisting of conditional statement params ( [id] => checkboxes [op] => matches [val] => Maybe )
+      *
+      * @return bool
+    */
+    public function checkCondition($request, $formtypes, $condition) {
+      if ($formtypes[$condition['id']] == 's06') {
+        $val = $request->input($condition['id'])[0];
+      } else {
+        $val = $request->input($condition['id']);
+      }
+      switch ($condition['op']) {
+        case "matches":
+          if ($val == $condition['val']) return true;
+          break;
+        case "doesn't match":
+          if ($val != $condition['val']) return true;
+          break;
+        case "is less than":
+          if ($val < $condition['val']) return true;
+          break;
+        case "is more than":
+          if ($val > $condition['val']) return true;
+          break;
+        case "contains anything":
+          if ($val != '') return true;
+          break;
+        case "is blank":
+          if ($val === '') return true;
+          break;
+        case "contains":
+          if (strpos($val, $condition['val']) !== false) return true;
+          break;
+        case "doesn't contain":
+          if (strpos($val, $condition['val']) === false) return true;
+          break;
+      }
+      return false;
+    }
+
+    /** Checks collection of conditions
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $conditions array of conditions consisting of conditional statement params
+      *
+      * @return bool
+    */
+    public function checkManyConditions($request, $formtypes, $conditions) {
+      //loop through each condition
+      foreach ($conditions['condition'] as $index => $condition) {
+        $thisCondition = $this->checkCondition($request, $formtypes, $condition);
+        if ($thisCondition && $conditions['allAny'] === "any") {
+          return true;
+        } else if (!$thisCondition && $conditions['allAny'] === "all") {
+          return false;
+        }
+      }
+      return $conditions['allAny'] === "any" ? false : true;
+    }
+
+    /** gets validation rule for single input
+    *
+    * @param $definition
+    * @param $request
+    *
+    * @return String
+    */
+    public function getValidationRule($definition, $request)
+    {
+      $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+      return implode('|', $this->setValidationRules($definition));
+    }
+
     /** sets validation rules for all input types
     *
     * @param $definition
-    * @param @field
     *
     * @return Array
     */
-    private function setValidationRules($definition, $field)
+    public function setValidationRules($definition, $field = null)
     {
         $rules = array();
         foreach ($definition as $key => $value) {
@@ -1002,8 +1143,6 @@ class DataStoreHelper extends Migration
                       $rules[] = "min:".$value;
                   }
                       break;
-                case "option": $rules[] = "Array";
-                    break;
                 case "type":
                     if ($value === 'email') {
                         $rules[] = "email";
@@ -1014,7 +1153,7 @@ class DataStoreHelper extends Migration
                     } elseif ($value === 'date') {
                         $rules[] = "date";
                     } elseif ($value === 'time') {
-                        $rules[] = "date";
+                        $rules[] = "date_format:H:i";
                     } elseif ($value === 'tel') {
                         //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
                     }
@@ -1024,6 +1163,8 @@ class DataStoreHelper extends Migration
                         $rules[] = "string";
                     } elseif ($value === 'm10') { //HTML code
                         $rules[] = "string";
+                    } elseif ($value === 's06') {
+                        $rules[] = "Array";
                     }
                     break;
                 default:
