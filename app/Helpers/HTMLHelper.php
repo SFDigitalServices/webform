@@ -202,6 +202,7 @@ class HTMLHelper
       }
 
       if (!empty($conditions)) { //add conditional behavior
+          $hasConditions = array();
           foreach ($conditions as $id => $fld) {
               //set default visibility
               if ($formtypes[$id] == "m16") {
@@ -236,12 +237,16 @@ class HTMLHelper
               $js .= "jQuery('";
               foreach ($conditionIds as $chId) {
                   $js .= $this->getInputSelector($chId, $formtypes, false).", ";
+                  if( ! in_array($chId, $hasConditions) )
+                    $hasConditions[] = $chId;
               }
               $js = substr($js, 0, -2)."').on('keyup change',function(){";
+
+              $getInputSelector = $this->getInputSelector($id, $formtypes, false);
               if ($formtypes[$id] == "m16") {
-                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group').".$revert."()}});";
+                $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector." .form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$getInputSelector." .form-group').".$revert."()}});";
               } else {
-                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
+                $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
               }
           }
       }
@@ -252,7 +257,6 @@ class HTMLHelper
 
       //add webhooks behavior
       $js .= $this->addWebhooks($webhooks, $formtypes);
-
       // check to see if this is a retrieval
       $populateJS = '';
       if($referer !== ''){
@@ -261,7 +265,8 @@ class HTMLHelper
         if(isset($output['draft'])){
           $draft = $output['draft'];
           $form_id = $output['form_id'];
-          $data = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
+          $data['data'] = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
+          $data['conditions'] = $hasConditions;
           $populateJS = "var draftData = ". json_encode($data) .";";
         }
       }

@@ -205,6 +205,7 @@ class DataStoreHelper extends Migration
                     $lookups = $this->getLookupTable($formid);
                     foreach ($lookups as $lookup) {
                         $ids = explode(',', $data[$lookup['form_field_name']]);
+                        Log::info(print_r($lookup, 1));
                         if (isset($data[$lookup['form_field_name']]) && in_array($lookup['id'], $ids)) {
                             if ($lookup['type'] === 's06') {
                                 if (! isset($data[$lookup['form_field_name']."[]"])) {
@@ -275,11 +276,14 @@ class DataStoreHelper extends Migration
         if ($status !== 'partial') {
             // validate user inputs
             $ret = $this->validateFormRequest($request, $form['content']['data']);
+            Log::info(print_r($ret, 1));
             if (! empty($ret)) {
                 return $ret;
             }
         }
+        //Log::info(print_r($request->all(), 1));
         $write = $this->parseSubmittedFormData($form, $request);
+        //Log::info(print_r($write, 1));
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
             if ($request->input('magiclink')) {
@@ -998,7 +1002,6 @@ class DataStoreHelper extends Migration
               $validation_rules[$definition['name']] = $rule;
           }
         }
-Log::info(print_r($validation_rules, 1));
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
