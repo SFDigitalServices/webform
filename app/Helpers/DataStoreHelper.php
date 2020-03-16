@@ -205,7 +205,6 @@ class DataStoreHelper extends Migration
                     $lookups = $this->getLookupTable($formid);
                     foreach ($lookups as $lookup) {
                         $ids = explode(',', $data[$lookup['form_field_name']]);
-                        Log::info(print_r($lookup, 1));
                         if (isset($data[$lookup['form_field_name']]) && in_array($lookup['id'], $ids)) {
                             if ($lookup['type'] === 's06') {
                                 if (! isset($data[$lookup['form_field_name']."[]"])) {
