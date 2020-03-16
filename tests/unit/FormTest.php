@@ -70,7 +70,12 @@ class FormTest extends \Codeception\Test\Unit
       $newFilename = $this->controllerHelper->generateUploadedFilename(4480, 'upload_file', $request->file()['file'][0]->getClientOriginalName());
       $response = $this->formTester->uploadFile($request);
       $data = json_decode($response->getContent());
-      $this->assertEquals($this->controllerHelper->getBucketPath().$newFilename, $data->filename);
+      if (isset($data->filename)) {
+        $this->assertEquals($this->controllerHelper->getBucketPath().$newFilename, $data->filename);
+      } else {
+        print_r($data);
+        die;
+      }
       $this->assertEquals('upload_file', $data->field_name);
   }
 
