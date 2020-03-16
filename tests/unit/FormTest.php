@@ -69,8 +69,9 @@ class FormTest extends \Codeception\Test\Unit
       $request = $this->createRequest("POST", json_encode(array("form_id" => "4480", "field_name" => "upload_file")), '/test', ['CONTENT_TYPE' => 'application/json'], array(), array(), array("file" => array(UploadedFile::fake()->create('document.pdf', 1000))));
       $newFilename = $this->controllerHelper->generateUploadedFilename(4480, 'upload_file', $request->file()['file'][0]->getClientOriginalName());
       $response = $this->formTester->uploadFile($request);
-      $this->assertEquals($this->controllerHelper->getBucketPath().$newFilename, json_decode($response->getContent())->filename);
-      $this->assertEquals('upload_file', json_decode($response->getContent())->field_name);
+      $data = json_decode($response->getContent());
+      $this->assertEquals($this->controllerHelper->getBucketPath().$newFilename, $data->filename);
+      $this->assertEquals('upload_file', $data->field_name);
   }
 
 	public function testFormIsSectional()
