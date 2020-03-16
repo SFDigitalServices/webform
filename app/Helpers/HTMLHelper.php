@@ -68,8 +68,6 @@ class HTMLHelper
             $form_container .= $this->createEditableFields($field);
           }
         }
-
-
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
@@ -80,9 +78,13 @@ class HTMLHelper
         } else {
             $form_container = $form_div . self::formHeader($content['settings']['name']) . $form_container;
         }
+        // add preview page place holder
         $form_end = "";
+        if($pageCount > 1)
+          $form_end = self::addPreviewPage($content['settings']['name']);
+
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+          $form_end .= '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
@@ -387,7 +389,8 @@ class HTMLHelper
       }
 
       if ($pageNumber == $pageCount) {
-        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
+        // insert Preivew page, move submit button to the Preview page
+        $html .= '<button id="preview_submit_page" class="btn btn-lg form-section-next">Next</button>';
       } else {
         $html .= '<button class="btn btn-lg form-section-next">Next</button>';
       }
@@ -439,7 +442,7 @@ class HTMLHelper
           case "s06": //checkbox
             $type = "checkbox";
             $array = "[]";
-            $extra = (isset($field['required']) && $field['required'] !== "" && $field['required'] !== "false" && $field['required'] !== false) ? ' data-required="1" data-error="This field cannot be blank."' : '';
+            $extra = self::isRequired($field) ? ' data-required="1" data-error="This field cannot be blank."' : '';
             break;
         }
         //js added inline instead of from JS due to simplicity of binding
@@ -499,7 +502,7 @@ class HTMLHelper
         //convert checkboxes to options and remove them from fields
         $options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
         unset($field['checkboxes']);
-        if (isset($field['required']) && $field['required'] !== "" && $field['required'] !== "false" && $field['required'] !== false) $field['data-required'] = true;
+        if (self::isRequired($field)) $field['data-required'] = true;
         //get attributes
         $attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
@@ -688,7 +691,7 @@ class HTMLHelper
         $non_inputs = array('m02', 'm04', 'm06', 'm08', 'm10', 'm11', 'm14', 'm16'); //m13 is file upload
         $label_for = isset($field['id']) && $field['id'] !== "" ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
         $label_text = isset($field['label']) ? $field['label'] : "";
-        $optional = (!isset($field['required']) || $field['required'] === "" || $field['required'] === "false") && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
+        $optional = !self::isRequired($field) && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
 
         if (in_array($field['formtype'], $legends)) {
           $start = '<legend class="control-label">';
@@ -701,6 +704,14 @@ class HTMLHelper
         return $start . $label_text . $optional . $end;
     }
 
+    public static function isRequired($field) {
+      $ret = false;
+      if (isset($field['required'])) {
+        if ($field['required'] === true || $field['required'] === "true" || $field['required'] === "1" || $field['required'] === 1) $ret = true;
+      }
+      return $ret;
+    }
+
    /** Constructs help text block
      *
      * @param $field
@@ -709,11 +720,120 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-      $output = '<div class="help-block with-errors"></div>';
+      $output = '<div class="help-block with-errors" id="SFDSWF-'.$field['id'].'-with-errors"></div>';
       if (isset($field['help']) && $field['help'] !== "") {
         $output .= '<p class="help-text">'.html_entity_decode($field['help']).'</p>';
       }
       return $output;
+    }
+
+     /** Formats submitted data for preview
+     *
+     * @param $request
+     * @param @definitions
+     *
+     * @return html
+     */
+    public function formatSubmittedData($request, $definitions)
+    {
+      $ret = array();
+      $data = $request->all();
+
+      foreach($definitions as $definition){
+        if (isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype'])) {
+            continue;
+        }
+        if ($definition) {
+            if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
+                $type = $definition['formtype'];
+            } else {
+                $type = isset($definition['formtype']) ? $definition['formtype'] : $definition['type'];
+            }
+            $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
+            $value = isset($data[$name]) ? $data[$name] : "";
+            $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
+
+            if ($value != "") {
+                switch ($type) {
+                  case 'c04':
+                  case 'email': // format emals
+                    $ret[] = FieldFormatter::formatEmail($label, $value);
+                    break;
+                  case 'd10':
+                  case 'url': // format url
+                    $ret[] = FieldFormatter::formatURL($label, $value);
+                    break;
+                  case 'c06':
+                  case 'tel': // format phone
+                    $ret[] = FieldFormatter::formatPhone($label, $value);
+                    break;
+                  case 's02':
+                  case 's14':
+                  case 's15':
+                  case 's16': // dropdowns, radios, checkbox put a check mark before the value
+                  case 's08':
+                  case 's06':
+                    $ret[] = FieldFormatter::formatOptions($label, $value, $request->getSchemeAndHttpHost());
+                    break;
+                  case 'm13':
+                  case 'file': // format name and size
+                      if ($request->file($name) != null && $request->file($name)->isValid()) {
+                          $file = $request->file($name);
+                          $ret[] = FieldFormatter::formatFile($label, $file, $value);
+                      }
+                    break;
+                  case 'd06':
+                  case 'number': // format number, append units
+                    $unit = isset($definition['unit']) ? $definition['unit'] : "";
+                    $ret[] = FieldFormatter::formatNumber($label, $value, $unit);
+                    break;
+                  case 'd08':
+                  case 'price': // format currency
+                    $ret[] = FieldFormatter::formatPrice($label, $value);
+                    break;
+                  case 'd02':
+                  case 'date': // format date
+                    $ret[] = FieldFormatter::formatDate($label, $value);
+                    break;
+                  case 'i14': // format textarea, strip all html
+                    $ret[] = FieldFormatter::formatTextArea($label, $value);
+                    break;
+                  case 'd04': // format Time
+                  case 'time':
+                    $ret[] = FieldFormatter::formatTime($label, $value);
+                    break;
+                  default: //format all other inputs as text
+                    $ret[] = FieldFormatter::formatText($label, $value);
+                    break;
+              }
+            }
+        }
+      }
+      //Log::info(print_r($ret, 1));
+      return $ret;
+    }
+
+    /**
+    * adds a preview page to the last page
+    *
+    * @param $formname
+    *
+    * @return HTML
+    */
+    private static function addPreviewPage($formname)
+    {
+        $html = '<div class="form-section" data-id="page_separator">'.self::formHeader($formname).'<div class="form-content">';
+        // add place holders for preview page
+        $html .= '<div class="form-group">';
+        $html .= '<div id="preview_submitted_data"></div>';
+        $html .= '</div>';
+        // add buttons
+        $html .= '<div class="form-group">';
+        $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
+        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
+        $html .= '</div></div>';
+
+        return $html;
     }
 
 
@@ -975,6 +1095,9 @@ class HTMLHelper
         $html .= self::fieldLabel($field);
       }
 
+      //add aria invalid attributes to required forms
+      if (self::isRequired($field)) $field['aria-invalid'] = "false";
+
       $html .= '<div class="field-wrapper">';
 
       switch ($field['formtype']) {
@@ -1160,10 +1283,10 @@ class HTMLHelper
 				$output = "";
 				break;
 			case "matches":
-				$output = "jQuery('".$sel."[value=".$value."]').length";
+				$output = "jQuery('".$sel."[value=\"".$value."\"]').length";
 				break;
 			case "doesn't match":
-				$output = "jQuery('".$sel."[value=".$value."]').length === 0";
+				$output = "jQuery('".$sel."[value=\"".$value."\"]').length === 0";
 				break;
 			case "is less than": // will only check the first match, not sure how it would work with multiple
 				$output = "jQuery('".$sel."').val() < ".$value;
