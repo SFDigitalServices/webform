@@ -278,6 +278,7 @@ class FormController extends Controller
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-base.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-branding.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
+        '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/dropzone.css" />'.
         '</head>'.
         '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>'.$this->htmlHelper->adminTab().'</body></html>';
     }
@@ -461,6 +462,26 @@ class FormController extends Controller
     public function purgeCSV(Request $request)
     {
         return true;
+    }
+
+    /** Asynchronous file upload
+    *
+    * @param $request
+    *
+    * @return string
+    */
+    public function uploadFile(Request $request)
+    {
+        $ret = response()->json(['status' => 0, 'message' => 'Error, file did not upload.']);
+        $form_id = $request->input('form_id');
+        if ($form_id) {
+          $form = Form::where('id', $form_id)->first();
+          $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+          if ($filename = $this->dataStoreHelper->parseUploadedFile($form, 'upload_file', $request->file()['file'][0])) {
+            $ret = response()->json(['status' => 1, 'message' => 'Success, file uploaded.', 'filename' => $filename, 'field_name' => $request->input('field_name')]);
+          }
+        }
+        return $ret;
     }
 
   /** Gets S3 unique filename

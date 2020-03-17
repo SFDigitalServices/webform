@@ -846,6 +846,8 @@ class DataStoreHelper extends Migration
                       $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
                       $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
                       $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
+                  } else if ($request->file($field['name']) == null && $request->input($field['name']) != "") {
+                      $write['db'][$field['name']] = $request->input($field['name']);
                   }
                   $column++;
                 } else {
@@ -863,6 +865,31 @@ class DataStoreHelper extends Migration
             }
         }
         return $write;
+    }
+
+    /** Parses uploaded file data
+     *
+     * @param $content
+     * @param $fieldName
+     *
+     * @return string
+     */
+    public function parseUploadedFile($content, $fieldName, $file)
+    {
+      $filename = '';
+      if (! empty($content['content']['data'])) {
+        foreach ($content['content']['data'] as $field) {
+          if ($field['formtype'] === "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
+            if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
+              //$file = $fieldName;
+              $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+              $filename = $this->controllerHelper->getBucketPath().$newFilename;
+              $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
+            }
+          }
+        }
+      }
+      return $filename;
     }
 
     /** Push data to the ADU Dispatcher

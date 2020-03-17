@@ -124,7 +124,8 @@ class HTMLHelper
       $js = "var SFDSWFB = {};SFDSWFB.preRenderScripts = [" .
 		"'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js', " .
 		"'//" . $host . "/assets/js/validator.js', " .
-		"'//" . $host . "/assets/js/error-msgs.js'" .
+		"'//" . $host . "/assets/js/error-msgs.js', " .
+    "'//cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js'" .
 	  "];SFDSWFB.postRenderScripts = [" .
 		"'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js'" .
 	  "];var script = document.createElement('script'); SFDSWFB.formRender = function() {"; //start ready
@@ -579,7 +580,7 @@ class HTMLHelper
 		$prepended = self::getPrepended($field);
         $html = $prepended . '<label>';
         $html .= '<span class="label">'. $field['label'] . '</span>';
-        $html .= '<input' . $attributes . '/><span class="file-custom" data-filename=""></span>';
+        $html .= '<div'. $attributes.' class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div>';
         $html .= '</label>';
         return $html;
     }

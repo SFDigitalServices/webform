@@ -13,6 +13,7 @@ SFDSWFB.loadRemainingScripts = function() {
       jQuery('#SFDSWFB-admin .content').hide()
       jQuery('#SFDSWFB-admin input[type=checkbox]').prop('checked', false)
     } else {
+      initUploaders();
       bindAriaValidation();
       SFDSWFB.lastScript()
     }
@@ -42,6 +43,41 @@ SFDSWFB.loadScript = function(type, callback) {
 SFDSWFB.loadRemainingScripts();
 SFDSWFB.lastCalled = {};
 SFDSWFB.skipToSectionId = '';
+SFDSWFB.uploaders = {};
+
+function initUploaders() {
+  if (jQuery('div[data-formtype=m13]').length) {
+    jQuery('div[data-formtype=m13]').each(function(){
+      SFDSWFB.uploaders[jQuery(this).attr('name')] = new Dropzone(jQuery(this).get(0), {
+        url: jQuery('#SFDSWF-Container form').prop('action').replace('\/submit', '\/uploadFile'),
+        autoProcessQueue: true,
+        uploadMultiple: true,
+        params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+jQuery(this).attr('name')+'" }' ),
+        parallelUploads: 1,
+        maxFiles: 1,
+        maxFilesize: 350,
+        acceptedFiles: 'image/*,application/pdf',
+        addRemoveLinks: false,
+        init: function() {
+          this.on("addedfile", function() {
+            if (this.files[1]!=null){
+              this.removeFile(this.files[0]);
+            }
+          });
+        },
+        success: function (file, response) {
+          var imgName = response;
+          file.previewElement.classList.add("dz-success");
+          jQuery('.file-custom[name='+response.field_name+']').append('<input type="hidden" name="'+response.field_name+'" value="'+response.filename+'"/>');
+          fieldValid(jQuery('.file-custom[name='+response.field_name+']').attr('id'));
+        },
+        error: function (file, response) {
+          file.previewElement.classList.add("dz-error");
+        }
+      } );
+    });
+  }
+}
 
 function callWebhook(populateField, endPoint, ids, responseIndex, method, optionsArray, delimiter, responseOptionsIndex) {
   //validate endPoint and populateField
@@ -359,6 +395,18 @@ SFDSWFB.lastScript = function() {
           fieldInvalid(jQuery(this).attr('id'));
         }
     });
+    if (jQuery('div[data-formtype=m13]').length) {
+      jQuery('div[data-formtype=m13]').each(function(){
+        if (jQuery(this).attr('required')) {
+          if (SFDSWFB.uploaders[jQuery(this).attr('name')].files.length < 1) {
+            formValid = false;
+            fieldInvalid(jQuery(this).attr('id'));
+          } else {
+            fieldValid(jQuery(this).attr('id'));
+          }
+        }
+      });
+    }
     // If UI validation passed, perfrom back end validation
     if (formValid && validPage()) {
       if (!jQuery('#SFDSWF-Container .has-error:visible').length) submitPartial(form_id, 'complete')
