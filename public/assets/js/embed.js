@@ -55,7 +55,7 @@ function initUploaders() {
         params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+jQuery(this).attr('name')+'" }' ),
         parallelUploads: 1,
         maxFiles: 1,
-        maxFilesize: 20,
+        maxFilesize: 350,
         acceptedFiles: 'image/*,application/pdf',
         addRemoveLinks: false,
         init: function() {
@@ -68,7 +68,6 @@ function initUploaders() {
         success: function (file, response) {
           var imgName = response;
           file.previewElement.classList.add("dz-success");
-          console.log("Successfully uploaded :" + imgName);
           jQuery('.file-custom[name='+response.field_name+']').append('<input type="hidden" name="'+response.field_name+'" value="'+response.filename+'"/>');
           fieldValid(jQuery('.file-custom[name='+response.field_name+']').attr('id'));
         },
