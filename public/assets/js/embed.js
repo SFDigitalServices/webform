@@ -56,6 +56,7 @@ function initUploaders() {
         parallelUploads: 1,
         maxFiles: 1,
         maxFilesize: 350,
+        timeout: 600000,
         acceptedFiles: 'image/*,application/pdf',
         addRemoveLinks: false,
         init: function() {
