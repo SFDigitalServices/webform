@@ -131,7 +131,7 @@ class FieldFormatter
     */
     public static function formatDate($name, $value)
     {
-        $value = date("F j, Y", strtotime($value));
+        $value = date("M j, Y", strtotime($value));
         $html = array($name => $value);
         return $html;
     }

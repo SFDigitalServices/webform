@@ -422,7 +422,7 @@ SFDSWFB.lastScript = function() {
 
   if(window.draftData !== undefined){
     console.log(window.draftData);
-    populateForm(window.draftData);
+    populateForm(window.draftData['data'], window.draftData['conditions']);
   }
 }
 
@@ -451,25 +451,38 @@ function setOtherValue(obj) {
   jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
 }
 
-function populateForm(formData){
+function populateForm(formData, conditions){
   if(formData['formid'] === undefined) return false;
   var formid = 'SFDSWFB_forms_' + formData['formid'];
-  //console.log(document.forms[formid]);
   for(element in formData){
-    if(document.forms[formid][element] !== undefined){
-      if(document.forms[formid][element] instanceof RadioNodeList){
-        getCheckedCheckboxesFor(document.forms[formid][element], formData[element])
+    var formElement = document.forms[formid][element];
+    if(formElement !== undefined && formData[element] !== ""){
+      // mutiple checkboxes/radios
+      if(formElement instanceof RadioNodeList){
+        getCheckedCheckboxesFor(formElement, formData[element])
       }
       try{
-
-        if(document.forms[formid][element].type !== undefined && (document.forms[formid][element].type === 'radio' || document.forms[formid][element].type === 'checkbox')){
-          //console.log( document.forms[formid][element].name + ": " + document.forms[formid][element].type + ": " + formData[element] )
-          getSingleCheckedCheckboxesFor(document.forms[formid][element], formData[element])
+        // set single checkbox/radio inputs, these special input types
+        if(formElement.type !== undefined && (formElement.type === 'radio' || formElement.type === 'checkbox')){
+          getSingleCheckedCheckboxesFor(formElement, formData[element])
         }
-        else
-          document.forms[formid][element].value = formData[element];
+        else{
+          // file input, lift required attribute to allow continuation
+          if(formElement.type === 'file' && formElement.required){
+            formElement.required = false;
+            formElement.value = formData[element];
+          }
+          else{
+              formElement.value = formData[element];
+              // inputs with conditions attached
+              if(formElement.name !== undefined && conditions.includes(formElement.name)){
+                // trigger keyup event to show condition fields
+                jQuery('#SFDSWF-Container input[name="'+ formElement.name + '"]').keyup();
+              }
+          }
+        }
       }
-      catch(errors){
+      catch(errors){ // catch Failed to set the 'value' property on 'HTMLInputElement'
         console.log(errors)
       }
     }
@@ -509,14 +522,19 @@ function loadPreviewPage(formid){
 }
 
 function getCheckedCheckboxesFor(elements, items) {
+    if(!items) return;
     for (var i = 0; i < elements.length; i++) {
-        if (elements[i].type === 'checkbox' && items.includes(elements[i].value) ){
+        if (( elements[i].type === 'checkbox' || elements[i].type === 'radio') && items.includes(elements[i].value) ){
+          elements[i].click();
           elements[i].checked = true;
         }
     }
 }
 function getSingleCheckedCheckboxesFor(elements, items) {
+      if(!items) return;
       if (( elements.type === 'checkbox' || elements.type === 'radio') && items.includes(elements.value) ){
+        if(elements.type === 'radio')
+          elements.click();
         elements.checked = true;
       }
 }
