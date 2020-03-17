@@ -246,7 +246,7 @@ class HTMLHelper
               if ($formtypes[$id] == "m16") {
                 $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector." .form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$getInputSelector." .form-group').".$revert."()}});";
               } else {
-                $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
+                $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$getInputSelector."').closest('.form-group').".$revert."()}});";
               }
           }
       }
