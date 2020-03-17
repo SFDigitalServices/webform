@@ -64,7 +64,7 @@ class FieldFormatterTest extends \Codeception\Test\Unit
     $name = "Date";
     $value = "2020-03-04";
     $actual = FieldFormatter::formatDate($name, $value);
-    $expected = array($name => 'March 4, 2020');
+    $expected = array($name => 'Mar 4, 2020');
     $this->assertTrue($this->arrays_are_similar($expected, $actual));
   }
   public function testFormatTime(){
