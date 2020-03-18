@@ -209,6 +209,18 @@ function getDataInPath(obj, path) {
 //returns boolean
 function validPage() {
   jQuery('#SFDSWF-Container .form-section.active').validator('validate');
+  if (jQuery('#SFDSWF-Container .form-section.active div[data-formtype=m13]').length) {
+    jQuery('#SFDSWF-Container .form-section.active div[data-formtype=m13]').each(function(){
+      if (jQuery(this).attr('required')) {
+        if (SFDSWFB.uploaders[jQuery(this).attr('name')].files.length < 1) {
+          fieldInvalid(jQuery(this).attr('id'));
+          return false;
+        } else {
+          fieldValid(jQuery(this).attr('id'));
+        }
+      }
+    });
+  }
   return jQuery('#SFDSWF-Container .form-section.active .has-error:visible').length === 0 ? true : false
 }
 
