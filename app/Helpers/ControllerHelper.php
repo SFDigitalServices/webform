@@ -289,10 +289,6 @@ class ControllerHelper
             $originalFormData = $this->parseOptionValues($originalFormData, 'json');
             $checkboxes = $radios = '';
             foreach ($newFormData['data'] as $key => $value) {
-                if (isset($value['formtype']) && $this->isNonInputField($value['formtype'])) {
-                    unset($newFormData['data'][$key]);
-                    continue;
-                }
                 foreach ($originalFormData['data'] as $originalKey => $originalValue) {
 
                     if (strcmp($value['name'], $originalValue['name']) === 0) {
