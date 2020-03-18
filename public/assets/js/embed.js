@@ -475,7 +475,7 @@ function populateForm(formData, conditions){
           else{
               formElement.value = formData[element];
               // inputs with conditions attached
-              if(formElement.name !== undefined && conditions.includes(formElement.name)){
+              if(formElement.name !== undefined && conditions !== undefined && conditions.includes(formElement.name)){
                 // trigger keyup event to show condition fields
                 jQuery('#SFDSWF-Container input[name="'+ formElement.name + '"]').keyup();
               }
