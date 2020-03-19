@@ -843,8 +843,14 @@ class DataStoreHelper extends Migration
                         }
                     }
                 } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-                  if( $request->input($field['name']) !== ''){
+                  if( $request->file($field['name']) == null && $request->input($field['name']) != ""){
                     $write['db'][$field['name']] = $request->input($field['name']);
+                  }
+                  elseif ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                      $file = $request->file($field['name']);
+                      $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                      $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
+                      $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
                   }
                   $column++;
                 } else {

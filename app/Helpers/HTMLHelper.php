@@ -789,10 +789,12 @@ class HTMLHelper
                     break;
                   case 'm13':
                   case 'file': // format name and size
-                      //if ($request->file($name) != null && $request->file($name)->isValid()) {
-                          //$file = $request->file($name);
-                          $ret[] = FieldFormatter::formatFile($label, $value);
-                      //}
+                      if ($request->file($name) != null && $request->file($name)->isValid()) {
+                          $file = $request->file($name);
+                          $ret[] = FieldFormatter::formatFile($label, $value, $file);
+                      }
+                      else
+                        $ret[] = FieldFormatter::formatFile($label, $value);
                     break;
                   case 'd06':
                   case 'number': // format number, append units

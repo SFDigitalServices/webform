@@ -82,16 +82,18 @@ class FieldFormatter
       *
       * @param $name
       * @param $value
+      * @param $file
       *
       * @return HTML
     */
-    public static function formatFile($name, $value)
+    public static function formatFile($name, $value, $file = null)
     {
-        /*$unit = ["B", "KB", "MB", "GB"];
-        $exp = floor(log($file->getSize(), 1024)) | 0;
-        $size = round($file->getSize() / (pow(1024, $exp)), 2).$unit[$exp];
-        $value = $file->getClientOriginalName() .": (". $size .")";
-        */
+        if ($file != null) {
+            $unit = ["B", "KB", "MB", "GB"];
+            $exp = floor(log($file->getSize(), 1024)) | 0;
+            $size = round($file->getSize() / (pow(1024, $exp)), 2).$unit[$exp];
+            $value = $file->getClientOriginalName() .": (". $size .")";
+        }
         $html = array($name => $value);
         return $html;
     }
