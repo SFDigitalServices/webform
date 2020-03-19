@@ -396,7 +396,7 @@ class FormController extends Controller
                     $this->emailController->sendEmail($data, 'emails.confirmation');
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
                 } else {
-                    return view('layouts.submission', ['data' => $submitted_data]);
+                    return view('layouts.submission', ['data' => $submitted_data, 'source' => '']);
                 }
             }
         }
