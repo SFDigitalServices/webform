@@ -422,7 +422,7 @@ SFDSWFB.lastScript = function() {
 
   if(window.draftData !== undefined){
     console.log(window.draftData);
-    populateForm(window.draftData['data'], window.draftData['conditions']);
+    populateForm(window.draftData);
   }
 }
 
@@ -451,9 +451,21 @@ function setOtherValue(obj) {
   jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
 }
 
-function populateForm(formData, conditions){
+function populateForm(form){
+  formData = form['data'];
+  conditions = form['conditions']
+  fileFields = form['fileFields']
   if(formData['formid'] === undefined) return false;
   var formid = 'SFDSWFB_forms_' + formData['formid'];
+
+  //populate file fields into a hidden field
+  fileFields.forEach(function (fld){
+    if(formData[fld] && formData[fld] !== undefined && formData[fld] !== '')
+      jQuery('.file-custom[name='+fld+']').append('<input type="hidden" name="'+fld+'" value="'+formData[fld]+'"/>');
+      fieldValid(jQuery('.file-custom[name='+fld+']').attr('id'));
+  });
+
+  // populate all other fields
   for(element in formData){
     var formElement = document.forms[formid][element];
     if(formElement !== undefined && formData[element] !== ""){
@@ -467,19 +479,12 @@ function populateForm(formData, conditions){
           getSingleCheckedCheckboxesFor(formElement, formData[element])
         }
         else{
-          // file input, lift required attribute to allow continuation
-          if(formElement.type === 'file' && formElement.required){
-            formElement.required = false;
             formElement.value = formData[element];
-          }
-          else{
-              formElement.value = formData[element];
-              // inputs with conditions attached
-              if(formElement.name !== undefined && conditions !== undefined && conditions.includes(formElement.name)){
-                // trigger keyup event to show condition fields
-                jQuery('#SFDSWF-Container input[name="'+ formElement.name + '"]').keyup();
-              }
-          }
+            // inputs with conditions attached
+            if(formElement.name !== undefined && conditions !== undefined && conditions.includes(formElement.name)){
+              // trigger keyup event to show condition fields
+              jQuery('#SFDSWF-Container input[name="'+ formElement.name + '"]').keyup();
+            }
         }
       }
       catch(errors){ // catch Failed to set the 'value' property on 'HTMLInputElement'
