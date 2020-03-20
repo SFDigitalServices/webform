@@ -263,6 +263,7 @@ Fb.prototype.view.embedCode = function(id, embedUrl, assetsUrl) {
 	'<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />\n' +
 	'<link rel="stylesheet" href="' + assetsUrl + 'css/form-base.css" />\n' +
   '<link rel="stylesheet" href="' + assetsUrl + 'css/form-branding.css" />\n' +
+  '<link rel="stylesheet" href="' + assetsUrl + 'css/dropzone.css" />\n' +
 	'\n' +
 	'<!-- Insert the following in the <body>, wherever\n' +
 	'you would like the form to appear. -->' +
