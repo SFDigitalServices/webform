@@ -84,7 +84,10 @@ class HTMLHelper
           $form_end = self::addPreviewPage($content['settings']['name']);
 
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end .= '</div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+          if(isset($content['settings']['save-for-later']) && $content['settings']['save-for-later'] !== 'true')
+            $form_end .= '</div';
+          else
+            $form_end .= '</div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
