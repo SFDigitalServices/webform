@@ -293,12 +293,15 @@ function submitPartial(formid, submitType = 'partial'){
     jQuery.ajax(settings).done(function (response) {
       if(response.status !== undefined ){
         if(response.status == 0){
-          var errors = response['errors'];
-          Object.keys(errors).forEach(function(item){
-            fieldInvalid(item, errors[item][0]);
-            SFDSWFB.paginate(jQuery('#SFDSWF-Container #'+item).closest('.form-section').prevAll('.form-section').length)
-            document.getElementById(item).scrollIntoView()
-          })
+          if (typeof response['errors'] !== "undefined") {
+            for (var fn in response['errors']) {
+              var errorId = jQuery('[name="'+fn+'"]').attr('id')
+              fieldInvalid(errorId, response['errors'][fn][0])
+              SFDSWFB.paginate(jQuery('#SFDSWF-Container #'+errorId).closest('.form-section').prevAll('.form-section').length)
+              document.getElementById(errorId).scrollIntoView()
+              return
+            }
+          }
         }
         else if(response['redirect_url'] != ''){
           window.location.href = response['redirect_url'];
