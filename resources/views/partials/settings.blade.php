@@ -70,7 +70,13 @@
       <option value="permit-application">Salesforce Permit Application</option>
     </select>
   </div>
+  <div class="form-group">
+  <label class="checkbox-inline" for="save-for-later">
+  <input class="" type="checkbox" id="save-for-later" name="save-for-later" value=""> Allow form to save for later</label>
 </div>
+
+</div>
+
 
 <div class="save-buttons">
   <button class='apply-button btn btn-md btn-primary'>Save</button>
