@@ -83,16 +83,21 @@ class FieldFormatter
       * @param $name
       * @param $value
       * @param $file
+      * @param $type
       *
       * @return HTML
     */
-    public static function formatFile($name, $value, $file = null)
+    public static function formatFile($name, $value, $file = null, $type = 'external')
     {
+        // fall back if ajax uploader is not supported
         if ($file != null) {
             $unit = ["B", "KB", "MB", "GB"];
             $exp = floor(log($file->getSize(), 1024)) | 0;
             $size = round($file->getSize() / (pow(1024, $exp)), 2).$unit[$exp];
             $value = $file->getClientOriginalName() .": (". $size .")";
+        }
+        else{ // get file info from managed_file
+
         }
         $html = array($name => $value);
         return $html;
