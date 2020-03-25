@@ -389,17 +389,18 @@ class FormController extends Controller
                 if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
                     $data = $response['data'];
                     $data['body']['source'] = "confirmation";
-                    $data['body']['submitted'] = $submitted_data;
+                    $data['body']['submitted'] = $submitted_data['external'];
                     // send confirmation email to applicant
                     $this->emailController->sendEmail($data, 'emails.confirmation');
                     // send confirmation email to internal staff
                     if (isset($form['content']['settings']['cc-internal-staff']) && $form['content']['settings']['cc-internal-staff'] !== '') {
                         $data['emailInfo']['address'] = $form['content']['settings']['cc-internal-staff'];
-                        $this->emailController->sendEmail($data, 'emails.confirmation_staff');
+                        $data['body']['submitted'] = $submitted_data['internal'];
+                        $this->emailController->sendEmail($data, 'emails.confirmation');
                     }
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
                 } else {
-                    return view('layouts.submission', ['data' => $submitted_data, 'source' => '']);
+                    return view('layouts.submission', ['data' => $submitted_data['external'], 'source' => '']);
                 }
             }
         }
@@ -413,7 +414,7 @@ class FormController extends Controller
       if ($form_id) {
           $submitted_data = $this->htmlHelper->formatSubmittedData($request, $form['content']);
           $source = "preview_page";
-          return view('layouts.submission', ['data' => $submitted_data, 'source' => $source]);
+          return view('layouts.submission', ['data' => $submitted_data['external'], 'source' => $source]);
       }
     }
 

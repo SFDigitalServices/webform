@@ -449,6 +449,22 @@ class DataStoreHelper extends Migration
         return $results;
     }
 
+     /** get submitted form column names
+    *
+    * @param $fileid
+    *
+    * @return Array
+    */
+    public function getManagedFile($fileid)
+    {
+      if($fileid){
+        $file = DB::table('managed_files')
+                            ->where([
+                              ['id', '=', $fileid]])
+                            ->first();
+      }
+      return $file;
+    }
     /** Archive a form table
      *
      * @param @formId

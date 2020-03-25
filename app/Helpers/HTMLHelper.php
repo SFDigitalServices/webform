@@ -771,6 +771,7 @@ class HTMLHelper
             $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
             $value = isset($data[$name]) ? $data[$name] : "";
             $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
+
             if ($value != "") {
                 switch ($type) {
                   case 'c04':
@@ -833,7 +834,7 @@ class HTMLHelper
       $formatted_data = array();
       $formatted_data['internal'] = array_merge($ret, $internal);
       $formatted_data['external'] = array_merge($ret, $external);
-      Log::info(print_r($formatted_data, 1));
+      //Log::info(print_r($formatted_data, 1));
       return $formatted_data;
     }
 

@@ -7,7 +7,7 @@ Please save this copy of your submission for your records.
 
 ---
 
-                  @foreach ($data['submitted']['external'] as $k => $v)
+                  @foreach ($data['submitted'] as $k => $v)
                     @foreach ($v as $key => $value)
                      # {{ $key }}
                      {!! $value !!}
