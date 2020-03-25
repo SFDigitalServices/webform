@@ -880,16 +880,34 @@ class DataStoreHelper extends Migration
     {
       $filename = '';
       if (! empty($content['content']['data'])) {
-        foreach ($content['content']['data'] as $field) {
-          if ($field['formtype'] === "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-            if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
-              //$file = $fieldName;
-              $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
-              $filename = $this->controllerHelper->getBucketPath().$newFilename;
-              $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
-            }
+          foreach ($content['content']['data'] as $field) {
+              if ($field['formtype'] === "m13" && isset($field['name']) && $field['name'] === $fieldName) { //for file uploads, checks if field has a name
+                if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
+                    $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                    $filename = $this->controllerHelper->getBucketPath().$newFilename;
+                    if ($this->controllerHelper->writeS3($newFilename, file_get_contents($file))) {
+                        // write record to managed_file
+                        $content = array(
+                          'form_table_id' => $content['id'],
+                          'form_field_name' => $fieldName,
+                          'url' => $filename,
+                          'filesize' => $file->getSize(),
+                          'filename' => $file->getClientOriginalName(),
+                          'mimetype' => $file->getClientMimeType(),
+                          'created_at' => time(),
+                        );
+                        try {
+                            $id = DB::table('managed_files')->insertGetId($content);
+                            return $id;
+                        } catch (\Illuminate\Database\QueryException $ex) {
+                            return $filename;
+                        } catch (PDOException $e) {
+                            return $filename;
+                        }
+                    }
+                }
+              }
           }
-        }
       }
       return $filename;
     }
