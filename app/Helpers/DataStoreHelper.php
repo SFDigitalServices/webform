@@ -449,7 +449,7 @@ class DataStoreHelper extends Migration
         return $results;
     }
 
-     /** get submitted form column names
+     /** get file upload
     *
     * @param $fileid
     *
