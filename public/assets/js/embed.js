@@ -210,6 +210,9 @@ function getDataInPath(obj, path) {
 function validPage() {
   jQuery('#SFDSWF-Container .form-section.active').validator('destroy');
   jQuery('#SFDSWF-Container .form-section.active').validator('validate');
+  jQuery('#SFDSWF-Container .form-section.active input[type=checkbox]:visible').each(function() {
+    requireCheckboxGroup(this)
+  })
   return jQuery('#SFDSWF-Container .form-section.active .has-error:visible').length === 0 ? true : false
 }
 
