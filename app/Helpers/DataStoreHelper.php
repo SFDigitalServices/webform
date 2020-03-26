@@ -309,7 +309,7 @@ class DataStoreHelper extends Migration
                         if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
                         // push data to ADU dispatcher if an endpoint is specified
                         if( isset($form['content']['settings']['adu-dispatcher-endpoint']) && $form['content']['settings']['adu-dispatcher-endpoint'] !== '' ){
-                          $response = $this->pushDataToADU($write['db']);
+                          $response = $this->pushDataToADU($write['db'], $write['push_to_adu_data']);
                           if ($response['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST'))
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
@@ -860,6 +860,7 @@ class DataStoreHelper extends Migration
                 } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
                   if( $request->file($field['name']) == null && $request->input($field['name']) != ""){
                     $write['db'][$field['name']] = $request->input($field['name']);
+                    $write['push_to_adu_data'][$field['name']] = $this->getManagedFile($request->input($field['name']))->url;
                   }
                   elseif ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
                       $file = $request->file($field['name']);
@@ -910,7 +911,6 @@ class DataStoreHelper extends Migration
                           'filesize' => $file->getSize(),
                           'filename' => $file->getClientOriginalName(),
                           'mimetype' => $file->getClientMimeType(),
-                          'created_at' => time(),
                         );
                         try {
                             $id = DB::table('managed_files')->insertGetId($content);
@@ -934,9 +934,16 @@ class DataStoreHelper extends Migration
     *
     * @return array
     */
-    private function pushDataToADU($formdata)
+    private function pushDataToADU($formdata, $adudata)
     {
         $ret = array();
+        Log::info(print_r($formdata, 1));
+        Log::info(print_r($adudata, 1));
+        foreach($formdata as $key => $value){
+          if( isset($adudata[$key]) )
+            $formdata[$key] = $adudata[$key];
+        }
+        Log::info(print_r($formdata, 1));
         $formdata = json_encode($formdata);
         if ($formdata) {
             $api_key = getenv("ADU_DISPATCHER_KEY");
