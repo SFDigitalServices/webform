@@ -88,7 +88,7 @@ class FieldFormatter
       *
       * @return HTML
     */
-    public static function formatFile($name, $value, $file = null, $type = 'external')
+    public static function formatFile($name, $value, $file = null, $isInternal = false)
     {
         // fall back if ajax uploader is not supported
         $unit = ["B", "KB", "MB", "GB"];
@@ -101,7 +101,7 @@ class FieldFormatter
             $file = $dataStoreHelper->getManagedFile($value);
             $exp = floor(log($file->filesize, 1024)) | 0;
             $size = round($file->filesize / (pow(1024, $exp)), 2).$unit[$exp];
-            if ($type === 'internal') {
+            if ($isInternal) {
                 $value = '<a href="'.$file->url.'" target=_blank>' . $file->filename . '</a>';
             }
             else{

@@ -802,7 +802,7 @@ class HTMLHelper
 
                     $external[] = FieldFormatter::formatFile($label, $value, $file);
                     if (isset($form['settings']['cc-internal-staff']) && $form['settings']['cc-internal-staff'] !== '')
-                        $internal[] = FieldFormatter::formatFile($label, $value, $file, 'internal');
+                        $internal[] = FieldFormatter::formatFile($label, $value, $file, true);
                     break;
                   case 'd06':
                   case 'number': // format number, append units
