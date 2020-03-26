@@ -937,13 +937,10 @@ class DataStoreHelper extends Migration
     private function pushDataToADU($formdata, $adudata)
     {
         $ret = array();
-        Log::info(print_r($formdata, 1));
-        Log::info(print_r($adudata, 1));
         foreach($formdata as $key => $value){
           if( isset($adudata[$key]) )
             $formdata[$key] = $adudata[$key];
         }
-        Log::info(print_r($formdata, 1));
         $formdata = json_encode($formdata);
         if ($formdata) {
             $api_key = getenv("ADU_DISPATCHER_KEY");
