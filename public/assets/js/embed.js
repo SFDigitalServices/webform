@@ -56,8 +56,8 @@ function initUploaders() {
         parallelUploads: 1,
         maxFiles: 1,
         maxFilesize: 350,
-        timeout: 600000,
-        acceptedFiles: 'image/*,application/pdf',
+        timeout: 1800000,
+        acceptedFiles: 'image/*,application/pdf,.zip',
         addRemoveLinks: false,
         init: function() {
           this.on("addedfile", function() {
@@ -208,6 +208,7 @@ function getDataInPath(obj, path) {
 
 //returns boolean
 function validPage() {
+  jQuery('#SFDSWF-Container .form-section.active').validator('destroy');
   jQuery('#SFDSWF-Container .form-section.active').validator('validate');
   if (jQuery('#SFDSWF-Container .form-section.active div[data-formtype=m13]').length) {
     jQuery('#SFDSWF-Container .form-section.active div[data-formtype=m13]').each(function(){
@@ -221,6 +222,9 @@ function validPage() {
       }
     });
   }
+  jQuery('#SFDSWF-Container .form-section.active input[type=checkbox]:visible').each(function() {
+    requireCheckboxGroup(this)
+  })
   return jQuery('#SFDSWF-Container .form-section.active .has-error:visible').length === 0 ? true : false
 }
 
@@ -434,7 +438,7 @@ SFDSWFB.lastScript = function() {
 
   if(window.draftData !== undefined){
     console.log(window.draftData);
-    populateForm(window.draftData['data'], window.draftData['conditions']);
+    populateForm(window.draftData);
   }
 }
 
@@ -463,9 +467,21 @@ function setOtherValue(obj) {
   jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
 }
 
-function populateForm(formData, conditions){
+function populateForm(form){
+  formData = form['data'];
+  conditions = form['conditions']
+  fileFields = form['fileFields']
   if(formData['formid'] === undefined) return false;
   var formid = 'SFDSWFB_forms_' + formData['formid'];
+
+  //populate file fields into a hidden field
+  fileFields.forEach(function (fld){
+    if(formData[fld] && formData[fld] !== undefined && formData[fld] !== '')
+      jQuery('.file-custom[name='+fld+']').append('<input type="hidden" name="'+fld+'" value="'+formData[fld]+'"/>');
+      fieldValid(jQuery('.file-custom[name='+fld+']').attr('id'));
+  });
+
+  // populate all other fields
   for(element in formData){
     var formElement = document.forms[formid][element];
     if(formElement !== undefined && formData[element] !== ""){
@@ -479,19 +495,12 @@ function populateForm(formData, conditions){
           getSingleCheckedCheckboxesFor(formElement, formData[element])
         }
         else{
-          // file input, lift required attribute to allow continuation
-          if(formElement.type === 'file' && formElement.required){
-            formElement.required = false;
             formElement.value = formData[element];
-          }
-          else{
-              formElement.value = formData[element];
-              // inputs with conditions attached
-              if(formElement.name !== undefined && conditions.includes(formElement.name)){
-                // trigger keyup event to show condition fields
-                jQuery('#SFDSWF-Container input[name="'+ formElement.name + '"]').keyup();
-              }
-          }
+            // inputs with conditions attached
+            if(formElement.name !== undefined && conditions !== undefined && conditions.includes(formElement.name)){
+              // trigger keyup event to show condition fields
+              jQuery('#SFDSWF-Container input[name="'+ formElement.name + '"]').keyup();
+            }
         }
       }
       catch(errors){ // catch Failed to set the 'value' property on 'HTMLInputElement'

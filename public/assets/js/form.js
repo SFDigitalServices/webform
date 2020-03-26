@@ -96,7 +96,7 @@ Form.prototype.preparePostData = function(formObj) {
 	}
 	newObj.content = JSON.stringify(newObj.content)
 	newObj.previousContent = fb.previousContent
-	newObj.user_id = fb.user_id
+  newObj.user_id = fb.user_id
 	return newObj
 }
 
@@ -172,7 +172,12 @@ Form.prototype.saveSettings = function() {
 	var self = this
 
 	$('#SFDSWFB-settings input, #SFDSWFB-settings select').each(function(){
-		if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined) {
+    if($(this).attr('type') !== undefined && $(this).attr('type') === 'checkbox'){
+      self.content.settings[$(this).attr('name')] = 'false'
+      if( $(this).prop('checked') )
+        self.content.settings[$(this).attr('name')] = 'true'
+    }
+		else if ($(this).attr('name') !== '' && $(this).attr('name') !== undefined) {
 			self.content.settings[$(this).attr('name')] = $(this).val().trim()
 		}
 	})

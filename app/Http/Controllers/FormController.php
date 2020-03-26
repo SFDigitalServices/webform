@@ -396,7 +396,7 @@ class FormController extends Controller
                     $this->emailController->sendEmail($data, 'emails.confirmation');
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
                 } else {
-                    return view('layouts.submission', ['data' => $submitted_data]);
+                    return view('layouts.submission', ['data' => $submitted_data, 'source' => '']);
                 }
             }
         }
@@ -477,7 +477,7 @@ class FormController extends Controller
         if ($form_id) {
           $form = Form::where('id', $form_id)->first();
           $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-          if ($filename = $this->dataStoreHelper->parseUploadedFile($form, 'upload_file', $request->file()['file'][0])) {
+          if ($filename = $this->dataStoreHelper->parseUploadedFile($form, $request->input('field_name'), $request->file()['file'][0])) {
             $ret = response()->json(['status' => 1, 'message' => 'Success, file uploaded.', 'filename' => $filename, 'field_name' => $request->input('field_name')]);
           }
         }

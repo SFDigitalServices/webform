@@ -204,7 +204,9 @@ FbView.prototype.switchMiddlePanel = function(panelId) {
 FbView.prototype.populateSettings = function() {
 	for (i in this.formsCollection.forms[fb.formId].content.settings) {
 		if (typeof this.formsCollection.forms[fb.formId].content.settings[i] !== "function") {
-			$('#SFDSWFB-settings [name=' + i + ']').val(this.formsCollection.forms[fb.formId].content.settings[i])
+      $('#SFDSWFB-settings [name=' + i + ']').val(this.formsCollection.forms[fb.formId].content.settings[i])
+      if($('#SFDSWFB-settings [name=' + i + ']').attr('type') === 'checkbox' && this.formsCollection.forms[fb.formId].content.settings[i] === 'true')
+        $('#SFDSWFB-settings [name=' + i + ']').prop('checked', true)
 		}
 	}
   this.toggleConfirmPage($('#SFDSWFB-settings select[name=backend]'))

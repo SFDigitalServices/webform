@@ -348,9 +348,11 @@ class DataStoreHelper extends Migration
             try {
                 $id = DB::table($tablename)->insertGetId($content);
             } catch (\Illuminate\Database\QueryException $ex) {
+                Log::info(print_r($ex->getMessage(), 1));
                 $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
                 return 0;
             } catch (PDOException $e) {
+                Log::info(print_r($e->getMessage(), 1));
                 $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
                 return 0;
             }
@@ -637,7 +639,7 @@ class DataStoreHelper extends Migration
         $ret = array();
         $tablename = $table->getTable();
         if (! Schema::hasColumn($tablename, $definition['name'])) {
-            $table->$fieldType($definition['name']);
+            $table->$fieldType($definition['name'])->nullable();
         } else {
             if (Schema::hasColumn($tablename, $definition['name'])) {
 
@@ -698,7 +700,7 @@ class DataStoreHelper extends Migration
                     'type' => $definition['formtype'],
                 ]);
             }
-            $table->text($definition['name']);
+            $table->text($definition['name'])->nullable();
         }
         else{
             //check column, rename not allowed
@@ -841,13 +843,14 @@ class DataStoreHelper extends Migration
                         }
                     }
                 } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-                  if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                  if( $request->file($field['name']) == null && $request->input($field['name']) != ""){
+                    $write['db'][$field['name']] = $request->input($field['name']);
+                  }
+                  elseif ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
                       $file = $request->file($field['name']);
                       $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
                       $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
                       $write['db'][$field['name']] = $this->controllerHelper->getBucketPath().$newFilename;
-                  } else if ($request->file($field['name']) == null && $request->input($field['name']) != "") {
-                      $write['db'][$field['name']] = $request->input($field['name']);
                   }
                   $column++;
                 } else {
@@ -878,16 +881,34 @@ class DataStoreHelper extends Migration
     {
       $filename = '';
       if (! empty($content['content']['data'])) {
-        foreach ($content['content']['data'] as $field) {
-          if ($field['formtype'] === "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-            if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
-              //$file = $fieldName;
-              $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
-              $filename = $this->controllerHelper->getBucketPath().$newFilename;
-              $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
-            }
+          foreach ($content['content']['data'] as $field) {
+              if ($field['formtype'] === "m13" && isset($field['name']) && $field['name'] === $fieldName) { //for file uploads, checks if field has a name
+                if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
+                    $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                    $filename = $this->controllerHelper->getBucketPath().$newFilename;
+                    if ($this->controllerHelper->writeS3($newFilename, file_get_contents($file))) {
+                        // write record to managed_file
+                        $content = array(
+                          'form_table_id' => $content['id'],
+                          'form_field_name' => $fieldName,
+                          'url' => $filename,
+                          'filesize' => $file->getSize(),
+                          'filename' => $file->getClientOriginalName(),
+                          'mimetype' => $file->getClientMimeType(),
+                          'created_at' => time(),
+                        );
+                        try {
+                            $id = DB::table('managed_files')->insertGetId($content);
+                            return $id;
+                        } catch (\Illuminate\Database\QueryException $ex) {
+                            return $filename;
+                        } catch (PDOException $e) {
+                            return $filename;
+                        }
+                    }
+                }
+              }
           }
-        }
       }
       return $filename;
     }

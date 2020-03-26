@@ -84,7 +84,10 @@ class HTMLHelper
           $form_end = self::addPreviewPage($content['settings']['name']);
 
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end .= '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+          if(isset($content['settings']['save-for-later']) && $content['settings']['save-for-later'] !== 'true')
+            $form_end .= '</div';
+          else
+            $form_end .= '</div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
@@ -138,10 +141,16 @@ class HTMLHelper
       $conditions = [];
       $webhooks = [];
       $formtypes = [];
+      $fileFields = array();
       if ($form['content']) {
           foreach ($form['content']['data'] as $field) {
               $fieldId = $field['id'];
-              $formtypes[$fieldId] = $field['formtype'];
+              if (isset($field['formtype'])) {
+                  $formtypes[$fieldId] = $field['formtype'];
+                  if ($field['formtype'] === 'm13') {
+                      $fileFields[] = $fieldId;
+                  }
+              }
               foreach ($field as $key => $value) {
                   if ($key == "calculations") { //gather calculations
                       $calculations[$fieldId] = $value;
@@ -267,7 +276,9 @@ class HTMLHelper
           $draft = $output['draft'];
           $form_id = $output['form_id'];
           $data['data'] = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
-          $data['conditions'] = $hasConditions;
+          if(isset($hasConditions))
+            $data['conditions'] = $hasConditions;
+            $data['fileFields'] = $fileFields;
           $populateJS = "var draftData = ". json_encode($data) .";";
         }
       }
@@ -757,7 +768,6 @@ class HTMLHelper
             $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
             $value = isset($data[$name]) ? $data[$name] : "";
             $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
-
             if ($value != "") {
                 switch ($type) {
                   case 'c04':
@@ -784,8 +794,10 @@ class HTMLHelper
                   case 'file': // format name and size
                       if ($request->file($name) != null && $request->file($name)->isValid()) {
                           $file = $request->file($name);
-                          $ret[] = FieldFormatter::formatFile($label, $file, $value);
+                          $ret[] = FieldFormatter::formatFile($label, $value, $file);
                       }
+                      else
+                        $ret[] = FieldFormatter::formatFile($label, $value);
                     break;
                   case 'd06':
                   case 'number': // format number, append units
