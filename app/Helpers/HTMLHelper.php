@@ -592,8 +592,8 @@ class HTMLHelper
      */
     public static function formFile($field)
     {
-		$attributes = self::setAttributes($field);
-		$prepended = self::getPrepended($field);
+        $attributes = self::setAttributes($field);
+        $prepended = self::getPrepended($field);
         $html = $prepended . '<label>';
         $html .= '<span class="label">'. $field['label'] . '</span>';
         $html .= '<div'. $attributes.' class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div>';
@@ -746,14 +746,17 @@ class HTMLHelper
      /** Formats submitted data for preview
      *
      * @param $request
-     * @param @definitions
+     * @param @form
      *
      * @return html
      */
-    public function formatSubmittedData($request, $definitions)
+    public function formatSubmittedData($request, $form)
     {
       $ret = array();
+      $internal = array();
+      $external = array();
       $data = $request->all();
+      $definitions = $form['data'];
 
       foreach($definitions as $definition){
         if (isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype'])) {
@@ -768,6 +771,7 @@ class HTMLHelper
             $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
             $value = isset($data[$name]) ? $data[$name] : "";
             $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
+
             if ($value != "") {
                 switch ($type) {
                   case 'c04':
@@ -792,12 +796,13 @@ class HTMLHelper
                     break;
                   case 'm13':
                   case 'file': // format name and size
-                      if ($request->file($name) != null && $request->file($name)->isValid()) {
-                          $file = $request->file($name);
-                          $ret[] = FieldFormatter::formatFile($label, $value, $file);
-                      }
-                      else
-                        $ret[] = FieldFormatter::formatFile($label, $value);
+                    $file = null;
+                    if ($request->file($name) != null && $request->file($name)->isValid())
+                        $file = $request->file($name);
+
+                    $external[] = FieldFormatter::formatFile($label, $value, $file);
+                    if (isset($form['settings']['cc-internal-staff']) && $form['settings']['cc-internal-staff'] !== '')
+                        $internal[] = FieldFormatter::formatFile($label, $value, $file, true);
                     break;
                   case 'd06':
                   case 'number': // format number, append units
@@ -826,8 +831,11 @@ class HTMLHelper
             }
         }
       }
-      //Log::info(print_r($ret, 1));
-      return $ret;
+      $formatted_data = array();
+      $formatted_data['internal'] = array_merge($ret, $internal);
+      $formatted_data['external'] = array_merge($ret, $external);
+      //Log::info(print_r($formatted_data, 1));
+      return $formatted_data;
     }
 
     /**

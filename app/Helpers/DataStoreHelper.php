@@ -307,9 +307,8 @@ class DataStoreHelper extends Migration
                     } else {
                         $write['db']['form_id'] = $form['id'];
                         if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
-                        // get push_to_adu from environment variable
-                        $push_to_adu = getenv("ADU_DISPATCHER_ENABLE");
-                        if( $push_to_adu !== '' && filter_var($push_to_adu, FILTER_VALIDATE_BOOLEAN)){
+                        // push data to ADU dispatcher if an endpoint is specified
+                        if( isset($form['content']['settings']['adu-dispatcher-endpoint']) && $form['content']['settings']['adu-dispatcher-endpoint'] !== '' ){
                           $response = $this->pushDataToADU($write['db']);
                           if ($response['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST'))
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
@@ -450,6 +449,22 @@ class DataStoreHelper extends Migration
         return $results;
     }
 
+     /** get file upload
+    *
+    * @param $fileid
+    *
+    * @return Array
+    */
+    public function getManagedFile($fileid)
+    {
+      if($fileid){
+        $file = DB::table('managed_files')
+                            ->where([
+                              ['id', '=', $fileid]])
+                            ->first();
+      }
+      return $file;
+    }
     /** Archive a form table
      *
      * @param @formId
