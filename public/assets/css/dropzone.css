@@ -36,6 +36,7 @@
 	display: none;
 	left: 30px;
 	top: 30px;
+
 	/*width: 54px;*/
 	/*height: 58px;*/
 	left: 50%;
@@ -365,7 +366,7 @@
 	z-index: 10; }
 
 .file-custom .dz-preview .dz-image img {
-  width: 100%;
+	width: 100%;
 	display: block; }
 
 .file-custom .dz-preview.dz-success .dz-success-mark {
@@ -391,15 +392,15 @@
 	display: block;
 	top: 40%;
 	left: 40%;
-  border-radius: 100%;
+	border-radius: 100%;
 	margin-left: -27px;
 	margin-top: -27px; }
 
 .file-custom .dz-preview .dz-success-mark {
-  background-color: green; }
+	background-color: green; }
 
 .file-custom .dz-preview .dz-error-mark {
-  background-color: red; }
+	background-color: red; }
 
 .file-custom .dz-preview .dz-success-mark svg, .file-custom .dz-preview .dz-error-mark svg {
 	display: block;
