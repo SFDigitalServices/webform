@@ -492,11 +492,11 @@
 	border-bottom: 6px solid #be2626; }
 
 .field-m13 label {
-	height: auto;
+	height: auto !important;
 }
 
 .field-m13 .file-custom {
-	position: relative;
+	position: relative !important;
 	width: auto;
 	padding: 2rem 0 1rem;
 	border: 3px dashed #4f66ee;
