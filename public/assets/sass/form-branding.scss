@@ -13,6 +13,8 @@
 @import 'sf-design-system/forms/form-fields';
 @import 'sf-design-system/forms/pagination';
 
+@import url('dropzone.css');
+
 .form-content {
   @include contain-1090;
 }
