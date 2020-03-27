@@ -7,7 +7,7 @@
 .file-custom .dz-preview {
 	position: relative;
 	display: inline-block;
-	width: 240px;
+	width: 120px;
 	margin: 0.5em; }
 
 .file-custom .dz-preview .dz-progress {
@@ -36,8 +36,8 @@
 	display: none;
 	left: 30px;
 	top: 30px;
-	/*width: 54px;*/
-	/*height: 58px;*/
+	width: 54px;
+	height: 58px;
 	left: 50%;
 	margin-left: -27px; }
 
@@ -358,14 +358,13 @@
 .file-custom .dz-preview .dz-image {
 	border-radius: 20px;
 	overflow: hidden;
-	width: 240px;
-	height: 240px;
+	width: 120px;
+	height: 120px;
 	position: relative;
 	display: block;
 	z-index: 10; }
 
 .file-custom .dz-preview .dz-image img {
-  width: 100%;
 	display: block; }
 
 .file-custom .dz-preview.dz-success .dz-success-mark {
@@ -389,22 +388,15 @@
 	z-index: 500;
 	position: absolute;
 	display: block;
-	top: 40%;
-	left: 40%;
-  border-radius: 100%;
+	top: 50%;
+	left: 50%;
 	margin-left: -27px;
 	margin-top: -27px; }
 
-.file-custom .dz-preview .dz-success-mark {
-  background-color: green; }
-
-.file-custom .dz-preview .dz-error-mark {
-  background-color: red; }
-
 .file-custom .dz-preview .dz-success-mark svg, .file-custom .dz-preview .dz-error-mark svg {
 	display: block;
-	width: 108px;
-	height: 108px; }
+	width: 54px;
+	height: 54px; }
 
 .file-custom .dz-preview.dz-processing .dz-progress {
 	opacity: 1;
