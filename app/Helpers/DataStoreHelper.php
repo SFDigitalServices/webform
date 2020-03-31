@@ -985,8 +985,8 @@ class DataStoreHelper extends Migration
             // Set email header
             $data['emailInfo'] = array();
             $data['emailInfo']['address'] = $email;
-            $data['emailInfo']['subject'] = "Form submissions status";
-            $data['emailInfo']['name'] = 'City and County of San Francisco';
+            $data['emailInfo']['subject'] = "We received your files";
+            $data['emailInfo']['name'] = 'San Francisco Permit Center';
         }
         return $data;
     }
