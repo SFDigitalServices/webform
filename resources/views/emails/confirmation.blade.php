@@ -82,15 +82,17 @@ We've attached a copy of your submission for your records.
                     </div><br>
                   </tr>
                   <tr><td>&nbsp;</td></tr>
-                  <tr>
-                    <div>
-                      P. S. This is a new service we are offering to keep San Francisco building during the Stay Home order. We
-                      need
-                      your help to make it as good as possible. <a
-                        href="https://docs.google.com/forms/d/e/1FAIpQLSdemiytUI9yJL3qJCkLpW-DOoYF7LK9q8h1eQOCvg8xsicqFg/viewform">
-                        Tell us what you think about this experience.</a>
-                    </div> <br>
-                  </tr>
+                  @if( $data['source'] != 'internal')
+                    <tr>
+                      <div>
+                        P. S. This is a new service we are offering to keep San Francisco building during the Stay Home order. We
+                        need
+                        your help to make it as good as possible. <a
+                          href="https://docs.google.com/forms/d/e/1FAIpQLSdemiytUI9yJL3qJCkLpW-DOoYF7LK9q8h1eQOCvg8xsicqFg/viewform">
+                          Tell us what you think about this experience.</a>
+                      </div> <br>
+                    </tr>
+                  @endif
                   </table>
                 </td>
               </tr>
