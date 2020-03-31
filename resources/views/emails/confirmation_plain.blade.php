@@ -1,8 +1,21 @@
+<?php
+  $firstname = '';
+  $lastname = '';
+?>
+@foreach ($data['submitted'] as $k => $v)
+  @foreach ($v as $key => $value)
+      @if( $key == 'First name')
+        <?php $firstname = $value; ?>
+      @elseif( $key == 'Last name')
+        <?php $lastname = $value; ?>
+      @endif
+    @endforeach
+@endforeach
 
 ---
 
 @if( $data['source'] == 'internal')
-                        We received a submission to "Submit plans or addenda for existing projects" on {{ $data['date'] }}
+                        We received a submission to "Submit plans or addenda for existing projects" on {{ $data['date'] }} {{ $data['time'] }}
 
                         Please use the applicant data below & download the submitted plans via the link.
 
