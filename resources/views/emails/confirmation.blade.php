@@ -5,6 +5,10 @@
 We've attached a copy of your submission for your records.
 @endcomponent
 
+<?php
+  $firstname = '';
+  $lastname = '';
+?>
 @foreach ($data['submitted'] as $k => $v)
   @foreach ($v as $key => $value)
       @if( $key == 'First name')
