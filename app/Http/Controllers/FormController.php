@@ -395,6 +395,7 @@ class FormController extends Controller
                     if (isset($form['content']['settings']['cc-internal-staff']) && $form['content']['settings']['cc-internal-staff'] !== '') {
                         $data['emailInfo']['address'] = $form['content']['settings']['cc-internal-staff'];
                         $data['body']['submitted'] = $submitted_data['internal'];
+                        $data['body']['source'] = "internal";
                         $this->emailController->sendEmail($data, 'emails.confirmation');
                     }
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);

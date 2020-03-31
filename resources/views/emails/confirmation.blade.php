@@ -52,13 +52,19 @@ We've attached a copy of your submission for your records.
 
                     <tr>
                       <div>
-                      Dear {!! $firstname !!} {!! $lastname !!} <br><br>
-                      Thanks for submitting your files for:<br><br>
+                      @if( $data['source'] == 'internal')
+                        We received a submission to "Submit plans or addenda for existing projects" on {{ $data['date'] }} {{ $data['time'] }}  <br><br>
+                        Please use the applicant data below & download the submitted plans via the link.<br><br>
+                      @else
+                        Dear {!! $firstname !!} {!! $lastname !!} <br><br>
+                        Thanks for submitting your files for:<br><br>
+                      @endif
                       </div>
                       <div>
+                      @if( $data['source'] != 'internal')
                         @foreach ($data['submitted'] as $k => $v)
                           @foreach ($v as $key => $value)
-                            @if( $key == 'Upload File' || $key == 'Street address' || $key == 'Permit application number')
+                            @if( $key == 'Upload File' || $key == 'Street address of project' || $key == 'Permit application number')
                             <label><b style="font-weight: 500;"> {!! $key !!}: </b><span
                                 class="form-field">
                                 {!! $value !!}
@@ -66,8 +72,20 @@ We've attached a copy of your submission for your records.
                             @endif
                           @endforeach
                         @endforeach
+                      @else
+                      @foreach ($data['submitted'] as $k => $v)
+                          @foreach ($v as $key => $value)
+                            <label><b style="font-weight: 500;"> {!! $key !!}: </b><span
+                                class="form-field"><div class="form-field-value">
+                                {!! $value !!}
+                                  </div>
+                              </span></label><br>
+                          @endforeach
+                        @endforeach
+                      @endif
                       </div> <br><br>
                     </tr>
+                  @if( $data['source'] != 'internal')
                     <tr>
                     <div>
                       Once we review your submission, we will email or call you about next steps.
@@ -82,15 +100,16 @@ We've attached a copy of your submission for your records.
                     </div><br>
                   </tr>
                   <tr><td>&nbsp;</td></tr>
-                  <tr>
-                    <div>
-                      P. S. This is a new service we are offering to keep San Francisco building during the Stay Home order. We
-                      need
-                      your help to make it as good as possible. <a
-                        href="https://docs.google.com/forms/d/e/1FAIpQLSdemiytUI9yJL3qJCkLpW-DOoYF7LK9q8h1eQOCvg8xsicqFg/viewform">
-                        Tell us what you think about this experience.</a>
-                    </div> <br>
-                  </tr>
+                    <tr>
+                      <div>
+                        P. S. This is a new service we are offering to keep San Francisco building during the Stay Home order. We
+                        need
+                        your help to make it as good as possible. <a
+                          href="https://docs.google.com/forms/d/e/1FAIpQLSdemiytUI9yJL3qJCkLpW-DOoYF7LK9q8h1eQOCvg8xsicqFg/viewform">
+                          Tell us what you think about this experience.</a>
+                      </div> <br>
+                    </tr>
+                  @endif
                   </table>
                 </td>
               </tr>
