@@ -58,7 +58,7 @@ We've attached a copy of your submission for your records.
                       <div>
                         @foreach ($data['submitted'] as $k => $v)
                           @foreach ($v as $key => $value)
-                            @if( $key == 'Upload File' || $key == 'Street address' || $key == 'Permit application number')
+                            @if( $key == 'Upload File' || $key == 'Street address of project' || $key == 'Permit application number')
                             <label><b style="font-weight: 500;"> {!! $key !!}: </b><span
                                 class="form-field">
                                 {!! $value !!}
