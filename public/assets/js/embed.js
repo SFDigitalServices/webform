@@ -44,6 +44,7 @@ SFDSWFB.loadRemainingScripts();
 SFDSWFB.lastCalled = {};
 SFDSWFB.skipToSectionId = '';
 SFDSWFB.uploaders = {};
+SFDSWFB.uploading = 0;
 
 function initUploaders() {
   if (jQuery('div[data-formtype=m13]').length) {
@@ -61,18 +62,21 @@ function initUploaders() {
         addRemoveLinks: false,
         init: function() {
           this.on("addedfile", function() {
+            SFDSWFB.uploading++;
             if (this.files[1]!=null){
               this.removeFile(this.files[0]);
             }
           });
         },
         success: function (file, response) {
+          SFDSWFB.uploading--;
           var imgName = response;
           file.previewElement.classList.add("dz-success");
           jQuery('.file-custom[name='+response.field_name+']').append('<input type="hidden" name="'+response.field_name+'" value="'+response.filename+'"/>');
           fieldValid(jQuery('.file-custom[name='+response.field_name+']').attr('id'));
         },
         error: function (file, response) {
+          SFDSWFB.uploading--;
           file.previewElement.classList.add("dz-error");
         }
       } );
@@ -208,6 +212,10 @@ function getDataInPath(obj, path) {
 
 //returns boolean
 function validPage() {
+  if (SFDSWFB.uploading > 0) {
+    alert('Please wait for file upload to complete before continuing');
+    return false;
+  }
   jQuery('#SFDSWF-Container .form-section.active').validator('destroy');
   jQuery('#SFDSWF-Container .form-section.active').validator('validate');
   if (jQuery('#SFDSWF-Container .form-section.active div[data-formtype=m13]').length) {
@@ -270,8 +278,8 @@ function initSectional() {
   jQuery('#SFDSWF-Container .form-section-next').click(function(e) {
     if (validPage()) {
       SFDSWFB.paginate(SFDSWFB.currentPage()+1)
-      e.preventDefault()
     }
+    e.preventDefault()
   });
 
   //bind browser history back button
