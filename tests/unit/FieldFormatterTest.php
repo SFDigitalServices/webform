@@ -36,7 +36,7 @@ class FieldFormatterTest extends \Codeception\Test\Unit
     $host = "https://formbuilder-sf-staging.herokuapp.com/";
     $value = "Beef";
     $actual = FieldFormatter::formatOptions($name, $value, $host);
-    $expected = array($name => '<img src="https://formbuilder-sf-staging.herokuapp.com//images/email-checkbox.jpg" height="25px" width="25px" /> Beef');
+    $expected = array($name => ' Beef');
     $this->assertTrue($this->arrays_are_similar($expected, $actual));
   }
 
