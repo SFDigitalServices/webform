@@ -367,6 +367,7 @@ class DataStoreHelper extends Migration
       */
     public function getSubmittedFormData($formid)
     {
+
         try {
             $tablename = "forms_" . $formid;
             $results = DB::table($tablename)
@@ -375,8 +376,45 @@ class DataStoreHelper extends Migration
         } catch (\Illuminate\Database\QueryException $ex) {
             $results = ['status' => 0, 'message' => $ex->getMessage()];
         }
-        return $results;
+        $records = json_decode(json_encode($results), true);
+        $files = $this->getSubmittedFiles($formid);
+        // finds the file url from the managed_files table
+        if($files && !isset($files['status'])){
+          foreach($records as $rkey => $rvalue){
+            foreach ($files as $file) {
+              // if form_field_name in managed_files matches form column name
+              if( array_key_exists($file['form_field_name'], $rvalue)){
+                // if managed_files id matches reference id in form_[formid] table
+                if ($rvalue[$file['form_field_name']] == $file['id']) {
+                    $records[$rkey][$file['form_field_name']] = $file['url']; // set file url
+                    break;
+                }
+              }
+            }
+          }
+        }
+        return $records;
     }
+
+    /** get submitted files
+      *
+      * @param $formid
+      *
+      * @return array
+      */
+      private function getSubmittedFiles($formid)
+      {
+
+          try {
+              $tablename = "managed_files";
+              $results = DB::table($tablename)
+                        ->where('form_table_id', $formid)
+                        ->get();
+          } catch (\Illuminate\Database\QueryException $ex) {
+              $results = ['status' => 0, 'message' => $ex->getMessage()];
+          }
+          return json_decode(json_encode($results), true);
+      }
 
     /** get archived form data
     *

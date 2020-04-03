@@ -2,7 +2,7 @@
 @endcomponent
 
 @component('emails.partial.preview_text')
-We've attached a copy of your submission for your records.
+Thanks for submitting your files. We've included your responses.
 @endcomponent
 
 <?php
