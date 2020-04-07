@@ -60,8 +60,8 @@ class EmailExportCommand extends Command
               foreach($results as $result) {
                   $line = array();
                   foreach($fields as $field){
-                    if($result->$field)
-                      array_push($line, $result->$field);
+                    if($result[$field])
+                      array_push($line, $result[$field]);
                     else
                       array_push($line, '');
                   }
@@ -81,7 +81,7 @@ class EmailExportCommand extends Command
               $data['body']['message'] = 'Please see attachment';
               $data['emailInfo'] = array();
               $data['emailInfo']['address'] = $email;
-              $data['emailInfo']['subject'] = 'CSV data export - ' . $formId;
+              $data['emailInfo']['subject'] = 'Daily csv file export';
               $data['emailInfo']['name'] = 'DS Formbuilder';
               $data['emailInfo']['file'] = storage_path('app') .'/'. $filename;
               $data['emailInfo']['template'] = 'emails.csvExport';
@@ -89,7 +89,7 @@ class EmailExportCommand extends Command
               $emailController->sendEmail($data, '');
 
           } catch (Exception $e) {
-              $this->error("An error occurred");
+              $this->error($e);
           }
       }
     }
