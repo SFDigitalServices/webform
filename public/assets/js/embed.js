@@ -445,7 +445,7 @@ SFDSWFB.lastScript = function() {
   })
 
   if(window.draftData !== undefined){
-    console.log(window.draftData);
+    console.log(window.draftData)
     populateForm(window.draftData);
   }
 }
@@ -453,7 +453,39 @@ SFDSWFB.lastScript = function() {
 function insertOtherTextInput(obj) {
   if (!jQuery(obj).find("input[type=text]").length) {
     var labelId = jQuery(obj).attr('for')
-    jQuery(obj).append('<input type="text" onclick="jQuery(\'#'+labelId+'\').prop(\'checked\', true)" onchange="setOtherValue(this)" id="'+labelId+'_input" />');
+    if(jQuery('#'+labelId).attr('type') === 'radio'){
+      var inputName = labelId+'_input'
+      var radioName = jQuery('#'+labelId).attr('name')
+    }
+    else{
+      var inputName = jQuery('#'+labelId).attr('name')
+      inputName = inputName.replace('[]', '_Other_input')
+    }
+    if(jQuery('#'+inputName).attr('id') === undefined)
+      jQuery(obj).append('<input type="text" id="'+inputName+'" name="'+inputName+'" />')
+
+    // toggles the "other" checkbox option text input
+    jQuery('#'+labelId).click( function() {
+      if(!jQuery('#'+labelId).is(':checked')){
+        jQuery('#'+inputName).hide()
+      }else{
+        jQuery('#'+inputName).show()
+      }
+    })
+     // toggles the "other" radio option text input
+     if(radioName !== undefined ){
+      jQuery('input[name="'+radioName+'"').click( function() {
+        if(!jQuery('#'+labelId).is(':checked')){
+          jQuery('#'+inputName).hide()
+        }else{
+          jQuery('#'+inputName).show()
+        }
+      })
+    }
+    // if this is a draft, populate "Other" values
+    if(window.draftData !== undefined){
+      jQuery('#'+inputName).val(window.draftData['data'][inputName]);
+    }
   }
 }
 
@@ -469,10 +501,6 @@ function requireCheckboxGroup(obj) {
       jQuery(obj).parents('.form-group').validator('validate')
     }
   }
-}
-
-function setOtherValue(obj) {
-  jQuery('#'+obj.id.substring(0, obj.id.length - 6)).prop('value',obj.value);
 }
 
 function populateForm(form){

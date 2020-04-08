@@ -279,7 +279,9 @@ class DataStoreHelper extends Migration
                 return $ret;
             }
         }
+        Log::info(print_r($request->all(), 1));
         $write = $this->parseSubmittedFormData($form, $request);
+        Log::info(print_r($write, 1));
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
             if ($request->input('magiclink')) {
@@ -583,20 +585,26 @@ class DataStoreHelper extends Migration
     {
         $form_id = str_replace('forms_', '', $tablename);
         try {
-            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
+            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id, $tablename) {
                 $_fluent = $table->renameColumn($definition['from'], $definition['to']);
                 // update form field name in lookup table
                 if ($_fluent) {
                     try {
+                        // updates lookup table's form_field_name
                         DB::table('enum_mappings')
-                    ->where([
-                      ['form_table_id', $form_id],
-                      ['form_field_name', $definition['from']]
-                    ])
-                    ->update(['form_field_name' => $definition['to']]);
+                        ->where([
+                          ['form_table_id', $form_id],
+                          ['form_field_name', $definition['from']]
+                        ])
+                        ->update(['form_field_name' => $definition['to']]);
+
+                        //updates "other" options column name
+                        if( Schema::hasColumn($tablename, $definition['from'].'_Other_input') ){
+                            $table->renameColumn($definition['from'].'_Other_input', $definition['to'].'_Other_input');
+                        }
+
                     } catch (\Illuminate\Database\QueryException $ex) {
-                        //$ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
-                        return null;
+                      return null;
                     }
                 }
             });
@@ -771,6 +779,19 @@ class DataStoreHelper extends Migration
                     DB::statement($raw_statement);
                     //update the options lookup table
                     $ret = $this->updateLookupTable($definition, $form_id);
+
+                     // create "other" option in the reference table
+                    if (isset($definition['version']) && $definition['version'] === 'other') {
+                        DB::table('enum_mappings')->insert([
+                        'form_table_id' => $form_id,
+                        'form_field_name' => $definition['name'],
+                        'value' => 'Other',
+                        'type' => $definition['formtype'],
+                      ]);
+                      // create column in form table for "other" input field
+                      if(!Schema::hasColumn($tablename, $definition['name'].'_Other_input'))
+                        $table->text($definition['name'].'_Other_input')->nullable();
+                    }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to update database column " . $definition['name']);
                 }
@@ -791,7 +812,7 @@ class DataStoreHelper extends Migration
         $ret = array();
         if ($form_id && $definition) {
             $results = DB::select('select * from enum_mappings where form_table_id = ? AND form_field_name = ? ', array($form_id, $definition['name']));
-            foreach ($results as $result) {
+          foreach ($results as $result) {
                 if (!in_array($result->value, $definition['options'])) {
                     try {
                         DB::delete('delete from enum_mappings where id = ?', array($result->id));
@@ -877,6 +898,7 @@ class DataStoreHelper extends Migration
                     continue;
                 }
                 if ($field['formtype'] == "s02" || $field['formtype'] == "s04" || $field['formtype'] == "s06" || $field['formtype'] == "s08") { //multiple options
+                    // radio/checkboxes options definition are stored as "checkboxes" and "radios" respectively
                     if ($field['formtype'] == "s02" || $field['formtype'] == "s04") {
                         $options = $field['option'];
                     } elseif ($field['formtype'] == "s06") {
@@ -895,6 +917,10 @@ class DataStoreHelper extends Migration
                             }
                         }
                     }
+                    // set the "other" option text field
+                    if( isset($field['version']) && $field['version'] === 'other'){
+                      $write['db'][$field['name'].'_Other_input'] = $request->input($field['name'].'_Other_input');
+                    }
                 } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
                   if( $request->file($field['name']) == null && $request->input($field['name']) != ""){
                     $write['db'][$field['name']] = $request->input($field['name']);
@@ -911,7 +937,7 @@ class DataStoreHelper extends Migration
                     // fixed bug: if 'name' attribute was not set, exception is thrown here.
                     if (isset($field['name'])) {
                         $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
-
+                        // finds the first email field, this will be used to send notifications
                         if ($field['formtype'] === 'c04') {
                             if (!isset($write['db']['email_save_for_later']) || $write['db']['email_save_for_later'] === '') {
                                 $write['db']['email_save_for_later'] = $request->input($field['name']);
