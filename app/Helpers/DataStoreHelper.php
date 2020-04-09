@@ -367,7 +367,6 @@ class DataStoreHelper extends Migration
       */
     public function getSubmittedFormData($formid)
     {
-
         try {
             $tablename = "forms_" . $formid;
             $results = DB::table($tablename)
@@ -378,21 +377,14 @@ class DataStoreHelper extends Migration
         }
         $records = json_decode(json_encode($results), true);
         $files = $this->getSubmittedFiles($formid);
-        // finds the file url from the managed_files table
-        if($files && !isset($files['status'])){
-          foreach($records as $rkey => $rvalue){
-            foreach ($files as $file) {
-              // if form_field_name in managed_files matches form column name
-              if( array_key_exists($file['form_field_name'], $rvalue)){
-                // if managed_files id matches reference id in form_[formid] table
-                if ($rvalue[$file['form_field_name']] == $file['id']) {
-                    $records[$rkey][$file['form_field_name']] = $file['url']; // set file url
-                    break;
-                }
-              }
-            }
-          }
-        }
+
+        // get file url from the managed_files table
+        $this->controllerHelper->getFileUploadURL($records, $files);
+
+        // get checkbox/radio values from lookup table
+        $lookups = $this->getLookupTable($formid);
+        $this->controllerHelper->getLookupValues($records, $lookups);
+
         return $records;
     }
 
@@ -583,8 +575,11 @@ class DataStoreHelper extends Migration
     {
         $form_id = str_replace('forms_', '', $tablename);
         try {
-            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
-                $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id, $tablename) {
+              $_fluent = null;
+              if (! Schema::hasColumn($tablename, $definition['to'])) {
+                  $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+              }
                 // update form field name in lookup table
                 if ($_fluent) {
                     try {
