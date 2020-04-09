@@ -301,7 +301,7 @@ class ControllerHelper
 
                         //$diff = array_diff($value, $originalValue);
                         $diff = $this->check_diff_multi($value, $originalValue);
-                        if (count($diff) != 0) { // key and value matches
+                        if (count($diff) != 0 && ! $this->isNonInputField($value['formtype']) ) { // key and value matches
                           $updates['update'] = $value; // key found, value doesn't match, this is an update.
                         }
                         unset($originalFormData['data'][$originalKey]);
@@ -316,6 +316,7 @@ class ControllerHelper
         if( $originalFormData['data'] && count($originalFormData['data']) > 0){
             $updates['remove'] = reset($originalFormData['data']);
         }
+
         if($newFormData['data'] && count($newFormData['data']) > 0){
             $updates['add'] = reset($newFormData['data']);
         }
@@ -327,7 +328,6 @@ class ControllerHelper
           unset($updates['remove']);
           unset($updates['add']);
         }
-
         return $updates;
     }
 
