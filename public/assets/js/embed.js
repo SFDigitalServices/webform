@@ -44,16 +44,18 @@ SFDSWFB.loadRemainingScripts();
 SFDSWFB.lastCalled = {};
 SFDSWFB.skipToSectionId = '';
 SFDSWFB.uploaders = {};
-SFDSWFB.uploading = 0;
+SFDSWFB.uploading = [];
 
 function initUploaders() {
   if (jQuery('div[data-formtype=m13]').length) {
     jQuery('div[data-formtype=m13]').each(function(){
-      SFDSWFB.uploaders[jQuery(this).attr('name')] = new Dropzone(jQuery(this).get(0), {
+      var fieldName = jQuery(this).attr('name');
+      var fieldId = jQuery(this).attr('id');
+      SFDSWFB.uploaders[fieldName] = new Dropzone(jQuery(this).get(0), {
         url: jQuery('#SFDSWF-Container form').prop('action').replace('\/submit', '\/uploadFile'),
         autoProcessQueue: true,
         uploadMultiple: true,
-        params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+jQuery(this).attr('name')+'" }' ),
+        params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+fieldName+'" }' ),
         parallelUploads: 1,
         maxFiles: 1,
         maxFilesize: 500,
@@ -62,21 +64,21 @@ function initUploaders() {
         addRemoveLinks: false,
         init: function() {
           this.on("addedfile", function() {
-            SFDSWFB.uploading++;
+            SFDSWFB.uploading.push(fieldId);
             if (this.files[1]!=null){
               this.removeFile(this.files[0]);
             }
           });
         },
         success: function (file, response) {
-          SFDSWFB.uploading--;
+          if (SFDSWFB.uploading.indexOf(fieldId) > -1) SFDSWFB.uploading.splice(SFDSWFB.uploading.indexOf(fieldId), 1);
           var imgName = response;
           file.previewElement.classList.add("dz-success");
           jQuery('.file-custom[name='+response.field_name+']').append('<input type="hidden" name="'+response.field_name+'" value="'+response.filename+'"/>');
           fieldValid(jQuery('.file-custom[name='+response.field_name+']').attr('id'));
         },
         error: function (file, response) {
-          SFDSWFB.uploading--;
+          if (SFDSWFB.uploading.indexOf(fieldId) > -1) SFDSWFB.uploading.splice(SFDSWFB.uploading.indexOf(fieldId), 1);
           file.previewElement.classList.add("dz-error");
         }
       } );
@@ -212,8 +214,8 @@ function getDataInPath(obj, path) {
 
 //returns boolean
 function validPage() {
-  if (SFDSWFB.uploading > 0) {
-    alert('Please wait for file upload to complete before continuing');
+  if (SFDSWFB.uploading.length > 0) {
+    fieldInvalid(SFDSWFB.uploading[0], 'Please wait for file upload to complete before continuing');
     return false;
   }
   jQuery('#SFDSWF-Container .form-section.active').validator('destroy');
