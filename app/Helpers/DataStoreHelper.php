@@ -575,8 +575,11 @@ class DataStoreHelper extends Migration
     {
         $form_id = str_replace('forms_', '', $tablename);
         try {
-            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
-                $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id, $tablename) {
+              $_fluent = null;
+              if (! Schema::hasColumn($tablename, $definition['to'])) {
+                  $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+              }
                 // update form field name in lookup table
                 if ($_fluent) {
                     try {
