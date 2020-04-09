@@ -53,7 +53,7 @@ Thanks for submitting your files. We've included your responses.
                     <tr>
                       <div>
                       @if( $data['source'] == 'internal')
-                        We received a submission to "Submit plans or addenda for existing projects" on {{ $data['date'] }} {{ $data['time'] }}  <br><br>
+                        The applicant below submitted "Submit plans or addenda for existing projects" on {{ $data['date'] }} {{ $data['time'] }}  <br><br>
                         Please use the applicant data below & download the submitted plans via the link.<br><br>
                       @else
                         Dear {!! $firstname !!} {!! $lastname !!} <br><br>

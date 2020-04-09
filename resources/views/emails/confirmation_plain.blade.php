@@ -15,7 +15,7 @@
 ---
 
 @if( $data['source'] == 'internal')
-                        We received a submission to "Submit plans or addenda for existing projects" on {{ $data['date'] }} {{ $data['time'] }}
+                        The applicant below submitted "Submit plans or addenda for existing projects" on {{ $data['date'] }} {{ $data['time'] }}
 
                         Please use the applicant data below & download the submitted plans via the link.
 
