@@ -454,13 +454,9 @@ function insertOtherTextInput(obj) {
   if (!jQuery(obj).find("input[type=text]").length) {
     var labelId = jQuery(obj).attr('for')
     if(jQuery('#'+labelId).attr('type') === 'radio'){
-      var inputName = labelId+'_input'
       var radioName = jQuery('#'+labelId).attr('name')
     }
-    else{
-      var inputName = jQuery('#'+labelId).attr('name')
-      inputName = inputName.replace('[]', '_Other_input')
-    }
+    var inputName = labelId+'_input'
     if(jQuery('#'+inputName).attr('id') === undefined)
       jQuery(obj).append('<input type="text" id="'+inputName+'" name="'+inputName+'" />')
 
