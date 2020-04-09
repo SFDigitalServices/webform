@@ -376,12 +376,10 @@ class ControllerHelper
     if ($lookups && !isset($lookups['status'])) {
         foreach ($records as $rkey => $rvalue) {
             $values = array();
-            $masterkey = '';
             foreach ($lookups as $lookup) {
                 $lookupkey = $lookup['form_field_name'];
                 if (!isset($values[$lookupkey])) {
                     $values[$lookupkey] = array();
-                    $masterkey = $lookupkey;
                 }
                 // if form_field_name in lookup table matches form column name
                 if (array_key_exists($lookupkey, $rvalue)) {
