@@ -508,7 +508,7 @@
 	position: relative !important;
 	width: auto;
 	padding: 2rem 0 1rem;
-	border: 3px dashed #4f66ee;
+	border: 3px dotted #aaa;
 	text-align: center;
 	border-radius: 8px;
 	margin: 0.5rem 0;
