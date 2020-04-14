@@ -707,8 +707,8 @@ class HTMLHelper
         $non_inputs = array('m02', 'm04', 'm06', 'm08', 'm10', 'm11', 'm14', 'm16'); //m13 is file upload
         $label_for = isset($field['id']) && $field['id'] !== "" ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
         $label_text = isset($field['label']) ? $field['label'] : "";
-        $optional = !self::isRequired($field) && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
-
+        //$optional = !self::isRequired($field) && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
+        $optional = '';
         if (in_array($field['formtype'], $legends)) {
           $start = '<legend class="control-label">';
           $end = '</legend>';
