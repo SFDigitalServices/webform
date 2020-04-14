@@ -106,7 +106,6 @@ class DataStoreHelper extends Migration
     *
     * @return bool
     */
-
     public function cloneFormTable($tablename, $cloned)
     {
         if ($tablename !== '' && $cloned !== '') {
@@ -237,6 +236,7 @@ class DataStoreHelper extends Migration
                     ->first();
 
                     $data = (array) $results;
+                    $removals = array();
                     $data['formid'] = $formid;
                     $data['magiclink'] = $draft;
                     $lookups = $this->getLookupTable($formid);
@@ -248,6 +248,10 @@ class DataStoreHelper extends Migration
                                     $data[$lookup['form_field_name']."[]"] = array();
                                 }
                                 array_push($data[$lookup['form_field_name']."[]"], $lookup['value']);
+                                // mark this field for unset later
+                                if (!isset($removals[$lookup['form_field_name']])) {
+                                    $removals[$lookup['form_field_name']] = $lookup['form_field_name'];
+                                }
                             } else {
                                 $data[$lookup['form_field_name']] = $lookup['value'];
                             }
@@ -257,6 +261,12 @@ class DataStoreHelper extends Migration
             } catch (\Illuminate\Database\QueryException $ex) {
                 $results = ['status' => 0, 'message' => $ex->getMessage()];
                 return null;
+            }
+        }
+        // remove unnecessary checkboxes
+        if (isset($removals)) {
+            foreach ($removals as $key => $value) {
+                unset($data[$key]);
             }
         }
         return $data;
@@ -292,18 +302,20 @@ class DataStoreHelper extends Migration
      * @param $form
      * @param $request
      * @param $status
+     * @param $push_to_adu
      *
      * @return Array
      */
     public function submitForm($form, $request, $status = 'complete')
     {
-        // validate user inputs
-        $ret = $this->validateFormRequest($request, $form['content']['data']);
-        //$ret = array("status" => 0, "errors" => array('email' => array('validation.required', 'validation.length'), 'name' => array('validation.maxlength') ) );
-        if (! empty($ret) ) {
-            return $ret;
+        $ret = array();
+        if ($status !== 'partial') {
+            // validate user inputs
+            $ret = $this->validateFormRequest($request, $form['content']['data']);
+            if (! empty($ret)) {
+                return $ret;
+            }
         }
-
         $write = $this->parseSubmittedFormData($form, $request);
         if ($write) {
             // if the magic link is clicked for the partially completed form, remove the record first.
@@ -322,43 +334,25 @@ class DataStoreHelper extends Migration
             $id = $this->insertFormData($write['db'], $form['id']);
             // update status if form is partially completed
             if ($id) {
-                $ret = array("status" => 1, "message" => 'success' );
                 try {
+                    $magiclink = Hash::make(time());
+                    $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
+                    $email_data = $this->constructResumeDraftEmailData($form, $magiclink, $email);
+                    $ret = array("status" => 1, 'data' => $email_data);
                     if ($status != 'complete') {
-                        $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                        $magiclink = Hash::make(time());
                         DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                        $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
                     } else {
-                        $ret = $this->pushDataToADU($request->all());
-                        if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
+                        $write['db']['form_id'] = $form['id'];
+                        if(isset($write['db']['email_save_for_later'])) unset($write['db']['email_save_for_later']);
+                        // push data to ADU dispatcher if an endpoint is specified
+                        if( isset($form['content']['settings']['adu-dispatcher-endpoint']) && $form['content']['settings']['adu-dispatcher-endpoint'] !== '' ){
+                          $response = $this->pushDataToADU($write['db'], $write['push_to_adu_data']);
+                          if ($response['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST'))
                             DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
                         }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
                     $ret = array("status" => 0, "message" => "Failed to delete form draft " . $form['id']);
-                }
-
-                $id = $this->insertFormData($write['db'], $form['id']);
-                // update status if form is partially completed
-                if ($id) {
-                    $ret = array("status" => 1, "message" => 'success' );
-                    try {
-                        if ($status != 'complete') {
-                            $email = isset($write['db']['email_save_for_later']) ? $write['db']['email_save_for_later'] : '';
-                            $magiclink = Hash::make(time());
-                            DB::table('form_table_drafts')->insert(['form_table_id' => $form['id'], 'magiclink' => $magiclink, 'email' => $email, 'host' => $form['host'], 'form_record_id' => $id]);
-                            $ret = array("status" => 1, 'data' => $this->constructResumeDraftEmailData($form, $magiclink, $email) );
-                        } else {
-                            $ret = $this->pushDataToADU($request->all());
-                            if ($ret['status'] == 1 && Schema::hasColumn('forms_'.$form['id'], 'ADU_POST')) {
-                                DB::table('forms_'.$form['id'])->where('id', '=', $id)->update(array("ADU_POST" => 1));
-                            }
-                        }
-                    } catch (\Illuminate\Database\QueryException $ex) {
-                        $ret = array("status" => 0, "message" => "Failed to update status " . $form['id']);
-                    }
-                    return $ret;
                 }
             }
             return $ret;
@@ -390,9 +384,11 @@ class DataStoreHelper extends Migration
             try {
                 $id = DB::table($tablename)->insertGetId($content);
             } catch (\Illuminate\Database\QueryException $ex) {
+                Log::info(print_r($ex->getMessage(), 1));
                 $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
                 return 0;
             } catch (PDOException $e) {
+                Log::info(print_r($e->getMessage(), 1));
                 $ret = array("status" => 0, "message" => "Failed to insert data " . $formid);
                 return 0;
             }
@@ -416,8 +412,38 @@ class DataStoreHelper extends Migration
         } catch (\Illuminate\Database\QueryException $ex) {
             $results = ['status' => 0, 'message' => $ex->getMessage()];
         }
-        return $results;
+        $records = json_decode(json_encode($results), true);
+        $files = $this->getSubmittedFiles($formid);
+
+        // get file url from the managed_files table
+        $this->controllerHelper->getFileUploadURL($records, $files);
+
+        // get checkbox/radio values from lookup table
+        $lookups = $this->getLookupTable($formid);
+        $this->controllerHelper->getLookupValues($records, $lookups);
+
+        return $records;
     }
+
+    /** get submitted files
+      *
+      * @param $formid
+      *
+      * @return array
+      */
+      private function getSubmittedFiles($formid)
+      {
+
+          try {
+              $tablename = "managed_files";
+              $results = DB::table($tablename)
+                        ->where('form_table_id', $formid)
+                        ->get();
+          } catch (\Illuminate\Database\QueryException $ex) {
+              $results = ['status' => 0, 'message' => $ex->getMessage()];
+          }
+          return json_decode(json_encode($results), true);
+      }
 
     /** get archived form data
     *
@@ -490,6 +516,22 @@ class DataStoreHelper extends Migration
         return $results;
     }
 
+     /** get file upload
+    *
+    * @param $fileid
+    *
+    * @return Array
+    */
+    public function getManagedFile($fileid)
+    {
+      if($fileid){
+        $file = DB::table('managed_files')
+                            ->where([
+                              ['id', '=', $fileid]])
+                            ->first();
+      }
+      return $file;
+    }
     /** Archive a form table
      *
      * @param @formId
@@ -570,8 +612,11 @@ class DataStoreHelper extends Migration
     {
         $form_id = str_replace('forms_', '', $tablename);
         try {
-            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id) {
-                $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+            Schema::table($tablename, function (Blueprint $table) use ($definition, $form_id, $tablename) {
+              $_fluent = null;
+              if (! Schema::hasColumn($tablename, $definition['to'])) {
+                  $_fluent = $table->renameColumn($definition['from'], $definition['to']);
+              }
                 // update form field name in lookup table
                 if ($_fluent) {
                     try {
@@ -679,7 +724,7 @@ class DataStoreHelper extends Migration
         $ret = array();
         $tablename = $table->getTable();
         if (! Schema::hasColumn($tablename, $definition['name'])) {
-            $table->$fieldType($definition['name']);
+            $table->$fieldType($definition['name'])->nullable();
         } else {
             if (Schema::hasColumn($tablename, $definition['name'])) {
 
@@ -740,7 +785,7 @@ class DataStoreHelper extends Migration
                     'type' => $definition['formtype'],
                 ]);
             }
-            $table->text($definition['name']);
+            $table->text($definition['name'])->nullable();
         }
         else{
             //check column, rename not allowed
@@ -796,7 +841,7 @@ class DataStoreHelper extends Migration
                 try {
                     foreach ($definition['options'] as $option) {
                         if (trim($option) != '') {
-                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value) values (?, ?, ?)', array($form_id, $definition['name'], $option));
+                            DB::insert('insert into enum_mappings (form_table_id, form_field_name, value, type) values (?, ?, ?, ?)', array($form_id, $definition['name'], $option, $definition['formtype']));
                         }
                     }
                 } catch (\Illuminate\Database\QueryException $ex) {
@@ -883,7 +928,11 @@ class DataStoreHelper extends Migration
                         }
                     }
                 } elseif ($field['formtype'] == "m13" && isset($field['name'])) { //for file uploads, checks if field has a name
-                  if ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
+                  if( $request->file($field['name']) == null && $request->input($field['name']) != ""){
+                    $write['db'][$field['name']] = $request->input($field['name']);
+                    $write['push_to_adu_data'][$field['name']] = $this->getManagedFile($request->input($field['name']))->url;
+                  }
+                  elseif ($request->file($field['name']) != null && $request->file($field['name'])->isValid()) { //checks if field is populated with an acceptable value
                       $file = $request->file($field['name']);
                       $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
                       $this->controllerHelper->writeS3($newFilename, file_get_contents($file));
@@ -894,8 +943,11 @@ class DataStoreHelper extends Migration
                     // fixed bug: if 'name' attribute was not set, exception is thrown here.
                     if (isset($field['name'])) {
                         $write['db'][$field['name']] = $write['csv'][$column] = $request->input($field['name']);
+
                         if ($field['formtype'] === 'c04') {
-                            $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            if (!isset($write['db']['email_save_for_later']) || $write['db']['email_save_for_later'] === '') {
+                                $write['db']['email_save_for_later'] = $request->input($field['name']);
+                            }
                         }
                     }
                 }
@@ -904,22 +956,68 @@ class DataStoreHelper extends Migration
         return $write;
     }
 
+    /** Parses uploaded file data
+     *
+     * @param $content
+     * @param $fieldName
+     *
+     * @return string
+     */
+    public function parseUploadedFile($content, $fieldName, $file)
+    {
+      $filename = '';
+      if (! empty($content['content']['data'])) {
+          foreach ($content['content']['data'] as $field) {
+              if ($field['formtype'] === "m13" && isset($field['name']) && $field['name'] === $fieldName) { //for file uploads, checks if field has a name
+                if ($fieldName !== null && $fieldName !== "" && $file->isValid()) { //checks if field is populated with an acceptable value
+                    $newFilename = $this->controllerHelper->generateUploadedFilename($content['id'], $field['name'], $file->getClientOriginalName());
+                    $filename = $this->controllerHelper->getBucketPath().$newFilename;
+                    if ($this->controllerHelper->writeS3($newFilename, file_get_contents($file))) {
+                        // write record to managed_file
+                        $content = array(
+                          'form_table_id' => $content['id'],
+                          'form_field_name' => $fieldName,
+                          'url' => $filename,
+                          'filesize' => $file->getSize(),
+                          'filename' => $file->getClientOriginalName(),
+                          'mimetype' => $file->getClientMimeType(),
+                        );
+                        try {
+                            $id = DB::table('managed_files')->insertGetId($content);
+                            return $id;
+                        } catch (\Illuminate\Database\QueryException $ex) {
+                            return $filename;
+                        } catch (PDOException $e) {
+                            return $filename;
+                        }
+                    }
+                }
+              }
+          }
+      }
+      return $filename;
+    }
+
     /** Push data to the ADU Dispatcher
     *
     * @param $formdata
     *
     * @return array
     */
-    private function pushDataToADU($formdata)
+    private function pushDataToADU($formdata, $adudata)
     {
         $ret = array();
-
+        foreach($formdata as $key => $value){
+          if( isset($adudata[$key]) )
+            $formdata[$key] = $adudata[$key];
+        }
+        $formdata = json_encode($formdata);
         if ($formdata) {
             $api_key = getenv("ADU_DISPATCHER_KEY");
             $endpoint = getenv("ADU_DISPATCHER_ENDPOINT");
             $client = new GuzzleHttp\Client(['base_uri' => $endpoint]);
 
-            $res = $client->request('POST', '/adu/submissions', [
+            $res = $client->request('POST', '', [
           'headers' => [
             'Accept-Encoding' => 'gzip'
           ],
@@ -996,18 +1094,18 @@ class DataStoreHelper extends Migration
         if ($form) {
             $data['body'] = array();
             // Set email body variables
-            $ret['body']['formname'] = $form['content']['settings']['name'];
-            $ret['body']['message'] = 'To go back to your draft, visit the link below.';
-            $ret['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            $data['body']['formname'] = $form['content']['settings']['name'];
+            $data['body']['message'] = 'To go back to your draft, visit the link below.';
+            $data['body']['host'] = $form['host'] . "?draft=".urlencode($magiclink)."&form_id=".$form['id'];
+            $data['body']['date'] = date("F j, Y");
+            $data['body']['time'] = date("g:i a");
             // Set email header
-            $ret['emailInfo'] = array();
-            $ret['emailInfo']['address'] = $email;
-            //$data['emailInfo']['from_address'];
-            //$data['emailInfo']['replyto_address'];
-            $data['emailInfo']['subject'] = "Form submissions status";
-            $data['emailInfo']['name'] = 'City and County of San Francisco';
+            $data['emailInfo'] = array();
+            $data['emailInfo']['address'] = $email;
+            $data['emailInfo']['subject'] = 'We received your submission to "'. $data['body']['formname'] . '" on ' . $data['body']['date'] . ' ' .$data['body']['time'];
+            $data['emailInfo']['name'] = 'San Francisco Permit Center';
         }
-        return $ret;
+        return $data;
     }
 
     /** Validates form input against form definition
@@ -1021,16 +1119,70 @@ class DataStoreHelper extends Migration
     {
         $ret = array();
         $validation_rules = array();
+        $formtypes = array();
+        $pages = array();
+        $currentPage = '';
+        $skip = array();
 
         foreach ($definitions as $key => $definition) {
-            if ($definition && ! $this->controllerHelper->isNonInputField($definition['formtype']) ) {
-                $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
-                $rule = implode('|', $this->setValidationRules($definition, $request->input([$definition['name']])));
-                if($rule != '')
-                  $validation_rules[$definition['name']] = $rule;
+          //populate formtypes array with $formtypes[id] = formtype
+          $formtypes[$definition['id']] = $definition['formtype'];
+          //for page separators, get a list of pages and their fields
+          if ($definition['formtype'] === "m16") {
+            if (isset($definition['conditions'])) {
+              //populate pages array as $pages[page id] = array('name','phone','email')
+              $pages[$definition['id']] = array();
+              //set currentPage as the last known page container
+              $currentPage = $definition['id'];
+            } else {
+              $currentPage = '';
             }
+          } else if ($currentPage !== '') {
+            //if currentPage is set, add new ids as children of that page
+            $pages[$currentPage][] = $definition['id'];
+          }
         }
-        Log::info(print_r($validation_rules,1));
+
+        foreach ($definitions as $key => $definition) {
+          if ($definition && (!$this->controllerHelper->isNonInputField($definition['formtype']) || $definition['formtype'] === "m16")) {
+            $rule = '';
+
+            if (!in_array($definition['id'], $skip)) {
+              if (isset($definition['conditions'])) {
+                // [conditions] => Array ( [showHide] => Show [allAny] => all [condition] => Array ( [0] => Array ( [id] => checkboxes [op] => matches [val] => Maybe ) ) )
+
+                //check if it's related to a page or a field
+                if ($definition['formtype'] == "m16") {
+
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, do nothing; leave fields in definitions array to be validated normally
+                  } else {
+                    //otherwise, remove all fields related to this page
+                    $skip = $pages[$definition['id']];
+                  }
+
+                } else {
+                  //check if the requirements are met
+                  $qualify = $this->checkManyConditions($request, $formtypes, $definition['conditions']);
+                  if (($definition['conditions']['showHide'] == "Show" && $qualify) || ($definition['conditions']['showHide'] == "Hide" && !$qualify)) {
+                    //if conditions match and show or conditions don't match and hide, validate this field
+                    $rule = $this->getValidationRule($definition, $request);
+                  }
+                  // else mismatch, leave rule empty, field is not visible and should be discarded from validation
+                }
+
+              } else {
+                $rule = $this->getValidationRule($definition, $request);
+              }
+            }
+
+            if($rule !== '')
+              $validation_rules[$definition['name']] = $rule;
+          }
+        }
+
         $validator = Validator::make($request->all(), $validation_rules);
 
         if ($validator->fails()) {
@@ -1039,14 +1191,90 @@ class DataStoreHelper extends Migration
         return $ret;
     }
 
+    /** Checks condition as a statement
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $condition array consisting of conditional statement params ( [id] => checkboxes [op] => matches [val] => Maybe )
+      *
+      * @return bool
+    */
+    public function checkCondition($request, $formtypes, $condition) {
+      if ($formtypes[$condition['id']] == 's06') {
+        $val = $request->input($condition['id'])[0];
+      } else {
+        $val = $request->input($condition['id']);
+      }
+      switch ($condition['op']) {
+        case "matches":
+          if ($val == $condition['val']) return true;
+          break;
+        case "doesn't match":
+          if ($val != $condition['val']) return true;
+          break;
+        case "is less than":
+          if ($val < $condition['val']) return true;
+          break;
+        case "is more than":
+          if ($val > $condition['val']) return true;
+          break;
+        case "contains anything":
+          if ($val != '') return true;
+          break;
+        case "is blank":
+          if ($val === '') return true;
+          break;
+        case "contains":
+          if (strpos($val, $condition['val']) !== false) return true;
+          break;
+        case "doesn't contain":
+          if (strpos($val, $condition['val']) === false) return true;
+          break;
+      }
+      return false;
+    }
+
+    /** Checks collection of conditions
+      *
+      * @param $request obj the entire form data submission
+      * @param $formtypes array of ids and their formtypes
+      * @param $conditions array of conditions consisting of conditional statement params
+      *
+      * @return bool
+    */
+    public function checkManyConditions($request, $formtypes, $conditions) {
+      //loop through each condition
+      foreach ($conditions['condition'] as $index => $condition) {
+        $thisCondition = $this->checkCondition($request, $formtypes, $condition);
+        if ($thisCondition && $conditions['allAny'] === "any") {
+          return true;
+        } else if (!$thisCondition && $conditions['allAny'] === "all") {
+          return false;
+        }
+      }
+      return $conditions['allAny'] === "any" ? false : true;
+    }
+
+    /** gets validation rule for single input
+    *
+    * @param $definition
+    * @param $request
+    *
+    * @return String
+    */
+    public function getValidationRule($definition, $request)
+    {
+      $definition['name'] = isset($definition['name']) ? $definition['name'] : $definition['id'];
+      return implode('|', $this->setValidationRules($definition));
+    }
+
     /** sets validation rules for all input types
     *
     * @param $definition
-    * @param @field
     *
     * @return Array
     */
-    private function setValidationRules($definition, $field)
+    public function setValidationRules($definition, $field = null)
     {
         $rules = array();
         foreach ($definition as $key => $value) {
@@ -1056,28 +1284,34 @@ class DataStoreHelper extends Migration
                     $rules[] = "required";
                   }
                     break;
-                case "maxlength":  if($value != '') {
+                case "maxlength":  if($value !== '') {
                     $rules[] = "max:".$value;
                 }
                     break;
-                case "minlength":  if($value != '') {
+                case "minlength":  if($value !== '') {
                     $rules[] = "min:".$value;
                 }
                     break;
-                case "option": $rules[] = "Array";
-                    break;
+                case "max":  if($value !== '') {
+                      $rules[] = "max:".$value;
+                  }
+                      break;
+                  case "min":  if($value !== '') {
+                      $rules[] = "min:".$value;
+                  }
+                      break;
                 case "type":
                     if ($value === 'email') {
                         $rules[] = "email";
                     } elseif ($value === 'url') {
                         $rules[] = "url";
-                    } elseif ($value == 'number') {
+                    } elseif ($value === 'number') {
                         $rules[] = "numeric";
-                    } elseif ($value == 'date') {
+                    } elseif ($value === 'date') {
                         $rules[] = "date";
-                    } elseif ($value == 'time') {
-                        $rules[] = "date";
-                    } elseif ($value == 'tel') {
+                    } elseif ($value === 'time') {
+                        $rules[] = "date_format:H:i";
+                    } elseif ($value === 'tel') {
                         //$rules[] = "phone"; // telephone validation(not enabled for now), requireds 3rd party library.
                     }
                     break;
@@ -1086,6 +1320,8 @@ class DataStoreHelper extends Migration
                         $rules[] = "string";
                     } elseif ($value === 'm10') { //HTML code
                         $rules[] = "string";
+                    } elseif ($value === 's06') {
+                        $rules[] = "Array";
                     }
                     break;
                 default:

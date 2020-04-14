@@ -70,8 +70,6 @@ class HTMLHelper
             $form_container .= $this->createEditableFields($field);
           }
         }
-
-
         // Form Sections
         if (!empty($sections)) {
             $section1 = isset($content['settings']['section1']) ? $content['settings']['section1'] : $content['settings']['name'];
@@ -82,15 +80,38 @@ class HTMLHelper
         } else {
             $form_container = $form_div . self::formHeader($content['settings']['name']) . $form_container;
         }
+        // add preview page place holder
         $form_end = "";
+        if($pageCount > 1)
+          $form_end = self::addPreviewPage($content['settings']['name']);
+
         if (isset($content['settings']['backend']) && $content['settings']['backend'] === 'csv') {
-          $form_end = '<div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+          if(isset($content['settings']['save-for-later']) && $content['settings']['save-for-later'] !== 'true')
+            $form_end .= '</div';
+          else
+            $form_end .= '</div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
         }
         $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
         return preg_replace("/\r|\n/", "", $form_container . $form_end);
     }
 
+    /**
+    * Creates an admin tab for the form preview
+    *
+    * @return HTML
+    */
+    public function adminTab()
+    {
+        $html = '<div id="SFDSWFB-admin">'.
+          '<div class="header" onclick="toggleAdminTab()">Administrative Tools <i class="adminTabArrow fa fa-angle-up"></i></div>'.
+          '<div class="content">'.
+            'Show All Questions &nbsp; <input type="checkbox" onclick="toggleShowAllFields(this)"/><br/>'.
+            'Show all Pages &nbsp; <input type="checkbox" onclick="toggleShowAllPages(this)"/>'.
+          '</div>'.
+        '</div>';
+        return $html;
+    }
 
     /** Create js string for embed code
     *
@@ -108,7 +129,8 @@ class HTMLHelper
       $js = "var SFDSWFB = {};SFDSWFB.preRenderScripts = [" .
 		"'//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js', " .
 		"'//" . $host . "/assets/js/validator.js', " .
-		"'//" . $host . "/assets/js/error-msgs.js'" .
+		"'//" . $host . "/assets/js/error-msgs.js', " .
+    "'//cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/min/dropzone.min.js'" .
 	  "];SFDSWFB.postRenderScripts = [" .
 		"'//unpkg.com/libphonenumber-js@1.7.21/bundle/libphonenumber-min.js'" .
 	  "];var script = document.createElement('script'); SFDSWFB.formRender = function() {"; //start ready
@@ -121,14 +143,18 @@ class HTMLHelper
       $conditions = [];
       $webhooks = [];
       $formtypes = [];
+      $fileFields = array();
       if ($form['content']) {
           foreach ($form['content']['data'] as $field) {
               if(!isset($field['id']))
                 Log::info(print_r($field, 1));
               $fieldId = $field['id'];
-              if(!isset($field['formtype']))
-                Log::info(print_r($field, 1));
-              $formtypes[$fieldId] = $field['formtype'];
+              if (isset($field['formtype'])) {
+                  $formtypes[$fieldId] = $field['formtype'];
+                  if ($field['formtype'] === 'm13') {
+                      $fileFields[] = $fieldId;
+                  }
+              }
               foreach ($field as $key => $value) {
                   if ($key == "calculations") { //gather calculations
                       $calculations[$fieldId] = $value;
@@ -190,6 +216,7 @@ class HTMLHelper
       }
 
       if (!empty($conditions)) { //add conditional behavior
+          $hasConditions = array();
           foreach ($conditions as $id => $fld) {
               //set default visibility
               if ($formtypes[$id] == "m16") {
@@ -224,12 +251,16 @@ class HTMLHelper
               $js .= "jQuery('";
               foreach ($conditionIds as $chId) {
                   $js .= $this->getInputSelector($chId, $formtypes, false).", ";
+                  if( ! in_array($chId, $hasConditions) )
+                    $hasConditions[] = $chId;
               }
               $js = substr($js, 0, -2)."').on('keyup change',function(){";
+
+              $getInputSelector = $this->getInputSelector($id, $formtypes, false);
               if ($formtypes[$id] == "m16") {
-                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)." .form-group').".$revert."()}});";
+                $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector." .form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$getInputSelector." .form-group').".$revert."()}});";
               } else {
-                $js .= "if (".$allConditionSts.") {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$this->getInputSelector($id, $formtypes, false)."').closest('.form-group').".$revert."()}});";
+                $js .= "if (".$allConditionSts.") {jQuery('".$getInputSelector."').closest('.form-group').".strtolower($fld['showHide'])."()} else {jQuery('".$getInputSelector."').closest('.form-group').".$revert."()}});";
               }
           }
       }
@@ -240,7 +271,6 @@ class HTMLHelper
 
       //add webhooks behavior
       $js .= $this->addWebhooks($webhooks, $formtypes);
-
       // check to see if this is a retrieval
       $populateJS = '';
       if($referer !== ''){
@@ -249,7 +279,10 @@ class HTMLHelper
         if(isset($output['draft'])){
           $draft = $output['draft'];
           $form_id = $output['form_id'];
-          $data = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
+          $data['data'] = $this->dataStoreHelper->retrieveFormDraft($form_id, $draft);
+          if(isset($hasConditions))
+            $data['conditions'] = $hasConditions;
+            $data['fileFields'] = $fileFields;
           $populateJS = "var draftData = ". json_encode($data) .";";
         }
       }
@@ -338,7 +371,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
       $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
       $html .= '<div class="form-header-meta">';
@@ -369,7 +401,6 @@ class HTMLHelper
     // *
     // * @return html
     // */
-
     public static function pagination($pageNumber, $pageCount) {
       $html = '<div class="form-group">';
 
@@ -378,7 +409,8 @@ class HTMLHelper
       }
 
       if ($pageNumber == $pageCount) {
-        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
+        // insert Preivew page, move submit button to the Preview page
+        $html .= '<button id="preview_submit_page" class="btn btn-lg form-section-next">Next</button>';
       } else {
         $html .= '<button class="btn btn-lg form-section-next">Next</button>';
       }
@@ -396,7 +428,6 @@ class HTMLHelper
      *
      * @return html
      */
-
     public static function formSection($name, $field, $pageNumber, $pageCount) {
       $html = self::pagination($pageNumber, $pageCount);
 
@@ -412,16 +443,46 @@ class HTMLHelper
       return $html;
     }
 
+    /** Generate Other element
+     *
+     * @param $field
+     *
+     * @return html, will return empty string if "other" is not selected or null</select>
+     */
+    public static function formOther($field) {
+      $html = "";
+
+      if (isset($field['version']) && $field['version'] === "other") {
+        switch ($field['formtype']) {
+          case "s08": //radio
+            $type = "radio";
+            $array = "";
+            $extra = "";
+            break;
+          case "s06": //checkbox
+            $type = "checkbox";
+            $array = "[]";
+            $extra = self::isRequired($field) ? ' data-required="1" data-error="This field cannot be blank."' : '';
+            break;
+        }
+        //js added inline instead of from JS due to simplicity of binding
+        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other" onclick="insertOtherTextInput(this)"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].$array.'" data-formtype="'.$field['formtype'].'"'.$extra.'><span class="inline-label">Other</span></label>';
+      }
+
+      return $html;
+    }
+
     /** Generate Radio input element
     *
     * @param $field
     *
     * @returns html
     */
-
     public static function formRadio($field)
     {
         $html = "";
+        $other = self::formOther($field);
+        unset($field['version']);
 
         //id is set per option
         $field_id = isset($field['id']) ? $field['id'] : "";
@@ -438,6 +499,7 @@ class HTMLHelper
                 $html .= '<label for="'.$id.'"><input type="radio" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -450,6 +512,8 @@ class HTMLHelper
     public static function formCheckbox($field)
     {
         $html = "";
+        $other = self::formOther($field);
+        unset($field['version']);
         //name needs to be an array
         $field['name'] = isset($field['name']) && $field['name'] != "" ? $field['name'] . "[]" : "";
         //id is set per option
@@ -458,6 +522,7 @@ class HTMLHelper
         //convert checkboxes to options and remove them from fields
         $options = isset($field['checkboxes']) ? $field['checkboxes'] : array();
         unset($field['checkboxes']);
+        if (self::isRequired($field)) $field['data-required'] = true;
         //get attributes
         $attributes = self::setAttributes($field);
         //construct checkbox inputs, one or more
@@ -467,6 +532,7 @@ class HTMLHelper
                 $html .= '<label for="'.$id.'"><input type="checkbox" id="'.$id.'" value="'.$option.'"'.$attributes.'/><span class="inline-label">'.$option.'</span></label>';
             }
         }
+        $html .= $other;
         return $html;
     }
 
@@ -520,8 +586,7 @@ class HTMLHelper
                 $html .= '<option value="'.$option.'">'.$option.'</option>';
             }
         }
-
-        $html .= "</select>";
+        $html .= '</select>';
         return $html;
     }
     /**
@@ -531,11 +596,11 @@ class HTMLHelper
      */
     public static function formFile($field)
     {
-		$attributes = self::setAttributes($field);
-		$prepended = self::getPrepended($field);
+        $attributes = self::setAttributes($field);
+        $prepended = self::getPrepended($field);
         $html = $prepended . '<label>';
         $html .= '<span class="label">'. $field['label'] . '</span>';
-        $html .= '<input' . $attributes . '/><span class="file-custom" data-filename=""></span>';
+        $html .= '<div'. $attributes.' class="dz-message file-custom" data-required-error="You need to upload a file."><span class="dragndrop">Drop files here or click to upload.</span></div>';
         $html .= '</label>';
         return $html;
     }
@@ -646,8 +711,8 @@ class HTMLHelper
         $non_inputs = array('m02', 'm04', 'm06', 'm08', 'm10', 'm11', 'm14', 'm16'); //m13 is file upload
         $label_for = isset($field['id']) && $field['id'] !== "" ? $field['id'] : $field['name']; //this shouldn't happen as id should be required
         $label_text = isset($field['label']) ? $field['label'] : "";
-        $optional = (!isset($field['required']) || $field['required'] === "" || $field['required'] === "false") && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
-
+        //$optional = !self::isRequired($field) && !in_array($field['formtype'], $non_inputs) ? ' <span class="optional">(optional)</span>' : "";
+        $optional = '';
         if (in_array($field['formtype'], $legends)) {
           $start = '<legend class="control-label">';
           $end = '</legend>';
@@ -659,6 +724,14 @@ class HTMLHelper
         return $start . $label_text . $optional . $end;
     }
 
+    public static function isRequired($field) {
+      $ret = false;
+      if (isset($field['required'])) {
+        if ($field['required'] === true || $field['required'] === "true" || $field['required'] === "1" || $field['required'] === 1) $ret = true;
+      }
+      return $ret;
+    }
+
    /** Constructs help text block
      *
      * @param $field
@@ -667,11 +740,129 @@ class HTMLHelper
      */
     public static function helpBlock($field)
     {
-      $output = '<div class="help-block with-errors"></div>';
+      $output = '<div class="help-block with-errors" id="SFDSWF-'.$field['id'].'-with-errors"></div>';
       if (isset($field['help']) && $field['help'] !== "") {
         $output .= '<p class="help-text">'.html_entity_decode($field['help']).'</p>';
       }
       return $output;
+    }
+
+     /** Formats submitted data for preview
+     *
+     * @param $request
+     * @param @form
+     *
+     * @return html
+     */
+    public function formatSubmittedData($request, $form)
+    {
+      $ret = array();
+      $internal = array();
+      $external = array();
+      $data = $request->all();
+      $definitions = $form['data'];
+
+      foreach($definitions as $definition){
+        if (isset($definition['formtype']) && $this->controllerHelper->isNonInputField($definition['formtype'])) {
+            continue;
+        }
+        if ($definition) {
+            if (isset($definition['formtype']) && ($definition['formtype'] == 's06' || $definition['formtype'] == 's08')) {
+                $type = $definition['formtype'];
+            } else {
+                $type = isset($definition['formtype']) ? $definition['formtype'] : $definition['type'];
+            }
+            $name= isset($definition['name']) ? $definition['name'] : $definition['id'];
+            $value = isset($data[$name]) ? $data[$name] : "";
+            $label = isset($definition['label']) ? ucfirst($definition['label']) : ucfirst($name);
+
+            if ($value != "") {
+                switch ($type) {
+                  case 'c04':
+                  case 'email': // format emals
+                    $ret[] = FieldFormatter::formatEmail($label, $value);
+                    break;
+                  case 'd10':
+                  case 'url': // format url
+                    $ret[] = FieldFormatter::formatURL($label, $value);
+                    break;
+                  case 'c06':
+                  case 'tel': // format phone
+                    $ret[] = FieldFormatter::formatPhone($label, $value);
+                    break;
+                  case 's02':
+                  case 's14':
+                  case 's15':
+                  case 's16': // dropdowns, radios, checkbox put a check mark before the value
+                  case 's08':
+                  case 's06':
+                    $ret[] = FieldFormatter::formatOptions($label, $value, $request->getSchemeAndHttpHost());
+                    break;
+                  case 'm13':
+                  case 'file': // format name and size
+                    $file = null;
+                    if ($request->file($name) != null && $request->file($name)->isValid())
+                        $file = $request->file($name);
+
+                    $external[] = FieldFormatter::formatFile($label, $value, $file);
+                    if (isset($form['settings']['cc-internal-staff']) && $form['settings']['cc-internal-staff'] !== '')
+                        $internal[] = FieldFormatter::formatFile($label, $value, $file, true);
+                    break;
+                  case 'd06':
+                  case 'number': // format number, append units
+                    $unit = isset($definition['unit']) ? $definition['unit'] : "";
+                    $ret[] = FieldFormatter::formatNumber($label, $value, $unit);
+                    break;
+                  case 'd08':
+                  case 'price': // format currency
+                    $ret[] = FieldFormatter::formatPrice($label, $value);
+                    break;
+                  case 'd02':
+                  case 'date': // format date
+                    $ret[] = FieldFormatter::formatDate($label, $value);
+                    break;
+                  case 'i14': // format textarea, strip all html
+                    $ret[] = FieldFormatter::formatTextArea($label, $value);
+                    break;
+                  case 'd04': // format Time
+                  case 'time':
+                    $ret[] = FieldFormatter::formatTime($label, $value);
+                    break;
+                  default: //format all other inputs as text
+                    $ret[] = FieldFormatter::formatText($label, $value);
+                    break;
+              }
+            }
+        }
+      }
+      $formatted_data = array();
+      $formatted_data['internal'] = array_merge($ret, $internal);
+      $formatted_data['external'] = array_merge($ret, $external);
+      //Log::info(print_r($formatted_data, 1));
+      return $formatted_data;
+    }
+
+    /**
+    * adds a preview page to the last page
+    *
+    * @param $formname
+    *
+    * @return HTML
+    */
+    private static function addPreviewPage($formname)
+    {
+        $html = '<div class="form-section" data-id="page_separator">'.self::formHeader($formname).'<div class="form-content">';
+        // add place holders for preview page
+        $html .= '<div class="form-group">';
+        $html .= '<div id="preview_submitted_data"></div>';
+        $html .= '</div>';
+        // add buttons
+        $html .= '<div class="form-group">';
+        $html .= '<button class="btn btn-lg form-section-prev">Previous</button>';
+        $html .= '<input type="submit" id="submit" value="Submit" class="btn btn-lg form-section-submit"/>';
+        $html .= '</div></div>';
+
+        return $html;
     }
 
 
@@ -933,6 +1124,9 @@ class HTMLHelper
         $html .= self::fieldLabel($field);
       }
 
+      //add aria invalid attributes to required forms
+      if (self::isRequired($field)) $field['aria-invalid'] = "false";
+
       $html .= '<div class="field-wrapper">';
 
       switch ($field['formtype']) {
@@ -1032,6 +1226,28 @@ class HTMLHelper
       return $output;
   }
 
+   /** Checks if the formtype is a multi option field ie: radio, checkbox, dropdown
+    *
+    * @param $formtype
+    *
+    * @return boolean
+    */
+  public function isMulti($formtype)
+  {
+    switch ($formtype) {
+      case "s08": //radio
+      case "s06": //checkbox
+      case "s02": //select
+      case "s04": //select
+      case "s14": //select state
+      case "s15": //select state
+      case "s16": //select state
+        return true;
+      default:
+        return false;
+    }
+  }
+
   /** Delegates which conditional function to use based on params
     *
     * @param $sel string the selector of the field being evaluated
@@ -1096,10 +1312,10 @@ class HTMLHelper
 				$output = "";
 				break;
 			case "matches":
-				$output = "jQuery('".$sel."[value=".$value."]').length";
+				$output = "jQuery('".$sel."[value=\"".$value."\"]').length";
 				break;
 			case "doesn't match":
-				$output = "jQuery('".$sel."[value=".$value."]').length === 0";
+				$output = "jQuery('".$sel."[value=\"".$value."\"]').length === 0";
 				break;
 			case "is less than": // will only check the first match, not sure how it would work with multiple
 				$output = "jQuery('".$sel."').val() < ".$value;

@@ -22,6 +22,7 @@ module.exports = {
     Then('I should be able modify the attributes',  () => {
       I.fillField('name', 'AUTOMATED_NAME')
       I.fillField('id', 'AUTOMATED_ID')
+      I.click('Required')
       I.click('Save')
       I.wait(2)
       I.switchTo('iframe');

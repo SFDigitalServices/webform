@@ -27,6 +27,78 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             array('type' => 'tel', 'id' => 'phonenumber', 'name' => 'phonenumber', 'required' => 'false', 'label' => 'Tel', 'formtype' => 'c06'),
             array('type' => 'date', 'id' => 'date_created', 'name' => 'date_created', 'label' => 'Date', 'formtype' => 'd02'),
             array('type' => 'url', 'id' => 'url', 'name' => 'url', 'label' => 'URL', 'formtype' => 'd10'),
+            array('type' => 'time', 'id' => 'time', 'name' => 'time', 'label' => 'Time', 'formtype' => 'd04'),
+        );
+
+        $this->definitions2 = array(
+          array ( "formtype" => "i02", "label" => "Text", "id" => "text", "name" => "text", "type" => "text" ),
+          array ( "formtype" => "i02", "label" => "Text", "id" => "text_1", "name" => "text_1", "type" => "text", "required" => "true" ),
+          array ( "formtype" => "d06", "label" => "Number", "id" => "number", "name" => "number", "type" => "number" ),
+          array ( "formtype" => "s08", "label" => "Radio", "id" => "radio", "name" => "radio", "radios" => array ( "Yes", "No", "Maybe" ), "required" => "true", "version" => "other" ),
+          array ( "formtype" => "m16", "label" => "Page_Separator", "id" => "page_separator", "conditions" => array ( "showHide" => "Show", "allAny" => "all", "condition" => array ( array ( "id" => "radio", "op" => "matches", "val" => "Yes" ) ) ) ),
+          array ( "formtype" => "c02", "label" => "Name", "id" => "name", "name" => "name", "type" => "text", "required" => "true" ),
+          array ( "formtype" => "c08", "label" => "Address", "id" => "address", "name" => "address", "type" => "text", "required" => "true" ),
+          array ( "formtype" => "c10", "label" => "City", "id" => "city", "name" => "city", "type" => "text", "required" => "true" ),
+          array ( "formtype" => "s14", "label" => "State", "id" => "state", "name" => "state", "option" => array ( "Choice 1", "Choice 2", "Choice 3" ), "required" => "true" ),
+          array ( "formtype" => "c14", "label" => "Zip", "id" => "zip", "name" => "zip", "type" => "text", "required" => true ),
+          array ( "formtype" => "m16", "label" => "Page_Separator", "id" => "page_separator_1" ),
+          array ( "formtype" => "m02", "id" => "header_1", "textarea" => "last page" ),
+          array ( "button" => "Submit", "id" => "submit", "formtype" => "m14", "color" => "btn-primary" )
+        );
+
+        $this->request2Empty = array(
+        );
+
+        $this->request2Invalid = array(
+          "text_1" => "test",
+          "number" => "a",
+          "radio" => "No"
+        );
+
+        $this->request2Min = array(
+          "text_1" => "test",
+          "radio" => "No"
+        );
+
+        $this->request2Other = array(
+          "text_1" => "test",
+          "radio" => "Other"
+        );
+
+        $this->request2Show = array(
+          "text_1" => "test",
+          "radio" => "Yes",
+          "name" => "john doe",
+          "address" => "123 market st.",
+          "city" => "san francisco",
+          "state" => "CA",
+          "zip" => "94104",
+        );
+
+        $this->request2ShowFormypes = array(
+          "text_1" => "i02",
+          "radio" => "s08",
+          "name" => "c02",
+          "address" => "c08",
+          "city" => "c10",
+          "state" => "s14",
+          "zip" => "s14",
+        );
+
+        $this->request2All = array(
+          "text" => "test",
+          "text_1" => "test",
+          "number" => "5",
+          "radio" => "Yes",
+          "name" => "john doe",
+          "address" => "123 market st.",
+          "city" => "san francisco",
+          "state" => "CA",
+          "zip" => "94104",
+        );
+
+        $this->blah = array(
+          array( 'required' => 'true' )
         );
     }
     protected function createRequest(
@@ -53,9 +125,61 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       );
      }
 
-    /**
+
+
+   /**
     *  Testing App\Helpers\DataStoreHelper
     **/
+    public function testCheckCondition() {
+      //Test conditional that doesn't pass
+      $request = $this->createRequest("POST", json_encode($this->request2Min), '/test', ['CONTENT_TYPE' => 'application/json']);
+      $this->assertFalse($this->dataStoreHelperTester->checkCondition($request, $this->request2ShowFormypes, $this->definitions2[4]['conditions']['condition'][0]));
+      //Test conditional that does pass
+      $request = $this->createRequest("POST", json_encode($this->request2Show), '/test', ['CONTENT_TYPE' => 'application/json']);
+      $this->assertTrue($this->dataStoreHelperTester->checkCondition($request, $this->request2ShowFormypes, $this->definitions2[4]['conditions']['condition'][0]));
+    }
+
+    public function testCheckManyConditions() {
+      //Test conditional that doesn't pass
+      $request = $this->createRequest("POST", json_encode($this->request2Min), '/test', ['CONTENT_TYPE' => 'application/json']);
+      $response = $this->dataStoreHelperTester->checkManyConditions($request, $this->request2ShowFormypes, $this->definitions2[4]['conditions']);
+      $this->assertEquals($response, false);
+      //Test conditional that does pass
+      $request = $this->createRequest("POST", json_encode($this->request2Show), '/test', ['CONTENT_TYPE' => 'application/json']);
+      $response = $this->dataStoreHelperTester->checkManyConditions($request, $this->request2ShowFormypes, $this->definitions2[4]['conditions']);
+      $this->assertEquals($response, true);
+    }
+
+    public function testSetValidationRules(){
+      //Test optional text field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions2[0]);
+      $this->assertEmpty($response);
+      //Test optional number field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions2[2]);
+      $this->assertContains("numeric", $response);
+      //Test optional email field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions[2]);
+      $this->assertContains("email", $response);
+      //Test optional url field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions[6]);
+      $this->assertContains("url", $response);
+      //Test optional date field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions[5]);
+      $this->assertContains("date", $response);
+      //Test optional time field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions[7]);
+      $this->assertContains("date_format:H:i", $response);
+      //Test required field
+      $response = $this->dataStoreHelperTester->setValidationRules($this->definitions2[1]);
+      $this->assertContains("required", $response);
+    }
+
+    public function testGetValidationRule(){
+      //Test required field
+      $response = $this->dataStoreHelperTester->getValidationRule($this->definitions2[1], $this->request2Min);
+      $this->assertEquals($response, "required");
+    }
+
     public function testSubmitForm(){
       //submitForm($form, $request, $status = 'complete')
       $tablename= 'forms_submitform';
@@ -69,14 +193,14 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
             "data" => $this->definitions
           )
         );
-      $requestData = array("form_id" => "submitform", "firstname" => 'firstname', "lastname" => "lastname", "email" => "test@test.gov", "phonenumber" => "12345678901", "password" => "", "date_created" => "", "url" => "");
+      $requestData = array("form_id" => "submitform", "firstname" => 'firstname', "lastname" => "lastname", "email" => "test@test.gov", "phonenumber" => "12345678901", "password" => "", "date_created" => "", "url" => "", "time" => "");
 
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
 
       //Test completed form
-      $response = $this->dataStoreHelperTester->submitForm($form, $request, 'complete');
+      $response = $this->dataStoreHelperTester->submitForm($form, $request);
       $this->assertEquals($response['status'], 1);
-      $this->assertEquals($response['message'], "Successful");
+      $this->assertEquals(is_array($response['data']), true);
       //Test partially completed form
       $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
       $this->assertEquals($response['status'], 1);
@@ -85,14 +209,14 @@ class DataStoreHelperTest extends \Codeception\Test\Unit
       //Test validation: required
       $requestData['email'] = '';
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
-      $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
+      $response = $this->dataStoreHelperTester->submitForm($form, $request);
       $this->assertEquals($response['status'], 0);
       $this->assertEquals($response['errors']['email'][0], 'validation.required');
 
       //Test validation: max length
       $requestData['email'] = 'abcdefg@hijklmnopqrstuvw.xyz';
       $request = $this->createRequest("POST", json_encode($requestData), '/test', ['CONTENT_TYPE' => 'application/json']);
-      $response = $this->dataStoreHelperTester->submitForm($form, $request, 'partial');
+      $response = $this->dataStoreHelperTester->submitForm($form, $request);
       $this->assertEquals($response['status'], 0);
       $this->assertEquals($response['errors']['email'][0], 'validation.max.string');
     }

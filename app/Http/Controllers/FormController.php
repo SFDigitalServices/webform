@@ -279,7 +279,7 @@ class FormController extends Controller
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-branding.css" />'.
         '<link rel="stylesheet" href="//' . $request->getHttpHost() . '/assets/css/form-preview.css" />'.
         '</head>'.
-        '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript></body></html>';
+        '<body><div id="SFDSWF-Container"></div><script>'.$embedHTML.'</script><noscript>This form requires JavaScript. Please reload the page, or enable JavaScript in your browser.</noscript>'.$this->htmlHelper->adminTab().'</body></html>';
     }
 
     /** Creates an embed JS for the form
@@ -384,17 +384,38 @@ class FormController extends Controller
             if (!empty($response) && $response['status'] == 0) {  //failed submissions
                 return response()->json($response);
             } else {
-                $submitted_data = array();
+                $submitted_data = $this->htmlHelper->formatSubmittedData($request, $form['content']);
                 if (isset($form['content']['settings']['confirmation']) && $form['content']['settings']['confirmation'] != "") {
+                    $data = $response['data'];
+                    $data['body']['source'] = "confirmation";
+                    $data['body']['submitted'] = $submitted_data['external'];
+                    // send confirmation email to applicant
+                    $this->emailController->sendEmail($data, 'emails.confirmation');
+                    // send confirmation email to internal staff
+                    if (isset($form['content']['settings']['cc-internal-staff']) && $form['content']['settings']['cc-internal-staff'] !== '') {
+                        $data['emailInfo']['address'] = $form['content']['settings']['cc-internal-staff'];
+                        $data['body']['submitted'] = $submitted_data['internal'];
+                        $data['body']['source'] = "internal";
+                        $this->emailController->sendEmail($data, 'emails.confirmation');
+                    }
                     return response()->json(['status' => 1, 'message' => 'Submitted data to the database', 'redirect_url' => $form['content']['settings']['confirmation'], 'submitted_data' => $submitted_data]);
                 } else {
-                    foreach ($_POST as $key => $value) {
-                        $submitted_data[] = array($key => $value);
-                    }
-                    return view('layouts.submission', ['data' => $submitted_data]);
+                    return view('layouts.submission', ['data' => $submitted_data['external'], 'source' => '']);
                 }
             }
         }
+    }
+
+    public function getPreviewPage(Request $request){
+      $form_id = $request->input('form_id');
+      $form = Form::where('id', $form_id)->first();
+      $form['content'] = json_decode($form['content'], true);
+
+      if ($form_id) {
+          $submitted_data = $this->htmlHelper->formatSubmittedData($request, $form['content']);
+          $source = "preview_page";
+          return view('layouts.submission', ['data' => $submitted_data['external'], 'source' => $source]);
+      }
     }
 
     /** Save partial form data
@@ -411,7 +432,7 @@ class FormController extends Controller
         }
         $form = Form::where('id', $form_id)->first();
         $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
-        //todo backend validation
+
         $referer = $request->headers->get('referer');
         $host = parse_url($referer, PHP_URL_HOST);
         $path = parse_url($referer, PHP_URL_PATH);
@@ -487,6 +508,26 @@ class FormController extends Controller
     public function purgeCSV(Request $request)
     {
         return true;
+    }
+
+    /** Asynchronous file upload
+    *
+    * @param $request
+    *
+    * @return string
+    */
+    public function uploadFile(Request $request)
+    {
+        $ret = response()->json(['status' => 0, 'message' => 'Error, file did not upload.']);
+        $form_id = $request->input('form_id');
+        if ($form_id) {
+          $form = Form::where('id', $form_id)->first();
+          $form['content'] = json_decode($form['content'], true); //hack to convert json blob to part of larger object
+          if ($filename = $this->dataStoreHelper->parseUploadedFile($form, $request->input('field_name'), $request->file()['file'][0])) {
+            $ret = response()->json(['status' => 1, 'message' => 'Success, file uploaded.', 'filename' => $filename, 'field_name' => $request->input('field_name')]);
+          }
+        }
+        return $ret;
     }
 
   /** Gets S3 unique filename

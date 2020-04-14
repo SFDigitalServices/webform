@@ -287,6 +287,7 @@ class ControllerHelper
         if (!empty($originalFormData['data'])) {
             $originalFormData = $this->parseOptionValues($originalFormData);
             $originalFormData = $this->parseOptionValues($originalFormData, 'json');
+            $checkboxes = $radios = '';
             foreach ($newFormData['data'] as $key => $value) {
                 foreach ($originalFormData['data'] as $originalKey => $originalValue) {
                     if (strcmp($value['name'], $originalValue['name']) === 0) {
@@ -298,8 +299,9 @@ class ControllerHelper
                         unset($value['webhooks']);
                         unset($originalValue['webhooks']);
 
-                        $diff = array_diff($value, $originalValue);
-                        if (count($diff) != 0) { // key and value matches
+                        //$diff = array_diff($value, $originalValue);
+                        $diff = $this->check_diff_multi($value, $originalValue);
+                        if (count($diff) != 0 && ! $this->isNonInputField($value['formtype']) ) { // key and value matches
                           $updates['update'] = $value; // key found, value doesn't match, this is an update.
                         }
                         unset($originalFormData['data'][$originalKey]);
@@ -309,10 +311,12 @@ class ControllerHelper
                 }
             }
         }
+
         //TODO: upgrade to bulk delete/add
         if( $originalFormData['data'] && count($originalFormData['data']) > 0){
             $updates['remove'] = reset($originalFormData['data']);
         }
+
         if($newFormData['data'] && count($newFormData['data']) > 0){
             $updates['add'] = reset($newFormData['data']);
         }
@@ -550,4 +554,73 @@ class ControllerHelper
           $ret["values"][] = array("value" => $option['label'], "label" => $option['label']);
       }
     }
+
+  private function check_diff_multi($array1, $array2){
+      $result = array();
+      foreach ($array1 as $key => $val) {
+          if (is_array($val) && isset($array2[$key])) {
+              $tmp = check_diff_multi($val, $array2[$key]);
+              if ($tmp) {
+                  $result[$key] = $tmp;
+              }
+          } elseif (!isset($array2[$key])) {
+              $result[$key] = null;
+          } elseif (md5($val) !== md5($array2[$key])) { // compare hash, string may include html
+              $result[$key] = $array2[$key];
+          }
+
+          if (isset($array2[$key])) {
+              unset($array2[$key]);
+          }
+      }
+
+      $result = array_merge($result, $array2);
+
+      return $result;
+  }
+
+  public function getFileUploadURL(&$records, $files){
+    if ($files && !isset($files['status'])) {
+        foreach ($records as $rkey => $rvalue) {
+            foreach ($files as $file) {
+                // if form_field_name in managed_files matches form column name
+                if (array_key_exists($file['form_field_name'], $rvalue)) {
+                    // if managed_files id matches reference id in form_[formid] table
+                    if ($rvalue[$file['form_field_name']] == $file['id']) {
+                        $records[$rkey][$file['form_field_name']] = $file['url']; // set file url
+                        break;
+                    }
+                }
+            }
+        }
+    }
+  }
+
+  public function getLookupValues(&$records, $lookups){
+    if ($lookups && !isset($lookups['status'])) {
+        foreach ($records as $rkey => $rvalue) {
+            $values = array();
+            foreach ($lookups as $lookup) {
+                $lookupkey = $lookup['form_field_name'];
+                if (!isset($values[$lookupkey])) {
+                    $values[$lookupkey] = array();
+                }
+                // if form_field_name in lookup table matches form column name
+                if (array_key_exists($lookupkey, $rvalue)) {
+                    // if lookup table id matches reference id in form_[formid] table
+                    $ids = explode(',', $rvalue[$lookupkey]);
+                    if (in_array($lookup['id'], $ids)) {
+                        array_push($values[$lookupkey], $lookup['value']); // set value
+                    }
+                }
+            }
+            // turn lookup values from array to string
+            foreach ($values as $key => $value) {
+                if (!empty($value)) {
+                    $records[$rkey][$key] = implode(',', $value);
+                }
+            }
+        }
+    }
+  }
 }

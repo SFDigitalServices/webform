@@ -42,6 +42,7 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('jekyllImport',['as' => 'jekyllImport', 'uses' => 'FormController@jekyllImport']);
     $router->post('formioImport',['as' => 'formioImport', 'uses' => 'FormController@formioImport']);
     $router->get('retrieveDraft',['as' => 'retrieveDraft', 'uses' => 'FormController@retrieveFormDraft']);
+    $router->post('uploadFile',['as' => 'uploadFile', 'uses' => 'FormController@uploadFile']);
 	  $router->post('getFilename', ['as'=>'getFilename', 'uses' => 'FormController@getFilename']);
     $router->post('authors', ['as' => 'authors', 'uses' => 'FormController@getAuthors']);
 	  $router->post('csv-published', ['as' => 'csv-published', 'uses' => 'FormController@CSVPublished']);
@@ -49,6 +50,7 @@ $router->group(['prefix' => 'form'], function($router) {
     $router->post('export-csv', ['as' => 'export-csv', 'uses' => 'FormController@exportFormData']);
     $router->get('resume-draft', ['as' => 'resume-draft', 'uses' => 'FormController@resumeDraft']);
     $router->post('draft-list', ['as' => 'draft-list', 'uses' => 'FormController@getFormDraftList']);
+    $router->post('getPreviewPage', ['as' => 'getPreviewPage', 'uses' => 'FormController@getPreviewPage']);
 });
 
 $router->group(['prefix' => 'api'], function($router) {

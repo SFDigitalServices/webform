@@ -206,7 +206,9 @@ FbView.prototype.switchMiddlePanel = function(panelId) {
 FbView.prototype.populateSettings = function() {
 	for (i in this.formsCollection.forms[fb.formId].content.settings) {
 		if (typeof this.formsCollection.forms[fb.formId].content.settings[i] !== "function") {
-			$('#SFDSWFB-settings [name=' + i + ']').val(this.formsCollection.forms[fb.formId].content.settings[i])
+      $('#SFDSWFB-settings [name=' + i + ']').val(this.formsCollection.forms[fb.formId].content.settings[i])
+      if($('#SFDSWFB-settings [name=' + i + ']').attr('type') === 'checkbox' && this.formsCollection.forms[fb.formId].content.settings[i] === 'true')
+        $('#SFDSWFB-settings [name=' + i + ']').prop('checked', true)
 		}
 	}
   this.toggleConfirmPage($('#SFDSWFB-settings select[name=backend]'))
@@ -350,6 +352,9 @@ FbView.prototype.populateAttributes = function(item) {
 					case 'webhooks':
 						$('#SFDSWFB-attributes .accordion-webhooks').remove()
 						break
+          case 'version':
+						$('#SFDSWFB-attributes .version-attribute').remove()
+            break
 					default:
 						$('#SFDSWFB-attributes .' + i + '-attribute').remove()
 						break
@@ -396,6 +401,7 @@ FbView.prototype.populateValidation = function(item) {
 		//case "password":
 	}
 	if (item.required == "true") $('#SFDSWFB-attributes input[name=required]').prop('checked', true)
+	if (item.version == "other") $('#SFDSWFB-attributes input[name=version][value=other]').prop('checked', true)
 }
 
 /**
@@ -427,13 +433,13 @@ FbView.prototype.populateCalculations = function(item) {
 		var calCount = 0
 		for (l in item.calculations) {
 			if (l == 1) {
-				addCalculation(item.id)
+				this.addCalculation(item.id)
 				$('#SFDSWFB-attributes .calculationId').eq(0).val(item.calculations[0])
 				$('#SFDSWFB-attributes .calculationId').eq(1).val(item.calculations[2])
 				$('#SFDSWFB-attributes .calculationOperator').eq(0).val(item.calculations[1])
 			} else if (Math.abs(l % 2) == 1) { // every odd number after 1
 				calCount++
-				addCalculation(item.id)
+				this.addCalculation(item.id)
 				$('#SFDSWFB-attributes .calculationOperator').eq(calCount).val(item.calculations[l])
 				$('#SFDSWFB-attributes .calculationId').eq(calCount + 1).val(item.calculations[parseInt(l) + 1])
 			}

@@ -28,6 +28,14 @@ describe("Fb View", function() {
           type: "email"
         },
         {
+          label: "Number",
+          id: "number",
+          name: "number",
+          formtype: "d06",
+          required: "true",
+          type: "number"
+        },
+        {
           label: "Number 1",
           id: "number1",
           name: "number1",
@@ -41,7 +49,8 @@ describe("Fb View", function() {
           name: "number2",
           formtype: "d06",
           required: "true",
-          type: "number"
+          type: "number",
+          calculations: ["number", "Plus", "number1"]
         },
         {
           button: "Submit",
@@ -188,10 +197,22 @@ describe("Fb View", function() {
       </div>")
     })
 
+    it("should load calculations for fields with calculation", function() {
+      fb.fbView.populateCalculations(fb.fbView.formsCollection.forms[fb.formId].content.data[4])
+      expect(jQuery('.firstCalculation').is(':visible')).toBeTruthy()
+      expect(jQuery('.calculationContainer').is(':visible')).toBeTruthy()
+    })
+
+    it("should not load calculations for fields without calculations", function() {
+      fb.fbView.populateCalculations(fb.fbView.formsCollection.forms[fb.formId].content.data[3])
+      expect(jQuery('.firstCalculation').is(':visible')).toBeFalsy()
+      expect(jQuery('.calculationContainer').is(':visible')).toBeFalsy()
+    })
+
     it("should be able to calculate numeric fields", function() {
       fb.fbView.addCalculation();
       expect(jQuery('select.allMathIds').length).toEqual(2)
-      expect(jQuery('select.allMathIds').eq(0).text()).toEqual('number1number2')
+      expect(jQuery('select.allMathIds').eq(0).text()).toEqual('numbernumber1number2')
     })
 
     it("should be able to add conditionals", function() {
@@ -203,7 +224,7 @@ describe("Fb View", function() {
     })
 
     it("should be able to add conditionals", function() {
-      fb.fbView.formsCollection.forms[fb.formId].content.data.splice(1,3)
+      fb.fbView.formsCollection.forms[fb.formId].content.data.splice(1,4)
       fb.fbView.addConditional();
       expect(jQuery('.modal-dialog .modal-title').text()).toEqual('Notice')
       expect(jQuery('.modal-dialog .modal-body p').text()).toEqual('You need more fields in your form before adding a conditional.')

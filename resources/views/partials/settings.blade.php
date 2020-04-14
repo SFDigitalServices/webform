@@ -70,7 +70,21 @@
       <option value="permit-application">Salesforce Permit Application</option>
     </select>
   </div>
+  <div class="form-group">
+    <label class="checkbox-inline" for="save-for-later">
+    <input class="" type="checkbox" id="save-for-later" name="save-for-later" value=""> Allow form to save for later</label>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="adu-dispatcher-endpoint"> ADU Dispatcher Endpoint</label>
+    <input class="form-control" id="adu-dispatcher-endpoint" name="adu-dispatcher-endpoint" type="text"/>
+  </div>
+  <div class="form-group">
+    <label class="control-label" for="cc-internal-staff">Send confirmation email to internal staff</label><br/>
+    <input class="form-control"  id="cc-internal-staff" name="cc-internal-staff" type="email"/>
+  </div>
+
 </div>
+
 
 <div class="save-buttons">
   <button class='apply-button btn btn-md btn-primary'>Save</button>
