@@ -83,9 +83,8 @@ input[type="radio"] {
 }
 
 /*SFDS FORMS*/
-.form-header-meta h2 {
-	font-weight: bold !important;
-	margin-bottom: 0;
+.form-header-meta p {
+	font-weight: bold;
 }
 
 .form-progress-bubble {
@@ -93,9 +92,9 @@ input[type="radio"] {
 }
 
 .hero-banner.default {
-	padding: 1em 0;
 	border-top: 3px solid #ddd;
 	border-bottom: 3px solid #ddd;
+  margin-bottom: 1em !important;
 }
 
 .hero-banner.default h1 {
