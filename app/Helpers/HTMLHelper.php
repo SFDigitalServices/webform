@@ -377,7 +377,7 @@ class HTMLHelper
         $html .= '<div class="form-progress">';
         if ($pageCount > 5) {
           $percentDone = round(($pageNumber / $pageCount) * 100);
-          $html .= '<div class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
+          $html .= '<div role="progressbar" aria-valuenow="'. $percentDone .'" aria-valuemin="0" aria-valuemax="100" class="form-progress-bar form-progress-bar-'. $percentDone .'">'. $percentDone .'% done</div>';
         } else {
           $html .= '<div class="form-progress-bubble">Page '. $pageNumber .' of '. $pageCount .'</div>';
         }
