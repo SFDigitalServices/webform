@@ -94,7 +94,7 @@ input[type="radio"] {
 .hero-banner.default {
 	border-top: 3px solid #ddd;
 	border-bottom: 3px solid #ddd;
-  margin-bottom: 1em !important;
+	margin-bottom: 1em !important;
 }
 
 .hero-banner.default h1 {
