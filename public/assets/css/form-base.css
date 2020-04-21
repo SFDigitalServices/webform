@@ -131,8 +131,14 @@ h2,
 }
 
 .field-m13 .file-custom::before {
+	content: "" !important;
+	display: none !important;
+}
+
+.field-m13 .file-custom button {
 	background-color: #fff !important;
 	color: #4f66ee !important;
+	cursor: pointer;
 }
 
 .field-m13 .help-text {

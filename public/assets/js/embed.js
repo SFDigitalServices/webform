@@ -54,6 +54,7 @@ function initUploaders() {
       SFDSWFB.uploaders[fieldName] = new Dropzone(jQuery(this).get(0), {
         url: jQuery('#SFDSWF-Container form').prop('action').replace('\/submit', '\/uploadFile'),
         autoProcessQueue: true,
+        clickable: ".file-custom button",
         uploadMultiple: true,
         params: JSON.parse( '{ "form_id" : "'+jQuery('#SFDSWF-Container input[name=form_id]').val()+'", "field_name" : "'+fieldName+'" }' ),
         parallelUploads: 1,
