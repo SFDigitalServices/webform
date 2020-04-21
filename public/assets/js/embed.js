@@ -214,6 +214,12 @@ function getDataInPath(obj, path) {
 
 //returns boolean
 function validPage() {
+  jQuery('#SFDSWF-Container input[data-formtype=c04]:visible').each(function() {
+    if (jQuery(this).val() !== "" && !this.validity.valid) {
+      fieldInvalid(jQuery(this).attr('id'));
+      return false;
+    }
+  })
   if (SFDSWFB.uploading.length > 0) {
     fieldInvalid(SFDSWFB.uploading[0], 'Please wait for file upload to complete before continuing');
     return false;
@@ -378,7 +384,7 @@ SFDSWFB.lastScript = function() {
 
   skipToSectionId(false)
 
-	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('keyup blur', function() {
+	jQuery('#SFDSWF-Container input[data-formtype=c06]').on('blur', function() {
       if (!jQuery(this).prop('required') && jQuery(this).val() === "") {
         fieldValid(jQuery(this).attr('id'));
         return
@@ -414,6 +420,7 @@ SFDSWFB.lastScript = function() {
     }
     // UI validation
     var formValid = true;
+
     jQuery('#SFDSWF-Container input[data-formtype=c06]:visible').each(function() {
       if ((!jQuery(this).prop('required') && jQuery(this).val() === "") || (phoneIsValid(jQuery(this).val()))) {
           fieldValid(jQuery(this).attr('id'));

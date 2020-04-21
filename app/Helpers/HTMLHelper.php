@@ -192,7 +192,7 @@ class HTMLHelper
                   $js .= $this->getInputSelector($calculationIds[$id][$count], $formtypes, false).", ";
                   $count++;
               }
-              $js = substr($js, 0, -2)."').on('keyup change',function(){";
+              $js = substr($js, 0, -2)."').on('blur change',function(){";
 
               $calcFunc = "jQuery('".$this->getInputSelector($id, $formtypes, false)."').val(";
 
@@ -250,7 +250,7 @@ class HTMLHelper
                   if( ! in_array($chId, $hasConditions) )
                     $hasConditions[] = $chId;
               }
-              $js = substr($js, 0, -2)."').on('keyup change',function(){";
+              $js = substr($js, 0, -2)."').on('blur change',function(){";
 
               $getInputSelector = $this->getInputSelector($id, $formtypes, false);
               if ($formtypes[$id] == "m16") {
