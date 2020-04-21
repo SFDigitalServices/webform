@@ -358,7 +358,7 @@ class HTMLHelper
      */
 
     public static function formHeader($formName) {
-      return '<header class="hero-banner default"><div class="form-header-meta"><h2>'.$formName.'</h2></div></header>';
+      return '<header class="hero-banner default"><div class="form-header-meta"><p>'.$formName.'</p></div></header>';
     }
 
     /** Generate section header
@@ -370,7 +370,7 @@ class HTMLHelper
     public static function formSectionHeader($formName, $id, $pageName, $pageNumber, $pageCount) {
       $html = '<header class="hero-banner default" id="form_page_'. $pageNumber .'">';
       $html .= '<div class="form-header-meta">';
-      $html .= '<h2>'.$formName.'</h2>';
+      $html .= '<p>'.$formName.'</p>';
 
       // Progress bar
       if ($pageCount > 1) {
