@@ -445,7 +445,6 @@ SFDSWFB.lastScript = function() {
   })
 
   if(window.draftData !== undefined){
-    console.log(window.draftData)
     populateForm(window.draftData);
   }
 }
@@ -456,7 +455,8 @@ function insertOtherTextInput(obj) {
     if(jQuery('#'+labelId).attr('type') === 'radio'){
       var radioName = jQuery('#'+labelId).attr('name')
     }
-    var inputName = labelId+'_input'
+    var inputName =  jQuery(obj).attr('data-fieldname') + '_input'
+    console.log(inputName)
     if(jQuery('#'+inputName).attr('id') === undefined)
       jQuery(obj).append('<input type="text" id="'+inputName+'" name="'+inputName+'" />')
 
