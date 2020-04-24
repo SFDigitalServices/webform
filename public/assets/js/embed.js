@@ -337,12 +337,33 @@ function skipToSectionId(callback) {
   }
 }
 
+function loadDraftModal(formid) {
+  jQuery('body').append('<div id="SFDSWF-DraftModal" style="display:block;width:420px;height:auto;position:relative;bottom:310px;border:solid 2px #000;border-radius:5px;padding: 0 1rem;background:#fff;box-shadow:0 5px #aaa;min-height:244px"><div class="content" style="width:calc(100% - 100px);float:left"><p>Enter your email address, and we will send you a link to resume your draft any time.</p><div class="form-group form-group-field field-c04" data-id="SFDSWF-DraftModalEmail" style="margin:0"><input type="email" id="SFDSWF-DraftModalEmail" /><div id="SFDSWF-SFDSWF-DraftModalEmail-with-errors" class="help-block with-errors"></div></div><br/><button class="btn btn-lg" onclick="javascript:saveDraft('+formid+')">Send the link</button></div><button class="closeDraftModal fa fa-times" onclick="closeDraftModal()" style="float:right;border:2px solid #4f66ee;color:#4f66ee;background-color:#fff;border-radius:100%;margin:1rem 0;padding:0;width:50px;height:50px;font-size:25px"></button><div style="clear:both"></div><i class="fa fa-caret-down" aria-hidden="true" style="position:absolute;left:1rem;bottom:-21px;font-size:2rem;color:#fff;text-shadow:0 2px #000"></i></div>')
+  jQuery('#SFDSWF-DraftModalEmail').val(jQuery('#SFDSWF-Container input[data-formtype=c04]').eq(0).val())
+} //todo move css to form-brand
+
+function closeDraftModal() {
+  jQuery('#SFDSWF-DraftModal').remove();
+}
+
+function saveDraft(formid) {
+  if (jQuery('#SFDSWF-DraftModalEmail').val() !== "" && document.getElementById('SFDSWF-DraftModalEmail').validity.valid) {
+    fieldValid('SFDSWF-DraftModalEmail')
+    submitPartial(formid)
+    jQuery('#SFDSWF-DraftModal .content').html('<h1 style="margin-top:100px">Sending...</h1>') //todo move css to form-brand
+  } else {
+    fieldInvalid('SFDSWF-DraftModalEmail', 'Please enter a valid email address')
+  }
+}
+
 function submitPartial(formid, submitType = 'partial'){
   var formid = "SFDSWFB_forms_" + formid;
   var submitUrl = jQuery("#"+formid).attr('action');
 
-  if(submitType !== 'complete' && !submitUrl.includes('submitPartial') )
+  if(submitType !== 'complete' && !submitUrl.includes('submitPartial') ) {
+    jQuery('#SFDSWF-Container input[data-formtype=c04]').eq(0).val(jQuery('#SFDSWF-DraftModalEmail').val())
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
+  }
 
   var form_data = new FormData(jQuery("#"+formid)[0]);
   var settings = {
@@ -356,7 +377,8 @@ function submitPartial(formid, submitType = 'partial'){
   }
   if(submitType !== 'complete'){ //partial submit
     jQuery.ajax(settings).done(function (response) {
-      jQuery("body").html(response);
+      jQuery("#SFDSWF-DraftModal .content").html(response);
+      jQuery("#SFDSWF-DraftModal").css('bottom','400px');
     })
   }
   else{ //complete submit

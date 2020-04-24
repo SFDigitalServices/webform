@@ -87,7 +87,7 @@ class HTMLHelper
           if(isset($content['settings']['save-for-later']) && $content['settings']['save-for-later'] !== 'true')
             $form_end .= '</div';
           else
-            $form_end .= '</div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:submitPartial('.$formid.')" >Save For Later</a></div></div>';
+            $form_end .= '</div><div class="form-group" data-id="saveForLater"><label for="saveForLater" class="control-label"></label><div class="field-wrapper"><a href="javascript:loadDraftModal('.$formid.')" >Finish this draft later</a></div></div>';
         }
         $form_end .= '</form>';
         // clean up line breaks, otherwise embedjs will fail
