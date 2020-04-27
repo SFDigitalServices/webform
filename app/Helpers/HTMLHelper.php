@@ -462,7 +462,7 @@ class HTMLHelper
             break;
         }
         //js added inline instead of from JS due to simplicity of binding
-        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other" onclick="insertOtherTextInput(this)"><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].$array.'" data-formtype="'.$field['formtype'].'"'.$extra.'><span class="inline-label">Other</span></label>';
+        $html .= '<label class="other-label '.$type.'" for="'.$field['id'].'_Other" onclick="insertOtherTextInput(this)" data-fieldname='.$field['name'].'_Other><input type="'.$type.'" value="Other" id="'.$field['id'].'_Other" name="'.$field['name'].$array.'" data-formtype="'.$field['formtype'].'"'.$extra.'><span class="inline-label">Other</span></label>';
       }
 
       return $html;
