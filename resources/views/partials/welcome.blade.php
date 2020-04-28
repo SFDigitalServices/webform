@@ -7,6 +7,26 @@
 
     <h1 class="welcomeBack">Welcome back, <?php print $name; ?>!</h1>
 
+    <form id="jekyll_import" class="form-horizontal" action="/form/jekyllImport" method="POST"
+      enctype="multipart/form-data">
+      <div class="form-group form-group-field field-m13" data-id="upload_file">
+        <div class="field-wrapper">
+          <input type="hidden" name="user_id" id="user_id" value="">
+          <input type="hidden" name="api_token" id="api_token" value="">
+          <input id="upload_file" name="upload_file" type="file">
+          <input type="submit" value="Import from Jekyll" id="submit" data-formtype="m14" class="btn-primary">
+        </div>
+      </div>
+    </form>
+    <!--form id="formio_import" class="form-horizontal" action="/form/formioImport" method="POST"
+      enctype="multipart/form-data">
+      <div class="form-group form-group-field field-m13" data-id="upload_file">
+        <div class="field-wrapper">
+          <input id="upload_file1" name="upload_file1" type="file">
+          <input type="submit" value="Create Form.io" id="submit-formio" data-formtype="m14" class="btn-primary">
+        </div>
+      </div>
+    </form-->
     <div class="welcomeBox">
       <div>
         <a href="javascript:void(0)" class="btn btn-info btn-lg">Create a New Form</a>

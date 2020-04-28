@@ -445,6 +445,48 @@ class FormController extends Controller
         }
     }
 
+    /** Import form definition from jekyll
+    *
+    * @param $request
+    *
+    * @return redirect page
+    */
+    public function jekyllImport(Request $request)
+    {
+        $file = $request->file('upload_file');
+        $contents = file_get_contents($file->getRealPath());
+        $json_definition['settings'] = array("action" => "", "method" => "POST", "name" => "JekyllForm_".uniqid(), "backend" => "csv", "confirmation" => "");
+
+        if($contents !== '' && ($response = $this->dataStoreHelper->jekyllImport($contents)) ){
+          $json_definition['data'] = $response;
+          $form = Form::create(['content' => $this->controllerHelper->scrubString(json_encode($json_definition,true))] );
+          if ($form) {
+              // create entry in user_form
+              $user_id = $request->input('user_id');
+              $user_form = User_Form::create(['user_id' => $user_id, 'form_id' => $form->id]);
+              $user = User::where('id', $user_id)->first();
+              return view('editor',['user_id' => $user_id, 'api_token' => $user['api_token'], 'name' => $user['name']]);
+          }
+        }
+    }
+
+     /** Create form on Form.io
+    *
+    * @param $request
+    *
+    * @return redirect page
+    */
+    public function formioImport(Request $request)
+    {
+        $file = $request->file('upload_file1');
+        $contents = file_get_contents($file->getRealPath());
+
+        if ($contents !== '' && ($response = $this->dataStoreHelper->formioImport($contents) ) ){
+          Log::info(print_r($response, 1));
+        }
+
+    }
+
     /** Determine form has been published
     *
     * @param $request

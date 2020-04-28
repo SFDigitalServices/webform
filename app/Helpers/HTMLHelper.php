@@ -47,6 +47,8 @@ class HTMLHelper
 
         // looping through all form fields.
         foreach ($content['data'] as $field) {
+          if(! isset($field['formtype']))
+            continue;
           if ($field['formtype'] == "m14") {
             // Submit button
             if (empty($sections)) $form_container .= $this->createEditableFields($field);
@@ -144,6 +146,8 @@ class HTMLHelper
       $fileFields = array();
       if ($form['content']) {
           foreach ($form['content']['data'] as $field) {
+              if(!isset($field['id']))
+                Log::info(print_r($field, 1));
               $fieldId = $field['id'];
               if (isset($field['formtype'])) {
                   $formtypes[$fieldId] = $field['formtype'];
