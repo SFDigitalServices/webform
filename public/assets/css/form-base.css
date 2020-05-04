@@ -153,3 +153,61 @@ h2,
 .address-group label {
 	font-size: 1rem;
 }
+
+/* FINISH DRAFT LATER MODAL */
+#SFDSWF-DraftModal {
+	display: block;
+	width: 420px;
+	height: auto;
+	position: relative;
+	bottom: 310px;
+	border: solid 2px #000;
+	border-radius: 5px;
+	padding: 0 1rem;
+	background: #fff;
+	box-shadow: 0 5px #aaa;
+	min-height: 244px;
+}
+
+#SFDSWF-DraftModal .content {
+	width: calc(100% - 100px);
+	float: left;
+}
+
+#SFDSWF-DraftModal [data-id="SFDSWF-DraftModalEmail"] {
+	margin: 0;
+}
+
+#SFDSWF-DraftModal .closeDraftModal {
+	float: right;
+	border: 2px solid #4f66ee;
+	color: #4f66ee;
+	background-color: #fff;
+	border-radius: 100%;
+	margin: 1rem 0;
+	padding: 0;
+	width: 50px;
+	height: 50px;
+	font-size: 25px;
+}
+
+#SFDSWF-DraftModal .clear {
+	clear: both;
+}
+
+#SFDSWF-DraftModal .fa-caret-down {
+	position: absolute;
+	left: 1rem;
+	bottom: -21px;
+	font-size: 2rem;
+	color: #fff;
+	text-shadow: 0 2px #000;
+}
+
+#SFDSWF-DraftModal .sending {
+	margin-top: 100px;
+}
+
+#SFDSWF-DraftModal .copy-link {
+	margin-bottom: 2rem;
+}

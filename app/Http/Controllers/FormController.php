@@ -441,7 +441,8 @@ class FormController extends Controller
         if ($response = $this->dataStoreHelper->submitForm($form, $request, 'partial')) {
             $data = $response['data'];
             $this->emailController->sendEmail($data, 'emails.saveForLater');
-            return view('emails.saveForLater', ['data' => $data['body']]);
+            //return view('emails.saveForLater', ['data' => $data['body']]);
+            return view('partials.draft', ['data' => $data['body']]);
         }
     }
 

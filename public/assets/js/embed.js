@@ -337,12 +337,33 @@ function skipToSectionId(callback) {
   }
 }
 
+function loadDraftModal(formid) {
+  jQuery('body').append('<div id="SFDSWF-DraftModal"><div class="content"><p>Enter your email address, and we will send you a link to resume your draft any time.</p><div class="form-group form-group-field field-c04" data-id="SFDSWF-DraftModalEmail"><input type="email" id="SFDSWF-DraftModalEmail" /><div id="SFDSWF-SFDSWF-DraftModalEmail-with-errors" class="help-block with-errors"></div></div><br/><button class="btn btn-lg" onclick="javascript:saveDraft('+formid+')">Send the link</button></div><button class="closeDraftModal fa fa-times" onclick="closeDraftModal()"></button><div class="clear"></div><i class="fa fa-caret-down" aria-hidden="true"></i></div>')
+  jQuery('#SFDSWF-DraftModalEmail').val(jQuery('#SFDSWF-Container input[data-formtype=c04]').eq(0).val())
+}
+
+function closeDraftModal() {
+  jQuery('#SFDSWF-DraftModal').remove();
+}
+
+function saveDraft(formid) {
+  if (jQuery('#SFDSWF-DraftModalEmail').val() !== "" && document.getElementById('SFDSWF-DraftModalEmail').validity.valid) {
+    fieldValid('SFDSWF-DraftModalEmail')
+    submitPartial(formid)
+    jQuery('#SFDSWF-DraftModal .content').html('<h1 class="sending">Sending...</h1>')
+  } else {
+    fieldInvalid('SFDSWF-DraftModalEmail', 'Please enter a valid email address')
+  }
+}
+
 function submitPartial(formid, submitType = 'partial'){
   var formid = "SFDSWFB_forms_" + formid;
   var submitUrl = jQuery("#"+formid).attr('action');
 
-  if(submitType !== 'complete' && !submitUrl.includes('submitPartial') )
+  if(submitType !== 'complete' && !submitUrl.includes('submitPartial') ) {
+    jQuery('#SFDSWF-Container input[data-formtype=c04]').eq(0).val(jQuery('#SFDSWF-DraftModalEmail').val())
     submitUrl = submitUrl.replace('\/submit', '\/submitPartial');
+  }
 
   var form_data = new FormData(jQuery("#"+formid)[0]);
   var settings = {
@@ -356,7 +377,8 @@ function submitPartial(formid, submitType = 'partial'){
   }
   if(submitType !== 'complete'){ //partial submit
     jQuery.ajax(settings).done(function (response) {
-      jQuery("body").html(response);
+      jQuery("#SFDSWF-DraftModal .content").html(response);
+      jQuery("#SFDSWF-DraftModal").css('bottom','400px');
     })
   }
   else{ //complete submit
