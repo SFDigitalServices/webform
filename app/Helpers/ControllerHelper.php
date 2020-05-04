@@ -212,7 +212,7 @@ class ControllerHelper
 
         $result = $s3->putObject([
             'Bucket' => env('BUCKETEER_BUCKET_NAME'),
-            'Key' => 'public/'.$filename,
+            'Key' => $filename,
             'Body' => $body,
         ]);
 
@@ -234,10 +234,10 @@ class ControllerHelper
             'credentials' => CredentialProvider::env()
         ]);
 
-        if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), 'public/'.$filename)) {
+        if ($s3->doesObjectExist(env('BUCKETEER_BUCKET_NAME'), $filename)) {
             $result = $s3->getObject([
                 'Bucket' => env('BUCKETEER_BUCKET_NAME'),
-                'Key' => 'public/'.$filename
+                'Key' => $filename
             ]);
             return $result['Body'];
         } else {
@@ -252,7 +252,7 @@ class ControllerHelper
     */
     public function getBucketPath()
     {
-        return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/';
+        return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/';
     }
 
    /** Generates unique file name on S3
@@ -268,7 +268,7 @@ class ControllerHelper
         $time = time();
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         $hash = substr(sha1($formId.$time.env('FILE_SALT')),0,8);
-        //return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/public/'.$formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
+        //return 'https://'.env('BUCKETEER_BUCKET_NAME').'.s3.amazonaws.com/'.$formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
         return $formId.'-'.$time.'-'.$name.'-'.$hash.'.'.$ext;
     }
 
