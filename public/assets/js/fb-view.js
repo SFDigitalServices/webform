@@ -111,7 +111,9 @@ FbView.prototype.listForms = function() {
 
 	$('a.start-form').on('click', function() {
 		self.startForm($(this).data('id'))
-	})
+  })
+  $('#api_token').val(fb.api_token);
+  $('#user_id').val(fb.user_id);
 }
 
 /**

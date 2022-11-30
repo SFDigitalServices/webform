@@ -5,7 +5,7 @@
 </tr>
 <tr>
   <td align="left" bgcolor="#FFFFFF" width="100%">
-  	<table role="presentation">
+  <table role="presentation">
 
       {{-- Repeat this <tr> for every checked option --}}
       <tr>

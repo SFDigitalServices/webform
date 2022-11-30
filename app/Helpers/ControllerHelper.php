@@ -106,7 +106,7 @@ class ControllerHelper
     {
         if ($data) {
             foreach ($data as $field) {
-                if ($field['formtype'] == "m13") {
+                if (isset($field['formtype']) && $field['formtype'] === "m13") {
                     return true;
                 }
             }
@@ -329,6 +329,230 @@ class ControllerHelper
           unset($updates['add']);
         }
         return $updates;
+    }
+
+    /** Create Form Io form definition
+    *
+    * @param $definitions
+    *
+    * @return json
+    */
+    public function createFormIoFields($definitions){
+      $form = array();
+      if ($definitions) {
+          foreach ($definitions as $definition) {
+              // page separator: form.io don't have this
+              $page_title = $definition['title'];
+
+              foreach ($definition['fields'] as $field) {
+                  $group = isset($field['group']) ? $field['group'] : "";
+                  $field_def = array();
+                  if ($group === "") {
+                    $field_def['fields'][] = $field;
+                  }
+                  else{
+                    $field_def['fields'][] = $field['fields'];
+                  }
+                  foreach ($field_def['fields'] as $group_field) {
+                      $def = $this->createFormIoField($group_field);
+                      if (isset($def['address-fields'])) { //Address fields are a group of fields, need to flatten it.
+                          foreach ($def['address-fields'] as $field_def) {
+                              $form[] = $field_def;
+                          }
+                      } else {
+                          $form[] = $def;
+                      }
+                  }
+              }
+          }
+      }
+      Log::info(print_r($form, 1));
+      return ($form);
+    }
+
+    /** Parse form definition from Jekyll import
+    *
+    * @param $definitions
+    *
+    * @return json
+    */
+    public function createFormDefinition($definitions)
+    {
+      $form = array();
+      if ($definitions) {
+          foreach ($definitions as $definition) {
+              if (count($form) > 1) {
+                  $page_title = $definition['title'];
+                  $form[] = array("formtype" => "m16", "label" => $page_title, "id" => "page_separator");
+              }
+              foreach ($definition['fields'] as $field) {
+                  $group = isset($field['group']) ? $field['group'] : "";
+                  $field_def = array();
+                  if ($group === "") {
+                    $field_def['fields'][] = $field;
+                  }
+                  else{
+                    $field_def['fields'][] = $field['fields'];
+                  }
+                  foreach ($field_def['fields'] as $group_field) {
+                      $def = $this->createFormFields($group_field);
+                      if (isset($def['address-fields'])) { //Address fields are a group of fields, need to flatten it.
+                          foreach ($def['address-fields'] as $field_def) {
+                              $form[] = $field_def;
+                          }
+                      } else {
+                          $form[] = $def;
+                      }
+                  }
+              }
+          }
+      }
+      return $form;
+    }
+
+     /** Create form.io field based on field type
+    *
+    * @param $field
+    *
+    * @return array
+    */
+    private function createFormIoField($field){
+      $label = isset($field['label']) ? $field['label'] : "";
+      $type = isset($field['type']) ? $field['type'] : "";
+      $id = $name = uniqid($type."_");
+      $ret = array();
+      switch ($type)
+      {
+        case "paragraph": $ret = array("key" => $id, "textarea" => $label, "input" => true);
+          break;
+        case "number": $ret = array("key" => $id, "name" => $name, "label" => $label, "type" => $type, "input" => true);
+          break;
+        case "price": $ret = array("key" => $id, "name" => $name, "label" => $label, "type" => "currency", "input" => true);
+          break;
+        case "email": $ret = array("inputType" => "email", "key" => $id, "name" => $name, "label" => $label, "type" => $type, "input" => true);
+          break;
+        case "file": $ret = array("key" => $id, "name" => $name, "label" => $label, "type" => $type, "input" => true);
+          break;
+        case "phone": $ret = array("inputType" => "tel", "key" => $id, "name" => $name, "label" => $label, "type" => "phoneNumber", "input" => true);
+          break;
+        case "radio": $ret = array("key" => $id, "name" => $name,"label" => $label, "input" => true, "radios" => $this->createOptions($field['options'], "formio"));
+          break;
+        case "checkbox":
+          if (! isset($field['options'])) { // single checkbox
+              $ret = array("type" => "checkbox", "key" => $id, "name" => $name, "label" => $label, "input" => true);
+          }
+          else{
+              $ret = array("type" => "selectboxes", "key" => $id, "name" => $name, "label" => $label, "input" => true, "values" => $this->createOptions($field['options'], "formio"));
+          }
+          break;
+        case "select": $ret = array("key" => $id, "name" => $name, "label" => $label, "input" => true, "data" => $this->createOptions($field['options'], "formio"));
+          break;
+        case "textarea": $ret = array("key" => $id, "name" => $name, "label" => $label, "input" => true, "type" => $type, "input" => true);
+          break;
+        case "date": $ret = array("key" => $id, "name" => $name, "label" => $label, "input" => true, "type" => "datetime", "input" => true);
+          break;
+          // TODO:
+        case "address": $ret = array("key" => $id, "name" => $name, "label" => $label, "input" => true, "type" => $type, "input" => true);
+          break;
+        default: $ret = array("key" => $id, "name" => $name, "label" => $label, "type" => "textfield", "input" => true);
+          break;
+      }
+      return $ret;
+    }
+
+    /** Create form field based on field type
+    *
+    * @param $field
+    *
+    * @return array
+    */
+    private function createFormFields($field){
+      $label = isset($field['label']) ? $field['label'] : "";
+      $type = isset($field['type']) ? $field['type'] : "";
+      $id = $name = uniqid($type."_");
+      $ret = array();
+      switch ($type)
+      {
+        case "header":
+          switch($field['level']){
+            case 1: $h = "m02"; break;
+            case 1: $h = "m04"; break;
+            case 1: $h = "m06"; break;
+            default: $h = "m02"; break;
+          }
+          $ret = array("formtype" => $h, "id" => "header_".$field['level']);
+          break;
+        case "paragraph": $ret = array("formtype" => "m08", "id" => $id, "textarea" => $label);
+          break;
+        case "number": $ret = array("formtype" => "d06", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "email": $ret = array("formtype" => "c04", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "file": $ret = array("formtype" => "m13", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "phone": $ret = array("formtype" => "c06", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "radio": $ret = array("formtype" => "s08", "id" => $id, "name" => $name,"label" => $label, "radios" => $this->createOptions($field['options']));
+          break;
+        case "checkbox":
+          if (! isset($field['options'])) {
+              $field['options'][]['label'] = $label;
+          }
+          $ret = array("formtype" => "s06", "id" => $id, "name" => $name, "label" => $label, "checkboxes" => $this->createOptions($field['options']));
+          break;
+        case "select": $ret = array("formtype" => "s02", "id" => $id, "name" => $name, "label" => $label, "option" => $this->createOptions($field['options']));
+          break;
+        case "textarea": $ret = array("formtype" => "i14", "id" => $id, "name" => $name, "label" => $label, "type" => $type);
+          break;
+        case "date": $ret = array("id" => $id, "name" => $name, "label" => $label, "type" => $type, "formtype" => "d02");
+          break;
+          // TODO:
+        case "address": $ret = $this->buildAddressFields($field);
+          break;
+        default: $ret = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $label, "type" => "text");
+          break;
+      }
+      return $ret;
+    }
+
+    private function buildAddressFields($field){
+        $ret = array();
+        if (! isset($field['address-fields'])) {
+            $field['address-fields'] = array('street', 'city', 'state', 'zip');
+        }
+        foreach ($field['address-fields'] as $address_field) {
+            $id = $name = uniqid($address_field."_");
+            switch ($address_field) {
+              case "street": $ret['address-fields'][] = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+              $ret['address-fields'][] = array("formtype" => "i02", "id" => $id."-line2", "name" => $name."-line2", "label" => $address_field, "type" => "text");
+                break;
+              case "city": $ret['address-fields'][] = array("formtype" => "c10", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+                break;
+              case "state": $ret['address-fields'][] = array("formtype" => "s14", "id" => $id, "name" => $name, "label" => $address_field);
+                break;
+              case "zip": $ret['address-fields'][] = array("formtype" => "c14", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+                break;
+              default: $ret['address-fields'][] = array("formtype" => "i02", "id" => $id, "name" => $name, "label" => $address_field, "type" => "text");
+                break;
+          }
+        }
+        return $ret;
+    }
+
+    private function createOptions($options, $type = ""){
+      $ret = array();
+      if ($type === "") {
+          foreach ($options as $option) {
+              $ret[] = $option['label'];
+          }
+          $content['data'][0]['option'] = $ret;
+          $ret = $this->parseOptionValues($content);
+          return $ret['data'][0]['option'];
+      }
+      // form.io options
+      foreach ($options as $option) {
+          $ret["values"][] = array("value" => $option['label'], "label" => $option['label']);
+      }
     }
 
   private function check_diff_multi($array1, $array2){
